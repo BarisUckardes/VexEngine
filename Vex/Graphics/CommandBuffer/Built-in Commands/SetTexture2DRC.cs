@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class SetTexture2DRC : RenderCommand
     {
-        public SetTexture2DRC(Texture2D texture,ShaderPVexgram pVexgram,string name,int unit)
+        public SetTexture2DRC(Texture2D texture,ShaderProgram pVexgram,string name,int unit)
         {
             m_Handle = texture == null ? 0 : (int)texture.Handle;
             m_Unit = unit;

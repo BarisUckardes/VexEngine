@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Vex.Framework;
+
 namespace Vex.Asset
 {
     /// <summary>
@@ -20,7 +22,7 @@ namespace Vex.Asset
         /// <summary>
         /// Return the loaded object of this asset
         /// </summary>
-        public EngineObject Object
+        public VexObject Object
         {
             get
             {
@@ -69,7 +71,7 @@ namespace Vex.Asset
                     break;
                 case AssetType.Texture2D:
                     AssetInterface<Texture2DResolver> assetInterface = new AssetInterface<Texture2DResolver>();
-                    m_Object = assetInterface.GetObject(fileContent) as EngineObject;
+                    m_Object = assetInterface.GetObject(fileContent) as VexObject;
                     break;
                 default:
                     break;
@@ -84,7 +86,7 @@ namespace Vex.Asset
 
         }
 
-        private EngineObject m_Object;
+        private VexObject m_Object;
         private readonly AssetRecord m_Record;
     }
 }

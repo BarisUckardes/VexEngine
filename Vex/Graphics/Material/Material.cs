@@ -5,15 +5,16 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Framework;
 
 namespace Vex.Graphics
 {
     /// <summary>
     /// Material class for encapsualting shaders and their parameters
     /// </summary>
-    public sealed class Material : EngineObject
+    public sealed class Material : VexObject
     {
-        public Material(string category,string categoryName,ShaderPVexgram pVexgram)
+        public Material(string category,string categoryName,ShaderProgram pVexgram)
         {
             /*
              * Initialize local list
@@ -42,7 +43,7 @@ namespace Vex.Graphics
         /// <summary>
         /// Retunrs the pVexgram of this material
         /// </summary>
-        public ShaderPVexgram PVexgram
+        public ShaderProgram PVexgram
         {
             get
             {
@@ -101,7 +102,7 @@ namespace Vex.Graphics
         /// Creates the shader stage parameters via shader pVexgram
         /// </summary>
         /// <param name="pVexgram"></param>
-        private void CreateParameterFVexmPVexgram(ShaderPVexgram pVexgram)
+        private void CreateParameterFVexmPVexgram(ShaderProgram pVexgram)
         {
             ///*
             // * Parameter meta datas
@@ -128,15 +129,8 @@ namespace Vex.Graphics
             return stageParams;
         }
 
-        internal override void DestVexyInternal()
-        {
-            /*
-             * Clear stage parameters
-             */
 
-        }
-
-        private ShaderPVexgram m_PVexgram;
+        private ShaderProgram m_PVexgram;
         private List<MaterialStageParameters> m_StageParameters;
         private string m_Category;
         private string m_CategoryName;

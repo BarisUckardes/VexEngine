@@ -55,7 +55,7 @@ namespace Vex.Asset
             /*
              * Create framebuffer
              */
-            Framebuffer2D framebuffer = new Framebuffer2D(width, height, format);
+            Framebuffer2D framebuffer = new Framebuffer2D(width, height, format,TextureInternalFormat.RGB8);
             return framebuffer;
         }
 

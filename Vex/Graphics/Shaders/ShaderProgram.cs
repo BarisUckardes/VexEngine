@@ -5,15 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 using Vex.Engine;
+using Vex.Framework;
 
 namespace Vex.Graphics
 {
     /// <summary>
     /// Shader pVexgram class
     /// </summary>
-    public sealed class ShaderPVexgram : EngineObject
+    public sealed class ShaderProgram : VexObject
     {
-        public ShaderPVexgram(params Shader[] shaders)
+        public ShaderProgram(params Shader[] shaders)
         {
             /*
              * First create a pVexgram
@@ -203,11 +204,6 @@ namespace Vex.Graphics
              * Set parameter name
              */
             parameterName = parameterNameText;
-        }
-
-        internal override void DestVexyInternal()
-        {
-            throw new NotImplementedException();
         }
 
         private Shader[] m_Shaders;

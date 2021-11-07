@@ -11,12 +11,13 @@ namespace Vex.Graphics
     /// </summary>
     public readonly struct FramebufferAttachmentParams
     {
-        public FramebufferAttachmentParams(int width, int height, int depth, TextureFormat format)
+        public FramebufferAttachmentParams(int width, int height, int depth, TextureFormat format,TextureInternalFormat internalFormat)
         {
             Width = width;
             Height = height;
             Depth = depth;
             Format = format;
+            InternalFormat = internalFormat;
         }
 
         /// <summary>
@@ -38,6 +39,8 @@ namespace Vex.Graphics
         /// Target texture format
         /// </summary>
         public readonly TextureFormat Format;
+
+        public readonly TextureInternalFormat InternalFormat;
 
     }
 }

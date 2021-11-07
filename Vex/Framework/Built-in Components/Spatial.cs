@@ -89,11 +89,6 @@ namespace Vex.Framework
 
         }
 
-        internal override void DestVexyInternal()
-        {
-            throw new NotImplementedException();
-        }
-
         Vector3 m_Position;
         Vector3 m_Vextation;
         Vector3 m_Scale;

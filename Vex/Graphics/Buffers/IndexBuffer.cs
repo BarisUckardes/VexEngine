@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
+using Vex.Framework;
+
 namespace Vex.Graphics
 {
     /// <summary>
     /// Represents a triangle buffer
     /// </summary>
-    public class IndexBuffer : IDisposableGraphicsObject
+    public class IndexBuffer : IDestroyableObject
     {
         public bool IsDisposed { get; set; }
 
@@ -34,6 +36,8 @@ namespace Vex.Graphics
                 return m_IndexCount;
             }
         }
+
+        public bool IsDestroyed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <summary>
         /// Sets the native buffer data on gpu
@@ -71,18 +75,7 @@ namespace Vex.Graphics
 
  
         }
-        public void Dispose()
-        {
-            /*
-             * Validate and delete OpenGL handles
-             */
-            ValidateAndDeleteHandles();
-
-            /*
-             * Mark as disposed
-             */
-            IsDisposed = true;
-        }
+     
 
         /// <summary>
         /// Validates then deletes the native handles
@@ -97,6 +90,10 @@ namespace Vex.Graphics
             m_IndexBufferID = 0;
         }
 
+        public void Destroy()
+        {
+            throw new NotImplementedException();
+        }
 
         private uint m_IndexBufferID;
         private uint m_IndexCount;

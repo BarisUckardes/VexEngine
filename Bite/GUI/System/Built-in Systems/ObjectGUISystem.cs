@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using Vex.Engine;
+using Vex.Framework;
 
 namespace Bite.GUI
 {
@@ -37,7 +38,7 @@ namespace Bite.GUI
                     /*
                      * Validate if its an engine object
                     */
-                    if (!attribute.TargetObjectType.IsSubclassOf(typeof(EngineObject)))
+                    if (!attribute.TargetObjectType.IsSubclassOf(typeof(VexObject)))
                         continue;
 
                     entries.Add(new ObjectLayoutEntry(attribute.TargetObjectType, type));

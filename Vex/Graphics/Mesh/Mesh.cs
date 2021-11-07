@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vex.Engine;
+using Vex.Framework;
 using Vex.Types;
 namespace Vex.Graphics
 {
     /// <summary>
     /// Base mesh class for all meshes
     /// </summary>
-    public abstract class Mesh : EngineObject
+    public abstract class Mesh : VexObject
     {
         public abstract VertexLayout Layout { get; }
 
@@ -87,9 +88,9 @@ namespace Vex.Graphics
         /// </summary>
         private void ValidateAndDeleteVertexBuffer()
         {
-            if(m_VertexBuffer != null && !m_VertexBuffer.IsDisposed)
+            if(m_VertexBuffer != null && !m_VertexBuffer.IsDestroyed)
             {
-                m_VertexBuffer.Dispose();
+                m_VertexBuffer.Destroy ();
                 m_VertexBuffer = null;
             }
         }
@@ -101,15 +102,9 @@ namespace Vex.Graphics
         {
             if(m_IndexBuffer != null && !m_IndexBuffer.IsDisposed)
             {
-                m_IndexBuffer.Dispose();
+                m_IndexBuffer.Destroy();
                 m_IndexBuffer = null;
             }
-        }
-
-        sealed internal override void DestVexyInternal()
-        {
-            m_VertexBuffer?.Dispose();
-            m_IndexBuffer?.Dispose();
         }
 
         private VertexBuffer m_VertexBuffer;

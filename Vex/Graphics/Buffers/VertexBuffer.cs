@@ -4,15 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
+using Vex.Framework;
+
 namespace Vex.Graphics
 {
     /// <summary>
     /// Represents a vertex buffer
     /// </summary>
-    public class VertexBuffer : IDisposableGraphicsObject
+    public class VertexBuffer : IDestroyableObject
     {
 
-        public bool IsDisposed { get; set; }
+       
 
         /// <summary>
         /// Returns the native handle of this vertex buffer
@@ -35,6 +37,8 @@ namespace Vex.Graphics
                 return m_VertexCount;
             }
         }
+
+        public bool IsDestroyed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <summary>
         /// Sets the native data on gpu
@@ -141,11 +145,7 @@ namespace Vex.Graphics
             m_VertexCount = (uint)data.Length;
         }
 
-        public void Dispose()
-        {
-            ValidateAndDeleteHandles();
-            IsDisposed = true;
-        }
+     
 
         /// <summary>
         /// Validates then deletes the native handles
@@ -174,6 +174,11 @@ namespace Vex.Graphics
              * Create empty handle
              */
             m_Handle = new VertexBufferHandle();
+        }
+
+        public void Destroy()
+        {
+            throw new NotImplementedException();
         }
 
         private VertexBufferHandle m_Handle;

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Framework;
 
 namespace Bite.GUI
 {
@@ -43,7 +44,7 @@ namespace Bite.GUI
         {
             m_Layout.OnLayoutRender();
         }
-        private void OnNewObject(EngineObject obj)
+        private void OnNewObject(VexObject obj)
         {
             /*
              * Debug

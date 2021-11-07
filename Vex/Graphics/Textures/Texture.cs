@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Framework;
 
 namespace Vex.Graphics
 {
     /// <summary>
     /// Base texture class for all textures
     /// </summary>
-    public abstract class Texture : EngineObject,IDisposableGraphicsObject
+    public abstract class Texture : VexObject,IDestroyableObject
     {
-        public bool IsDisposed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+       
 
         /// <summary>
         /// Returns the cpu side data
@@ -74,17 +75,9 @@ namespace Vex.Graphics
             }
         }
 
-        internal override void DestVexyInternal()
-        {
-            /*
-             * Clear cpu data
-             */
+        public bool IsDestroyed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-            /*
-             * Dipose texture
-             */
-        }
-        public void Dispose()
+        public void Destroy()
         {
             throw new NotImplementedException();
         }

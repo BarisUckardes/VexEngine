@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Framebuffer1D : Framebuffer
     {
-        public Framebuffer1D(int width,TextureFormat format)
+        public Framebuffer1D(int width,TextureFormat format,TextureInternalFormat internalFormat)
         {
             /*
              * Set local fields
@@ -22,7 +22,7 @@ namespace Vex.Graphics
             /*
              * Create framebuffer
              */
-            CreateAndAttachTexture1D(new FramebufferAttachmentParams(width, 0, 0, format));
+            CreateAndAttachTexture1D(new FramebufferAttachmentParams(width, 0, 0, format,internalFormat));
         }
 
         /// <summary>

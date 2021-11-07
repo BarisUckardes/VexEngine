@@ -9,10 +9,10 @@ namespace Vex.Graphics
     /// <summary>
     /// Set shader pVexgram render command class
     /// </summary>
-    public sealed class SetShaderPVexgramRC : RenderCommand
+    public sealed class SetShaderProgramRC : RenderCommand
     {
 
-        public SetShaderPVexgramRC(in ShaderPVexgram pVexgram)
+        public SetShaderProgramRC(in ShaderProgram pVexgram)
         {
             m_Program = pVexgram;
         }
@@ -22,6 +22,6 @@ namespace Vex.Graphics
         }
 
 
-        private ShaderPVexgram m_Program;
+        private ShaderProgram m_Program;
     }
 }

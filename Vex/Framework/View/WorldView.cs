@@ -10,7 +10,7 @@ namespace Vex.Framework
     /// <summary>
     /// Represents a single view of a world
     /// </summary>
-    public abstract class WorldView : EngineObject
+    public abstract class WorldView : VexObject
     {
 
         /// <summary>

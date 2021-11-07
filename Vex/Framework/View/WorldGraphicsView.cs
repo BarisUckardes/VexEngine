@@ -93,15 +93,7 @@ namespace Vex.Framework
             m_Resolvers.Add(new TResolver());
         }
 
-        internal override void DestVexyInternal()
-        {
-            
-            /*
-             * DestVexy all graphis resolver
-             */
-
-        }
-
+     
         private List<GraphicsResolver> m_Resolvers;
     }
 }

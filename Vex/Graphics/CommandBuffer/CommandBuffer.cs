@@ -150,7 +150,7 @@ namespace Vex.Graphics
         /// Set shader pVexgram command
         /// </summary>
         /// <param name="pVexgram"></param>
-        public void SetShaderPVexgram(ShaderPVexgram pVexgram)
+        public void SetShaderProgram(ShaderProgram pVexgram)
         {
             /*
             * Validate recording
@@ -160,7 +160,7 @@ namespace Vex.Graphics
                 return;
             }
 
-            m_Commands.Add(new SetShaderPVexgramRC(in pVexgram));
+            m_Commands.Add(new SetShaderProgramRC(in pVexgram));
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace Vex.Graphics
         /// <param name="pVexgram"></param>
         /// <param name="value"></param>
         /// <param name="name"></param>
-        public void SetUniformVector4(in ShaderPVexgram pVexgram,in Vector4 value,in string name)
+        public void SetUniformVector4(in ShaderProgram pVexgram,in Vector4 value,in string name)
         {
             /*
             * Validate recording
@@ -222,7 +222,7 @@ namespace Vex.Graphics
         /// <param name="pVexgram"></param>
         /// <param name="value"></param>
         /// <param name="name"></param>
-        public void SetUniformFloat(in ShaderPVexgram pVexgram,float value,string name)
+        public void SetUniformFloat(in ShaderProgram pVexgram,float value,string name)
         {
             /*
             * Validate recording
@@ -242,7 +242,7 @@ namespace Vex.Graphics
         /// <param name="value"></param>
         /// <param name="name"></param>
         /// <param name="isTransposed"></param>
-        public void SetUniformMat4x4(in ShaderPVexgram pVexgram,Matrix4 value,string name,bool isTransposed = false)
+        public void SetUniformMat4x4(in ShaderProgram pVexgram,Matrix4 value,string name,bool isTransposed = false)
         {
             /*
             * Validate recording
@@ -261,7 +261,7 @@ namespace Vex.Graphics
         /// <param name="texture"></param>
         /// <param name="name"></param>
         /// <param name="pVexgram"></param>
-        public void SetTexture2D(Texture2D texture,string name,ShaderPVexgram pVexgram)
+        public void SetTexture2D(Texture2D texture,string name,ShaderProgram pVexgram)
         {
             /*
            * Validate recording

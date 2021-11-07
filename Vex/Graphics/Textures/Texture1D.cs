@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Texture1D : Texture
     {
-        public Texture1D(int width,TextureFormat format)
+        public Texture1D(int width,TextureFormat format,TextureInternalFormat internalFormat)
         {
             /*
              * Create texture
@@ -28,7 +28,7 @@ namespace Vex.Graphics
              * Set empty data
              */
             GL.TexImage1D(TextureTarget.Texture1D, 0,
-                TextureInternalFormatUtils.GetNative(TextureInternalFormatUtils.GetInternalFormatViaFormat(format)),
+                TextureInternalFormatUtils.GetNative(internalFormat),
                 width, 0,
                 TextureFormatUtils.GetNative(format), PixelType.UnsignedByte,
                 IntPtr.Zero);
@@ -78,7 +78,7 @@ namespace Vex.Graphics
             /*
              * Set data
              */
-            GL.TexImage1D(TextureTarget.Texture1D, 0, TextureInternalFormatUtils.GetNative(TextureInternalFormatUtils.GetInternalFormatViaFormat(Format)), m_Width, 0, TextureFormatUtils.GetNative(Format), PixelType.UnsignedByte, data);
+            GL.TexImage1D(TextureTarget.Texture1D, 0, TextureInternalFormatUtils.GetNative(InternalFormat), m_Width, 0, TextureFormatUtils.GetNative(Format), PixelType.UnsignedByte, data);
 
             /*
              * Unbind texture

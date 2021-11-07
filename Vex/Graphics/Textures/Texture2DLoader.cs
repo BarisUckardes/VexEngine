@@ -57,7 +57,7 @@ namespace Vex.Graphics
             /*
              * Create texture
              */
-            Texture2D texture = new Texture2D(image.Width,image.Height,TextureFormatUtils.GetFormatViaMime(format.DefaultMimeType));
+            Texture2D texture = new Texture2D(image.Width,image.Height,TextureFormatUtils.GetFormatViaMime(format.DefaultMimeType),TextureInternalFormat.RGB8);
             texture.SetData(pixels.ToArray());
 
             /*

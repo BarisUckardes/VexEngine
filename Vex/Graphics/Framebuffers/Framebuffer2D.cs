@@ -11,12 +11,12 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Framebuffer2D : Framebuffer
     {
-        public Framebuffer2D(int width,int height,TextureFormat format)
+        public Framebuffer2D(int width,int height,TextureFormat format,TextureInternalFormat internalFormat)
         {
             m_Width = width;
             m_Height = height;
             Format = format;
-            CreateAndAttachTexture2D(new FramebufferAttachmentParams(width, height, 0, format));
+            CreateAndAttachTexture2D(new FramebufferAttachmentParams(width, height, 0, format, internalFormat));
         }
 
         public Framebuffer2D()

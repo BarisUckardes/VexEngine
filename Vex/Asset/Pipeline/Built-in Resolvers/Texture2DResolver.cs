@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
+using Vex.Framework;
 
 namespace Vex.Asset
 {
@@ -20,7 +21,7 @@ namespace Vex.Asset
             }
         }
 
-        public override EngineObject GetObject(IParser parser, in AssetPool pool)
+        public override VexObject GetObject(IParser parser, in AssetPool pool)
         {
             /*
              * Move on fVexm the width
@@ -68,7 +69,7 @@ namespace Vex.Asset
             /*
              * Create texture
              */
-            Texture2D texture = new Texture2D(Convert.ToInt32(widthYaml), Convert.ToInt32(heightYaml), (TextureFormat)(Convert.ToInt32(formatYaml)));
+            Texture2D texture = new Texture2D(Convert.ToInt32(widthYaml), Convert.ToInt32(heightYaml), (TextureFormat)(Convert.ToInt32(formatYaml)),TextureInternalFormat.Alpha);
 
             /*
              * Set texture data

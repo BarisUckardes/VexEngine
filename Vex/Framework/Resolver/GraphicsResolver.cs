@@ -12,39 +12,7 @@ namespace Vex.Framework
     /// </summary>
     public abstract class GraphicsResolver : IWorldResolver
     {
-        /// <summary>
-        /// Resolves the graphics data of the world
-        /// </summary>
-        public void Resolve()
-        {
-            /*
-             * Create command buffer
-             */
-            CommandBuffer commandBuffer = new CommandBuffer();
-
-            /*
-             * Start recording
-             */
-            commandBuffer.StartRecoding();
-            
-            /*
-             * Populate the command buffer
-             */
-            PopulateRenderCommandBuffer(commandBuffer);
-
-            /*
-             * Stop recording
-             */
-            commandBuffer.EndRecording();
-
-            /*
-             * Execute the populated command buffer
-             */
-            commandBuffer.Execute();
-
-        }
-       
-
+        public abstract void Resolve();
         /// <summary>
         /// Registers an observer to this graphics resolver
         /// </summary>
@@ -78,11 +46,5 @@ namespace Vex.Framework
         /// The observer type which this graphics resolver accepts
         /// </summary>
         public abstract Type ExpectedObserverType { get; }
-
-        /// <summary>
-        /// The command buffer population method
-        /// </summary>
-        /// <param name="commandBuffer"></param>
-        public abstract void PopulateRenderCommandBuffer(CommandBuffer commandBuffer);
     }
 }

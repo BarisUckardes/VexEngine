@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Texture2D : Texture
     {
-        public Texture2D(int width,int height,TextureFormat format)
+        public Texture2D(int width,int height,TextureFormat format,TextureInternalFormat internalFormat)
         {
             /*
              * Create texture
@@ -27,7 +27,7 @@ namespace Vex.Graphics
             /*
              * Set empty data
              */
-            GL.TexImage2D(TextureTarget.Texture2D, 0,TextureInternalFormatUtils.GetNative(TextureInternalFormatUtils.GetInternalFormatViaFormat(format)), width, height, 0, TextureFormatUtils.GetNative(format), PixelType.UnsignedByte, IntPtr.Zero);
+            GL.TexImage2D(TextureTarget.Texture2D, 0,TextureInternalFormatUtils.GetNative(internalFormat), width, height, 0, TextureFormatUtils.GetNative(format), PixelType.UnsignedByte, IntPtr.Zero);
 
             /*
              * Set texture parameters
@@ -90,7 +90,7 @@ namespace Vex.Graphics
             /*
              * Set data
              */
-            GL.TexImage2D(TextureTarget.Texture2D, 0, TextureInternalFormatUtils.GetNative(TextureInternalFormatUtils.GetInternalFormatViaFormat(Format)), m_Width, m_Height, 0, TextureFormatUtils.GetNative(Format), PixelType.UnsignedByte, data);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, TextureInternalFormatUtils.GetNative(InternalFormat), m_Width, m_Height, 0, TextureFormatUtils.GetNative(Format), PixelType.UnsignedByte, data);
 
             /*
              * Unbind texture

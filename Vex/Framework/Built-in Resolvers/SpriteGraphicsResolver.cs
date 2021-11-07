@@ -57,8 +57,18 @@ namespace Vex.Framework
             m_Renderables.Remove(renderable as SpriteRenderable);
         }
 
-        public override void PopulateRenderCommandBuffer(CommandBuffer commandBuffer)
+        public override void Resolve()
         {
+            /*
+             * Create new command buffer
+             */
+            CommandBuffer commandBuffer = new CommandBuffer();
+
+            /*
+             * Start recording
+             */
+            commandBuffer.StartRecoding();
+
             /*
              * Set state
              */
@@ -68,7 +78,7 @@ namespace Vex.Framework
             /*
              * Iterate each observer
              */
-            for(int observerIndex = 0;observerIndex < m_Observers.Count; observerIndex++)
+            for (int observerIndex = 0;observerIndex < m_Observers.Count; observerIndex++)
             {
                 /*
                  * Get observer and its data
@@ -128,7 +138,7 @@ namespace Vex.Framework
                     /*
                      * Set shader pVexgram
                      */
-                    commandBuffer.SetShaderPVexgram(renderable.Material.PVexgram);
+                    commandBuffer.SetShaderProgram(renderable.Material.PVexgram);
 
                     /*
                      * Create model matrix
@@ -181,6 +191,16 @@ namespace Vex.Framework
                     commandBuffer.DrawIndexed((int)renderable.Mesh.IndexBuffer.IndexCount);
                 } 
             }
+
+            /*
+             * End recording
+             */
+            commandBuffer.EndRecording();
+
+            /*
+             * Execute command buffer
+             */
+            commandBuffer.Execute();
         }
 
         private List<SpriteObserver> m_Observers;

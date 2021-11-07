@@ -44,10 +44,5 @@ namespace Vex.Graphics
 
         private Texture2D m_Texture;
         private SpriteMesh m_Mesh;
-
-        internal override void DestVexyInternal()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

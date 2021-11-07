@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Framework;
 
 namespace Vex.Graphics
 {
     /// <summary>
     /// Base class for all the framebuffers
     /// </summary>
-    public abstract class Framebuffer : EngineObject,IDisposableGraphicsObject
+    public abstract class Framebuffer : VexObject,IDestroyableObject
     {
         public Framebuffer()
         {
@@ -70,21 +71,8 @@ namespace Vex.Graphics
             }
         }
 
-        public bool IsDisposed { get; set; }
+        public bool IsDestroyed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        internal override void DestVexyInternal()
-        {
-            /*
-             * Dipse framebuffer
-             */
-            Dispose();
-        }
-        public void Dispose()
-        {
-            /*
-             * Delete frame buffer
-             */
-        }
 
         /// <summary>
         /// Creates a texture1D via attachment parameters
@@ -100,7 +88,7 @@ namespace Vex.Graphics
             /*
              * Create texture
              */
-            Texture1D backTexture = new Texture1D(backTextureAttachment.Width, backTextureAttachment.Format);
+            Texture1D backTexture = new Texture1D(backTextureAttachment.Width, backTextureAttachment.Format,backTextureAttachment.InternalFormat);
 
             /*
              * Set attachment
@@ -137,7 +125,7 @@ namespace Vex.Graphics
             /*
              * Create texture
              */
-            Texture2D backTexture = new Texture2D(backTextureAttachment.Width, backTextureAttachment.Height, backTextureAttachment.Format);
+            Texture2D backTexture = new Texture2D(backTextureAttachment.Width, backTextureAttachment.Height, backTextureAttachment.Format,backTextureAttachment.InternalFormat);
 
             /*
              * Set attachment
@@ -175,7 +163,7 @@ namespace Vex.Graphics
             /*
              * Create texture
              */
-            Texture3D backTexture = new Texture3D(backTextureAttachment.Width, backTextureAttachment.Height,backTextureAttachment.Depth, backTextureAttachment.Format);
+            Texture3D backTexture = new Texture3D(backTextureAttachment.Width, backTextureAttachment.Height,backTextureAttachment.Depth, backTextureAttachment.Format,backTextureAttachment.InternalFormat);
 
             /*
              * Set attachment
@@ -198,6 +186,10 @@ namespace Vex.Graphics
             m_BackTexture = backTexture;
         }
 
+        public void Destroy()
+        {
+            throw new NotImplementedException();
+        }
 
         private Texture m_BackTexture;
         private TextureFormat m_Format;

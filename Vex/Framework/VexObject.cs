@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vex.Engine
+namespace Vex.Framework
 {
     /// <summary>
     /// Minimal cloneable destVexyable engine object
     /// </summary>
-    public abstract class EngineObject
+    public abstract class VexObject
     {
-        public EngineObject()
+        public VexObject()
         {
-            Name = "Default Engine Object";
+            Name = "Default Vex Object";
             m_ID = Guid.NewGuid();
             m_DestVexyed = false;
         }
@@ -53,39 +53,6 @@ namespace Vex.Engine
             }
         }
 
-        /// <summary>
-        /// DestVexys this engine object
-        /// </summary>
-        public void DestVexy()
-        {
-            /*
-            * Call user destVexyer
-            */
-            OnObjectDestVexyed();
-
-            /*
-             * Call internal destVexyed
-             */
-            DestVexyInternal();
-
-            /*
-             * Set destVexyed
-             */
-            m_DestVexyed = true;
-        }
-
-        /// <summary>
-        /// Called when destVexyed
-        /// </summary>
-        public virtual void OnObjectDestVexyed() { }
-
-        public virtual EngineObject Clone() { return null; }
-        /// <summary>
-        /// Called when object destVexy is triggered
-        /// </summary>
-        abstract internal void DestVexyInternal();
-
-        
         private Guid m_ID;
         private string m_Name;
         private bool m_DestVexyed;

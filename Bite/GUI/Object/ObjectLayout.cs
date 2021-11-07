@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Framework;
 
 namespace Bite.GUI
 {
@@ -13,7 +14,7 @@ namespace Bite.GUI
         public abstract void OnDetach();
         public abstract void OnLayoutRender();
 
-        protected EngineObject Object
+        protected VexObject Object
         {
             get
             {
@@ -22,10 +23,10 @@ namespace Bite.GUI
          
         }
 
-        internal void SetObject(EngineObject obj)
+        internal void SetObject(VexObject obj)
         {
             m_Object = obj;
         }
-        private EngineObject m_Object;
+        private VexObject m_Object;
     }
 }

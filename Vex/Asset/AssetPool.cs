@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Vex.Engine;
+using Vex.Framework;
 
 namespace Vex.Asset
 {
@@ -53,7 +54,7 @@ namespace Vex.Asset
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public EngineObject GetOrLoadAsset(in Guid id)
+        public VexObject GetOrLoadAsset(in Guid id)
         {
             /*
              * Try find record
@@ -83,7 +84,7 @@ namespace Vex.Asset
             return m_Assets[index].Object;
         }
 
-        public void CreateAssetOnPath(string definitionPath,string assetPath,AssetType type,EngineObject obj)
+        public void CreateAssetOnPath(string definitionPath,string assetPath,AssetType type,VexObject obj)
         {
             /*
              * Validate path

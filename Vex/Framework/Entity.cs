@@ -10,7 +10,7 @@ namespace Vex.Framework
     /// <summary>
     /// An entity is a most primal element of a world
     /// </summary>
-    public class Entity : EngineObject
+    public class Entity : VexObject
     {
         public Entity(string name,World world) 
         {
@@ -155,7 +155,7 @@ namespace Vex.Framework
             return false;
         }
 
-        internal override void DestVexyInternal()
+        public void Destroy()
         {
             /*
              * DestVexy all components

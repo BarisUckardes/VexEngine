@@ -60,7 +60,7 @@ f_ColoVexut = vec4(texture(f_TestTexture,f_Uv).rgb,1.0f);
 
             Shader vertexShader = new Shader(ShaderStage.Vertex, vertexSource);
             Shader fragmenShader = new Shader(ShaderStage.Fragment, fragmentSource);
-            ShaderPVexgram pVexgram = new ShaderPVexgram(vertexShader, fragmenShader);
+            ShaderProgram pVexgram = new ShaderProgram(vertexShader, fragmenShader);
             Material material = new Material("Unlit","Sprite",pVexgram);
 
             SpriteMesh mesh = new SpriteMesh();

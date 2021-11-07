@@ -11,7 +11,7 @@ namespace Vex.Framework
     /// <summary>
     /// Represents single world in a session
     /// </summary>
-    public sealed class World : EngineObject
+    public sealed class World : VexObject
     {
         public World()
         {
@@ -62,17 +62,7 @@ namespace Vex.Framework
             m_Views.Add(view);
         }
 
-        internal override void DestVexyInternal()
-        {
-            /*
-             * DestVexy all views
-             */
-            for(int i=0;i<m_Views.Count;i++)
-            {
-                m_Views[i].DestVexy();
-            }
-        }
-
+       
         private List<WorldView> m_Views;
     }
 }

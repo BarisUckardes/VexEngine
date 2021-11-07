@@ -13,7 +13,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Texture3D : Texture
     {
-        public Texture3D(int width,int height,int depth,TextureFormat format)
+        public Texture3D(int width,int height,int depth,TextureFormat format,TextureInternalFormat internalFormat)
         {
             /*
              * Create texture
@@ -30,7 +30,7 @@ namespace Vex.Graphics
              * Set empty data
              */
             GL.TexImage3D(TextureTarget.Texture3D, 0,
-                TextureInternalFormatUtils.GetNative(TextureInternalFormatUtils.GetInternalFormatViaFormat(format)),
+                TextureInternalFormatUtils.GetNative(internalFormat),
                 width, height, depth,
                 0,
                 TextureFormatUtils.GetNative(format),
@@ -62,7 +62,7 @@ namespace Vex.Graphics
             m_Height = height;
             m_Depth = depth;
             Format = format;
-            InternalFormat = TextureInternalFormatUtils.GetInternalFormatViaFormat(format);
+            InternalFormat = internalFormat;
 
         }
 
@@ -113,7 +113,7 @@ namespace Vex.Graphics
             /*
              * Set data
              */
-            GL.TexImage3D(TextureTarget.Texture3D, 0, TextureInternalFormatUtils.GetNative(TextureInternalFormatUtils.GetInternalFormatViaFormat(Format)), m_Width, m_Height,m_Depth, 0, TextureFormatUtils.GetNative(Format), PixelType.UnsignedByte, data);
+            GL.TexImage3D(TextureTarget.Texture3D, 0, TextureInternalFormatUtils.GetNative(InternalFormat), m_Width, m_Height,m_Depth, 0, TextureFormatUtils.GetNative(Format), PixelType.UnsignedByte, data);
 
             /*
              * Unbind texture

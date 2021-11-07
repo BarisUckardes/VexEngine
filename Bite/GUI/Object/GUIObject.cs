@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Framework;
 
 namespace Bite.GUI
 {
-    public delegate void ObjectChangedDelegate(EngineObject targetObject);
+    public delegate void ObjectChangedDelegate(VexObject targetObject);
     public static class GUIObject
     {
         
@@ -43,7 +44,7 @@ namespace Bite.GUI
             OnSignalObjectChanged += functionPtr;
 
         }
-        internal static void SignalNewObject(EngineObject obj)
+        internal static void SignalNewObject(VexObject obj)
         {
             OnSignalObjectChanged?.Invoke(obj);
         }

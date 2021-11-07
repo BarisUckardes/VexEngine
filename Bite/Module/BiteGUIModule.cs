@@ -68,8 +68,6 @@ namespace Bite.Module
         }
         public override void OnUpdate()
         {
-           
-
             /*
              * Delete pending systems
              */

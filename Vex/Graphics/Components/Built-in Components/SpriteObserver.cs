@@ -40,11 +40,6 @@ namespace Vex.Graphics
             return Matrix4.LookAt(Spatial.Position,Spatial.Position - Spatial.Forward,new Vector3(0,1,0));
         }
 
-        internal override void DestVexyInternal()
-        {
-            throw new NotImplementedException();
-        }
-
         public override bool ShouldTick
         {
             get

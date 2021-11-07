@@ -71,13 +71,6 @@ namespace Vex.Framework
             m_Entities.Remove(entity);
         }
 
-        internal override void DestVexyInternal()
-        {
-            /*
-             * DestVexy all logic resolvers
-             */
-
-        }
 
         private List<LogicResolver> m_Resolvers;
         private List<Entity> m_Entities;

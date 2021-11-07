@@ -23,7 +23,7 @@ namespace Vex.Asset
         {
             string category;
             string categoryName;
-            ShaderPVexgram shaderPVexgram;
+            ShaderProgram ShaderProgram;
             List<ShaderStage> stages = new List<ShaderStage>();
             List<List<MaterialParameterField<float>>> floatParameters = new List<List<MaterialParameterField<float>>>();
             List<List<MaterialParameterField<Vector4>>> vector4Parameters = new List<List<MaterialParameterField<Vector4>>>();
@@ -69,7 +69,7 @@ namespace Vex.Asset
                  */
                 if(pVexgramYaml.Contains("[NULL]"))
                 {
-                    shaderPVexgram = null;
+                    ShaderProgram = null;
                 }
                 else
                 {
@@ -81,11 +81,11 @@ namespace Vex.Asset
 
                     if(parsed) // parse successful
                     {
-                        shaderPVexgram = pool.GetOrLoadAsset(id) as ShaderPVexgram;
+                        ShaderProgram = pool.GetOrLoadAsset(id) as ShaderProgram;
                     }
                     else // parse failed
                     {
-                        shaderPVexgram = null;
+                        ShaderProgram = null;
                     }
                 }
             }
@@ -326,12 +326,12 @@ namespace Vex.Asset
             /*
              * Create material
              */
-            Material material = new Material(category, categoryName, shaderPVexgram);
+            Material material = new Material(category, categoryName, ShaderProgram);
 
             /*
              * Validate material and return
              */
-            if (shaderPVexgram == null)
+            if (ShaderProgram == null)
                 return material;
 
             /*

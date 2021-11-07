@@ -11,7 +11,7 @@ namespace Vex.Framework
     /// Component is an element which can be attached to an entity
     /// <para>Components can represent data and logic or both</para>
     /// </summary>
-    public abstract class Component : EngineObject
+    public abstract class Component : VexObject
     {
         /// <summary>
         /// Retunrs the entity which this component attached to
