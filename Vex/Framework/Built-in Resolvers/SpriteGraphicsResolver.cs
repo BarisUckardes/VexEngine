@@ -59,6 +59,8 @@ namespace Vex.Framework
 
         public override void Resolve()
         {
+            Profiling.Profiler.StartProfile();
+
             /*
              * Create new command buffer
              */
@@ -201,6 +203,8 @@ namespace Vex.Framework
              * Execute command buffer
              */
             commandBuffer.Execute();
+
+            Profiling.Profiler.EndProfile();
         }
 
         private List<SpriteObserver> m_Observers;

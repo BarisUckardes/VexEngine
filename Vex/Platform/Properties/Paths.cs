@@ -43,5 +43,13 @@ namespace Vex.Platform
                 return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             }
         }
+
+        public static string DomainDirectory
+        {
+            get
+            {
+                return ExecutableDirectory + "/Domain/";
+            }
+        }
     }
 }

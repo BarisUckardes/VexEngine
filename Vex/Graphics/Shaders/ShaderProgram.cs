@@ -37,9 +37,9 @@ namespace Vex.Graphics
             /*
              * Check pVexgram link 
              */
-            int pVexgramLinkStatus = 0;
-            GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out pVexgramLinkStatus);
-            if(pVexgramLinkStatus == 0)
+            int programLinkStatus = 0;
+            GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out programLinkStatus);
+            if(programLinkStatus == 0)
             {
                 /*
                  * Get log

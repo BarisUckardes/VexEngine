@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Vex.Engine;
 using Vex.Platform;
+using Vex.Profiling;
+
 namespace Vex.Application
 {
     /// <summary>
@@ -74,13 +76,16 @@ namespace Vex.Application
              */
             while(!hasExitRequest)
             {
+                Profiler.StartProfileSession();
+                Profiler.StartProfile();
+
                 /*
                  * Update window
                  */
                 m_WindowInterface.UpdateInput();
 
                 /*
-                 * Stream thVexugh events
+                 * Stream through events
                  */
                 Event[] events = m_WindowInterface.Events;
                 for (int eventIndex = 0; eventIndex < events.Length; eventIndex++)
@@ -104,7 +109,6 @@ namespace Vex.Application
                    
                 }
               
-
                 /*
                  * Detach modules
                  */
@@ -133,6 +137,11 @@ namespace Vex.Application
                     m_ActiveModules[i].OnUpdate();
                 }
 
+                for (int i = 0; i < 100; i++)
+                {
+                    TestFunc();
+                }
+
                 /*
                  * Swap window buffer
                  */
@@ -146,6 +155,10 @@ namespace Vex.Application
                     hasExitRequest = true;
                 }
 
+                Profiler.EndProfile();
+                Profiler.EndProfileSession();
+
+                Profiler.GetResultTree().Debug(0);
             }
 
             /*
@@ -154,8 +167,14 @@ namespace Vex.Application
             m_Session.Shutdown();
             m_Session = null;
 
-        }
 
+          
+        }
+        private void TestFunc()
+        {
+            Profiler.StartProfile();
+            Profiler.EndProfile();
+        }
         /// <summary>
         /// Registers an engine module to this application
         /// </summary>

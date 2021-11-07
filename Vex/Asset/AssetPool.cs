@@ -50,6 +50,17 @@ namespace Vex.Asset
         }
 
         /// <summary>
+        /// Returns a readonly collection of records
+        /// </summary>
+        public IReadOnlyCollection<AssetRecord> Records
+        {
+            get
+            {
+                return m_Records.AsReadOnly();
+            }
+        }
+
+        /// <summary>
         /// Gets already laoded asset or load and get
         /// </summary>
         /// <param name="id"></param>

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
-
+using Vex.Platform;
 namespace Bite.Core
 {
     /*
@@ -28,7 +28,7 @@ namespace Bite.Core
             /*
              * Get pVexject startup
              */
-            string pVexjectLocation = "";
+            string projectLocation = Paths.ExecutableDirectory;
 
             /*
              * Try find domain folder

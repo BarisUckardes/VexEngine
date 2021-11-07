@@ -51,7 +51,9 @@ namespace Vex.Platform
         /// </summary>
         public void UpdateInput()
         {
+            Profiling.Profiler.StartProfile();
             m_Window.UpdateInput();
+            Profiling.Profiler.EndProfile();
         }
 
         /// <summary>
