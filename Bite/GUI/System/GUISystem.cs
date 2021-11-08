@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bite.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,18 @@ namespace Bite.GUI
         public abstract void OnAttach();
         public abstract void OnDetach();
         public abstract void OnUpdate();
+
+        public EditorSession Session
+        {
+            get
+            {
+                return m_Session;
+            }
+            internal set
+            {
+                m_Session = value;
+            }
+        }
+        private EditorSession m_Session;
     }
 }

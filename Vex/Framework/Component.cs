@@ -79,7 +79,7 @@ namespace Vex.Framework
         }
 
         /// <summary>
-        /// Called when removed fVexm an entity
+        /// Called when removed from an entity
         /// </summary>
         internal virtual void OnDetach()
         {

@@ -15,7 +15,7 @@ namespace Vex.Engine
     {
         public override void OnAttach()
         {
-            World world = new World();
+            World world = new World(Session);
             world.AddView<WorldGraphicsView>();
             world.AddView<WorldLogicView>();
             world.Register();
@@ -50,13 +50,11 @@ layout(location = 0) out vec4 f_ColoVexut;
 in vec2 f_Uv;
 
 
-uniform sampler2D f_TestTexture;
+uniform sampler2D f_SpriteTexture;
 void main()
 {
-f_ColoVexut = vec4(texture(f_TestTexture,f_Uv).rgb,1.0f);
+f_ColoVexut = vec4(texture(f_SpriteTexture,f_Uv).rgb,1.0f);
 }";
-
-
 
             Shader vertexShader = new Shader(ShaderStage.Vertex, vertexSource);
             Shader fragmenShader = new Shader(ShaderStage.Fragment, fragmentSource);
@@ -79,6 +77,9 @@ f_ColoVexut = vec4(texture(f_TestTexture,f_Uv).rgb,1.0f);
             spriteRenderable.Material = material;
             spriteEnttiy.Spatial.Position = new Vector3(0, 0, 1);
             spriteEnttiy.Spatial.Scale = new Vector3(5, 5, 5);
+
+            Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\PC\Desktop\Test Domain\test.jpg");
+            spriteRenderable.SpriteTexture = sprite;
         }
 
         public override void OnDetach()
@@ -93,7 +94,7 @@ f_ColoVexut = vec4(texture(f_TestTexture,f_Uv).rgb,1.0f);
 
         public override void OnEvent(PlatformEvent eventData)
         {
-            Console.WriteLine("Test module handled event data: " + eventData.AsString);
+
         }
     }
 }

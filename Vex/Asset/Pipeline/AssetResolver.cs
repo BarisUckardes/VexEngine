@@ -23,7 +23,7 @@ namespace Vex.Asset
 
         public AssetResolver()
         {
-            m_Pool = Session.CurrentSession.AssetPool;
+           // m_Pool = ApplicationSession.CurrentSession.AssetPool;
         }
 
         /// <summary>

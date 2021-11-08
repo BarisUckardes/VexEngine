@@ -35,23 +35,24 @@ namespace Vex.Engine
         /// <summary>
         /// Returns the session whic this module's in
         /// </summary>
-        protected Session Session
+        protected ApplicationSession Session
         {
             get
             {
                 return m_Session;
             }
+           
         }
-
+     
         /// <summary>
         /// An internal setter which is called by the application's itself
         /// </summary>
         /// <param name="session"></param>
-        internal void SetSession(Session session)
+        internal void SetSession(ApplicationSession session)
         {
             m_Session = session;
         }
 
-        private Session m_Session;
+        private ApplicationSession m_Session;
     }
 }

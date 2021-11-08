@@ -39,7 +39,7 @@ namespace Vex.Application
         /// <summary>
         /// Returns the current application session
         /// </summary>
-        public Session Session
+        public ApplicationSession Session
         {
             get
             {
@@ -71,7 +71,7 @@ namespace Vex.Application
             /*
              * Create session
              */
-            m_Session = new Session(m_WindowInterface);
+            m_Session = new ApplicationSession(m_WindowInterface);
 
             /*
              * Run application loop
@@ -160,7 +160,7 @@ namespace Vex.Application
                 Profiler.EndProfile();
                 Profiler.EndProfileSession();
 
-                Profiler.GetResultTree().Debug(0);
+               // Profiler.GetResultTree().Debug(0);
             }
 
             /*
@@ -213,7 +213,7 @@ namespace Vex.Application
         private List<EngineModule> m_DetachPendingModules;
         private List<EngineModule> m_ActiveModules;
         private List<ReceivePlatformEventDelegate> m_ModuleEventDelegates;
-        private Session m_Session;
+        private ApplicationSession m_Session;
         private WindowInterface m_WindowInterface;
     }
 }

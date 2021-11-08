@@ -163,6 +163,11 @@ namespace Vex.Framework
                     commandBuffer.SetUniformMat4x4(renderable.Material.PVexgram, mvp, "v_Mvp");
 
                     /*
+                     * Set sprite texture
+                     */
+                    renderable.Material.GetStageParameters(ShaderStage.Fragment).SetTexture2DParameter("f_SpriteTexture", renderable.SpriteTexture);
+
+                    /*
                      * Set material parameters
                      */
                     MaterialStageParameters[] stageParameters = renderable.Material.StageParameters;

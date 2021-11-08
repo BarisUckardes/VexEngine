@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bite.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,13 +15,60 @@ namespace Bite.GUI
              * Validate type correction
              */
             if(type.IsSubclassOf(typeof(WindowGUILayout)))
-                s_Windows.Add(Activator.CreateInstance(type) as WindowGUILayout);
-        }
-        internal static void SetListInternal(List<WindowGUILayout> windowRef)
-        {
-            s_Windows = windowRef;
+            {
+                /*
+                 * Create new layout
+                 */
+                WindowGUILayout layout = Activator.CreateInstance(type) as WindowGUILayout;
+
+                /*
+                 * Set editor session
+                 */
+                layout.Session = s_Session;
+
+                /*
+                 * On layout begin
+                 */
+                layout.OnLayoutBegin();
+
+                /*
+                 //* Register window
+                 */
+                s_Windows.Add(layout);
+            }
+               
         }
 
+        internal static List<WindowGUILayout> WindowLayouts
+        {
+            get
+            {
+                return s_Windows;
+            }
+        }
+        internal static void Initialize(EditorSession session)
+        {
+            s_Windows = new List<WindowGUILayout>();
+            s_Session = session;
+        }
+
+        internal static void RemoveWindow(WindowGUILayout layout)
+        {
+            layout.OnLayoutFinalize();
+            s_Windows.Remove(layout);
+        }
+        internal static void Shutdown()
+        {
+            for(int windowIndex = 0;windowIndex < s_Windows.Count;windowIndex++)
+            {
+                s_Windows[windowIndex]?.OnLayoutFinalize();
+            }
+            s_Windows.Clear();
+
+            s_Session = null;
+        }
         private static List<WindowGUILayout> s_Windows;
+        private static EditorSession s_Session;
+
     }
 }

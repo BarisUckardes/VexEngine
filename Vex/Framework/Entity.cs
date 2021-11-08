@@ -14,15 +14,24 @@ namespace Vex.Framework
     {
         public Entity(string name,World world) 
         {
+            /*
+             * Set properties
+             */
             Name = name;
             m_OwnerWorld = world;
             m_Components = new List<Component>();
 
+            /*
+             * Create new spatial
+             */
             Spatial spatial = new Spatial();
             spatial.OwnerEntity = this;
             m_Spatial = spatial;
             m_Components.Add(spatial);
 
+            /*
+             * Register this entity to world logic view
+             */
             world.GetView<WorldLogicView>().OnEntityRegister(this);
         }
 

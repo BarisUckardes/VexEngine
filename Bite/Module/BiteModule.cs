@@ -10,18 +10,24 @@ using Fang.GUI;
 using Fang.Commands;
 using Bite.GUI;
 using Vex.Extensions;
+using Bite.Core;
+
 namespace Bite.Module
 {
-    public sealed class BiteGUIModule : EngineModule
+    public sealed class BiteModule : EngineModule
     {
         public void RegisterGUISystem<TSystem>() where TSystem : GUISystem, new()
         {
             TSystem system = new TSystem();
             m_PendingCreateGUISystems.Add(system);
-
         }
         public override void OnAttach()
         {
+            /*
+             * Create editor session
+             */
+            m_Session = new EditorSession(Session);
+
             /*
              * Set window
              */
@@ -60,6 +66,12 @@ namespace Bite.Module
              */
             m_Renderer.Dispose();
             m_Renderer = null;
+
+            /*
+             * Shutdown editor session
+             */
+            m_Session.Shutdown();
+            m_Session = null;
         }
 
         public override void OnEvent(PlatformEvent eventData)
@@ -74,6 +86,7 @@ namespace Bite.Module
             foreach(GUISystem system in m_PendingDeleteGUISystems)
             {
                 system.OnDetach();
+                system.Session = null;
             }
             m_PendingDeleteGUISystems.Clear();
 
@@ -82,7 +95,19 @@ namespace Bite.Module
              */
             foreach(GUISystem system in m_PendingCreateGUISystems)
             {
+                /*
+                 * Set editor session
+                 */
+                system.Session = m_Session;
+
+                /*
+                 * Attach gui system
+                 */
                 system.OnAttach();
+
+                /*
+                 * Register it to active systems
+                 */
                 m_ActiveGUISystems.Add(system);
             }
             m_PendingCreateGUISystems.Clear();
@@ -114,5 +139,6 @@ namespace Bite.Module
         private List<GUISystem> m_ActiveGUISystems;
         private WindowInterface m_Window;
         private GUIRenderer m_Renderer;
+        private EditorSession m_Session;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bite.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,8 +22,32 @@ namespace Bite.GUI
                 return m_DetachRequest;
             }
         }
-        public abstract void OnAttach();
-        public abstract void OnDetach();
+        public bool IsVisible
+        {
+            get
+            {
+                return m_Visibility;
+            }
+            internal set
+            {
+                m_Visibility = value;
+            }
+        }
+        public EditorSession Session
+        {
+            get
+            {
+                return m_Session;
+            }
+            internal set
+            {
+                m_Session = value;
+            }
+        }
+        public abstract void OnVisible();
+        public abstract void OnInVisible();
+        public abstract void OnLayoutBegin();
+        public abstract void OnLayoutFinalize();
         public abstract void OnRenderLayout();
 
         protected void RequestDetach()
@@ -30,6 +55,8 @@ namespace Bite.GUI
             m_DetachRequest = true;
         }
 
+        private EditorSession m_Session;
         private bool m_DetachRequest;
+        private bool m_Visibility;
     }
 }

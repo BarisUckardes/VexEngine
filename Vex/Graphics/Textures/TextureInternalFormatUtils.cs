@@ -54,19 +54,54 @@ namespace Vex.Graphics
         /// </summary>
         /// <param name="mime"></param>
         /// <returns></returns>
-        public static TextureInternalFormat GetInternalFormatViaMime(string mime)
+        public static TextureInternalFormat GetInternalFormatViaMime(string mime,int bits)
         {
-            switch(mime)
+            if (mime == "image/jpeg" && bits == 8)
             {
-                case "image/jpeg":
-                    {
-                        return TextureInternalFormat.RGB;
-                        break;
-                    }
+                switch (bits)
+                {
+                    case 8:
+                        {
+                            return TextureInternalFormat.RGB8;
+                            break;
+                        }
+                    case 16:
+                        {
+                            return TextureInternalFormat.RGB16;
+                            break;
+                        }
+                    case 32:
+                        {
+                            return TextureInternalFormat.RGB32;
+                            break;
+                        }
+                }
+            }
+            else if(mime == "image/png")
+            {
+                switch (bits)
+                {
+                    case 8:
+                        {
+                            return TextureInternalFormat.RGBA;
+                            break;
+                        }
+                    case 16:
+                        {
+                            return TextureInternalFormat.RGBA;
+                            break;
+                        }
+                    case 32:
+                        {
+                            return TextureInternalFormat.RGBA;
+                            break;
+                        }
+                }
             }
 
-            return TextureInternalFormat.RGB;
+            return TextureInternalFormat.RGB8;
         }
+
 
         /// <summary>
         /// Returns the internal texture format

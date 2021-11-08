@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fang.Commands;
+using System.Reflection;
 namespace Bite.GUI
 {
   
@@ -11,65 +12,111 @@ namespace Bite.GUI
     {
         public WindowGUISystem()
         {
-            m_Windows = new List<WindowGUILayout>();
-            m_CreatePendingWindows = new List<WindowGUILayout>();
+
         }
         public override void OnAttach()
         {
             /*
              * Set pending window list reference to GUIWindow class
              */
-            GUIWindow.SetListInternal(m_CreatePendingWindows);
+            GUIWindow.Initialize(Session);
         }
 
         public override void OnDetach()
         {
-            /*
-             * Detach all windows
-             */
-            foreach (WindowGUILayout layout in m_Windows)
-                layout.OnDetach();
-
-            m_Windows.Clear();
-            m_Windows = null;
+            GUIWindow.Shutdown();
         }
 
         public override void OnUpdate()
         {
             /*
-             * Create pending windows
+             * Create finalized windows
              */
-            for(int i=0;i< m_CreatePendingWindows.Count;i++)
-            {
-                m_CreatePendingWindows[i].OnAttach();
-                m_Windows.Add(m_CreatePendingWindows[i]);
-            }
-            m_CreatePendingWindows.Clear();
+            List<WindowGUILayout> layouts = GUIWindow.WindowLayouts;
+            List<WindowGUILayout> finalizedLayouts = new List<WindowGUILayout>();
 
-            /*
-             * Render window layouts
-             */
-            for(int i=0;i<m_Windows.Count;i++)
+            for(int windowIndex = 0;windowIndex < layouts.Count;windowIndex++ )
             {
-                bool isOpen = true;
-                if(GUIRenderCommands.CreateWindow(m_Windows[i].GetType().Name,i.ToString(),ref isOpen))
+                /*
+                 * Get layout
+                 */
+                WindowGUILayout layout = layouts[windowIndex];
+
+                /*
+                 * Intialize window state
+                 */
+                bool isExitRequested = false;
+                bool isVisible = false;
+
+                /*
+                 * Draw window
+                 */
+                WindowLayoutAttribute layoutAttribute = (WindowLayoutAttribute)layout.GetType().GetCustomAttribute<WindowLayoutAttribute>();
+                isVisible = GUIRenderCommands.CreateWindow(layoutAttribute != null ? layoutAttribute.WindowName : layout.GetType().Name,"",ref isExitRequested);
+
+
+                /*
+                 * Check if window is visible
+                 */
+                if(isVisible && !isExitRequested)
                 {
-                    m_Windows[i].OnRenderLayout();
+                    /*
+                     * Set visiblity invokes
+                     */
+                    if(!layout.IsVisible)
+                    {
+                        layout.OnVisible();
+                    }
+
+                    /*
+                     * Render layout
+                     */
+                    layout.OnRenderLayout();
+
+                    /*
+                     * Set layout visibility state
+                     */
+                    layout.IsVisible = true;
+                }
+                else if (!isVisible && !isExitRequested)
+                {
+                    /*
+                     * Set visibility invokes
+                     */
+                    if(layout.IsVisible)
+                    {
+                        layout.OnInVisible();
+                    }
+
+                    /*
+                     * Set visiblity state
+                     */
+                    layout.IsVisible = false;
+                }
+                else if(isExitRequested)
+                {
+                    /*
+                     * Remove window
+                     */
+                    finalizedLayouts.Add(layout);
                 }
 
                 /*
-                 * Validate exit request
+                 * Finalize window
                  */
-                if(!isOpen || m_Windows[i].HasDetachRequest)
-                {
-                    m_Windows[i].OnDetach();
-                    m_Windows.RemoveAt(i);
-                    i--;
-                }
+                GUIRenderCommands.FinalizeWindow();
             }
+
+            /*
+             * Finalize windows
+             */
+            for(int windowIndex = 0;windowIndex < finalizedLayouts.Count;windowIndex++)
+            {
+                GUIWindow.RemoveWindow(finalizedLayouts[windowIndex]);
+            }
+            finalizedLayouts.Clear();
         }
 
-        private List<WindowGUILayout> m_CreatePendingWindows;
-        private List<WindowGUILayout> m_Windows;
+      
     }
 }

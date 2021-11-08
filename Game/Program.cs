@@ -31,8 +31,7 @@ namespace Game
             application.RegisterModule<LogicModule>();
             application.RegisterModule<GameInputModule>();
             application.RegisterModule<GraphicsModule>();
-            application.RegisterModule<BiteCoreModule>();
-            application.RegisterModule<BiteGUIModule>();
+            application.RegisterModule<BiteModule>();
 
             /*
              * Run

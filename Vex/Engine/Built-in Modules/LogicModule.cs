@@ -33,14 +33,14 @@ namespace Vex.Engine
             /*
              * Get all the session worlds
              */
-            World[] worlds = Session.Worlds;
+            IReadOnlyCollection<World> worlds = Session.Worlds;
 
-            for(int worldIndex = 0;worldIndex < worlds.Length;worldIndex++)
+            for(int worldIndex = 0;worldIndex < worlds.Count;worldIndex++)
             {
                 /*
                  * Get world logic view
                  */
-                WorldLogicView logicView = worlds[worldIndex].GetView<WorldLogicView>();
+                WorldLogicView logicView = worlds.ElementAt(worldIndex).GetView<WorldLogicView>();
 
                 /*
                  * Get logic resolvers

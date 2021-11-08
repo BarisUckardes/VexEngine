@@ -11,7 +11,15 @@ namespace Bite.GUI
 {
     public sealed class ObjectObserverGUIWindow : WindowGUILayout
     {
-        public override void OnAttach()
+        public override void OnVisible()
+        {
+
+        }
+        public override void OnInVisible()
+        {
+
+        }
+        public override void OnLayoutBegin()
         {
             /*
              * Register itself
@@ -19,7 +27,7 @@ namespace Bite.GUI
             GUIObject.RegisterListener(OnNewObject);
         }
 
-        public override void OnDetach()
+        public override void OnLayoutFinalize()
         {
             /*
              * Detach layout

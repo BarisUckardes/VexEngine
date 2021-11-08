@@ -28,17 +28,17 @@ namespace Vex.Engine
             /*
              * Get all the session worlds
              */
-            World[] worlds = Session.Worlds;
+            IReadOnlyCollection<World> worlds = Session.Worlds;
 
             /*
              * Iterate each world
              */
-            for(int worldIndex = 0;worldIndex < worlds.Length;worldIndex++)
+            for(int worldIndex = 0;worldIndex < worlds.Count;worldIndex++)
             {
                 /*
                  * Get world graphics view
                  */
-                WorldGraphicsView graphicsView = worlds[worldIndex].GetView<WorldGraphicsView>();
+                WorldGraphicsView graphicsView = worlds.ElementAt(worldIndex).GetView<WorldGraphicsView>();
 
                 /*
                  * Get resolvers

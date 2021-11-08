@@ -13,7 +13,10 @@ namespace Fang.Commands
     {
         public static bool CreateWindow(string name,string code,ref bool exitRequest,WindowCreateFlags flags = WindowCreateFlags.None)
         {
-            return ImGui.Begin(CreateNameCode(name, code), ref exitRequest, (ImGuiWindowFlags)flags);
+            bool exRequest = true;
+            bool isVisible = ImGui.Begin(CreateNameCode(name, code), ref exRequest, (ImGuiWindowFlags)flags);
+            exitRequest = !exRequest;
+            return isVisible;
         }
         public static bool CreateWindow(string name, string code, WindowCreateFlags flags = WindowCreateFlags.None)
         {

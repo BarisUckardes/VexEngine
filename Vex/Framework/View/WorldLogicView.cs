@@ -46,8 +46,6 @@ namespace Vex.Framework
             {
                 m_Resolvers[i].OnRegisterComponent(component);
             }
-
-
         }
 
         /// <summary>

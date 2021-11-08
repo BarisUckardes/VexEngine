@@ -11,28 +11,12 @@ namespace Vex.Application
     /// <summary>
     /// Reprensets the single session in an application's lifetime
     /// </summary>d
-    public sealed class Session
+    public sealed class ApplicationSession
     {
-        /// <summary>
-        /// Returns the current session
-        /// </summary>
-        public static Session CurrentSession
+        
+
+        public ApplicationSession(WindowInterface applicationWindow)
         {
-            get
-            {
-                return s_Session;
-            }
-        }
-
-        private static Session s_Session;
-
-        public Session(WindowInterface applicationWindow)
-        {
-            /*
-             * Set current
-             */
-            SetCurrent();
-
             /*
              * Initialize local fields
              */
@@ -43,18 +27,16 @@ namespace Vex.Application
             * Create asset pool
             */
             m_AssetPool = new AssetPool(PlatformPaths.ExecutableDirectory);
-
-           
         }
 
         /// <summary>
         /// Returns all the worlds in this session
         /// </summary>
-        public World[] Worlds
+        public IReadOnlyCollection<World> Worlds
         {
             get
             {
-                return m_Worlds.ToArray();
+                return m_Worlds.AsReadOnly();
             }
         }
 
@@ -102,15 +84,6 @@ namespace Vex.Application
         {
             m_Worlds.Remove(world);
         }
-
-        /// <summary>
-        /// Sets this session as the current session of this application
-        /// </summary>
-        internal void SetCurrent()
-        {
-            s_Session = this;
-        }
-
 
         private AssetPool m_AssetPool;
         private WindowInterface m_Window;

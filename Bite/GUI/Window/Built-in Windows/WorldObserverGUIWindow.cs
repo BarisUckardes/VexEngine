@@ -10,14 +10,23 @@ namespace Bite.GUI
 {
     public sealed class WorldObserverGUIWindow : WindowGUILayout
     {
-        public override void OnAttach()
+        public override void OnVisible()
         {
-            m_TargetWorld = Session.CurrentSession.Worlds[0];
+            Console.WriteLine("Visible");
+        }
+        public override void OnInVisible()
+        {
+            Console.WriteLine("Invisible");
+        }
+        public override void OnLayoutBegin()
+        {
+            m_TargetWorld = Session.Worlds.ElementAt(0);
         }
 
-        public override void OnDetach()
+        public override void OnLayoutFinalize()
         {
             m_TargetWorld = null;
+            Console.WriteLine("Finalized");
         }
 
         public override void OnRenderLayout()
