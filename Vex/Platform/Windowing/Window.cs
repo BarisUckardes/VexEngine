@@ -8,6 +8,7 @@ using OpenTK.Graphics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using Vex.Input;
+using Vex.Engine;
 
 namespace Vex.Platform
 {
@@ -34,10 +35,18 @@ namespace Vex.Platform
             }
             )
         {
-            m_EventBuffer = new List<Event>();
-            m_Events = new List<Event>();
+            /*
+             * Initialize 
+             */
+            m_EventBuffer = new List<PlatformEvent>();
+            m_Events = new List<PlatformEvent>();
             m_Width = windowCreateParams.Width;
             m_Height = windowCreateParams.Height;
+
+            /*
+            * Set global size
+            */
+            PlatformWindowProperties.Size = new System.Numerics.Vector2(windowCreateParams.Width, windowCreateParams.Height);
         }
 
         /// <summary>
@@ -50,7 +59,7 @@ namespace Vex.Platform
                 return m_InputState;
             }
         }
-        public Event[] Events
+        public PlatformEvent[] Events
         {
             get
             {
@@ -91,54 +100,116 @@ namespace Vex.Platform
             /*
              * Set events
              */
-            m_Events = new List<Event>(m_EventBuffer);
+            m_Events = new List<PlatformEvent>(m_EventBuffer);
             m_EventBuffer.Clear();
 
         }
 
+        public void SetApplicationEventDelegate(ReceivePlatformEventDelegate del)
+        {
+            m_ApplicationEventDelegate = del;
+        }
         protected override void OnResize(ResizeEventArgs e)
         {
+            /*
+             * Get window reisze event
+             */
             WindowResizeEvent ev = new WindowResizeEvent((uint)e.Width,(uint)e.Height);
-            m_EventBuffer.Add(ev);
 
+            /*
+             * Set local size
+             */
             m_Width = (int)ev.Width;
             m_Height = (int)ev.Height;
+
+            /*
+             * Set global size
+             */
+            PlatformWindowProperties.Size = new System.Numerics.Vector2(e.Width, e.Height);
+
+            /*
+             * Inform application
+             */
+            m_ApplicationEventDelegate(ev);
         }
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
-            MouseMovedEvent ev = new MouseMovedEvent(e.Position.X, e.Position.Y);
-            m_EventBuffer.Add(ev);
+            /*
+             * Get platform mouse moved evvent
+             */
+            PlatformMouseMovedEvent ev = new PlatformMouseMovedEvent(e.Position.X, e.Position.Y);
+
+            /*
+            * Inform application
+            */
+            m_ApplicationEventDelegate(ev);
         }
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            MouseButtonPressedEvent ev = new MouseButtonPressedEvent((int)e.Button);
-            m_EventBuffer.Add(ev);
+            /*
+             * Get platform mouse donw event
+             */
+            PlatformMouseButtonPressedEvent ev = new PlatformMouseButtonPressedEvent((int)e.Button);
+
+            /*
+            * Inform application
+            */
+            m_ApplicationEventDelegate(ev);
         }
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
-            MouseButtonReleasedEvent ev = new MouseButtonReleasedEvent((int)e.Button);
-            m_EventBuffer.Add(ev);
+            /*
+             * Get platform mouse up event
+             */
+            PlatformMouseButtonReleasedEvent ev = new PlatformMouseButtonReleasedEvent((int)e.Button);
+
+            /*
+            * Inform application
+            */
+            m_ApplicationEventDelegate(ev);
         }
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
-            KeyPressedEvent ev = new KeyPressedEvent((Keys)e.Key,e.IsRepeat ? 1 : 0);
-            m_EventBuffer.Add(ev);
+            /*
+             * Get platform on key down event
+             */
+            PlatformKeyPressedEvent ev = new PlatformKeyPressedEvent((Keys)e.Key,e.IsRepeat ? 1 : 0);
+
+            /*
+            * Inform application
+            */
+            m_ApplicationEventDelegate(ev);
         }
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
         {
-            KeyReleasedEvent ev = new KeyReleasedEvent((Keys)e.Key);
-            m_EventBuffer.Add(ev);
+            /*
+             * Get Platform key released event
+             */
+            PlatformKeyReleasedEvent ev = new PlatformKeyReleasedEvent((Keys)e.Key);
+
+            /*
+            * Inform application
+            */
+            m_ApplicationEventDelegate(ev);
         }
         protected override void OnTextInput(TextInputEventArgs e)
         {
-            KeyCharEvent ev = new KeyCharEvent((Keys)e.Unicode);
-            m_EventBuffer.Add(ev);
+            /*
+             * Get platform on key char event
+             */
+            PlatformKeyCharEvent ev = new PlatformKeyCharEvent((Keys)e.Unicode);
+
+            /*
+            * Inform application
+            */
+            m_ApplicationEventDelegate(ev);
         }
 
 
-        private List<Event> m_Events;
-        private List<Event> m_EventBuffer;
+        private List<PlatformEvent> m_Events;
+        private List<PlatformEvent> m_EventBuffer;
         private WindowInputState m_InputState;
+        private ReceivePlatformEventDelegate m_ApplicationEventDelegate;
         private int m_Width;
         private int m_Height;
     }

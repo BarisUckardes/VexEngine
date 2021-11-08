@@ -9,26 +9,26 @@ namespace Vex.Platform
     /// <summary>
     /// Mouse scVexlled event class for consuming
     /// </summary>
-    public sealed class MouseScVexlledEvent : Event
+    public sealed class MouseScVexlledEvent : PlatformEvent
     {
         public MouseScVexlledEvent(float amountX,float amountY)
         {
             m_AmountX = amountX;
             m_AmountY = amountY;
         }
-        public override EventType Type
+        public override PlatformEventType Type
         {
             get
             {
-                return EventType.MouseScVexlled;
+                return PlatformEventType.MouseScVexlled;
             }
         }
 
-        public override EventCategory Category
+        public override PlatformEventCategory Category
         {
             get
             {
-                return EventCategory.CategoryMouse;
+                return PlatformEventCategory.CategoryMouse;
             }
         }
 

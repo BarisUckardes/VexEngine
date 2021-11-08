@@ -9,7 +9,7 @@ using Fang.Renderer;
 using Fang.GUI;
 using Fang.Commands;
 using Bite.GUI;
-
+using Vex.Extensions;
 namespace Bite.Module
 {
     public sealed class BiteGUIModule : EngineModule
@@ -62,7 +62,7 @@ namespace Bite.Module
             m_Renderer = null;
         }
 
-        public override void OnEvent(Event eventData)
+        public override void OnEvent(PlatformEvent eventData)
         {
 
         }
@@ -91,7 +91,7 @@ namespace Bite.Module
             /*
             * Start listening render command
             */
-            m_Renderer.Begin(m_Window.LocalWindow, 1.0f / 60.0f);
+            m_Renderer.Begin(m_Window.LocalWindow, 1.0f / 60.0f,PlatformWindowProperties.Size.GetAsOpenTK());
 
             /*
              * Run GUI Systems

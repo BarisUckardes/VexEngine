@@ -9,7 +9,7 @@ namespace Vex.Platform
 	/// <summary>
 	/// Supported event categories
 	/// </summary>
-    public enum EventCategory
+    public enum PlatformEventCategory
     {
 		CategoryNone = 0,
 		CategoryApplication,

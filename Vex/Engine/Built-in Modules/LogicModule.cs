@@ -23,7 +23,7 @@ namespace Vex.Engine
 
         }
 
-        public override void OnEvent(Event eventData)
+        public override void OnEvent(PlatformEvent eventData)
         {
 
         }

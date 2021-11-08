@@ -30,7 +30,7 @@ namespace Vex.Platform
         /// <summary>
         /// Return the buffered events
         /// </summary>
-        public Event[] Events
+        public PlatformEvent[] Events
         {
             get
             {

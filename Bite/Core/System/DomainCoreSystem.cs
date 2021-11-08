@@ -28,7 +28,7 @@ namespace Bite.Core
             /*
              * Get pVexject startup
              */
-            string projectLocation = Paths.ExecutableDirectory;
+            string projectLocation = PlatformPaths.ExecutableDirectory;
 
             /*
              * Try find domain folder

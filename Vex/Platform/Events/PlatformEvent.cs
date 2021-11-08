@@ -9,9 +9,9 @@ namespace Vex.Platform
     /// <summary>
     /// Base class for all platform events
     /// </summary>
-    public abstract class Event
+    public abstract class PlatformEvent
     {
-        public Event()
+        public PlatformEvent()
         {
             m_Handled = false;
         }
@@ -19,12 +19,12 @@ namespace Vex.Platform
         /// <summary>
         /// Returns the event type
         /// </summary>
-        public abstract EventType Type { get; }
+        public abstract PlatformEventType Type { get; }
 
         /// <summary>
         /// Returns the event category
         /// </summary>
-        public abstract EventCategory Category { get; }
+        public abstract PlatformEventCategory Category { get; }
 
         /// <summary>
         /// Returns this event as string representation

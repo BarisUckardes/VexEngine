@@ -91,7 +91,7 @@ f_ColoVexut = vec4(texture(f_TestTexture,f_Uv).rgb,1.0f);
 
         }
 
-        public override void OnEvent(Event eventData)
+        public override void OnEvent(PlatformEvent eventData)
         {
             Console.WriteLine("Test module handled event data: " + eventData.AsString);
         }

@@ -9,21 +9,21 @@ namespace Vex.Platform
     /// <summary>
     /// Window closed event for consuming
     /// </summary>
-    public sealed class WindowCloseEvent : Event
+    public sealed class WindowCloseEvent : PlatformEvent
     {
-        public override EventType Type
+        public override PlatformEventType Type
         {
             get
             {
-                return EventType.WindowClose;
+                return PlatformEventType.WindowClose;
             }
         }
 
-        public override EventCategory Category
+        public override PlatformEventCategory Category
         {
             get
             {
-                return EventCategory.CategoryApplication;
+                return PlatformEventCategory.CategoryApplication;
             }
         }
 

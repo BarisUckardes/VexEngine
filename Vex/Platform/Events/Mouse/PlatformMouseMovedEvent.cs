@@ -9,27 +9,27 @@ namespace Vex.Platform
     /// <summary>
     /// Mouse moved event class for consuming
     /// </summary>
-    public sealed class MouseMovedEvent : Event
+    public sealed class PlatformMouseMovedEvent : PlatformEvent
     {
-        public MouseMovedEvent(float x,float y)
+        public PlatformMouseMovedEvent(float x,float y)
         {
             m_X = x;
             m_Y = y;
 
         }
-        public override EventType Type
+        public override PlatformEventType Type
         {
             get
             {
-                return EventType.MouseMoved;
+                return PlatformEventType.MouseMoved;
             }
         }
 
-        public override EventCategory Category
+        public override PlatformEventCategory Category
         {
             get
             {
-                return EventCategory.CategoryMouse;
+                return PlatformEventCategory.CategoryMouse;
             }
         }
 

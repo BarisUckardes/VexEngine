@@ -40,7 +40,7 @@ namespace Bite.Module
             m_PendingDeleteCoreSystem.Clear();
         }
 
-        public override void OnEvent(Event eventData)
+        public override void OnEvent(PlatformEvent eventData)
         {
 
         }

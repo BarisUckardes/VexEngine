@@ -36,7 +36,7 @@ namespace Fang.Renderer
             CreateDeviceResources();
             SetKeyMappings();
 
-            SetPerFrameImGuiData(1f / 60f);
+            SetPerFrameImGuiData(1f / 60f,new Vector2(width,height));
 
             ImGui.NewFrame();
             _frameBegun = true;
@@ -146,14 +146,14 @@ void main()
         /// <summary>
         /// Updates ImGui input and IO configuration state.
         /// </summary>
-        public void Begin(GameWindow wnd, float deltaSeconds)
+        public void Begin(GameWindow wnd, float deltaSeconds,in Vector2 windowSize)
         {
             if (_frameBegun)
             {
                 ImGui.Render();
             }
 
-            SetPerFrameImGuiData(deltaSeconds);
+            SetPerFrameImGuiData(deltaSeconds,windowSize);
             UpdateImGuiInput(wnd);
 
             _frameBegun = true;
@@ -164,12 +164,15 @@ void main()
         /// Sets per-frame data based on the associated window.
         /// This is called by Update(float).
         /// </summary>
-        private void SetPerFrameImGuiData(float deltaSeconds)
+        private void SetPerFrameImGuiData(float deltaSeconds,in Vector2 windowSize)
         {
             ImGuiIOPtr io = ImGui.GetIO();
-            io.DisplaySize = new System.Numerics.Vector2(
-                _windowWidth / _scaleFactor.X,
-                _windowHeight / _scaleFactor.Y);
+            //io.DisplaySize = new System.Numerics.Vector2(
+            //    _windowWidth / _scaleFactor.X,
+            //    _windowHeight / _scaleFactor.Y);
+            _windowWidth = (int)windowSize.X;
+            _windowHeight = (int)windowSize.Y;
+            io.DisplaySize = new System.Numerics.Vector2(windowSize.X,windowSize.Y);
             io.DisplayFramebufferScale = _scaleFactor;
             io.DeltaTime = deltaSeconds; // DeltaTime is in seconds.
         }
@@ -291,6 +294,7 @@ void main()
                 -1.0f,
                 1.0f);
 
+            GL.Viewport(0, 0, _windowWidth, _windowHeight);
             _shader.UseShader();
             GL.UniformMatrix4(_shader.GetUniformLocation("pVexjection_matrix"), false, ref mvp);
             GL.Uniform1(_shader.GetUniformLocation("in_fontTexture"), 0);

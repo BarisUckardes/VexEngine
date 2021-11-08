@@ -42,7 +42,7 @@ namespace Vex.Application
             /*
             * Create asset pool
             */
-            m_AssetPool = new AssetPool(Paths.ExecutableDirectory);
+            m_AssetPool = new AssetPool(PlatformPaths.ExecutableDirectory);
 
            
         }

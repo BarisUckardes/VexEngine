@@ -10,25 +10,25 @@ namespace Vex.Platform
     /// <summary>
     /// Key released event for consuming
     /// </summary>
-    public sealed class KeyReleasedEvent : KeyEvent
+    public sealed class PlatformKeyReleasedEvent : PlatformKeyEvent
     {
-        public KeyReleasedEvent(Keys keyCode) : base(keyCode)
+        public PlatformKeyReleasedEvent(Keys keyCode) : base(keyCode)
         {
 
         }
-        public override EventType Type
+        public override PlatformEventType Type
         {
             get
             {
-                return EventType.KeyReleased;
+                return PlatformEventType.KeyReleased;
             }
         }
 
-        public override EventCategory Category
+        public override PlatformEventCategory Category
         {
             get
             {
-                return EventCategory.CategoryInput;
+                return PlatformEventCategory.CategoryInput;
             }
         }
 

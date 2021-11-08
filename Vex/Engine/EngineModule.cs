@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace Vex.Engine
 {
+    public delegate void ReceivePlatformEventDelegate(PlatformEvent ev);
     /// <summary>
     /// Represents a single module this applciation has
     /// </summary>
     public abstract class EngineModule
     {
-
+       
         /// <summary>
         /// Called when first initialized
         /// </summary>
@@ -29,7 +30,7 @@ namespace Vex.Engine
         /// </summary>
         public abstract void OnDetach();
 
-        public abstract void OnEvent(Event eventData);
+        public abstract void OnEvent(PlatformEvent eventData);
 
         /// <summary>
         /// Returns the session whic this module's in

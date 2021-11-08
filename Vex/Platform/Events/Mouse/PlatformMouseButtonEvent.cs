@@ -9,7 +9,7 @@ namespace Vex.Platform
     /// <summary>
     /// Base mouse button event
     /// </summary>
-    public abstract class MouseButtonEvent : Event
+    public abstract class PlatformMouseButtonEvent : PlatformEvent
     {
         /// <summary>
         /// Returns the button
@@ -22,7 +22,7 @@ namespace Vex.Platform
             }
         }
 
-        protected MouseButtonEvent(int button)
+        protected PlatformMouseButtonEvent(int button)
         {
             m_Button = button;
         }

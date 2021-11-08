@@ -17,11 +17,6 @@ namespace Vex.Engine
         public GameInputModule()
         {
             m_PressedKeysBuffer = new List<Keys>();
-
-            /*
-             * Create empty input state
-             */
-            InputInterface.SetInputFrame(new InputFrame(m_PressedKeysBuffer.ToArray(),new Vector2(0,0)));
         }
         public override void OnAttach()
         {
@@ -30,20 +25,7 @@ namespace Vex.Engine
 
         public override void OnUpdate()
         {
-            /*
-             * Create new input state for game
-             */
-            InputFrame frame = new InputFrame(m_PressedKeysBuffer.ToArray(),m_MousePosition);
-
-            /*
-             * Update input state to input system
-             */
-            InputInterface.SetInputFrame(frame);
-
-            /*
-             * Clear buffered keys
-             */
-            m_PressedKeysBuffer.Clear();
+           
         }
 
         public override void OnDetach()
@@ -51,16 +33,16 @@ namespace Vex.Engine
 
         }
 
-        public override void OnEvent(Event eventData)
+        public override void OnEvent(PlatformEvent eventData)
         {
 
-            if(eventData.Type == EventType.KeyPressed)
+            if(eventData.Type == PlatformEventType.KeyPressed)
             {
-                m_PressedKeysBuffer.Add(((KeyPressedEvent)eventData).KeyCode);
+                m_PressedKeysBuffer.Add(((PlatformKeyPressedEvent)eventData).KeyCode);
             }
-            else if(eventData.Type == EventType.MouseMoved)
+            else if(eventData.Type == PlatformEventType.MouseMoved)
             {
-                m_MousePosition = new Vector2(((MouseMovedEvent)eventData).X, ((MouseMovedEvent)eventData).Y);
+                m_MousePosition = new Vector2(((PlatformMouseMovedEvent)eventData).X, ((PlatformMouseMovedEvent)eventData).Y);
             }
 
             /*

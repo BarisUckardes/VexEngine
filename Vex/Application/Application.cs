@@ -22,11 +22,13 @@ namespace Vex.Application
             m_ActiveModules = new List<EngineModule>();
             m_AttachPendingModules = new List<EngineModule>();
             m_DetachPendingModules = new List<EngineModule>();
+            m_ModuleEventDelegates = new List<ReceivePlatformEventDelegate>();
 
             /*
              * Create window
              */
             m_WindowInterface = new WindowInterface(applicationTitle,windowCreateParams, windowUpdateParams);
+            m_WindowInterface.LocalWindow.SetApplicationEventDelegate(OnPlatformEvent);
 
             /*
              * Set Command line arguments
@@ -87,7 +89,7 @@ namespace Vex.Application
                 /*
                  * Stream through events
                  */
-                Event[] events = m_WindowInterface.Events;
+                PlatformEvent[] events = m_WindowInterface.Events;
                 for (int eventIndex = 0; eventIndex < events.Length; eventIndex++)
                 {
 
@@ -181,14 +183,36 @@ namespace Vex.Application
         /// <typeparam name="TModule"></typeparam>
         public TModule RegisterModule<TModule>() where TModule: EngineModule,new()
         {
+            /*
+             * Create new module
+             */
             TModule module = new TModule();
+
+            /*
+             * Register new module to attach pending list
+             */
             m_AttachPendingModules.Add(module);
+
+            /*
+             * Register new moodule on event delegate
+             */
+            m_ModuleEventDelegates.Add(module.OnEvent);
             return module;
+        }
+
+        public void OnPlatformEvent(PlatformEvent evData)
+        {
+            /*
+             * Invoke all module on event delegates
+             */
+            foreach (ReceivePlatformEventDelegate delegateIt in m_ModuleEventDelegates)
+                delegateIt.Invoke(evData);
         }
 
         private List<EngineModule> m_AttachPendingModules;
         private List<EngineModule> m_DetachPendingModules;
         private List<EngineModule> m_ActiveModules;
+        private List<ReceivePlatformEventDelegate> m_ModuleEventDelegates;
         private Session m_Session;
         private WindowInterface m_WindowInterface;
     }

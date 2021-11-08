@@ -9,7 +9,7 @@ namespace Vex.Platform
     /// <summary>
     /// Base key event type for all key events
     /// </summary>
-    public abstract class KeyEvent : Event
+    public abstract class PlatformKeyEvent : PlatformEvent
     {
         /// <summary>
         /// Returns the key code of this event
@@ -26,7 +26,7 @@ namespace Vex.Platform
         /// protected constructor for derived classes to call
         /// </summary>
         /// <param name="keyCode"></param>
-        protected KeyEvent(Keys keyCode)
+        protected PlatformKeyEvent(Keys keyCode)
         {
             m_KeyCode = keyCode;
         }

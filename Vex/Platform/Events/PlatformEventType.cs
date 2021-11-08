@@ -9,7 +9,7 @@ namespace Vex.Platform
     /// <summary>
     /// Supported event types
     /// </summary>
-    public enum EventType
+    public enum PlatformEventType
     {
         None = 0,
         WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,

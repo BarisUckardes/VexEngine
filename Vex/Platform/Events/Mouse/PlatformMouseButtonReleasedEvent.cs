@@ -9,25 +9,25 @@ namespace Vex.Platform
     /// <summary>
     /// Mouse button released event for consuming
     /// </summary>
-    public sealed class MouseButtonReleasedEvent : MouseButtonEvent
+    public sealed class PlatformMouseButtonReleasedEvent : PlatformMouseButtonEvent
     {
-        public MouseButtonReleasedEvent(int button) : base(button)
+        public PlatformMouseButtonReleasedEvent(int button) : base(button)
         {
 
         }
-        public override EventType Type
+        public override PlatformEventType Type
         {
             get
             {
-                return EventType.MouseButtonReleased;
+                return PlatformEventType.MouseButtonReleased;
             }
         }
 
-        public override EventCategory Category
+        public override PlatformEventCategory Category
         {
             get
             {
-                return EventCategory.CategoryMouseButton;
+                return PlatformEventCategory.CategoryMouseButton;
             }
         }
 

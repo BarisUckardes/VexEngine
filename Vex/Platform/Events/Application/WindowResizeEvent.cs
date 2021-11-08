@@ -9,7 +9,7 @@ namespace Vex.Platform
     /// <summary>
     /// Window resized event for consuming
     /// </summary>
-    public sealed class WindowResizeEvent : Event
+    public sealed class WindowResizeEvent : PlatformEvent
     {
 
         public WindowResizeEvent(uint width,uint height)
@@ -40,19 +40,19 @@ namespace Vex.Platform
             }
         }
 
-        public override EventType Type
+        public override PlatformEventType Type
         {
             get
             {
-                return EventType.WindowResize;
+                return PlatformEventType.WindowResize;
             }
         }
 
-        public override EventCategory Category
+        public override PlatformEventCategory Category
         {
             get
             {
-                return EventCategory.CategoryApplication;
+                return PlatformEventCategory.CategoryApplication;
             }
         }
 

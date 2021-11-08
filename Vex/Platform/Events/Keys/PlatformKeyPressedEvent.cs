@@ -10,25 +10,25 @@ namespace Vex.Platform
     /// <summary>
     /// Key pressed event for consuming
     /// </summary>
-    public sealed class KeyPressedEvent : KeyEvent
+    public sealed class PlatformKeyPressedEvent : PlatformKeyEvent
     {
-        public KeyPressedEvent(Keys keyCode,int repeatCount) : base(keyCode)
+        public PlatformKeyPressedEvent(Keys keyCode,int repeatCount) : base(keyCode)
         {
             m_RepeatCount = repeatCount;
         }
-        public override EventType Type
+        public override PlatformEventType Type
         {
             get
             {
-                return EventType.KeyPressed;
+                return PlatformEventType.KeyPressed;
             }
         }
 
-        public override EventCategory Category
+        public override PlatformEventCategory Category
         {
             get
             {
-                return EventCategory.CategoryInput;
+                return PlatformEventCategory.CategoryInput;
             }
         }
 

@@ -9,7 +9,7 @@ namespace Vex.Platform
     /// <summary>
     /// Utility class for path operation
     /// </summary>
-    public static class Paths
+    public static class PlatformPaths
     {
         /// <summary>
         /// Returns the application executable path

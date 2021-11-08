@@ -7,25 +7,25 @@ using System.Threading.Tasks;
 
 namespace Vex.Platform
 {
-    public sealed class KeyCharEvent : KeyEvent
+    public sealed class PlatformKeyCharEvent : PlatformKeyEvent
     {
-        public KeyCharEvent(Keys key) : base(key)
+        public PlatformKeyCharEvent(Keys key) : base(key)
         {
 
         }
-        public override EventType Type
+        public override PlatformEventType Type
         {
             get
             {
-                return EventType.KeyChar;
+                return PlatformEventType.KeyChar;
             }
         }
 
-        public override EventCategory Category
+        public override PlatformEventCategory Category
         {
             get
             {
-                return EventCategory.CategoryKeyboard;
+                return PlatformEventCategory.CategoryKeyboard;
             }
         }
 
