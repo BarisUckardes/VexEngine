@@ -22,10 +22,23 @@ namespace Bite.Core
             }
         }
 
+        public Domain FileDomain
+        {
+            get
+            {
+                return m_Domain;
+            }
+            internal set
+            {
+                m_Domain = value;
+            }
+        }
         internal void Shutdown()
         {
 
         }
+
         private ApplicationSession m_ApplicationSession;
+        private Domain m_Domain;
     }
 }

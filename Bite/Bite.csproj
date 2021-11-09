@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Vex\Vex.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Test\" />
+  </ItemGroup>
+
 </Project>

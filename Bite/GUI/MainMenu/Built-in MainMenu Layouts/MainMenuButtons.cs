@@ -20,6 +20,12 @@ namespace Bite
             GUIWindow.CreateWindow(typeof(ObjectObserverGUIWindow));
         }
 
+        [MainMenuItem("Windows/Domain Observer")]
+        public static void CreateDomainObserver()
+        {
+            GUIWindow.CreateWindow(typeof(DomainObserverGUIWindow));
+        }
+
 
     }
 }

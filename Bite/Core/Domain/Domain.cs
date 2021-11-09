@@ -18,33 +18,41 @@ namespace Bite.Core
             /*
              * Collect domain folders
              */
-            m_VexotFolder = CollectDomainFolders(domainPath);
+            m_RootFolder = CollectDomainFolders(domainPath);
         }
-
+        public DomainFolder RootFolder
+        {
+            get
+            {
+                return m_RootFolder;
+            }
+        }
         private DomainFolder CollectDomainFolders(string domainFolderPath)
         {
             /*
              * collect folders
              */
-            string[] folderPaths = Directory.GetDirectories(domainFolderPath);
+            string[] folderPaths = Directory.GetDirectories(domainFolderPath + @"\");
 
             /*
              * Collect files
              */
-            string[] files = Directory.GetFiles(domainFolderPath);
+            string[] files = Directory.GetFiles(domainFolderPath + @"\");
 
             /*
              * Create this domainfolder
              */
-            DomainFolder folder = new DomainFolder(folderPaths, files);
-
+            DomainFolder folder = new DomainFolder(null,domainFolderPath + @"\",files, folderPaths);
 
             return folder;
+        }
+
+        internal void Shutdown()
+        {
 
         }
 
-
-        DomainFolder m_VexotFolder;
+        DomainFolder m_RootFolder;
         private string m_DomainPath;
     }
 }

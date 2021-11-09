@@ -18,9 +18,39 @@ namespace Bite.Module
     {
         public void RegisterGUISystem<TSystem>() where TSystem : GUISystem, new()
         {
+            /*
+             * Create new gui system
+             */
             TSystem system = new TSystem();
-            m_PendingCreateGUISystems.Add(system);
+
+            /*
+             * Set editor session
+             */
+            system.Session = m_Session;
+
+            /*
+             * Add it to pending create gui systems
+             */
+            m_GUISystems.Add(system);
         }
+        public void RegisterCoreCommand<TCommand>() where TCommand : CoreCommand,new()
+        {
+            /*
+             * Create new core command
+             */
+            TCommand command = new TCommand();
+
+            /*
+             * Set editor session
+             */
+            command.EditorSession = m_Session;
+
+            /*
+             * Add it to core command list
+             */
+            m_CoreCommands.Add(command);
+        }
+            
         public override void OnAttach()
         {
             /*
@@ -39,11 +69,10 @@ namespace Bite.Module
             m_Renderer = new GUIRenderer(m_Window.LocalWindow.Width,m_Window.LocalWindow.Height);
 
             /*
-             * Initialize GUI systems
+             * Initialize variables 
              */
-            m_PendingCreateGUISystems = new List<GUISystem>();
-            m_PendingDeleteGUISystems = new List<GUISystem>();
-            m_ActiveGUISystems = new List<GUISystem>();
+            m_CoreCommands = new List<CoreCommand>();
+            m_GUISystems = new List<GUISystem>();
 
             /*
              * Add built-in GUI systems
@@ -52,10 +81,52 @@ namespace Bite.Module
             RegisterGUISystem<WindowGUISystem>();
             RegisterGUISystem<ComponentGUISystem>();
             RegisterGUISystem<ObjectGUISystem>();
+
+            /*
+             * Register built-in core commands
+             */
+            RegisterCoreCommand<DomainCoreCommand>();
+
+            /*
+             * Execute core command attach invokes
+             */
+            for(int commandIndex = 0;commandIndex < m_CoreCommands.Count;commandIndex++)
+            {
+                m_CoreCommands[commandIndex].OnAttach();
+            }
+
+            /*
+             * Execute gui module attach invokes
+             */
+            for(int moduleIndex = 0; moduleIndex < m_GUISystems.Count;moduleIndex++)
+            {
+                m_GUISystems[moduleIndex].OnAttach();
+            }
         }
 
         public override void OnDetach()
         {
+            /*
+            * Execute core command detach invokes
+            */
+            for (int commandIndex = 0; commandIndex < m_CoreCommands.Count; commandIndex++)
+            {
+                m_CoreCommands[commandIndex].OnAttach();
+            }
+            m_CoreCommands.Clear();
+            m_CoreCommands = null;
+
+            /*
+             * Execute gui module detach invokes
+             */
+            for(int moduleIndex = 0;moduleIndex < m_GUISystems.Count;moduleIndex++)
+            {
+                m_GUISystems[moduleIndex].OnDetach();
+                m_GUISystems[moduleIndex].Session = null;
+            }
+            m_GUISystems.Clear();
+            m_GUISystems = null;
+
             /*
              * Dereference window
              */
@@ -81,39 +152,6 @@ namespace Bite.Module
         public override void OnUpdate()
         {
             /*
-             * Delete pending systems
-             */
-            foreach(GUISystem system in m_PendingDeleteGUISystems)
-            {
-                system.OnDetach();
-                system.Session = null;
-            }
-            m_PendingDeleteGUISystems.Clear();
-
-            /*
-             * Create pending systems
-             */
-            foreach(GUISystem system in m_PendingCreateGUISystems)
-            {
-                /*
-                 * Set editor session
-                 */
-                system.Session = m_Session;
-
-                /*
-                 * Attach gui system
-                 */
-                system.OnAttach();
-
-                /*
-                 * Register it to active systems
-                 */
-                m_ActiveGUISystems.Add(system);
-            }
-            m_PendingCreateGUISystems.Clear();
-
-
-            /*
             * Start listening render command
             */
             m_Renderer.Begin(m_Window.LocalWindow, 1.0f / 60.0f,PlatformWindowProperties.Size.GetAsOpenTK());
@@ -121,7 +159,7 @@ namespace Bite.Module
             /*
              * Run GUI Systems
              */
-            foreach (GUISystem system in m_ActiveGUISystems)
+            foreach (GUISystem system in m_GUISystems)
             {
                 system.OnUpdate();
             }
@@ -132,11 +170,9 @@ namespace Bite.Module
             m_Renderer.Finalize();
         }
 
-      
 
-        private List<GUISystem> m_PendingCreateGUISystems;
-        private List<GUISystem> m_PendingDeleteGUISystems;
-        private List<GUISystem> m_ActiveGUISystems;
+        private List<GUISystem> m_GUISystems;
+        private List<CoreCommand> m_CoreCommands;
         private WindowInterface m_Window;
         private GUIRenderer m_Renderer;
         private EditorSession m_Session;

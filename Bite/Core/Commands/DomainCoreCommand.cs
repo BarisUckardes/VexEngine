@@ -20,38 +20,39 @@ namespace Bite.Core
      *       -Folders
      *       -UserEditorCode 
      */
-
-    public sealed class DomainCoreSystem : CoreSystem
+    public sealed class DomainCoreCommand : CoreCommand
     {
         public override void OnAttach()
         {
             /*
-             * Get pVexject startup
+             * Get project startup
              */
-            string projectLocation = PlatformPaths.ExecutableDirectory;
+            string domainPath = PlatformPaths.DomainDirectory;
 
             /*
              * Try find domain folder
              */
-            //Debug.Assert(File.Exists(pVexjectLocation), "PVexject file was not fould");
+            Console.WriteLine(domainPath);
+            Debug.Assert(Directory.Exists(domainPath), "Project file was not fould");
 
             /*
              * Create domain
              */
+            Domain domain = new Domain(domainPath);
 
+            /*
+             * Register domain to editor session
+             */
+            EditorSession.FileDomain = domain;
         }
-       
 
         public override void OnDetach()
         {
-
+            /*
+             * Nullfy file domain
+             */
+            EditorSession.FileDomain = null;
         }
 
-        public override void OnUpdate()
-        {
-
-        }
-
-        private Domain m_Domain;
     }
 }

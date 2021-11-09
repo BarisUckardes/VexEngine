@@ -9,7 +9,6 @@ namespace Bite.Core
     public enum DomainFileState
     {
         Missing = 0,
-        Corrupt = 1,
-        Valid = 2
+        Valid = 1
     }
 }

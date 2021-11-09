@@ -48,7 +48,7 @@ namespace Vex.Platform
         {
             get
             {
-                return ExecutableDirectory + "/Domain/";
+                return ExecutableDirectory + @"\Domain";
             }
         }
     }
