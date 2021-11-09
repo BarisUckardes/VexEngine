@@ -9,6 +9,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using Vex.Input;
 using Vex.Engine;
+using System.ComponentModel;
 
 namespace Vex.Platform
 {
@@ -82,6 +83,13 @@ namespace Vex.Platform
             }
         }
 
+        public bool HasWindowCloseRequest
+        {
+            get
+            {
+                return m_WindowCloseRequest;
+            }
+        }
         /// <summary>
         /// Updates the native window input events and creates a one-time inout state
         /// </summary>
@@ -108,6 +116,11 @@ namespace Vex.Platform
         public void SetApplicationEventDelegate(ReceivePlatformEventDelegate del)
         {
             m_ApplicationEventDelegate = del;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            m_WindowCloseRequest = true;
         }
         protected override void OnResize(ResizeEventArgs e)
         {
@@ -168,6 +181,18 @@ namespace Vex.Platform
             */
             m_ApplicationEventDelegate(ev);
         }
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            /*
+             * Get platform mouse wheel scroll event
+             */
+            PlatformMouseScrolledEvent ev = new PlatformMouseScrolledEvent(e.OffsetX, e.OffsetY);
+
+            /*
+             * Inform application
+             */
+            m_ApplicationEventDelegate(ev);
+        }
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
             /*
@@ -212,5 +237,6 @@ namespace Vex.Platform
         private ReceivePlatformEventDelegate m_ApplicationEventDelegate;
         private int m_Width;
         private int m_Height;
+        private bool m_WindowCloseRequest;
     }
 }

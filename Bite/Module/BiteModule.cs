@@ -147,7 +147,16 @@ namespace Bite.Module
 
         public override void OnEvent(PlatformEvent eventData)
         {
-
+            if(eventData.Type == PlatformEventType.KeyChar)
+            {
+                PlatformKeyCharEvent ev = (PlatformKeyCharEvent)eventData;
+                m_Renderer.PressChar((char)ev.KeyCode);
+            }
+            else if (eventData.Type == PlatformEventType.MouseScVexlled)
+            {
+                PlatformMouseScrolledEvent ev = (PlatformMouseScrolledEvent)eventData;
+                m_Renderer.MouseScVexll(new OpenTK.Mathematics.Vector2(ev.AmountX, ev.AmountY));
+            }
         }
         public override void OnUpdate()
         {

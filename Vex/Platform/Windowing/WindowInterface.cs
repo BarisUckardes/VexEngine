@@ -23,7 +23,7 @@ namespace Vex.Platform
         {
             get
             {
-                return (!m_Window.Exists || m_Window.IsExiting);
+                return m_Window.HasWindowCloseRequest;
             }
         }
 
@@ -51,9 +51,7 @@ namespace Vex.Platform
         /// </summary>
         public void UpdateInput()
         {
-            Profiling.Profiler.StartProfile();
             m_Window.UpdateInput();
-            Profiling.Profiler.EndProfile();
         }
 
         /// <summary>

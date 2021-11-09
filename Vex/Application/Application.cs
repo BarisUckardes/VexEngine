@@ -79,7 +79,6 @@ namespace Vex.Application
             while(!hasExitRequest)
             {
                 Profiler.StartProfileSession();
-                Profiler.StartProfile();
 
                 /*
                  * Update window
@@ -157,9 +156,7 @@ namespace Vex.Application
                     hasExitRequest = true;
                 }
 
-                Profiler.EndProfile();
                 Profiler.EndProfileSession();
-
                // Profiler.GetResultTree().Debug(0);
             }
 
@@ -168,9 +165,6 @@ namespace Vex.Application
              */
             m_Session.Shutdown();
             m_Session = null;
-
-
-          
         }
         private void TestFunc()
         {

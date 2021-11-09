@@ -27,7 +27,7 @@ namespace Bite.Core
             /*
              * Get project startup
              */
-            string domainPath = PlatformPaths.DomainDirectory;
+            string domainPath = @"C:\Users\PC\Desktop\Test Domain";
 
             /*
              * Try find domain folder

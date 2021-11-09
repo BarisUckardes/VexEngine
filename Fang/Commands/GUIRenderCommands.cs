@@ -11,6 +11,10 @@ namespace Fang.Commands
 {
     public static class GUIRenderCommands
     {
+        public static void CreateDemoWindow()
+        {
+            ImGui.ShowDemoWindow();
+        }
         public static bool CreateWindow(string name,string code,ref bool exitRequest,WindowCreateFlags flags = WindowCreateFlags.None)
         {
             bool exRequest = true;

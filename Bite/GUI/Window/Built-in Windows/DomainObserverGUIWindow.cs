@@ -37,6 +37,7 @@ namespace Bite.GUI
 
         private void RenderDomainView(DomainFolder folder)
         {
+            GUIRenderCommands.CreateDemoWindow();
             /*
              * Render path
              */

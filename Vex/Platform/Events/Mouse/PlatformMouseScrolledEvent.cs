@@ -9,9 +9,9 @@ namespace Vex.Platform
     /// <summary>
     /// Mouse scVexlled event class for consuming
     /// </summary>
-    public sealed class MouseScVexlledEvent : PlatformEvent
+    public sealed class PlatformMouseScrolledEvent : PlatformEvent
     {
-        public MouseScVexlledEvent(float amountX,float amountY)
+        public PlatformMouseScrolledEvent(float amountX,float amountY)
         {
             m_AmountX = amountX;
             m_AmountY = amountY;

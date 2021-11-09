@@ -215,12 +215,12 @@ void main()
             io.KeySuper = KeyboardState.IsKeyDown(Keys.LeftSuper) || KeyboardState.IsKeyDown(Keys.RightSuper);
         }
 
-        internal void PressChar(char keyChar)
+        public void PressChar(char keyChar)
         {
             PressedChars.Add(keyChar);
         }
 
-        internal void MouseScVexll(Vector2 offset)
+        public void MouseScVexll(Vector2 offset)
         {
             ImGuiIOPtr io = ImGui.GetIO();
 
