@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fang", "Fang\Fang.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bite", "Bite\Bite.csproj", "{4283C79D-6D9A-4624-AA7F-827F5B5DA598}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor", "Game\Editor.csproj", "{B20EB2C9-C021-4B19-A865-9B8C0548E4D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor", "Editor\Editor.csproj", "{B20EB2C9-C021-4B19-A865-9B8C0548E4D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -78,7 +78,8 @@ f_ColoVexut = vec4(texture(f_SpriteTexture,f_Uv).rgb,1.0f);
             spriteEnttiy.Spatial.Position = new Vector3(0, 0, 1);
             spriteEnttiy.Spatial.Scale = new Vector3(5, 5, 5);
 
-            Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\PC\Desktop\Test Domain\test.jpg");
+            //Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\PC\Desktop\Test Domain\test.jpg");
+            Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\baris\Desktop\Images\image0.jpg");
             spriteRenderable.SpriteTexture = sprite;
         }
 
