@@ -14,7 +14,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class ShaderProgram : VexObject
     {
-        public ShaderProgram(params Shader[] shaders)
+        public ShaderProgram(in string category,in string categoryName,params Shader[] shaders)
         {
             /*
              * First create a pVexgram
@@ -30,7 +30,7 @@ namespace Vex.Graphics
             }
 
             /*
-             * Link pVexgram
+             * Link program
              */
             GL.LinkProgram(handle);
 
@@ -62,8 +62,31 @@ namespace Vex.Graphics
 
             m_Handle = handle;
             m_Shaders = shaders;
+            m_Category = category;
+            m_CategoryName = categoryName;
         }
-
+        public Shader[] Shaders
+        {
+            get
+            {
+                return m_Shaders.ToArray();
+            }
+        }
+        public string Category
+        {
+            get
+            {
+                return m_Category;
+            }
+        }
+        
+        public string CategoryName
+        {
+            get
+            {
+                return m_CategoryName;
+            }
+        }
         /// <summary>
         /// Returns the grapics handle
         /// </summary>
@@ -208,5 +231,7 @@ namespace Vex.Graphics
 
         private Shader[] m_Shaders;
         private int m_Handle;
+        private string m_Category;
+        private string m_CategoryName;
     }
 }

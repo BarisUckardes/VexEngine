@@ -58,8 +58,8 @@ f_ColoVexut = vec4(texture(f_SpriteTexture,f_Uv).rgb,1.0f);
 
             Shader vertexShader = new Shader(ShaderStage.Vertex, vertexSource);
             Shader fragmenShader = new Shader(ShaderStage.Fragment, fragmentSource);
-            ShaderProgram pVexgram = new ShaderProgram(vertexShader, fragmenShader);
-            Material material = new Material("Unlit","Sprite",pVexgram);
+            ShaderProgram shaderProgram = new ShaderProgram("Sprite","Unlit",vertexShader, fragmenShader);
+            Material material = new Material(shaderProgram);
 
             SpriteMesh mesh = new SpriteMesh();
             SpriteVertex[] vertexes = {
@@ -81,6 +81,9 @@ f_ColoVexut = vec4(texture(f_SpriteTexture,f_Uv).rgb,1.0f);
             //Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\PC\Desktop\Test Domain\test.jpg");
             //Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\baris\Desktop\Images\image0.jpg");
             //spriteRenderable.SpriteTexture = sprite;
+
+            AssetInterface assetInterface = new AssetInterface(null);
+            string yamlText = assetInterface.GenerateObjectString(AssetType.ShaderProgram, shaderProgram);
         }
 
         public override void OnDetach()

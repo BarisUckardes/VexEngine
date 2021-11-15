@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using Vex.Framework;
-
+using Vex.Extensions;
 namespace Vex.Asset
 {
     public sealed class Texture2DResolver : AssetResolver
@@ -62,6 +62,17 @@ namespace Vex.Asset
             parser.MoveNext();
 
             /*
+             * Get internal format
+             */
+            string internalFormatYaml = GetParserValue(parser);
+
+            /*
+             * Move to data
+             */
+            parser.MoveNext();
+            parser.MoveNext();
+
+            /*
              * Get data
              */
             string dataYaml = GetParserValue(parser);
@@ -69,7 +80,7 @@ namespace Vex.Asset
             /*
              * Create texture
              */
-            Texture2D texture = new Texture2D(Convert.ToInt32(widthYaml), Convert.ToInt32(heightYaml), (TextureFormat)(Convert.ToInt32(formatYaml)),TextureInternalFormat.Alpha);
+            Texture2D texture = new Texture2D(Convert.ToInt32(widthYaml), Convert.ToInt32(heightYaml), (TextureFormat)(Convert.ToInt32(formatYaml)),(TextureInternalFormat)(Convert.ToInt32(internalFormatYaml)));
 
             /*
              * Set texture data
@@ -96,17 +107,22 @@ namespace Vex.Asset
             emitter.Emit(new Scalar(null, texture.Width.ToString()));
 
             /*
-             * Emit Width
+             * Emit Height
              */
             emitter.Emit(new Scalar(null, "Height"));
             emitter.Emit(new Scalar(null, texture.Height.ToString()));
 
             /*
-             * Emit Width
+             * Emit Format
              */
             emitter.Emit(new Scalar(null, "Format"));
             emitter.Emit(new Scalar(null, ((int)texture.Format).ToString()));
 
+            /*
+             * Emit internal format
+             */
+            emitter.Emit(new Scalar(null, "Internal Format"));
+            emitter.Emit(new Scalar(null, ((int)texture.InternalFormat).ToString()));
 
             /*
             * Emit Data

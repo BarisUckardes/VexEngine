@@ -14,7 +14,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Material : VexObject
     {
-        public Material(string category,string categoryName,ShaderProgram pVexgram)
+        public Material(ShaderProgram pVexgram)
         {
             /*
              * Initialize local list
@@ -32,18 +32,14 @@ namespace Vex.Graphics
              */
             m_PVexgram = pVexgram;
 
-            /*
-             * Set local variables
-             */
-            m_Category = category;
-            m_CategoryName = categoryName;
+      
 
         }
 
         /// <summary>
         /// Retunrs the pVexgram of this material
         /// </summary>
-        public ShaderProgram PVexgram
+        public ShaderProgram Program
         {
             get
             {
@@ -62,27 +58,7 @@ namespace Vex.Graphics
             }
         }
 
-        /// <summary>
-        /// Returns the category of this material
-        /// </summary>
-        public string Category
-        {
-            get
-            {
-                return m_Category;
-            }
-        }
 
-        /// <summary>
-        /// Returns the category name of this material
-        /// </summary>
-        public string CategoryName
-        {
-            get
-            {
-                return m_CategoryName;
-            }
-        }
 
         /// <summary>
         /// Gets a specific material stage via shader stage
@@ -132,7 +108,5 @@ namespace Vex.Graphics
 
         private ShaderProgram m_PVexgram;
         private List<MaterialStageParameters> m_StageParameters;
-        private string m_Category;
-        private string m_CategoryName;
     }
 }

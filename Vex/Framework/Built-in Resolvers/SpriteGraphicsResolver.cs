@@ -140,7 +140,7 @@ namespace Vex.Framework
                     /*
                      * Set shader pVexgram
                      */
-                    commandBuffer.SetShaderProgram(renderable.Material.PVexgram);
+                    commandBuffer.SetShaderProgram(renderable.Material.Program);
 
                     /*
                      * Create model matrix
@@ -160,7 +160,7 @@ namespace Vex.Framework
                         Matrix4.CreateTranslation(position);
 
                     Matrix4 mvp = modelMatrix * viewMatrix* pVexjectionMatrix;
-                    commandBuffer.SetUniformMat4x4(renderable.Material.PVexgram, mvp, "v_Mvp");
+                    commandBuffer.SetUniformMat4x4(renderable.Material.Program, mvp, "v_Mvp");
 
                     /*
                      * Set sprite texture
@@ -179,7 +179,7 @@ namespace Vex.Framework
                         MaterialParameterField<float>[] floatParamaters =  stageParameters[stageIndex].FloatParameters;
                         for(int parameterIndex = 0;parameterIndex< floatParamaters.Length;parameterIndex++)
                         {
-                            commandBuffer.SetUniformFloat(renderable.Material.PVexgram, floatParamaters[parameterIndex].Data, floatParamaters[parameterIndex].Name);
+                            commandBuffer.SetUniformFloat(renderable.Material.Program, floatParamaters[parameterIndex].Data, floatParamaters[parameterIndex].Name);
                         }
 
                         /*
@@ -188,7 +188,7 @@ namespace Vex.Framework
                         MaterialParameterField<Texture2D>[] texture2DParameters = stageParameters[stageIndex].Texture2DParameters;
                         for(int parameterIndex = 0;parameterIndex < texture2DParameters.Length;parameterIndex++)
                         {
-                            commandBuffer.SetTexture2D(texture2DParameters[parameterIndex].Data, texture2DParameters[parameterIndex].Name, renderable.Material.PVexgram);
+                            commandBuffer.SetTexture2D(texture2DParameters[parameterIndex].Data, texture2DParameters[parameterIndex].Name, renderable.Material.Program);
                         }
                     }
 

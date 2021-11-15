@@ -328,7 +328,7 @@ namespace Vex.Asset
             /*
              * Create material
              */
-            Material material = new Material(category, categoryName, ShaderProgram);
+            Material material = new Material(ShaderProgram);
 
             /*
              * Validate material and return
@@ -392,26 +392,19 @@ namespace Vex.Asset
              */
             emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
 
-            /*
-             * Emit category
-             */
-            emitter.Emit(new Scalar(null, "Category"));
-            emitter.Emit(new Scalar(null, material.Category));
-
-            emitter.Emit(new Scalar(null, "Category Name"));
-            emitter.Emit(new Scalar(null, material.CategoryName));
+      
 
             /*
              * Emit shaders
              */
-            string pVexgramYaml;
-            if (material.PVexgram == null)
-                pVexgramYaml = "[NULL]";
+            string programYaml;
+            if (material.Program == null)
+                programYaml = Guid.Empty.ToString();
             else
-                pVexgramYaml ="[ASSET]"+material.PVexgram.ID.ToString();
+                programYaml = material.Program.ID.ToString();
 
             emitter.Emit(new Scalar(null, "Shader PVexgram"));
-            emitter.Emit(new Scalar(null, pVexgramYaml));
+            emitter.Emit(new Scalar(null, programYaml));
 
             /*
              * Emit shader stage parameters
