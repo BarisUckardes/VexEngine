@@ -27,7 +27,7 @@ namespace Bite.Core
             /*
              * Get project startup
              */
-            string domainPath = @"C:\Users\baris\Desktop\Test Domain";
+            string domainPath = PlatformPaths.DomainDirectory;
 
             /*
              * Try find domain folder
@@ -38,7 +38,7 @@ namespace Bite.Core
             /*
              * Create domain
              */
-            Domain domain = new Domain(domainPath);
+            DomainView domain = new DomainView(domainPath);
 
             /*
              * Register domain to editor session

@@ -27,6 +27,7 @@ namespace Vex.Asset
         /// <returns></returns>
         public VexObject GenerateAsset(AssetType type,string yamlText)
         {
+            Console.WriteLine("Try generate asset with type " + type.ToString());
             switch (type)
             {
                 case AssetType.Undefined:
@@ -53,10 +54,14 @@ namespace Vex.Asset
                     break;
                 case AssetType.EntityPrefab:
                     break;
-                default:
+                case AssetType.Definition:
+                    IDeserializer deserializer = new DeserializerBuilder().WithTypeConverter(new AssetDefinitionResolver()).Build();
+                    AssetDefinition def = deserializer.Deserialize<AssetDefinition>(yamlText);
+                    return def;
                     break;
             }
 
+            Console.WriteLine("Return null");
             return null;
         }
 
@@ -92,6 +97,9 @@ namespace Vex.Asset
                 case AssetType.World:
                     break;
                 case AssetType.EntityPrefab:
+                    break;
+                case AssetType.Definition:
+                    return new SerializerBuilder().WithTypeConverter(new AssetDefinitionResolver()).Build().Serialize(engineObject);
                     break;
                 default:
                     break;

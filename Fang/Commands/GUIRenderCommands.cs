@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Fang.GUI;
 using ImGuiNET;
 using OpenTK.Mathematics;
+using Vex.Graphics;
 
 namespace Fang.Commands
 {
@@ -153,6 +154,11 @@ namespace Fang.Commands
             bool state = ImGui.Checkbox(name, ref value);
             ImGui.PopID();
             return state;
+        }
+
+        public static void CreateImage(Texture2D texture)
+        {
+            ImGui.Image((IntPtr)texture.Handle,new System.Numerics.Vector2(128,128));
         }
      
     }

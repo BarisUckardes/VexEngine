@@ -14,7 +14,6 @@ namespace Vex.Application
     public sealed class ApplicationSession
     {
         
-
         public ApplicationSession(WindowInterface applicationWindow)
         {
             /*
@@ -58,7 +57,17 @@ namespace Vex.Application
                 return m_Window;
             }
         }
-
+        public bool HasShutdownRequest
+        {
+            get
+            {
+                return m_SessionHasShutdownRequest;
+            }
+            set
+            {
+                m_SessionHasShutdownRequest = value;
+            }
+        }
         /// <summary>
         /// Shutdowns the entire session
         /// </summary>
@@ -88,5 +97,6 @@ namespace Vex.Application
         private AssetPool m_AssetPool;
         private WindowInterface m_Window;
         private List<World> m_Worlds;
+        private bool m_SessionHasShutdownRequest;
     }
 }

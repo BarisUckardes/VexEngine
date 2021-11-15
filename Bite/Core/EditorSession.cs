@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vex.Application;
+using Vex.Asset;
 using Vex.Framework;
 namespace Bite.Core
 {
@@ -12,6 +13,7 @@ namespace Bite.Core
         public EditorSession(ApplicationSession applicationSession)
         {
             m_ApplicationSession = applicationSession;
+            m_Resources = new List<EditorResource>();
         }
 
         public IReadOnlyCollection<World> Worlds
@@ -22,7 +24,7 @@ namespace Bite.Core
             }
         }
 
-        public Domain FileDomain
+        public DomainView FileDomain
         {
             get
             {
@@ -33,12 +35,49 @@ namespace Bite.Core
                 m_Domain = value;
             }
         }
+        public VexObject GetEditorResource(string name,AssetType type)
+        {
+            /*
+             * Iterate each resource and validate type
+             */
+            for(int resourceIndex =0;resourceIndex < m_Resources.Count;resourceIndex++)
+            {
+                /*
+                 * Get resource
+                 */
+                EditorResource resource = m_Resources[resourceIndex];
+
+                /*
+                 * Validate type
+                 */
+                if(resource.Type == type)
+                {
+                    /*
+                     * Validate name
+                     */
+                    if (name == resource.Name)
+                        return resource.Resource;
+                }
+            }
+
+            return null;
+        }
+
+        internal void SetEditorResources(List<EditorResource> resources)
+        {
+            m_Resources = resources;
+        }
+        internal void ShutdownRequest()
+        {
+            m_ApplicationSession.HasShutdownRequest = true;
+        }
         internal void Shutdown()
         {
 
         }
 
+        private List<EditorResource> m_Resources;
         private ApplicationSession m_ApplicationSession;
-        private Domain m_Domain;
+        private DomainView m_Domain;
     }
 }

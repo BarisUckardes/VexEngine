@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 namespace Bite.Core
 {
-    public class Domain
+    public class DomainView
     {
-        public Domain(string domainPath)
+        public DomainView(string domainPath)
         {
             /*
              * Set local variables
@@ -20,14 +20,14 @@ namespace Bite.Core
              */
             m_RootFolder = CollectDomainFolders(domainPath);
         }
-        public DomainFolder RootFolder
+        public DomainFolderView RootFolder
         {
             get
             {
                 return m_RootFolder;
             }
         }
-        private DomainFolder CollectDomainFolders(string domainFolderPath)
+        private DomainFolderView CollectDomainFolders(string domainFolderPath)
         {
             /*
              * collect folders
@@ -37,12 +37,12 @@ namespace Bite.Core
             /*
              * Collect files
              */
-            string[] files = Directory.GetFiles(domainFolderPath + @"\");
+            string[] files = Directory.GetFiles(domainFolderPath + @"\","*.rdefinition");
 
             /*
              * Create this domainfolder
              */
-            DomainFolder folder = new DomainFolder(null,domainFolderPath + @"\",files, folderPaths);
+            DomainFolderView folder = new DomainFolderView(null,domainFolderPath + @"\",files, folderPaths);
 
             return folder;
         }
@@ -52,7 +52,7 @@ namespace Bite.Core
 
         }
 
-        DomainFolder m_RootFolder;
+        DomainFolderView m_RootFolder;
         private string m_DomainPath;
     }
 }

@@ -22,7 +22,6 @@ namespace Vex.Asset
 
         protected override VexObject ReadAsset(IParser parser,AssetPool pool)
         {
-
             /*
              * Move on fVexm the name
              */
@@ -62,7 +61,6 @@ namespace Vex.Asset
         protected override void WriteAsset(IEmitter emitter, VexObject engineObject)
         {
             AssetDefinition definition = engineObject as AssetDefinition;
-            Console.WriteLine($"Def: {engineObject.GetType().Name}");
 
             emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
             /*

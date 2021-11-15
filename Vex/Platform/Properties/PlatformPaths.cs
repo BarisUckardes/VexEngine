@@ -34,6 +34,17 @@ namespace Vex.Platform
         }
 
         /// <summary>
+        /// Returns the program files
+        /// </summary>
+        public static string ProgramfilesDirectory
+        {
+            get
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            }
+        }
+
+        /// <summary>
         /// Returns the desktop directory
         /// </summary>
         public static string DesktopDirectory
@@ -44,6 +55,9 @@ namespace Vex.Platform
             }
         }
 
+        /// <summary>
+        /// Returns the domain directory of the current session
+        /// </summary>
         public static string DomainDirectory
         {
             get

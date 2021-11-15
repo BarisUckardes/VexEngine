@@ -14,7 +14,6 @@ namespace Game
     {
         static void Main(string[] args)
         {
-
             /*
              * Initialize application create parameters
              */
@@ -30,6 +29,7 @@ namespace Game
              * Create bite commands
              */
             List<CoreCommand> coreCommands = new List<CoreCommand>();
+            coreCommands.Add(new EditorResourcesLoaderCommand());
             coreCommands.Add(new DomainCoreCommand());
 
             /*

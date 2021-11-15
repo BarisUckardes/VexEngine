@@ -6,11 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Fang.Commands;
 using Vex.Platform;
+using Vex.Graphics;
+using Vex.Asset;
 
 namespace Bite.GUI
 {
     public class DomainObserverGUIWindow : WindowGUILayout
     {
+        
         public override void OnInVisible()
         {
             
@@ -23,6 +26,7 @@ namespace Bite.GUI
         {
             m_Domain = Session.FileDomain;
             m_CurrentFolder = m_Domain.RootFolder;
+            m_FolderTexture = Session.GetEditorResource("FolderIcon",AssetType.Texture2D) as Texture2D;
         }
 
         public override void OnLayoutFinalize()
@@ -35,9 +39,8 @@ namespace Bite.GUI
             RenderDomainView(m_CurrentFolder);
         }
 
-        private void RenderDomainView(DomainFolder folder)
+        private void RenderDomainView(DomainFolderView folder)
         {
-            GUIRenderCommands.CreateDemoWindow();
             /*
              * Render path
              */
@@ -46,24 +49,46 @@ namespace Bite.GUI
             /*
              * Draw sub folders
              */
-            IReadOnlyCollection<DomainFolder> subFolders = folder.SubFolders;
+            IReadOnlyCollection<DomainFolderView> subFolders = folder.SubFolders;
             for(int folderIndex = 0;folderIndex < subFolders.Count;folderIndex++)
             {
                 /*
                  * Get sub folder
                  */
-                DomainFolder subFolder = subFolders.ElementAt(folderIndex);
+                DomainFolderView subFolder = subFolders.ElementAt(folderIndex);
 
                 /*
                  * Draw button
                  */
-                if(GUIRenderCommands.CreateButton(subFolder.Name, ""))
+                if(GUIRenderCommands.CreateButton(subFolder.Name,subFolder.ID.ToString()))
                 {
                     m_CurrentFolder = subFolder;
                 }
             }
+
+            /*
+             * Draw files
+             */
+            IReadOnlyCollection<DomainFileView> files = folder.Files;
+            for(int fileIndex = 0;fileIndex < files.Count;fileIndex++)
+            {
+                /*
+                 * Get file
+                 */
+                DomainFileView file = files.ElementAt(fileIndex);
+
+                /*
+                 * Draw file
+                 */
+                if(file.Definition.Type == AssetType.Texture2D)
+                {
+                    GUIRenderCommands.CreateImage(m_FolderTexture);
+                }
+            }
         }
-        private DomainFolder m_CurrentFolder;
-        private Domain m_Domain;
+
+        private DomainFolderView m_CurrentFolder;
+        private DomainView m_Domain;
+        private Texture2D m_FolderTexture;
     }
 }

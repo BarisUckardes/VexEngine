@@ -24,7 +24,7 @@ namespace Vex.Asset
 
         public AssetResolver()
         {
-           // m_Pool = ApplicationSession.CurrentSession.AssetPool;
+            Console.WriteLine("Asset Resolver created with the expected type: " + ExpectedAssetType.ToString());
         }
 
         /// <summary>
@@ -34,11 +34,13 @@ namespace Vex.Asset
 
         public bool Accepts(Type type)
         {
+            Console.WriteLine("accept test");
             return type == ExpectedAssetType;
         }
 
         public object ReadYaml(IParser parser, Type type)
         {
+            Console.WriteLine("Read yaml with type: " + type.ToString());
             /*
              * Move to first
              */

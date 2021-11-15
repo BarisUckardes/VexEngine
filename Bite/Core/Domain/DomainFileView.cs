@@ -7,9 +7,9 @@ using Vex.Asset;
 
 namespace Bite.Core
 {
-    public sealed class DomainFile
+    public sealed class DomainFileView
     {
-        public DomainFile(in AssetDefinition definition,DomainFileState fileState,string definitionAbsolutePath,string assetAbsolutePath)
+        public DomainFileView(in AssetDefinition definition,DomainFileState fileState,string definitionAbsolutePath,string assetAbsolutePath)
         {
             m_Definition = definition;
             m_DefinitonAbsolutePath = definitionAbsolutePath;

@@ -29,7 +29,7 @@ namespace Vex.Asset
             /*
              * Gather assets fVexm record
              */
-            m_Assets = GetAssetsFVexmRecords(m_Records);
+            m_Assets = GetAssetsFromRecords(m_Records);
 
             /*
              * Debug
@@ -159,7 +159,7 @@ namespace Vex.Asset
         /// </summary>
         /// <param name="VexotPath"></param>
         /// <returns></returns>
-        private List<AssetRecord> GatherAssetRecordsRecursive(string VexotPath)
+        private List<AssetRecord> GatherAssetRecordsRecursive(string rootPath)
         {
             List<AssetRecord> records = new List<AssetRecord>();
 
@@ -167,41 +167,41 @@ namespace Vex.Asset
              * Get all paths
              */
             List<string> recordPaths = new List<string>();
-            GetAllRecordsRecursive(recordPaths, VexotPath);
+            GetAllRecordsRecursive(recordPaths, rootPath);
 
             /*
              * Create records
              */
             for(int i=0;i<recordPaths.Count;i++)
             {
-                ;
                 /*
                  * Get file name
                  */
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(recordPaths[i]);
                 string pathName = System.IO.Path.GetDirectoryName(recordPaths[i]);
-                string objectPath = pathName + @"\" +fileName + ".rasset";
+                string definitionPath = pathName + @"\" + fileName + ".rdefinition";
+                string assetPath = pathName + @"\" +fileName + ".rasset";
 
                 /*
-                 * Read object string
+                 * Read asset definition string
                  */
-                 string objectYamlString = File.ReadAllText(recordPaths[i]);
+                 string definitionYamlString = File.ReadAllText(definitionPath);
 
                 /*
                  * Read asset definition
                  */
-                AssetDefinition definitiion = new AssetInterface(null).GenerateAsset(AssetType.Definition,objectYamlString) as AssetDefinition;
+                AssetDefinition definitiion = new AssetInterface(null).GenerateAsset(AssetType.Definition, definitionYamlString) as AssetDefinition;
 
                 /*
-                 * Validate file
+                 * Validate asset file
                  */
-                if (File.Exists(objectPath))
+                if (File.Exists(assetPath))
                 {
-                    records.Add(new AssetRecord(definitiion.Name, recordPaths[i],objectPath, definitiion.Type, definitiion.ID));
+                    records.Add(new AssetRecord(definitiion.Name, recordPaths[i], assetPath, definitiion.Type, definitiion.ID));
                 }
                 else
                 {
-                    records.Add(new AssetRecord(definitiion.Name, recordPaths[i], objectPath, AssetType.Undefined, definitiion.ID));
+                    records.Add(new AssetRecord(definitiion.Name, recordPaths[i], assetPath, AssetType.Undefined, definitiion.ID));
                 }
             }
 
@@ -245,7 +245,7 @@ namespace Vex.Asset
         /// </summary>
         /// <param name="records"></param>
         /// <returns></returns>
-        private List<Asset> GetAssetsFVexmRecords(in List<AssetRecord> records)
+        private List<Asset> GetAssetsFromRecords(in List<AssetRecord> records)
         {
             /*
              * Pre-allocate assets

@@ -7,18 +7,19 @@ using System.IO;
 using Vex.Asset;
 namespace Bite.Core
 {
-    public class DomainFolder
+    public class DomainFolderView
     {
-        public DomainFolder(DomainFolder parentFolder,string selfPath,string[] files,string[] folders)
+        public DomainFolderView(DomainFolderView parentFolder,string selfPath,string[] files,string[] folders)
         {
             /*
              * Initialize local variables
              */
-            m_SubFolders = new List<DomainFolder>();
-            m_Files = new List<DomainFile>();
+            m_SubFolders = new List<DomainFolderView>();
+            m_Files = new List<DomainFileView>();
             m_Name = Path.GetFileName(Path.GetDirectoryName(selfPath+@"\"));
             m_Path = selfPath;
             m_ParentFolder = parentFolder;
+            m_ID = Guid.NewGuid();
 
             Console.WriteLine("Folder name: " + m_Name);
             /*
@@ -39,7 +40,7 @@ namespace Bite.Core
                 /*
                  * Create domain folder and register it
                  */
-                m_SubFolders.Add(new DomainFolder(this,folders[folderIndex], subFolders, subFiles));
+                m_SubFolders.Add(new DomainFolderView(this,folders[folderIndex], subFolders, subFiles));
             }
 
             /*
@@ -85,14 +86,35 @@ namespace Bite.Core
                 /*
                  * Register domain file
                  */
-                m_Files.Add(new DomainFile(definition,state,files[fileIndex], expectedAssetPath));
+                m_Files.Add(new DomainFileView(definition,state,files[fileIndex], expectedAssetPath));
             }
         }
-        public DomainFolder ParentFolder
+        public IReadOnlyCollection<DomainFolderView> SubFolders
+        {
+            get
+            {
+                return m_SubFolders.AsReadOnly();
+            }
+        }
+        public IReadOnlyCollection<DomainFileView> Files
+        {
+            get
+            {
+                return m_Files.AsReadOnly();
+            }
+        }
+        public DomainFolderView ParentFolder
         {
             get
             {
                 return m_ParentFolder;
+            }
+        }
+        public Guid ID
+        {
+            get
+            {
+                return m_ID;
             }
         }
         public string Name
@@ -110,16 +132,11 @@ namespace Bite.Core
             }
         }
 
-        public IReadOnlyCollection<DomainFolder> SubFolders
-        {
-            get
-            {
-                return m_SubFolders.AsReadOnly();
-            }
-        }
-        private List<DomainFolder> m_SubFolders;
-        private List<DomainFile> m_Files;
-        private DomainFolder m_ParentFolder;
+      
+        private List<DomainFolderView> m_SubFolders;
+        private List<DomainFileView> m_Files;
+        private DomainFolderView m_ParentFolder;
+        private Guid m_ID;
         private string m_Name;
         private string m_Path;
     }

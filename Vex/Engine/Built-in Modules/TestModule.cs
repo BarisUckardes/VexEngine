@@ -78,12 +78,16 @@ f_ColoVexut = vec4(texture(f_SpriteTexture,f_Uv).rgb,1.0f);
             spriteEnttiy.Spatial.Position = new Vector3(0, 0, 1);
             spriteEnttiy.Spatial.Scale = new Vector3(5, 5, 5);
 
-            //Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\PC\Desktop\Test Domain\test.jpg");
-            //Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\baris\Desktop\Images\image0.jpg");
-            //spriteRenderable.SpriteTexture = sprite;
+            Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\PC\Desktop\Test Domain\test.jpg");
+            spriteRenderable.SpriteTexture = sprite;
 
             AssetInterface assetInterface = new AssetInterface(null);
-            string yamlText = assetInterface.GenerateObjectString(AssetType.ShaderProgram, shaderProgram);
+            //AssetDefinition definition = new AssetDefinition("Sprite",sprite.ID,AssetType.Texture2D);
+            //string definitionYaml = assetInterface.GenerateObjectString(AssetType.Definition,definition);
+            //string assetYaml = assetInterface.GenerateObjectString(AssetType.Texture2D, sprite);
+            //System.IO.File.WriteAllText(PlatformPaths.DomainDirectory+@"\sprite.rdefinition", definitionYaml);
+            //System.IO.File.WriteAllText(PlatformPaths.DomainDirectory + @"\sprite.rasset", assetYaml);
+
         }
 
         public override void OnDetach()

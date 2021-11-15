@@ -67,6 +67,7 @@ namespace Vex.Application
              * Create exit state
              */
             bool hasExitRequest = false;
+            ApplicationExitType exitType = ApplicationExitType.Undefined;
 
             /*
              * Create session
@@ -78,6 +79,21 @@ namespace Vex.Application
              */
             while(!hasExitRequest)
             {
+
+                /*
+                * Valdiate exit request
+                */
+                if (m_WindowInterface.HasWindowExitRequest)
+                {
+                    hasExitRequest = true;
+                    exitType = ApplicationExitType.WindowClose;
+                }
+                else if (m_Session.HasShutdownRequest)
+                {
+                    hasExitRequest = true;
+                    exitType = ApplicationExitType.SessionRequest;
+                }
+
                 Profiler.StartProfileSession();
 
                 /*
@@ -143,13 +159,7 @@ namespace Vex.Application
                  */
                 m_WindowInterface.Swapbuffers();
 
-                /*
-                 * Valdiate exit request
-                 */
-                if(m_WindowInterface.HasWindowExitRequest)
-                {
-                    hasExitRequest = true;
-                }
+               
 
                 Profiler.EndProfileSession();
             }
