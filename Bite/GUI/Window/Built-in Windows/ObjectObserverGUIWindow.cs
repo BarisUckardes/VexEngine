@@ -40,7 +40,7 @@ namespace Bite.GUI
         {
             if(m_Layout == null)
             {
-                GUIRenderCommands.CreateText($"This object has no defined layout to render", GetType().GUID.ToString());
+                GUIRenderCommands.CreateText("This object has no defined layout to render", "abcabac");
             }
             else
             {

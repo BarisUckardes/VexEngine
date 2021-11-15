@@ -16,8 +16,6 @@ namespace Bite.GUI
            
         }
 
-
-       
         public readonly Type TargetComponentType;
         public readonly Type ComponentLayoutType;
        

@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bite", "Bite\Bite.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor", "Editor\Editor.csproj", "{B20EB2C9-C021-4B19-A865-9B8C0548E4D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorLauncher", "EditorLauncher\EditorLauncher.csproj", "{946C7C17-A478-48BC-95C4-0BAE2BFB4FAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B20EB2C9-C021-4B19-A865-9B8C0548E4D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B20EB2C9-C021-4B19-A865-9B8C0548E4D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B20EB2C9-C021-4B19-A865-9B8C0548E4D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{946C7C17-A478-48BC-95C4-0BAE2BFB4FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{946C7C17-A478-48BC-95C4-0BAE2BFB4FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{946C7C17-A478-48BC-95C4-0BAE2BFB4FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{946C7C17-A478-48BC-95C4-0BAE2BFB4FAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,13 +18,18 @@ namespace Fang.Commands
         public static bool CreateWindow(string name,string code,ref bool exitRequest,WindowCreateFlags flags = WindowCreateFlags.None)
         {
             bool exRequest = true;
-            bool isVisible = ImGui.Begin(CreateNameCode(name, code), ref exRequest, (ImGuiWindowFlags)flags);
+            ImGui.PushID(code);
+            bool isVisible = ImGui.Begin(name, ref exRequest, (ImGuiWindowFlags)flags);
+            ImGui.PopID();
             exitRequest = !exRequest;
             return isVisible;
         }
         public static bool CreateWindow(string name, string code, WindowCreateFlags flags = WindowCreateFlags.None)
         {
-            return ImGui.Begin(CreateNameCode(name, code), (ImGuiWindowFlags)flags);
+            ImGui.PushID(code);
+            bool state = ImGui.Begin(name, (ImGuiWindowFlags)flags);
+            ImGui.PopID();
+            return state;
         }
 
         public static void FinalizeWindow()
@@ -43,7 +48,10 @@ namespace Fang.Commands
 
         public static bool CreateMenu(string name,string code)
         {
-            return ImGui.BeginMenu(CreateNameCode(name,code));
+            ImGui.PushID(code);
+            bool state = ImGui.BeginMenu(name);
+            ImGui.PopID();
+            return state;
         }
         public static void FinalizeMenu()
         {
@@ -51,17 +59,26 @@ namespace Fang.Commands
         }
         public static bool CreateMenuItem(string name,string code)
         {
-            return ImGui.MenuItem(CreateNameCode(name, code));
+            ImGui.PushID(code);
+            bool state =  ImGui.MenuItem(name);
+            ImGui.PopID();
+            return state;
         }
        
         public static bool CreateButton(string name,string code)
         {
-            return ImGui.Button(CreateNameCode(name, code));
+            ImGui.PushID(code);
+            bool state = ImGui.Button(name);
+            ImGui.PopID();
+            return state;
         }
 
         public static bool CreateTreeNode(string name,string code)
         {
-            return ImGui.TreeNode(CreateNameCode(name, code));
+            ImGui.PushID(code);
+            bool state = ImGui.TreeNode(name);
+            ImGui.PopID();
+            return state;
         }
         public static void FinalizeTreeNode()
         {
@@ -69,12 +86,17 @@ namespace Fang.Commands
         }
         public static bool CreateCollapsingHeader(string name,string code)
         {
-            return ImGui.CollapsingHeader(CreateNameCode(name, code));
+            ImGui.PushID(code);
+            bool state =  ImGui.CollapsingHeader(name);
+            ImGui.PopID();
+            return state;
         }
 
         public static void CreateText(string text,string code)
         {
-            ImGui.Text(CreateNameCode(text, code));
+            ImGui.PushID(code);
+            ImGui.Text(text);
+            ImGui.PopID();
         }
 
         public static void CreateSeperatorLine()
@@ -84,14 +106,18 @@ namespace Fang.Commands
 
         public static bool CreateSelectableItem(string name,string code)
         {
-            return ImGui.Selectable(CreateNameCode(name, code));
+            ImGui.PushID(code);
+            bool state = ImGui.Selectable(name);
+            ImGui.PopID();
+            return state;
         }
 
         public static bool CreateVector3Slider(string name,string code,ref Vector3 vector,float min =0.00f,float max = 5.0f)
         {
+            ImGui.PushID(code);
             System.Numerics.Vector3 intermediateVec = new System.Numerics.Vector3(vector.X, vector.Y, vector.Z);
-            bool state = ImGui.SliderFloat3(CreateNameCode(name, code),ref intermediateVec,min,max);
-
+            bool state = ImGui.SliderFloat3(name,ref intermediateVec,min,max);
+            ImGui.PopID();
             vector.X = intermediateVec.X;
             vector.Y = intermediateVec.Y;
             vector.Z = intermediateVec.Z;
@@ -100,31 +126,34 @@ namespace Fang.Commands
         public static bool CreateVector2Slider(string name, string code, ref Vector2 vector, float min = 0.00f, float max = 5.0f)
         {
             System.Numerics.Vector2 intermediateVec = new System.Numerics.Vector2(vector.X, vector.Y);
-            bool state = ImGui.SliderFloat2(CreateNameCode(name, code), ref intermediateVec, min, max);
-
+            ImGui.PushID(code);
+            bool state = ImGui.SliderFloat2(name, ref intermediateVec, min, max);
+            ImGui.PopID();
             vector.X = intermediateVec.X;
             vector.Y = intermediateVec.Y;
             return state;
         }
         public static bool CreateFloatSlider(string name,string code,ref float value,float min = 0.00f,float max = 5.0f)
         {
-            bool state = ImGui.SliderFloat(CreateNameCode(name, code),ref value, min, max);
-
+            ImGui.PushID(code);
+            bool state = ImGui.SliderFloat(name,ref value, min, max);
+            ImGui.PopID();
             return state;
         }
         public static bool CreateTextInput(string name,string code,ref string value,uint length = 20)
         {
-            bool state = ImGui.InputText(CreateNameCode(name, code), ref value,length);
+            ImGui.PushID(code);
+            bool state = ImGui.InputText(name, ref value,length);
+            ImGui.PopID();
             return state;
         }
         public static bool CreateCheckbox(string name,string code,ref bool value)
         {
-            bool state = ImGui.Checkbox(CreateNameCode(name, code), ref value);
+            ImGui.PushID(code);
+            bool state = ImGui.Checkbox(name, ref value);
+            ImGui.PopID();
             return state;
         }
-        private static string CreateNameCode(string name,string code)
-        {
-            return name + "##" + code;
-        }
+     
     }
 }

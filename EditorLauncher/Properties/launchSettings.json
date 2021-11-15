@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EditorLauncher": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\baris\\source\\repos\\BarisUckardes\\VexEngine\\Editor\\bin\\Debug\\net5.0\\Editor.exe"
+    }
+  }
+}

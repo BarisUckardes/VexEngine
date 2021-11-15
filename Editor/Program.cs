@@ -11,7 +11,6 @@ namespace Game
     {
         static void Main(string[] args)
         {
-           
 
             /*
              * Initialize application create parameters

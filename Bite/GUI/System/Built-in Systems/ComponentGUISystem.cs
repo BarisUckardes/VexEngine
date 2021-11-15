@@ -52,6 +52,9 @@ namespace Bite.GUI
              */
             foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
+                /*
+                 * Iterate each type in assembly
+                 */
                 foreach (Type type in assembly.GetTypes())
                 {
                     /*
@@ -60,7 +63,6 @@ namespace Bite.GUI
                     if (!type.IsSubclassOf(typeof(Component)))
                         continue;
 
-                    Console.WriteLine("Found component type: " + type.Name);
                     /*
                      * Validate it has no user-defined component layout
                      */
@@ -70,27 +72,26 @@ namespace Bite.GUI
                     /*
                      * Create default component layout info
                      */
-                    List<PropertyInfo> hasGetSetPVexps = new List<PropertyInfo>();
-                    PropertyInfo[] allPVexps = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty);
-                    foreach (PropertyInfo pVexperty in allPVexps)
+                    List<PropertyInfo> hasGetSetProperties = new List<PropertyInfo>();
+                    PropertyInfo[] allProperties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty);
+                    foreach (PropertyInfo pVexperty in allProperties)
                         if (pVexperty.CanWrite && pVexperty.CanRead)
-                            hasGetSetPVexps.Add(pVexperty);
+                            hasGetSetProperties.Add(pVexperty);
 
-                    DefaultComponentLayoutInfo defaultLayoutInfo = new DefaultComponentLayoutInfo(type.GetFields(BindingFlags.Public | BindingFlags.Instance),hasGetSetPVexps.ToArray(), type);
+                    DefaultComponentLayoutInfo defaultLayoutInfo = new DefaultComponentLayoutInfo(type.GetFields(BindingFlags.Public | BindingFlags.Instance), hasGetSetProperties.ToArray(), type);
                     defaultEntries.Add(defaultLayoutInfo);
                 }
             }
 
             /*
-             * Setup component layout entry for accessors
+             * Create Manager
              */
-            GUIComponent.Entries = entries;
-            GUIComponent.DefaultEntries = defaultEntries;
+            m_Manager = new GUIComponentManager(Session, defaultEntries, entries);
         }
 
         public override void OnDetach()
         {
-
+            m_Manager = null;
         }
 
         public override void OnUpdate()
@@ -98,6 +99,6 @@ namespace Bite.GUI
 
         }
 
-
+        private GUIComponentManager m_Manager;
     }
 }

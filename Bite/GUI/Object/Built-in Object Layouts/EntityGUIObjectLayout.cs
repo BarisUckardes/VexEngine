@@ -22,7 +22,7 @@ namespace Bite.GUI
 
             for(int i=0;i<components.Length;i++)
             {
-                ComponentLayout layout = GUIComponent.FetchComponentLayout(components[i].GetType());
+                ComponentLayout layout = GUIComponentManager.Current.FetchComponentLayout(components[i].GetType());
                 layout.TargetComponent = components[i];
                 layout.OnAttach();
                 m_Layouts.Add(layout);
