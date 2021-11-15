@@ -8,6 +8,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using Vex.Application;
+using Vex.Framework;
 
 namespace Vex.Asset
 {
@@ -31,7 +32,6 @@ namespace Vex.Asset
         /// </summary>
         public abstract Type ExpectedAssetType { get; }
 
-     
         public bool Accepts(Type type)
         {
             return type == ExpectedAssetType;
@@ -47,7 +47,7 @@ namespace Vex.Asset
             /*
              * Get object via parser
              */
-            object obj = GetObject(parser,m_Pool);
+            object obj = ReadAsset(parser,m_Pool);
             
             /*
              * Move to document end
@@ -59,7 +59,7 @@ namespace Vex.Asset
 
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
-            GetYaml(emitter, value);
+            WriteAsset(emitter, value as VexObject);
         }
 
         /// <summary>
@@ -68,14 +68,14 @@ namespace Vex.Asset
         /// <param name="parser"></param>
         /// <param name="pool"></param>
         /// <returns></returns>
-        public abstract object GetObject(IParser parser,in AssetPool pool);
+        protected abstract VexObject ReadAsset(IParser parser,AssetPool pool);
 
         /// <summary>
         /// Writes an object via emitter
         /// </summary>
         /// <param name="emitter"></param>
         /// <param name="engineObject"></param>
-        public abstract void GetYaml(IEmitter emitter, object engineObject);
+        protected abstract void WriteAsset(IEmitter emitter,VexObject targetObject);
 
 
         private AssetPool m_Pool;

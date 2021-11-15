@@ -28,9 +28,9 @@ namespace Vex.Graphics
              * Set empty data
              */
             GL.TexImage1D(TextureTarget.Texture1D, 0,
-                TextureInternalFormatUtils.GetNative(internalFormat),
+                (PixelInternalFormat)internalFormat,
                 width, 0,
-                TextureFormatUtils.GetNative(format), PixelType.UnsignedByte,
+                (PixelFormat)format, PixelType.UnsignedByte,
                 IntPtr.Zero);
 
             /*
@@ -49,7 +49,7 @@ namespace Vex.Graphics
              */
             m_Width = width;
             Format = format;
-            InternalFormat = TextureInternalFormatUtils.GetInternalFormatViaFormat(format);
+            InternalFormat = internalFormat;
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Vex.Graphics
             /*
              * Set data
              */
-            GL.TexImage1D(TextureTarget.Texture1D, 0, TextureInternalFormatUtils.GetNative(InternalFormat), m_Width, 0, TextureFormatUtils.GetNative(Format), PixelType.UnsignedByte, data);
+            GL.TexImage1D(TextureTarget.Texture1D, 0,(PixelInternalFormat)InternalFormat, m_Width, 0, (PixelFormat)Format, PixelType.UnsignedByte, data);
 
             /*
              * Unbind texture

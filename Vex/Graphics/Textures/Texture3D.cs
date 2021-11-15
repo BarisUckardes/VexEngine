@@ -30,10 +30,10 @@ namespace Vex.Graphics
              * Set empty data
              */
             GL.TexImage3D(TextureTarget.Texture3D, 0,
-                TextureInternalFormatUtils.GetNative(internalFormat),
+                (PixelInternalFormat)internalFormat,
                 width, height, depth,
                 0,
-                TextureFormatUtils.GetNative(format),
+                (PixelFormat)format,
                 PixelType.UnsignedByte,
                 IntPtr.Zero);
 
@@ -113,7 +113,7 @@ namespace Vex.Graphics
             /*
              * Set data
              */
-            GL.TexImage3D(TextureTarget.Texture3D, 0, TextureInternalFormatUtils.GetNative(InternalFormat), m_Width, m_Height,m_Depth, 0, TextureFormatUtils.GetNative(Format), PixelType.UnsignedByte, data);
+            GL.TexImage3D(TextureTarget.Texture3D, 0, (PixelInternalFormat)InternalFormat, m_Width, m_Height,m_Depth, 0, (PixelFormat)Format, PixelType.UnsignedByte, data);
 
             /*
              * Unbind texture

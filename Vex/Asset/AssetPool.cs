@@ -105,6 +105,7 @@ namespace Vex.Asset
                 Console.WriteLine("Asset exists on path");
                 return;
             }
+
             /*
              * Create record
              */
@@ -122,28 +123,34 @@ namespace Vex.Asset
             m_Assets.Add(asset);
 
             /*
-             * Create asset definition body
+             * Create asset interface
+             */
+            AssetInterface assetInterface = new AssetInterface(this);
+
+            /*
+             * Create asset definition
              */
             AssetDefinition definition = new AssetDefinition(obj.Name, obj.ID, type);
-            AssetInterface<AssetDefinitionResolver> definitionInterface = new AssetInterface<AssetDefinitionResolver>();
-            string definitionYaml = definitionInterface.GetObjectString(definition);
+           
+            /*
+             * Generate asset definition
+             */
+            string definitionYaml = assetInterface.GenerateObjectString(AssetType.Definition,definition);
+
+            /*
+             * Write definiton to target path
+             */
             System.IO.File.WriteAllText(definitionPath, definitionYaml);
 
             /*
              * Create asset body
              */
-            switch (type)
-            {
-                case AssetType.Undefined:
-                    break;
-                case AssetType.Texture2D:
-                    AssetInterface<Texture2DResolver> texture2DInterface = new AssetInterface<Texture2DResolver>();
-                    string texture2DYaml = texture2DInterface.GetObjectString(obj);
-                    System.IO.File.WriteAllText(assetPath, texture2DYaml);
-                    break;
-                default:
-                    break;
-            }
+            string assetYaml = assetInterface.GenerateObjectString(type, obj);
+
+            /*
+             * Write asset 
+             */
+            System.IO.File.WriteAllText(assetPath, assetYaml);
 
         }
 
@@ -183,7 +190,7 @@ namespace Vex.Asset
                 /*
                  * Read asset definition
                  */
-                AssetDefinition definitiion = new AssetInterface<AssetDefinitionResolver>().GetObject(objectYamlString) as AssetDefinition;
+                AssetDefinition definitiion = new AssetInterface(null).GenerateAsset(AssetType.Definition,objectYamlString) as AssetDefinition;
 
                 /*
                  * Validate file

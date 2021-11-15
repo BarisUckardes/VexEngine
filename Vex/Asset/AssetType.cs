@@ -11,7 +11,16 @@ namespace Vex.Asset
     /// </summary>
     public enum AssetType
     {
-        Undefined = -1,
-        Texture2D = 0
+        Undefined = 0,
+        Texture2D = 1,
+        Shader = 2,
+        ShaderProgram = 3,
+        Material = 4,
+        Framebuffer1D = 5,
+        Framebuffer2D = 6,
+        Framebuffer3D = 7,
+        World = 8,
+        EntityPrefab = 9,
+        Definition = 10
     }
 }

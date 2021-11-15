@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
+using Vex.Framework;
+
 namespace Vex.Graphics
 {
     /// <summary>
     /// Shader class for all shader operations
     /// </summary>
-    public sealed class Shader
+    public sealed class Shader : VexObject
     {
         public Shader(ShaderStage type,string source)
         {

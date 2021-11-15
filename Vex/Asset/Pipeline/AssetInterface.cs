@@ -5,19 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization;
+using Vex.Framework;
+using Vex.Graphics;
 
 namespace Vex.Asset
 {
     /// <summary>
     /// An interface for asset creation
     /// </summary>
-    /// <typeparam name="TAssetResolver"></typeparam>
-    public class AssetInterface<TAssetResolver> where TAssetResolver:AssetResolver,new()
+    public class AssetInterface
     {
-        public AssetInterface()
+        public AssetInterface(AssetPool pool)
         {
-            m_Serializer = new SerializerBuilder().WithTypeConverter(new TAssetResolver()).Build();
-            m_Deserializer = new DeserializerBuilder().WithTypeConverter(new TAssetResolver()).Build();
+            m_Pool = pool;
         }
 
         /// <summary>
@@ -25,9 +25,39 @@ namespace Vex.Asset
         /// </summary>
         /// <param name="yamlText"></param>
         /// <returns></returns>
-        public object GetObject(string yamlText)
+        public VexObject GenerateAsset(AssetType type,string yamlText)
         {
-            return m_Deserializer.Deserialize(yamlText,new TAssetResolver().ExpectedAssetType);
+            switch (type)
+            {
+                case AssetType.Undefined:
+                    break;
+                case AssetType.Texture2D:
+                    return new DeserializerBuilder().WithTypeConverter(new Texture2DResolver()).Build().Deserialize<Texture2D>(yamlText);
+                    break;
+                case AssetType.Shader:
+                    return new DeserializerBuilder().WithTypeConverter(new ShaderResolver()).Build().Deserialize<Shader>(yamlText);
+                    break;
+                case AssetType.ShaderProgram:
+                    return new DeserializerBuilder().WithTypeConverter(new ShaderProgramResolver()).Build().Deserialize<ShaderProgram>(yamlText);
+                    break;
+                case AssetType.Material:
+                    return new DeserializerBuilder().WithTypeConverter(new MaterialResolver()).Build().Deserialize<Material>(yamlText);
+                    break;
+                case AssetType.Framebuffer1D:
+                    break;
+                case AssetType.Framebuffer2D:
+                    break;
+                case AssetType.Framebuffer3D:
+                    break;
+                case AssetType.World:
+                    break;
+                case AssetType.EntityPrefab:
+                    break;
+                default:
+                    break;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -35,12 +65,42 @@ namespace Vex.Asset
         /// </summary>
         /// <param name="engineObject"></param>
         /// <returns></returns>
-        public string GetObjectString(in object engineObject)
+        public string GenerateObjectString(AssetType type,VexObject engineObject)
         {
-            return m_Serializer.Serialize(engineObject);
+            switch (type)
+            {
+                case AssetType.Undefined:
+                    break;
+                case AssetType.Texture2D:
+                    return new SerializerBuilder().WithTypeConverter(new Texture2DResolver()).Build().Serialize(engineObject);
+                    break;
+                case AssetType.Shader:
+                    return new SerializerBuilder().WithTypeConverter(new ShaderResolver()).Build().Serialize(engineObject);
+                    break;
+                case AssetType.ShaderProgram:
+                    return new SerializerBuilder().WithTypeConverter(new ShaderProgramResolver()).Build().Serialize(engineObject);
+                    break;
+                case AssetType.Material:
+                    return new SerializerBuilder().WithTypeConverter(new MaterialResolver()).Build().Serialize(engineObject);
+                    break;
+                case AssetType.Framebuffer1D:
+                    break;
+                case AssetType.Framebuffer2D:
+                    break;
+                case AssetType.Framebuffer3D:
+                    break;
+                case AssetType.World:
+                    break;
+                case AssetType.EntityPrefab:
+                    break;
+                default:
+                    break;
+            }
+
+            return "Empty Yaml";
         }
 
-
+        private AssetPool m_Pool;
         private ISerializer m_Serializer;
         private IDeserializer m_Deserializer;
     }

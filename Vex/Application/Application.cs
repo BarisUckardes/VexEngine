@@ -138,11 +138,6 @@ namespace Vex.Application
                     m_ActiveModules[i].OnUpdate();
                 }
 
-                for (int i = 0; i < 100; i++)
-                {
-                    TestFunc();
-                }
-
                 /*
                  * Swap window buffer
                  */
@@ -157,7 +152,6 @@ namespace Vex.Application
                 }
 
                 Profiler.EndProfileSession();
-               // Profiler.GetResultTree().Debug(0);
             }
 
             /*
@@ -166,11 +160,7 @@ namespace Vex.Application
             m_Session.Shutdown();
             m_Session = null;
         }
-        private void TestFunc()
-        {
-            Profiler.StartProfile();
-            Profiler.EndProfile();
-        }
+    
         /// <summary>
         /// Registers an engine module to this application
         /// </summary>
@@ -193,7 +183,17 @@ namespace Vex.Application
             m_ModuleEventDelegates.Add(module.OnEvent);
             return module;
         }
-
+        public void RegisterModules(in List<EngineModule> modules)
+        {
+            /*
+             * Attach and register each of them
+             */
+            foreach(EngineModule module in modules)
+            {
+                m_AttachPendingModules.Add(module);
+                m_ModuleEventDelegates.Add(module.OnEvent);
+            }
+        }
         public void OnPlatformEvent(PlatformEvent evData)
         {
             /*

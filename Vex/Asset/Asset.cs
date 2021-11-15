@@ -46,36 +46,7 @@ namespace Vex.Asset
         /// </summary>
         public void Load()
         {
-            LoadAs(m_Record.Type,m_Record.AssetPath);
-        }
 
-        /// <summary>
-        /// Internal loader
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="path"></param>
-        private void LoadAs(AssetType type,string path)
-        {
-            /*
-             * Load file text
-             */
-            string fileContent = File.ReadAllText(path);
-
-            /*
-             * Load file as
-             */
-            switch (m_Record.Type)
-            {
-                case AssetType.Undefined:
-                    Console.WriteLine("Undefined asset type!, Asset load failed");
-                    break;
-                case AssetType.Texture2D:
-                    AssetInterface<Texture2DResolver> assetInterface = new AssetInterface<Texture2DResolver>();
-                    m_Object = assetInterface.GetObject(fileContent) as VexObject;
-                    break;
-                default:
-                    break;
-            }
         }
 
         /// <summary>

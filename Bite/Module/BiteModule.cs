@@ -16,41 +16,14 @@ namespace Bite.Module
 {
     public sealed class BiteModule : EngineModule
     {
-        public void RegisterGUISystem<TSystem>() where TSystem : GUISystem, new()
+        public BiteModule(in List<CoreCommand> commands,in List<GUISystem> guiSystems)
         {
             /*
-             * Create new gui system
+             * Set target core commands & gui systems
              */
-            TSystem system = new TSystem();
-
-            /*
-             * Set editor session
-             */
-            system.Session = m_Session;
-
-            /*
-             * Add it to pending create gui systems
-             */
-            m_GUISystems.Add(system);
+            m_CoreCommands = commands;
+            m_GUISystems = guiSystems;
         }
-        public void RegisterCoreCommand<TCommand>() where TCommand : CoreCommand,new()
-        {
-            /*
-             * Create new core command
-             */
-            TCommand command = new TCommand();
-
-            /*
-             * Set editor session
-             */
-            command.EditorSession = m_Session;
-
-            /*
-             * Add it to core command list
-             */
-            m_CoreCommands.Add(command);
-        }
-            
         public override void OnAttach()
         {
             /*
@@ -69,28 +42,25 @@ namespace Bite.Module
             m_Renderer = new GUIRenderer(m_Window.LocalWindow.Width,m_Window.LocalWindow.Height);
 
             /*
-             * Initialize variables 
+             * Set core command session
              */
-            m_CoreCommands = new List<CoreCommand>();
-            m_GUISystems = new List<GUISystem>();
+            foreach (CoreCommand command in m_CoreCommands)
+            {
+                command.EditorSession = m_Session;
+            }
 
             /*
-             * Add built-in GUI systems
+             * Set gui system session
              */
-            RegisterGUISystem<MainMenuGUISystem>();
-            RegisterGUISystem<WindowGUISystem>();
-            RegisterGUISystem<ComponentGUISystem>();
-            RegisterGUISystem<ObjectGUISystem>();
-
-            /*
-             * Register built-in core commands
-             */
-            RegisterCoreCommand<DomainCoreCommand>();
+            foreach (GUISystem system in m_GUISystems)
+            {
+                system.Session = m_Session;
+            }
 
             /*
              * Execute core command attach invokes
              */
-            for(int commandIndex = 0;commandIndex < m_CoreCommands.Count;commandIndex++)
+            for (int commandIndex = 0;commandIndex < m_CoreCommands.Count;commandIndex++)
             {
                 m_CoreCommands[commandIndex].OnAttach();
             }

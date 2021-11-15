@@ -1,5 +1,8 @@
-﻿using Bite.Module;
+﻿using Bite.Core;
+using Bite.GUI;
+using Bite.Module;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Vex.Application;
 using Vex.Engine;
@@ -24,20 +27,39 @@ namespace Game
             Application application = new Application("Ro", windowCreateParams, windowUpdateParams, args);
 
             /*
-             * Register modules
+             * Create bite commands
              */
-            application.RegisterModule<TestModule>();
-            application.RegisterModule<LogicModule>();
-            application.RegisterModule<GameInputModule>();
-            application.RegisterModule<GraphicsModule>();
-            application.RegisterModule<BiteModule>();
+            List<CoreCommand> coreCommands = new List<CoreCommand>();
+            coreCommands.Add(new DomainCoreCommand());
+
+            /*
+             * Creat bite gui systems
+             */
+            List<GUISystem> guiSystems = new List<GUISystem>();
+            guiSystems.Add(new MainMenuGUISystem());
+            guiSystems.Add(new WindowGUISystem());
+            guiSystems.Add(new ObjectGUISystem());
+            guiSystems.Add(new ComponentGUISystem());
+
+            /*
+             * Create required modules
+             */
+            List<EngineModule> modules = new List<EngineModule>();
+            modules.Add(new TestModule());
+            modules.Add(new LogicModule());
+            modules.Add(new GameInputModule());
+            modules.Add(new GraphicsModule());
+            modules.Add(new BiteModule(coreCommands,guiSystems));
+
+            /*
+             * Set application modules
+             */
+            application.RegisterModules(modules);
 
             /*
              * Run
              */
             application.Run();
-
-          
         }
     }
 }

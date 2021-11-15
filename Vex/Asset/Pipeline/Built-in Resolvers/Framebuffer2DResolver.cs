@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
+using Vex.Framework;
+
 namespace Vex.Asset
 {
     public sealed class Framebuffer2DResolver : AssetResolver
@@ -18,7 +20,7 @@ namespace Vex.Asset
             }
         }
 
-        public override object GetObject(IParser parser, in AssetPool pool)
+        protected override VexObject ReadAsset(IParser parser, AssetPool pool)
         {
             /*
              * Move to width
@@ -55,11 +57,11 @@ namespace Vex.Asset
             /*
              * Create framebuffer
              */
-            Framebuffer2D framebuffer = new Framebuffer2D(width, height, format,TextureInternalFormat.RGB8);
+            Framebuffer2D framebuffer = new Framebuffer2D(width, height, format,TextureInternalFormat.Rgb8);
             return framebuffer;
         }
 
-        public override void GetYaml(IEmitter emitter, object engineObject)
+        protected override void WriteAsset(IEmitter emitter, VexObject engineObject)
         {
             /*
              * Get framebuffer2D

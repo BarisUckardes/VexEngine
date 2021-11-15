@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
+using Vex.Framework;
 
 namespace Vex.Asset
 {
@@ -19,7 +20,7 @@ namespace Vex.Asset
             }
         }
 
-        public override object GetObject(IParser parser,in AssetPool pool)
+        protected override VexObject ReadAsset(IParser parser,AssetPool pool)
         {
 
             /*
@@ -58,7 +59,7 @@ namespace Vex.Asset
             return new AssetDefinition(nameYaml,Guid.Parse(idYaml),(AssetType)(Convert.ToInt32(typeText)));
         }
 
-        public override void GetYaml(IEmitter emitter, object engineObject)
+        protected override void WriteAsset(IEmitter emitter, VexObject engineObject)
         {
             AssetDefinition definition = engineObject as AssetDefinition;
             Console.WriteLine($"Def: {engineObject.GetType().Name}");

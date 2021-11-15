@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Framework;
 
 namespace Vex.Asset
 {
@@ -10,7 +11,7 @@ namespace Vex.Asset
     /// Definition for target asset
     /// 
     /// </summary>
-    public class AssetDefinition
+    public class AssetDefinition : VexObject
     {
         public AssetDefinition(string name, Guid iD, AssetType type)
         {

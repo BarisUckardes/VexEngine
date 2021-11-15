@@ -80,8 +80,7 @@ namespace Bite.Core
                 /*
                  * Read domain file definition
                  */
-                AssetInterface<AssetDefinitionResolver> resolver = new AssetInterface<AssetDefinitionResolver>();
-                AssetDefinition definition = resolver.GetObject(definitionFileContent) as AssetDefinition;
+                AssetDefinition definition = new AssetInterface(null).GenerateAsset(AssetType.Definition,definitionFileContent) as AssetDefinition;
 
                 /*
                  * Register domain file

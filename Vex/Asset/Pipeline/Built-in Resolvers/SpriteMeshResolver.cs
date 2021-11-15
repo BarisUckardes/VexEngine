@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
+using Vex.Framework;
+
 namespace Vex.Asset
 {
     public sealed class SpriteMeshResolver : AssetResolver
@@ -18,7 +20,7 @@ namespace Vex.Asset
             }
         }
 
-        public override object GetObject(IParser parser, in AssetPool pool)
+        protected override VexObject ReadAsset(IParser parser,AssetPool pool)
         {
             List<SpriteVertex> vertexes = new List<SpriteVertex>();
             List<int> triangles = new List<int>();
@@ -79,7 +81,7 @@ namespace Vex.Asset
             return mesh;
         }
 
-        public override void GetYaml(IEmitter emitter, object engineObject)
+        protected override void WriteAsset(IEmitter emitter, VexObject engineObject)
         {
             /*
              * Get sprite mesh

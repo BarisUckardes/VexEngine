@@ -8,7 +8,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-
+using Vex.Extensions;
 namespace Vex.Graphics
 {
     /// <summary>
@@ -53,8 +53,8 @@ namespace Vex.Graphics
              * Create texture
              */
             Texture2D texture = new Texture2D(image.Width, image.Height,
-                TextureFormatUtils.GetFormatViaMime(format.DefaultMimeType),
-                TextureInternalFormatUtils.GetInternalFormatViaMime(format.DefaultMimeType,image.PixelType.BitsPerPixel));
+                format.DefaultMimeType.GetAsTextureFormat(),
+                format.DefaultMimeType.GetAsTextureInternalFormat(image.PixelType.BitsPerPixel));
 
             texture.SetData(pixels.ToArray());
 
@@ -82,7 +82,7 @@ namespace Vex.Graphics
             /*
              * Set empty data
              */
-            GL.TexImage2D(TextureTarget.Texture2D, 0,TextureInternalFormatUtils.GetNative(internalFormat), width, height, 0, TextureFormatUtils.GetNative(format), PixelType.UnsignedByte, IntPtr.Zero);
+            GL.TexImage2D(TextureTarget.Texture2D, 0,(PixelInternalFormat)internalFormat, width, height, 0, (PixelFormat)format, PixelType.UnsignedByte, IntPtr.Zero);
 
             /*
              * Set texture parameters
@@ -106,7 +106,7 @@ namespace Vex.Graphics
             m_Width = width;
             m_Height = height;
             Format = format;
-            InternalFormat =TextureInternalFormatUtils.GetInternalFormatViaFormat(format);
+            InternalFormat =internalFormat;
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Vex.Graphics
             /*
              * Set data
              */
-            GL.TexImage2D(TextureTarget.Texture2D, 0, TextureInternalFormatUtils.GetNative(InternalFormat), m_Width, m_Height, 0, TextureFormatUtils.GetNative(Format), PixelType.UnsignedByte, data);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)InternalFormat, m_Width, m_Height, 0, (PixelFormat)Format, PixelType.UnsignedByte, data);
 
             /*
              * Unbind texture

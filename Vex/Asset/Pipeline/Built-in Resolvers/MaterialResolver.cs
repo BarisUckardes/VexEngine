@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
+using Vex.Framework;
+
 namespace Vex.Asset
 {
     public sealed class MaterialResolver : AssetResolver
@@ -19,7 +21,7 @@ namespace Vex.Asset
             }
         }
 
-        public override object GetObject(IParser parser, in AssetPool pool)
+        protected override VexObject ReadAsset(IParser parser,AssetPool pool)
         {
             string category;
             string categoryName;
@@ -378,7 +380,7 @@ namespace Vex.Asset
             return material;
         }
 
-        public override void GetYaml(IEmitter emitter, object engineObject)
+        protected override void WriteAsset(IEmitter emitter, VexObject engineObject)
         {
             /*
              * Get material
