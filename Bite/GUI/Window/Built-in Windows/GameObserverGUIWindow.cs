@@ -43,9 +43,13 @@ namespace Bite.GUI
             /*
              * Create flipped uvs
              */
-            Vector2 uv0 = new Vector2(0, 0);
-            Vector2 uv1 = new Vector2(1, 1);
-            GUIRenderCommands.CreateImage(m_PrimaryObserver.BackTexture, new Vector2(textureSize, textureSize));
+            Vector2 uv0 = new Vector2(1, 1);
+            Vector2 uv1 = new Vector2(0, 0);
+
+            /*
+             * Render framebuffer image
+             */
+            GUIRenderCommands.CreateImage(m_PrimaryObserver.BackTexture, new Vector2(textureSize, textureSize),uv0,uv1);
         }
 
         public override void OnVisible()

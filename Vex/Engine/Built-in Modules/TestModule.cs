@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Extensions;
 
 namespace Vex.Engine
 {
@@ -23,7 +24,7 @@ namespace Vex.Engine
             Entity observerEntity = new Entity("Sprite observer entity", world);
             SpriteObserver spriteObserverComponent = observerEntity.AddComponent<SpriteObserver>();
             spriteObserverComponent.ClearColor = OpenTK.Mathematics.Color4.Crimson;
-            observerEntity.Spatial.Position = new OpenTK.Mathematics.Vector3(0, 0, 0);
+            observerEntity.Spatial.Position = new OpenTK.Mathematics.Vector3(0, 0, 0).GetAsNumerics();
             string vertexSource  = @"
 #version 450
 
@@ -75,11 +76,11 @@ f_ColoVexut = vec4(texture(f_SpriteTexture,f_Uv).rgb,1.0f);
             SpriteRenderable spriteRenderable = spriteEnttiy.AddComponent<SpriteRenderable>();
             spriteRenderable.Mesh = mesh;
             spriteRenderable.Material = material;
-            spriteEnttiy.Spatial.Position = new Vector3(0, 0, 1);
-            spriteEnttiy.Spatial.Scale = new Vector3(5, 5, 5);
+            spriteEnttiy.Spatial.Position = new Vector3(0, 0, 1).GetAsNumerics();
+            spriteEnttiy.Spatial.Scale = new Vector3(5, 5, 5).GetAsNumerics();
 
-            Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\baris\Desktop\Images\image0.jpg");
-            spriteRenderable.SpriteTexture = sprite;
+            //Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\baris\Desktop\Images\image0.jpg");
+            //spriteRenderable.SpriteTexture = sprite;
 
             AssetInterface assetInterface = new AssetInterface(null);
             //AssetDefinition definition = new AssetDefinition("Sprite", sprite.ID, AssetType.Texture2D);

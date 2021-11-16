@@ -168,6 +168,10 @@ namespace Fang.Commands
         {
             ImGui.Image((IntPtr)texture.Handle, size,uv0,uv1);
         }
+        public static void CreateMainDockspace()
+        {
+            ImGui.DockSpace(0,new Vector2(0,0),ImGuiDockNodeFlags.None | ImGuiDockNodeFlags.NoResize | ImGuiDockNodeFlags.PassthruCentralNode);
+        }
 
     }
 }

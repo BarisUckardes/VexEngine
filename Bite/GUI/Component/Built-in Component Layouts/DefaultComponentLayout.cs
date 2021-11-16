@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Fang.Commands;
 using System.Numerics;
-
 namespace Bite.GUI
 {
     public sealed class DefaultComponentLayout : ComponentLayout
@@ -27,11 +26,13 @@ namespace Bite.GUI
 
         public override void OnLayoutRender()
         {
+
             /*
              * Render each field
              */
             foreach(FieldInfo info in m_DefaultInfo.FieldInfo)
             {
+                Console.WriteLine("Field info: " + info.Name);
                 if(info.FieldType == typeof(Vector3))
                 {
                     Vector3 value = (Vector3)info.GetValue(TargetComponent);
@@ -41,15 +42,16 @@ namespace Bite.GUI
             }
 
             /*
-             * Render eacg pVexpert
+             * Render each pVexpert
              */
             foreach(PropertyInfo info in m_DefaultInfo.PropertyInfo)
             {
-                if(info.PropertyType == typeof(Vector3))
+                if (info.PropertyType == typeof(Vector3))
                 {
                     Vector3 value = (Vector3)info.GetValue(TargetComponent);
                     GUIRenderCommands.CreateVector3Slider(info.Name, "", ref value);
                     info.SetValue(TargetComponent,value,null);
+                    
                 }
                 else if(info.PropertyType == typeof(float))
                 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
-
+using Vex.Extensions;
 namespace Vex.Graphics
 {
     /// <summary>
@@ -37,7 +37,7 @@ namespace Vex.Graphics
 
         public override Matrix4 GetViewMatrix()
         {
-            return Matrix4.LookAt(Spatial.Position,Spatial.Position - Spatial.Forward,new Vector3(0,1,0));
+            return Matrix4.LookAt(Spatial.Position.GetAsOpenTK(),Spatial.Position.GetAsOpenTK() - Spatial.Forward.GetAsOpenTK(),new Vector3(0,1,0));
         }
 
         public override bool ShouldTick

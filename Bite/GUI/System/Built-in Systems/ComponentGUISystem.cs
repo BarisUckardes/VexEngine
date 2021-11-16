@@ -74,11 +74,16 @@ namespace Bite.GUI
                      */
                     List<PropertyInfo> hasGetSetProperties = new List<PropertyInfo>();
                     PropertyInfo[] allProperties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty);
-                    foreach (PropertyInfo pVexperty in allProperties)
-                        if (pVexperty.CanWrite && pVexperty.CanRead)
-                            hasGetSetProperties.Add(pVexperty);
+                    foreach (PropertyInfo property in allProperties)
+                        if (property.CanWrite && property.CanRead)
+                            hasGetSetProperties.Add(property);
 
                     DefaultComponentLayoutInfo defaultLayoutInfo = new DefaultComponentLayoutInfo(type.GetFields(BindingFlags.Public | BindingFlags.Instance), hasGetSetProperties.ToArray(), type);
+                    Console.WriteLine("Default component layout found: " + defaultLayoutInfo.TargetComponentType.Name + "and has");
+                    foreach(PropertyInfo info in hasGetSetProperties)
+                    {
+                        Console.WriteLine(" Property: " + info.Name);
+                    }
                     defaultEntries.Add(defaultLayoutInfo);
                 }
             }

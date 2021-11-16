@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
+using Vex.Extensions;
+
 namespace Vex.Framework
 {
 
@@ -151,18 +153,18 @@ namespace Vex.Framework
                     /*
                      * Create model matrix
                      */
-                    Vector3 position = renderable.Spatial.Position;
-                    Vector3 Vextation = renderable.Spatial.Vextation;
-                    Vector3 scale = renderable.Spatial.Scale;
+                    Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
+                    Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
+                    Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
 
                     /*
                      * Create mvp matrix
                      */
                     Matrix4 modelMatrix =
                         Matrix4.CreateScale(scale) *
-                        Matrix4.CreateRotationX(MathHelper.DegreesToRadians(Vextation.X)) *
-                        Matrix4.CreateRotationY(MathHelper.DegreesToRadians(Vextation.Y)) *
-                        Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Vextation.Z))*
+                        Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.X)) *
+                        Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Y)) *
+                        Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z))*
                         Matrix4.CreateTranslation(position);
 
                     Matrix4 mvp = modelMatrix * viewMatrix* pVexjectionMatrix;

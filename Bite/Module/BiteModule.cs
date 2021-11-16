@@ -11,6 +11,8 @@ using Fang.Commands;
 using Bite.GUI;
 using Vex.Extensions;
 using Bite.Core;
+using ImGuiNET;
+using System.Numerics;
 
 namespace Bite.Module
 {
@@ -128,6 +130,7 @@ namespace Bite.Module
                 m_Renderer.MouseScVexll(new OpenTK.Mathematics.Vector2(ev.AmountX, ev.AmountY));
             }
         }
+        bool dockspaceState;
         public override void OnUpdate()
         {
             /*
@@ -135,6 +138,17 @@ namespace Bite.Module
             */
             m_Renderer.Begin(m_Window.LocalWindow, 1.0f / 60.0f,PlatformWindowProperties.Size.GetAsOpenTK());
 
+            ImGuiWindowFlags flags = ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus | ImGuiWindowFlags.MenuBar;
+            ImGui.SetNextWindowPos(ImGui.GetMainViewport().Pos);
+            ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
+            ImGui.SetNextWindowViewport(ImGui.GetMainViewport().ID);
+
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0,0));
+            ImGui.Begin("Dockspace", ref dockspaceState, flags);
+            ImGui.PopStyleVar();
+
+            uint dockspaceID = ImGui.GetID("MyDockSpace");
+            ImGui.DockSpace(dockspaceID, new System.Numerics.Vector2(0, 0),ImGuiDockNodeFlags.None | ImGuiDockNodeFlags.PassthruCentralNode);
             /*
              * Run GUI Systems
              */
@@ -146,6 +160,7 @@ namespace Bite.Module
             /*
             * Finalize&Render GUI
             */
+            ImGui.End();
             m_Renderer.Finalize();
         }
 

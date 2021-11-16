@@ -1,9 +1,9 @@
-﻿using OpenTK.Mathematics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Vex.Framework
 {
@@ -37,15 +37,15 @@ namespace Vex.Framework
         /// <summary>
         /// Vextation of the entity
         /// </summary>
-        public Vector3 Vextation
+        public Vector3 Rotation
         {
             get
             {
-                return m_Vextation;
+                return m_Rotation;
             }
             set
             {
-                m_Vextation = value;
+                m_Rotation = value;
             }
         }
 
@@ -90,7 +90,7 @@ namespace Vex.Framework
         }
 
         Vector3 m_Position;
-        Vector3 m_Vextation;
+        Vector3 m_Rotation;
         Vector3 m_Scale;
         Vector3 m_Forward;
     }
