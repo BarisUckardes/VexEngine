@@ -8,12 +8,16 @@ namespace Vex.Extensions
 {
     public static class TextureFormatExtensions
     {
-        public static TextureFormat GetAsTextureFormat(this string text)
+        public static TextureFormat GetAsTextureFormat(this string text,bool hasAlpha)
         {
             switch (text)
             {
                 case "image/jpeg":
                     {
+                        if(hasAlpha)
+                        {
+                            return TextureFormat.Rgba;
+                        }
                         return TextureFormat.Rgb;
                     }
                 case "image/png":
@@ -24,24 +28,36 @@ namespace Vex.Extensions
 
             return TextureFormat.None;
         }
-        public static TextureInternalFormat GetAsTextureInternalFormat(this string text,int bits)
+        public static TextureInternalFormat GetAsTextureInternalFormat(this string text,int bits,bool hasAlpha)
         {
-            if (text == "image/jpeg" && bits == 8)
+            if (text == "image/jpeg")
             {
                 switch (bits)
                 {
                     case 8:
                         {
+                            if(hasAlpha)
+                            {
+                                return TextureInternalFormat.Rgba8;
+                            }
                             return TextureInternalFormat.Rgb8;
                             break;
                         }
                     case 16:
                         {
+                            if (hasAlpha)
+                            {
+                                return TextureInternalFormat.Rgba16f;
+                            }
                             return TextureInternalFormat.Rgb16f;
                             break;
                         }
                     case 32:
                         {
+                            if (hasAlpha)
+                            {
+                                return TextureInternalFormat.Rgba32f;
+                            }
                             return TextureInternalFormat.Rgb32f;
                             break;
                         }

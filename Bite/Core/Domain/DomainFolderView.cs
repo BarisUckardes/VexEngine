@@ -21,7 +21,7 @@ namespace Bite.Core
             m_ParentFolder = parentFolder;
             m_ID = Guid.NewGuid();
 
-            Console.WriteLine("Folder name: " + m_Name);
+           
             /*
              * Collect folders
              */
@@ -40,13 +40,13 @@ namespace Bite.Core
                 /*
                  * Create domain folder and register it
                  */
-                m_SubFolders.Add(new DomainFolderView(this,folders[folderIndex], subFolders, subFiles));
+                m_SubFolders.Add(new DomainFolderView(this,folders[folderIndex],subFiles, subFolders));
             }
 
             /*
              * Collect files
              */
-            for(int fileIndex=0; fileIndex < files.Length; fileIndex++)
+            for (int fileIndex=0; fileIndex < files.Length; fileIndex++)
             { 
                 /*
                  * Create meta data

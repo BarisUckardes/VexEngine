@@ -12,7 +12,6 @@ namespace Bite.GUI
         {
             TargetObjectType = targetObjectType;
             ObjectLayoutType = objectLayoutType;
-            Console.WriteLine($"[{objectLayoutType.Name}] layout type targets [{targetObjectType.Name}]");
         }
 
         public readonly Type TargetObjectType;

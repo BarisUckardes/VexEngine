@@ -27,7 +27,6 @@ namespace Vex.Asset
         /// <returns></returns>
         public VexObject GenerateAsset(AssetType type,string yamlText)
         {
-            Console.WriteLine("Try generate asset with type " + type.ToString());
             switch (type)
             {
                 case AssetType.Undefined:
@@ -61,7 +60,6 @@ namespace Vex.Asset
                     break;
             }
 
-            Console.WriteLine("Return null");
             return null;
         }
 

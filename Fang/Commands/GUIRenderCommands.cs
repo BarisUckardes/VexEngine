@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Fang.GUI;
 using ImGuiNET;
-using OpenTK.Mathematics;
 using Vex.Graphics;
 
 namespace Fang.Commands
@@ -156,9 +156,9 @@ namespace Fang.Commands
             return state;
         }
 
-        public static void CreateImage(Texture2D texture)
+        public static void CreateImage(Texture2D texture, in Vector2 size)
         {
-            ImGui.Image((IntPtr)texture.Handle,new System.Numerics.Vector2(128,128));
+            ImGui.Image((IntPtr)texture.Handle, size);
         }
      
     }

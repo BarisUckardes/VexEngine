@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
-using OpenTK.Mathematics;
 using Fang.Commands;
+using System.Numerics;
 
 namespace Bite.GUI
 {

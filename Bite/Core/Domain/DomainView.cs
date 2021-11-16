@@ -33,7 +33,7 @@ namespace Bite.Core
              * collect folders
              */
             string[] folderPaths = Directory.GetDirectories(domainFolderPath + @"\");
-
+          
             /*
              * Collect files
              */

@@ -51,7 +51,7 @@ namespace Bite.Core
                     case AssetType.Undefined:
                         break;
                     case AssetType.Texture2D:
-                        resources.Add(new EditorResource(Texture2D.LoadTextureFromPath(fileAbsolutePath),name,assetType));
+                        resources.Add(new EditorResource(Texture2D.LoadTextureFromPath(fileAbsolutePath,false),name,assetType));
                         break;
                     case AssetType.Shader:
                         break;
@@ -101,10 +101,14 @@ namespace Bite.Core
 
         private readonly string[] m_ValidateList = new string[] 
         {
-            @"Bite\Resources\FolderIcon.png"
+            @"Bite\Resources\FolderIcon.png",
+            @"Bite\Resources\Texture2DIcon.png",
+            @"Bite\Resources\BackButtonIcon.png"
         };
         private readonly AssetType[] m_AssetTypes = new AssetType[]
         {
+            AssetType.Texture2D,
+            AssetType.Texture2D,
             AssetType.Texture2D
         };
         

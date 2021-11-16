@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Vex.Graphics
     {
         public static Texture2D LoadTextureFromPath(string path, bool flipVertically = true)
         {
+
             /*
              * Load image
              */
@@ -53,8 +55,8 @@ namespace Vex.Graphics
              * Create texture
              */
             Texture2D texture = new Texture2D(image.Width, image.Height,
-                format.DefaultMimeType.GetAsTextureFormat(),
-                format.DefaultMimeType.GetAsTextureInternalFormat(image.PixelType.BitsPerPixel));
+                format.DefaultMimeType.GetAsTextureFormat(image.PixelType.AlphaRepresentation == null),
+                format.DefaultMimeType.GetAsTextureInternalFormat(image.PixelType.BitsPerPixel, image.PixelType.AlphaRepresentation == PixelAlphaRepresentation.Associated));
 
             texture.SetData(pixels.ToArray());
 
