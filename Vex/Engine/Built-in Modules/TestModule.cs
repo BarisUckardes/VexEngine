@@ -22,7 +22,7 @@ namespace Vex.Engine
 
             Entity observerEntity = new Entity("Sprite observer entity", world);
             SpriteObserver spriteObserverComponent = observerEntity.AddComponent<SpriteObserver>();
-            spriteObserverComponent.ClearColor = OpenTK.Mathematics.Color4.CornflowerBlue;
+            spriteObserverComponent.ClearColor = OpenTK.Mathematics.Color4.Crimson;
             observerEntity.Spatial.Position = new OpenTK.Mathematics.Vector3(0, 0, 0);
             string vertexSource  = @"
 #version 450

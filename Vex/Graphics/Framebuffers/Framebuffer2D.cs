@@ -16,6 +16,7 @@ namespace Vex.Graphics
             m_Width = width;
             m_Height = height;
             Format = format;
+
             CreateAndAttachTexture2D(new FramebufferAttachmentParams(width, height, 0, format, internalFormat));
         }
 

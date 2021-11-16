@@ -294,7 +294,9 @@ void main()
                 0.0f,
                 -1.0f,
                 1.0f);
-
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.ClearColor(OpenTK.Mathematics.Color4.CornflowerBlue);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Viewport(0, 0, _windowWidth, _windowHeight);
             _shader.UseShader();
             GL.UniformMatrix4(_shader.GetUniformLocation("pVexjection_matrix"), false, ref mvp);

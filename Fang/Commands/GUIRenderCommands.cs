@@ -160,6 +160,14 @@ namespace Fang.Commands
         {
             ImGui.Image((IntPtr)texture.Handle, size);
         }
-     
+        public static void CreateImage(Texture texture, in Vector2 size)
+        {
+            ImGui.Image((IntPtr)texture.Handle, size);
+        }
+        public static void CreateImage(Texture texture, in Vector2 size,in Vector2 uv0,in Vector2 uv1)
+        {
+            ImGui.Image((IntPtr)texture.Handle, size,uv0,uv1);
+        }
+
     }
 }

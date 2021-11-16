@@ -26,6 +26,12 @@ namespace Bite
             GUIWindow.CreateWindow(typeof(DomainObserverGUIWindow));
         }
 
+        [MainMenuItem("Windows/Game Observer")]
+        public static void CreateGameObserver()
+        {
+            GUIWindow.CreateWindow(typeof(GameObserverGUIWindow));
+        }
+
 
     }
 }

@@ -15,7 +15,8 @@ namespace Vex.Graphics
     {
         public SetViewportRC(in Vector2 offset,in Vector2 size)
         {
-
+            m_Offset = offset;
+            m_Size = size;
         }
         protected override void ExecuteImpl()
         {

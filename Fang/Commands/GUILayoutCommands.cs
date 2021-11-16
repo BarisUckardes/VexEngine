@@ -31,6 +31,10 @@ namespace Fang.Commands
         {
             return ImGui.GetFontSize();
         }
+        public static Vector2 GetCurrentWindowSize()
+        {
+            return ImGui.GetWindowSize();
+        }
        
     }
 }

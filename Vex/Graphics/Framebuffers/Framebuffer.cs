@@ -61,6 +61,21 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// Returns the internal texture format
+        /// </summary>
+        public TextureInternalFormat InternalFormat
+        {
+            get
+            {
+                return m_InternalFormat;
+            }
+            protected set
+            {
+                m_InternalFormat = value;
+            }
+        }
+
+        /// <summary>
         /// Returns the back texture
         /// </summary>
         public Texture BackTexture
@@ -118,6 +133,11 @@ namespace Vex.Graphics
         protected void CreateAndAttachTexture2D(FramebufferAttachmentParams backTextureAttachment)
         {
             /*
+             * Creat framebuffer
+             */
+            GL.GenFramebuffers(1, out m_FramebufferID);
+
+            /*
              * bind framebuffer
              */
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, m_FramebufferID);
@@ -133,6 +153,15 @@ namespace Vex.Graphics
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, backTexture.Handle, 0);
 
             /*
+             * Set depth render buffer
+             */
+            //int renderBufferID;
+            //GL.GenRenderbuffers(1, out renderBufferID);
+            //GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderBufferID);
+            //GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, 32, 32);
+            //GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, renderBufferID);
+
+            /*
              * Unbind framebuffer
              */
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
@@ -146,6 +175,8 @@ namespace Vex.Graphics
              * Set attachment
              */
             m_BackTexture = backTexture;
+
+
         }
 
 
@@ -193,6 +224,7 @@ namespace Vex.Graphics
 
         private Texture m_BackTexture;
         private TextureFormat m_Format;
+        private TextureInternalFormat m_InternalFormat;
         private uint m_FramebufferID;
     }
 }

@@ -12,11 +12,16 @@ namespace Vex.Graphics
     /// </summary>
     public abstract class ObserverComponent : Component
     {
+        public static ObserverComponent PrimalObserver { get; protected set; }
         public ObserverComponent()
         {
-            m_Framebuffer = new Framebuffer2D();
+            m_Framebuffer = new Framebuffer2D(512,512,TextureFormat.Rgba,TextureInternalFormat.Rgba32f);
+            //m_Framebuffer = new Framebuffer2D();
             m_NearPlane = -1000;
             m_FarPlane = 1000.0f;
+            m_ClearColor = OpenTK.Mathematics.Color4.CornflowerBlue;
+            if(PrimalObserver == null)
+                PrimalObserver = this;
         }
        
 

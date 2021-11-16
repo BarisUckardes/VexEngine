@@ -74,8 +74,8 @@ namespace Vex.Framework
             /*
              * Set state
              */
-            //PipelineState state = new PipelineState();
-            //commandBuffer.SetPipelineState(state);
+            PipelineState state = new PipelineState();
+            commandBuffer.SetPipelineState(state);
 
             /*
              * Iterate each observer
@@ -111,6 +111,12 @@ namespace Vex.Framework
                  * Set observer framebuffer
                  */
                 commandBuffer.SetFramebuffer(framebuffer);
+
+                /*
+                 * Set framebuffer viewport
+                 */
+                Framebuffer2D framebufferAs2D = (Framebuffer2D)framebuffer;
+                commandBuffer.SetViewport(Vector2.Zero, new Vector2(framebufferAs2D.Width, framebufferAs2D.Height));
 
                 /*
                  * Clear color the framebuffer
