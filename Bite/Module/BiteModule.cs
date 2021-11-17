@@ -138,17 +138,28 @@ namespace Bite.Module
             */
             m_Renderer.Begin(m_Window.LocalWindow, 1.0f / 60.0f,PlatformWindowProperties.Size.GetAsOpenTK());
 
+            /*
+             * Create main dockspace window
+             */
             ImGuiWindowFlags flags = ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus | ImGuiWindowFlags.MenuBar;
             ImGui.SetNextWindowPos(ImGui.GetMainViewport().Pos);
             ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
             ImGui.SetNextWindowViewport(ImGui.GetMainViewport().ID);
 
+            /*
+             * Create main dockspace window
+             */
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0,0));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0);
             ImGui.Begin("Dockspace", ref dockspaceState, flags);
             ImGui.PopStyleVar();
 
+            /*
+             * Create main dockspace
+             */
             uint dockspaceID = ImGui.GetID("MyDockSpace");
             ImGui.DockSpace(dockspaceID, new System.Numerics.Vector2(0, 0),ImGuiDockNodeFlags.None | ImGuiDockNodeFlags.PassthruCentralNode);
+
             /*
              * Run GUI Systems
              */

@@ -12,7 +12,7 @@ namespace Bite.Core
     {
         public override void OnAttach()
         {
-
+            return;
 
             /*
              * Get project settings path

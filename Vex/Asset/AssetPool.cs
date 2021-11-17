@@ -34,8 +34,8 @@ namespace Vex.Asset
             /*
              * Debug
              */
-            //Console.WriteLine("Asset pool initialized with...");
-            //Console.WriteLine($"{m_Records.Count} records, {m_Assets.Count} assets");
+            Console.WriteLine("Asset pool initialized with...");
+            Console.WriteLine($"{m_Records.Count} records, {m_Assets.Count} assets");
         }
 
         /// <summary>

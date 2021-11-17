@@ -25,7 +25,7 @@ namespace Vex.Platform
         /// <summary>
         /// Retunrs the application executable directory
         /// </summary>
-        public static string ExecutableDirectory
+        public static string ProjectDirectory
         {
             get
             {
@@ -62,8 +62,9 @@ namespace Vex.Platform
         {
             get
             {
-                return ExecutableDirectory + @"\Domain";
+                return ProjectDirectory + @"\Domain";
             }
         }
+        
     }
 }
