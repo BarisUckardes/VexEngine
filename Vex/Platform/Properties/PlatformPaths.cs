@@ -45,6 +45,17 @@ namespace Vex.Platform
         }
 
         /// <summary>
+        /// Returns the local application data folder
+        /// </summary>
+        public static string LocalApplicationData
+        {
+            get
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            }
+        }
+
+        /// <summary>
         /// Returns the desktop directory
         /// </summary>
         public static string DesktopDirectory

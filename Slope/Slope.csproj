@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bite\Bite.csproj" />
     <ProjectReference Include="..\Fang\Fang.csproj" />
+    <ProjectReference Include="..\Vex\Vex.csproj" />
   </ItemGroup>
 
 </Project>

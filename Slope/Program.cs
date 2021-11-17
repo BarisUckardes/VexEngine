@@ -22,7 +22,7 @@ namespace Slope
             GUIEditor editor = new GUIEditor(windowCreateParams, windowUpdateParams);
 
 
-            ProjectBuilder builder = new ProjectBuilder(@"C:\Users\baris\Desktop\ff\", "MyProject",33,Guid.NewGuid());
+            ProjectBuilder builder = new ProjectBuilder(@"C:\Users\PC\Desktop\tt\", "MyProject",33,Guid.NewGuid());
             builder.CreateProject();
 
             /*

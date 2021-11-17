@@ -9,7 +9,7 @@ using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 namespace Bite.Core
 {
-    internal sealed class ProjectFileResolver : AssetResolver
+    public sealed class ProjectFileResolver : AssetResolver
     {
         public override Type ExpectedAssetType
         {
@@ -101,7 +101,7 @@ namespace Bite.Core
             /*
              * End mapping
              */
-            emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
+            emitter.Emit(new MappingEnd());
         }
     }
 }

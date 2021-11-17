@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
+using Bite.Core;
+using YamlDotNet.Serialization;
+using Vex.Platform;
 
 namespace Slope.Project
 {
@@ -23,10 +26,11 @@ namespace Slope.Project
             /*
              * Initialize paths
              */
-            string domainFolderPath = m_Directory + @"\Domain";
-            string projectSettingsFolderPath = m_Directory + @"\Project Settings";
-            string codeBaseFolderPath = m_Directory + @"CodeBase";
-
+            string projectDirectoryWithProjectName = m_Directory + @"\" + m_ProjectName;
+            string domainFolderPath = projectDirectoryWithProjectName + @"\Domain";
+            string projectSettingsFolderPath = projectDirectoryWithProjectName + @"\Project Settings";
+            string codeBaseFolderPath = projectDirectoryWithProjectName + @"\CodeBase";
+           
             /*
              * Create directory
              */
@@ -50,21 +54,66 @@ namespace Slope.Project
             /*
              * Create code base files
              */
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Normal;
-            startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = "hell.txt";
-            startInfo.UseShellExecute = true;
-            process.StartInfo = startInfo;
-            process.Start();
-            System.Threading.Thread.Sleep(1000);
-            process.Kill();
+            Process commandLineProcess = new Process();
+            commandLineProcess.StartInfo.FileName = "cmd.exe";
+            commandLineProcess.StartInfo.RedirectStandardInput = true;
+            commandLineProcess.StartInfo.RedirectStandardOutput = true;
+            commandLineProcess.StartInfo.CreateNoWindow = true;
+            commandLineProcess.StartInfo.UseShellExecute = false;
+            commandLineProcess.Start();
+
+            commandLineProcess.StandardInput.WriteLine("cd " + codeBaseFolderPath);
+            commandLineProcess.StandardInput.WriteLine("dotnet new sln --name mysolution.sln");
+            commandLineProcess.StandardInput.WriteLine("dotnet new classlib --output UserGameCode/");
+            commandLineProcess.StandardInput.WriteLine("dotnet new classlib --output UserEditorCode/");
+
+            commandLineProcess.StandardInput.Flush();
+            commandLineProcess.StandardInput.Close();
+            commandLineProcess.WaitForExit();
 
             /*
-             * Create project files
+             * Write project file contents
              */
-           // ProjectFileContent projectFileContent;
+            ProjectFileContent content = new ProjectFileContent(m_ProjectName, m_Version, m_ID);
+            ISerializer serializer = new SerializerBuilder().WithTypeConverter(new ProjectFileResolver()).Build();
+            string projectFileYamlText = serializer.Serialize(content);
+            File.WriteAllText(projectSettingsFolderPath + @"\" + m_ProjectName + ".vproject",projectFileYamlText);
+
+            /*
+             * Write new project to temp
+             */
+            string localApplicationPath = PlatformPaths.LocalApplicationData;
+            string localApplicationVexPath = localApplicationPath + @"\Vex";
+            string localApplicationSlopePath = localApplicationVexPath + @"\Slope";
+            string localApplicationSlopeProjectsPath = localApplicationSlopePath + @"\validatedProjectes.txt";
+
+            /*
+             * Validate vex path
+             */
+            if(!Directory.Exists(localApplicationVexPath))
+            {
+                Directory.CreateDirectory(localApplicationVexPath);
+            }
+
+            /*
+             * Validate slope path
+             */
+            if(!Directory.Exists(localApplicationSlopePath))
+            {
+                Directory.CreateDirectory(localApplicationSlopePath);
+            }
+
+            /*
+             * Validate slope projects
+             */
+            if(!File.Exists(localApplicationSlopeProjectsPath))
+            {
+                File.WriteAllText(localApplicationSlopeProjectsPath, m_Directory);
+            }
+            else // already exists append anew line
+            {
+                File.AppendAllText(localApplicationSlopeProjectsPath, "\n" + m_Directory);
+            }
 
         }
         private string m_Directory;
