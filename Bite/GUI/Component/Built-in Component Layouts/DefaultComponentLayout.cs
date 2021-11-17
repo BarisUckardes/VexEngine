@@ -32,7 +32,6 @@ namespace Bite.GUI
              */
             foreach(FieldInfo info in m_DefaultInfo.FieldInfo)
             {
-                Console.WriteLine("Field info: " + info.Name);
                 if(info.FieldType == typeof(Vector3))
                 {
                     Vector3 value = (Vector3)info.GetValue(TargetComponent);

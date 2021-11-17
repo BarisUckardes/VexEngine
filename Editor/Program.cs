@@ -17,20 +17,22 @@ namespace Game
             /*
              * Initialize application create parameters
              */
-            WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Normal, "R Engine", 100, 100, 1280, 720, false);
+            WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Normal, "Vex Engine", 100, 100, 1280, 720, false);
             WindowUpdateParams windowUpdateParams = new WindowUpdateParams(1.0f / 60.0f, 1.0f / 60.0f, false);
 
             /*
              * Create application
              */ 
-            Application application = new Application("Ro", windowCreateParams, windowUpdateParams, args);
+            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, args);
 
             /*
              * Create bite commands
              */
             List<CoreCommand> coreCommands = new List<CoreCommand>();
-            coreCommands.Add(new EditorResourcesLoaderCommand());
             coreCommands.Add(new DomainCoreCommand());
+            coreCommands.Add(new ProjectLoaderCommand());
+            coreCommands.Add(new EditorResourcesLoaderCommand());
+            
 
             /*
              * Creat bite gui systems

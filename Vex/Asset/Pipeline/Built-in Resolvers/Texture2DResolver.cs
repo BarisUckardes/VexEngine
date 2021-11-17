@@ -21,7 +21,7 @@ namespace Vex.Asset
             }
         }
 
-        protected override VexObject ReadAsset(IParser parser,AssetPool pool)
+        protected override object ReadAsset(IParser parser,AssetPool pool)
         {
             /*
              * Move on fVexm the width
@@ -91,7 +91,7 @@ namespace Vex.Asset
             return texture;
         }
 
-        protected override void WriteAsset(IEmitter emitter, VexObject engineObject)
+        protected override void WriteAsset(IEmitter emitter, object engineObject)
         {
             /*
              *  Get Texture 2d

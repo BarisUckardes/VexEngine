@@ -20,12 +20,12 @@ namespace Vex.Asset
             }
         }
 
-        protected override VexObject ReadAsset(IParser parser, AssetPool pool)
+        protected override object ReadAsset(IParser parser, AssetPool pool)
         {
             throw new NotImplementedException();
         }
 
-        protected override void WriteAsset(IEmitter emitter, VexObject targetObject)
+        protected override void WriteAsset(IEmitter emitter, object targetObject)
         {
             /*
              * Get Shader program

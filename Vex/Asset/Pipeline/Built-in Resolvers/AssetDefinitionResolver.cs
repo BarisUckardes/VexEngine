@@ -20,7 +20,7 @@ namespace Vex.Asset
             }
         }
 
-        protected override VexObject ReadAsset(IParser parser,AssetPool pool)
+        protected override object ReadAsset(IParser parser,AssetPool pool)
         {
             /*
              * Move on fVexm the name
@@ -58,7 +58,7 @@ namespace Vex.Asset
             return new AssetDefinition(nameYaml,Guid.Parse(idYaml),(AssetType)(Convert.ToInt32(typeText)));
         }
 
-        protected override void WriteAsset(IEmitter emitter, VexObject engineObject)
+        protected override void WriteAsset(IEmitter emitter, object engineObject)
         {
             AssetDefinition definition = engineObject as AssetDefinition;
 

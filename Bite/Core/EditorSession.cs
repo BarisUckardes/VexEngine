@@ -23,6 +23,17 @@ namespace Bite.Core
                 return m_ApplicationSession.Worlds;
             }
         }
+        public string ApplicationWindowTitle
+        {
+            get
+            {
+                return m_ApplicationSession.WindowTitle;
+            }
+            set
+            {
+                m_ApplicationSession.WindowTitle = value;
+            }
+        }
 
         public DomainView FileDomain
         {
@@ -33,6 +44,18 @@ namespace Bite.Core
             internal set
             {
                 m_Domain = value;
+            }
+        }
+
+        public ProjectFileContent ProjectFile
+        {
+            get
+            {
+                return m_ProjectFile;
+            }
+            internal set
+            {
+                m_ProjectFile = value;
             }
         }
         public VexObject GetEditorResource(string name,AssetType type)
@@ -79,5 +102,6 @@ namespace Bite.Core
         private List<EditorResource> m_Resources;
         private ApplicationSession m_ApplicationSession;
         private DomainView m_Domain;
+        private ProjectFileContent m_ProjectFile;
     }
 }

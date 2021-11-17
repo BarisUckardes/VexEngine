@@ -57,6 +57,17 @@ namespace Vex.Application
                 return m_Window;
             }
         }
+        public string WindowTitle
+        {
+            get
+            {
+                return m_Window.LocalWindow.WindowTitle;
+            }
+            set
+            {
+                m_Window.LocalWindow.WindowTitle = value;
+            }
+        }
         public bool HasShutdownRequest
         {
             get

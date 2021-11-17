@@ -30,9 +30,9 @@ namespace Vex.Graphics
         }
 
        
-        public override Matrix4 GetPVexjectionMatrix()
+        public override Matrix4 GetProjectionMatrix()
         {
-            return Matrix4.CreateOrthographicOffCenter(-OrthoSize,OrthoSize,-OrthoSize,OrthoSize,NearPlane,FarPlane);
+            return Matrix4.CreateOrthographicOffCenter(-OrthoSize*AspectRatio,OrthoSize*AspectRatio,-OrthoSize,OrthoSize,NearPlane,FarPlane);
         }
 
         public override Matrix4 GetViewMatrix()

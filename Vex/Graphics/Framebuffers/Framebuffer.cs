@@ -86,6 +86,14 @@ namespace Vex.Graphics
             }
         }
 
+        public Texture DepthTexture
+        {
+            get
+            {
+                return m_DetphTexture;
+            }
+        }
+
         public bool IsDestroyed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 
@@ -223,6 +231,7 @@ namespace Vex.Graphics
         }
 
         private Texture m_BackTexture;
+        private Texture m_DetphTexture;
         private TextureFormat m_Format;
         private TextureInternalFormat m_InternalFormat;
         private uint m_FramebufferID;

@@ -60,6 +60,10 @@ namespace Vex.Platform
                 return m_InputState;
             }
         }
+
+        /// <summary>
+        /// Returns platform events which this window buffered
+        /// </summary>
         public PlatformEvent[] Events
         {
             get
@@ -68,6 +72,20 @@ namespace Vex.Platform
             }
         }
 
+        public string WindowTitle
+        {
+            get
+            {
+                return this.Title;
+            }
+            set
+            {
+                this.Title = Title;
+            }
+        }
+        /// <summary>
+        /// Returns the width of this window
+        /// </summary>
         public int Width
         {
             get
@@ -75,6 +93,10 @@ namespace Vex.Platform
                 return m_Width;
             }
         }
+
+        /// <summary>
+        /// Returns the height of this window
+        /// </summary>
         public int Height
         {
             get
@@ -83,6 +105,9 @@ namespace Vex.Platform
             }
         }
 
+        /// <summary>
+        /// Returns whether this window has a close request
+        /// </summary>
         public bool HasWindowCloseRequest
         {
             get
@@ -90,6 +115,7 @@ namespace Vex.Platform
                 return m_WindowCloseRequest;
             }
         }
+
         /// <summary>
         /// Updates the native window input events and creates a one-time inout state
         /// </summary>

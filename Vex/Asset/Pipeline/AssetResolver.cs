@@ -59,7 +59,7 @@ namespace Vex.Asset
 
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
-            WriteAsset(emitter, value as VexObject);
+            WriteAsset(emitter, value);
         }
 
         /// <summary>
@@ -68,14 +68,14 @@ namespace Vex.Asset
         /// <param name="parser"></param>
         /// <param name="pool"></param>
         /// <returns></returns>
-        protected abstract VexObject ReadAsset(IParser parser,AssetPool pool);
+        protected abstract object ReadAsset(IParser parser,AssetPool pool);
 
         /// <summary>
         /// Writes an object via emitter
         /// </summary>
         /// <param name="emitter"></param>
         /// <param name="engineObject"></param>
-        protected abstract void WriteAsset(IEmitter emitter,VexObject targetObject);
+        protected abstract void WriteAsset(IEmitter emitter,object targetObject);
 
 
         private AssetPool m_Pool;

@@ -107,7 +107,7 @@ namespace Vex.Framework
                 /*
                  * Get observer pVexjection matrix
                  */
-                Matrix4 pVexjectionMatrix = observer.GetPVexjectionMatrix();
+                Matrix4 pVexjectionMatrix = observer.GetProjectionMatrix();
 
                 /*
                  * Set observer framebuffer

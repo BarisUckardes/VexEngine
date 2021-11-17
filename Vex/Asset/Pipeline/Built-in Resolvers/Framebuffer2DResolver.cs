@@ -20,7 +20,7 @@ namespace Vex.Asset
             }
         }
 
-        protected override VexObject ReadAsset(IParser parser, AssetPool pool)
+        protected override object ReadAsset(IParser parser, AssetPool pool)
         {
             /*
              * Move to width
@@ -61,7 +61,7 @@ namespace Vex.Asset
             return framebuffer;
         }
 
-        protected override void WriteAsset(IEmitter emitter, VexObject engineObject)
+        protected override void WriteAsset(IEmitter emitter, object engineObject)
         {
             /*
              * Get framebuffer2D

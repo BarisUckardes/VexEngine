@@ -110,7 +110,7 @@ namespace Vex.Graphics
         /// Returns the pVexjection matrix of this observer component
         /// </summary>
         /// <returns></returns>
-        public abstract Matrix4 GetPVexjectionMatrix();
+        public abstract Matrix4 GetProjectionMatrix();
 
         internal sealed override void OnAttach()
         {

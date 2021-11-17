@@ -18,7 +18,8 @@ namespace Bite.GUI
 
         public override void OnLayoutBegin()
         {
-            m_PrimaryObserver = ObserverComponent.PrimalObserver.Framebuffer;
+            m_PrimaryObserver = ObserverComponent.PrimalObserver;
+            m_PrimaryFramebuffer = m_PrimaryObserver.Framebuffer;
         }
 
         public override void OnLayoutFinalize()
@@ -34,11 +35,18 @@ namespace Bite.GUI
             Vector2 windowAnchor = GUILayoutCommands.GetCursor();
             Vector2 windowSize = GUILayoutCommands.GetCurrentWindowSize();
             Vector2 halfWindowSize = windowSize / 2.0f;
-            float textureSize = MathF.Min(windowSize.X, windowSize.Y)*0.8f;
-            float halfTextureSize = textureSize / 2.0f;
-            float offsetX = halfWindowSize.X - halfTextureSize;
-            float offsetY = halfWindowSize.Y - halfTextureSize;
+            float textureWidth = windowSize.X*0.8f;
+            float textureHeight = windowSize.Y * 0.8f;
+            float halfTextureWidth = textureWidth / 2.0f;
+            float helfTextureHeight = textureHeight / 2.0f;
+            float offsetX = halfWindowSize.X - halfTextureWidth;
+            float offsetY = halfWindowSize.Y - helfTextureHeight;
             GUILayoutCommands.SetCursorPos(windowAnchor + new Vector2(offsetX,offsetY));
+
+            /*
+             * Set camera aspect ratio
+             */
+            m_PrimaryObserver.AspectRatio = textureWidth / textureHeight;
 
             /*
              * Create flipped uvs
@@ -49,7 +57,7 @@ namespace Bite.GUI
             /*
              * Render framebuffer image
              */
-            GUIRenderCommands.CreateImage(m_PrimaryObserver.BackTexture, new Vector2(textureSize, textureSize),uv0,uv1);
+            GUIRenderCommands.CreateImage(m_PrimaryFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight),uv0,uv1);
         }
 
         public override void OnVisible()
@@ -58,6 +66,7 @@ namespace Bite.GUI
         }
 
 
-        private Framebuffer m_PrimaryObserver;
+        private ObserverComponent m_PrimaryObserver;
+        private Framebuffer m_PrimaryFramebuffer;
     }
 }

@@ -21,7 +21,7 @@ namespace Vex.Asset
             }
         }
 
-        protected override VexObject ReadAsset(IParser parser,AssetPool pool)
+        protected override object ReadAsset(IParser parser,AssetPool pool)
         {
             string category;
             string categoryName;
@@ -380,7 +380,7 @@ namespace Vex.Asset
             return material;
         }
 
-        protected override void WriteAsset(IEmitter emitter, VexObject engineObject)
+        protected override void WriteAsset(IEmitter emitter, object engineObject)
         {
             /*
              * Get material
