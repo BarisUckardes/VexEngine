@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fang.Commands;
 using System.Reflection;
+using ImGuiNET;
 namespace Bite.GUI
 {
   
@@ -53,7 +54,7 @@ namespace Bite.GUI
                  */
                 WindowLayoutAttribute layoutAttribute = (WindowLayoutAttribute)layout.GetType().GetCustomAttribute<WindowLayoutAttribute>();
                 isVisible = GUIRenderCommands.CreateWindow(layoutAttribute != null ? layoutAttribute.WindowName : layout.GetType().Name,"",ref isExitRequested);
-
+                Console.WriteLine("Window dock id: " + ImGui.GetWindowDockID());
 
                 /*
                  * Check if window is visible

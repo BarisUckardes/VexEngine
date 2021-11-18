@@ -58,5 +58,6 @@ namespace Bite.GUI
         private EditorSession m_Session;
         private bool m_DetachRequest;
         private bool m_Visibility;
+        private Guid m_ID;
     }
 }

@@ -25,9 +25,9 @@ namespace Game
             Console.WriteLine("Editor intialized with target project path: " + args[0] );
 
             /*
-             * Set paths
+             * Get arg0 as target project directory
              */
-            PlatformPaths.DomainDirectory = args[0] + @"\Domain";
+            string targetProjectDirectory = args[0];
 
             /*
              * Initialize application create parameters
@@ -38,7 +38,7 @@ namespace Game
             /*
              * Create application
              */ 
-            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, args);
+            Application application = new Application("Vex", windowCreateParams, windowUpdateParams,targetProjectDirectory, args);
 
             /*
              * Create bite commands
@@ -47,6 +47,7 @@ namespace Game
             coreCommands.Add(new DomainCoreCommand());
             coreCommands.Add(new ProjectLoaderCommand());
             coreCommands.Add(new EditorResourcesLoaderCommand());
+            coreCommands.Add(new EditorGUILayoutLoaderCommand());
             
 
             /*

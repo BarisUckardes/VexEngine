@@ -11,11 +11,11 @@ using ImGuiNET;
 
 namespace Slope.Editor
 {
-    internal sealed class EditorGUILayout
+    internal sealed class MainGUILayout : GUILayout
     {
-        public EditorGUILayout(string[] existingProjectPaths)
+        public MainGUILayout(string[] existingProjectPaths)
         {
-            m_ExistingProjectPaths = existingProjectPaths;
+            m_ExistingProjectPaths = new List<string>(existingProjectPaths);
         }
         public bool ExitCall
         {
@@ -24,16 +24,16 @@ namespace Slope.Editor
                 return m_ExitCall;
             }
         }
-        public void Initialize()
+        public override void Initialize()
         {
 
         }
-        public void Finalize()
+        public override void Finalize()
         {
 
         }
         bool open = false;
-        public void Render()
+        public override void Render()
         {
             /*
              * Create main window strecteh to background
@@ -61,7 +61,7 @@ namespace Slope.Editor
                  * Vertical list
                  */
                 ImGui.SetWindowFontScale(2.5f);
-                for(int projectIndex = 0;projectIndex < m_ExistingProjectPaths.Length;projectIndex++)
+                for(int projectIndex = 0;projectIndex < m_ExistingProjectPaths.Count;projectIndex++)
                 {
                     ImGui.Selectable(m_ExistingProjectPaths[projectIndex]);
                     if(ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsItemHovered())
@@ -102,16 +102,48 @@ namespace Slope.Editor
                  */
                 if(ImGui.Button("Create New Project"))
                 {
-
+                    /*
+                     * Validate existing project
+                     */
+                    if(m_CreateProjectWindow != null)
+                    {
+                        Console.WriteLine("Create project window already exists");
+                    }
+                    else
+                    {
+                        /*
+                         * Create new window
+                         */
+                        m_CreateProjectWindow = new CreateProjectWindow(this);
+                        m_CreateProjectWindow.Initialize();
+                    }
                 }
+
+                /*
+                 * Render other windows
+                 */
+                m_CreateProjectWindow?.Render();
+
+                /*
+                 * Validate window open
+                 */
+                if(m_CreateProjectWindow != null && !m_CreateProjectWindow.IsOpen)
+                {
+                    m_CreateProjectWindow.Finalize();
+                    m_CreateProjectWindow = null;
+                }
+
             }
             ImGui.PopStyleVar();
             ImGui.End();
-
-            
         }
 
+        public void AddNewProjectPath(string path)
+        {
+            m_ExistingProjectPaths.Add(path);
+        }
+        private CreateProjectWindow m_CreateProjectWindow;
         private bool m_ExitCall;
-        private string[] m_ExistingProjectPaths;
+        private List<string> m_ExistingProjectPaths;
     }
 }

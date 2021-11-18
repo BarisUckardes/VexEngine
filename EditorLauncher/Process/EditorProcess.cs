@@ -9,9 +9,9 @@ using Vex.Platform;
 
 namespace EditorLauncher
 {
-    internal class Process
+    internal class EditorProcess
     {
-        public Process(string processName,  string projectPath)
+        public EditorProcess(string processName,  string projectPath)
         {
             m_ProcessName = processName;
             m_ProjectPath = projectPath;
@@ -34,8 +34,9 @@ namespace EditorLauncher
             startInfo.Arguments = m_ProjectPath;
             startInfo.FileName = PlatformPaths.ProgramfilesDirectory +@"\Vex\Vex\Editor.exe";
 
-            Console.WriteLine("Editor launcher create process with project path: " + m_ProjectPath);
-            Console.WriteLine("Editor launcher target editor path: " + PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\Editor.exe");
+            
+            Console.WriteLine("[Editor Launcher]Editor launcher create process with project path: " + m_ProjectPath);
+            Console.WriteLine("[Editor Launcher]Editor launcher target editor path: " + PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\Editor.exe");
 
             /*
              * Createa process

@@ -21,6 +21,13 @@ namespace Slope.Project
             m_Version = version;
             m_ID = iD;
         }
+        public string ProjectDirectoryWithProjectName
+        {
+            get
+            {
+                return m_ProjectDirectoryWithProjectName;
+            }
+        }
         public void CreateProject()
         {
             /*
@@ -113,9 +120,11 @@ namespace Slope.Project
             else // already exists append anew line
             {
                 File.AppendAllText(localApplicationSlopeProjectsPath, "\n" + projectDirectoryWithProjectName);
+                m_ProjectDirectoryWithProjectName = projectDirectoryWithProjectName;
             }
 
         }
+        private string m_ProjectDirectoryWithProjectName;
         private string m_Directory;
         private string m_ProjectName;
         private int m_Version;

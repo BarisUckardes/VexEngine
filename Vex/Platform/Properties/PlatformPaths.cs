@@ -23,17 +23,6 @@ namespace Vex.Platform
         }
 
         /// <summary>
-        /// Retunrs the application executable directory
-        /// </summary>
-        public static string ProjectDirectory
-        {
-            get
-            {
-                return System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-            }
-        }
-
-        /// <summary>
         /// Returns the program files
         /// </summary>
         public static string ProgramfilesDirectory
@@ -41,6 +30,13 @@ namespace Vex.Platform
             get
             {
                 return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            }
+        }
+        public static string Documents
+        {
+            get
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
         }
 
@@ -65,7 +61,6 @@ namespace Vex.Platform
                 return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             }
         }
-
         /// <summary>
         /// Returns the domain directory of the current session
         /// </summary>
@@ -73,15 +68,26 @@ namespace Vex.Platform
         {
             get
             {
-                return s_DomainDirectory;
+                return s_DomainRootDirectory + @"\Domain";
             }
-            set
+        }
+
+        /// <summary>
+        /// Returns the domain root directory of the current session
+        /// </summary>
+        public static string DomainRootDirectoy
+        {
+            get
             {
-                s_DomainDirectory = value;
+                return s_DomainRootDirectory;
+            }
+            internal set
+            {
+                s_DomainRootDirectory = value;
 
             }
         }
 
-        private static string s_DomainDirectory;
+        private static string s_DomainRootDirectory;
     }
 }

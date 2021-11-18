@@ -14,7 +14,7 @@ namespace Vex.Application
     /// </summary>
     public sealed class Application
     {
-        public Application(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams,string[] commandLineArguments)
+        public Application(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams,string targetDomainRootDirectory,string[] commandLineArguments)
         {
             /*
             * Initialize local lists
@@ -31,9 +31,9 @@ namespace Vex.Application
             m_WindowInterface.LocalWindow.SetApplicationEventDelegate(OnPlatformEvent);
 
             /*
-             * Set Command line arguments
+             * Set target domain directory
              */
-            CommandLineArguments.Arguments = commandLineArguments;
+            m_TargetDomainRootDirectory = targetDomainRootDirectory;
         }
 
         /// <summary>
@@ -70,6 +70,12 @@ namespace Vex.Application
             ApplicationExitType exitType = ApplicationExitType.Undefined;
 
             /*
+             * Set initialization properties
+             */
+            CommandLineArguments.Arguments = m_CommandLineArguments;
+            PlatformPaths.DomainRootDirectoy = m_TargetDomainRootDirectory;
+
+            /*
              * Create session
              */
             m_Session = new ApplicationSession(m_WindowInterface);
@@ -100,6 +106,7 @@ namespace Vex.Application
                  * Update window
                  */
                 m_WindowInterface.UpdateInput();
+
 
                 /*
                  * Stream through events
@@ -219,5 +226,7 @@ namespace Vex.Application
         private List<ReceivePlatformEventDelegate> m_ModuleEventDelegates;
         private ApplicationSession m_Session;
         private WindowInterface m_WindowInterface;
+        private string[] m_CommandLineArguments;
+        private string m_TargetDomainRootDirectory;
     }
 }

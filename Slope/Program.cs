@@ -10,6 +10,9 @@ namespace Slope
     {
         static void Main(string[] args)
         {
+            //ProjectBuilder builder = new ProjectBuilder(@"C:\Users\baris\Desktop\TestProject", "MyProject", 33, Guid.NewGuid());
+            //builder.CreateProject();
+
             /*
              * Start a new window
              */
@@ -20,10 +23,6 @@ namespace Slope
              * Create editor
              */
             GUIEditor editor = new GUIEditor(windowCreateParams, windowUpdateParams);
-
-
-            //ProjectBuilder builder = new ProjectBuilder(@"C:\Users\baris\Desktop\TestProject", "MyProject", 33, Guid.NewGuid());
-            //builder.CreateProject();
 
             /*
              * Run editor

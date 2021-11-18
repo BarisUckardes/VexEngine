@@ -39,7 +39,7 @@ namespace Slope.Editor
             string localApplicationSlopeProjectsPath = localApplicationSlopePath + @"\validatedProjectes.txt";
 
             /*
-             * Validate vex path
+             * Validate local vex path
              */
             if (!Directory.Exists(localApplicationVexPath))
             {
@@ -47,7 +47,7 @@ namespace Slope.Editor
             }
 
             /*
-             * Validate slope path
+             * Validate local slope path
              */
             if (!Directory.Exists(localApplicationSlopePath))
             {
@@ -65,7 +65,7 @@ namespace Slope.Editor
             /*
              * Create gui layout
              */
-            m_GUILayout = new EditorGUILayout(File.ReadAllLines(localApplicationSlopeProjectsPath));
+            m_GUILayout = new MainGUILayout(File.ReadAllLines(localApplicationSlopeProjectsPath));
 
         }
         public void Run()
@@ -133,6 +133,6 @@ namespace Slope.Editor
 
         private Slope.Windowing.Window m_Window;
         private GUIRenderer m_Renderer;
-        private EditorGUILayout m_GUILayout;
+        private MainGUILayout m_GUILayout;
     }
 }
