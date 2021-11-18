@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Vex\Vex.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y &quot;$(TargetDir)Fang.dll&quot; &quot;C:\Program Files\Vex\Vex&quot;" />
+  </Target>
+
 </Project>
