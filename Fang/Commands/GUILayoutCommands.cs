@@ -22,6 +22,10 @@ namespace Fang.Commands
         {
             return ImGui.GetCursorPos();
         }
+        public static Vector2 GetMousePos()
+        {
+            return ImGui.GetMousePos();
+        }
         public static void SetCursorPos(in Vector2 pos)
         {
             ImGui.SetCursorPos(pos);

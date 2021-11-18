@@ -136,7 +136,7 @@ namespace Bite.Module
             /*
             * Start listening render command
             */
-            m_Renderer.Begin(m_Window.LocalWindow, 1.0f / 60.0f,PlatformWindowProperties.Size.GetAsOpenTK());
+            m_Renderer.Begin(m_Window.LocalWindow, 1.0f / 165.0f,PlatformWindowProperties.Size.GetAsOpenTK());
 
             /*
              * Create main dockspace window

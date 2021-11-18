@@ -58,6 +58,10 @@ namespace Bite.Core
                 m_ProjectFile = value;
             }
         }
+        public void CreateDomainContent(DomainFolderView folder,string name,AssetType assetType)
+        {
+
+        }
         public VexObject GetEditorResource(string name,AssetType type)
         {
             /*

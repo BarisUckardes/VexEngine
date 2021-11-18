@@ -9,7 +9,7 @@ using Vex.Platform;
 using Vex.Graphics;
 using Vex.Asset;
 using System.Numerics;
-
+using ImGuiNET;
 namespace Bite.GUI
 {
     public class DomainObserverGUIWindow : WindowGUILayout
@@ -135,8 +135,99 @@ namespace Bite.GUI
                 GUIRenderCommands.CreateText(file.Definition.Name, file.Definition.ID.ToString());
                 GUILayoutCommands.SetCursorPos(fileAnchor + new Vector2(96, 0));
             }
+
+            /*
+             * Valdate if create menu required
+             */
+            if (GUIEventCommands.IsMouseRightButtonClicked())
+            {
+                ImGui.OpenPopup("Domain_Create_Asset");
+            }
+
+
+            /*
+             * Render create asset popup
+             */
+            bool isCreateShader = false;
+            if (ImGui.BeginPopup("Domain_Create_Asset"))
+            {
+                RenderAssetCreatePopup(ref isCreateShader);
+                ImGui.EndPopup();
+            }
+
+            /*
+             * Open create shader popup
+             */
+            if (isCreateShader)
+                ImGui.OpenPopup("Domain_Create_Shader");
+
+            /*
+             * Render create shader popup
+             */
+            if (ImGui.BeginPopup("Domain_Create_Shader"))
+            {
+                RenderShaderCreatePopup();
+                ImGui.EndPopup();
+            }
+
+
+        }
+        private void RenderAssetCreatePopup(ref bool isCreateShader)
+        {
+           
+            if (ImGui.BeginMenu("Create"))
+            {
+                if (ImGui.BeginMenu("Graphics"))
+                {
+                    if (ImGui.MenuItem("Shader"))
+                    {
+                        Console.WriteLine("Create shader popup");
+                        isCreateShader = true;
+                    }
+                    if (ImGui.MenuItem("Shader Program"))
+                    {
+
+                    }
+                    ImGui.EndMenu();
+                }
+                ImGui.EndMenu();
+            }
+        }
+        private void RenderShaderCreatePopup()
+        {
+            ImGui.Text("Create a shader");
+            ImGui.Separator();
+            ImGui.InputText("", ref m_CreateShaderNameInput, m_InputBuffer);
+            ImGui.SameLine();
+            if (ImGui.BeginCombo("##Combo", m_ShaderStage.ToString()))
+            {
+                if (ImGui.Selectable("Vertex"))
+                {
+                    m_ShaderStage = ShaderStage.Vertex;
+                }
+                if (ImGui.Selectable("Fragment"))
+                {
+                    m_ShaderStage = ShaderStage.Fragment;
+                }
+                if (ImGui.Selectable("Geometry"))
+                {
+                    m_ShaderStage = ShaderStage.Geometry;
+                }
+                ImGui.EndCombo();
+            }
+
+            if (ImGui.Button("Create"))
+            {
+                Console.WriteLine("Shader created");
+                ImGui.CloseCurrentPopup();
+                m_ShaderStage = ShaderStage.Vertex;
+            }
         }
 
+        private ShaderStage m_ShaderStage = ShaderStage.Vertex;
+        private string m_CreateShaderNameInput = string.Empty;
+
+        private uint m_InputBuffer = 24;
         private DomainFolderView m_CurrentFolder;
         private DomainView m_Domain;
         private Texture2D m_FolderIcon;

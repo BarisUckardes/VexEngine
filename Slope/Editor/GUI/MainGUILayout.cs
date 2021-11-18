@@ -72,9 +72,6 @@ namespace Slope.Editor
                         Console.WriteLine("Execute project... " + m_ExistingProjectPaths[projectIndex]);
 
                         /*
-                         * Create new process
-                         */
-                        /*
                          * Create security key
                         */
                         SecureString password = new SecureString();
