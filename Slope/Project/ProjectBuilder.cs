@@ -84,7 +84,7 @@ namespace Slope.Project
             ProjectFileContent content = new ProjectFileContent(m_ProjectName, m_Version, m_ID);
             ISerializer serializer = new SerializerBuilder().WithTypeConverter(new ProjectFileResolver()).Build();
             string projectFileYamlText = serializer.Serialize(content);
-            File.WriteAllText(projectSettingsFolderPath + @"\" + m_ProjectName + ".vproject",projectFileYamlText);
+            File.WriteAllText(projectSettingsFolderPath + @"\" + "Project.vproject",projectFileYamlText);
 
             /*
              * Write new project to temp

@@ -27,6 +27,10 @@ namespace Vex.Graphics
             {
                 return m_OrthoSize;
             }
+            set
+            {
+                m_OrthoSize = value;
+            }
         }
 
        

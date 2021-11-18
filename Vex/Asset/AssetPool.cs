@@ -16,6 +16,7 @@ namespace Vex.Asset
     {
         public AssetPool(string poolPath)
         {
+            Console.WriteLine("Pool path: " + poolPath);
             /*
              * Set local variables
              */

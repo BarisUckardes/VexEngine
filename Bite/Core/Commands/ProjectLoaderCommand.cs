@@ -12,18 +12,17 @@ namespace Bite.Core
     {
         public override void OnAttach()
         {
-            return;
-
             /*
              * Get project settings path
              */
-            string expectedProjectSettingsPath = PlatformPaths.DomainDirectory + @"\ProjectSettings\";
+            string expectedProjectSettingsPath = PlatformPaths.DomainRootDirectoy + @"\Project Settings";
 
             /*
              * Validate path
              */
             if(!Directory.Exists(expectedProjectSettingsPath))
             {
+                Console.WriteLine("Not found: " + expectedProjectSettingsPath);
                 EditorSession.ShutdownRequest();
                 return;
             }
@@ -31,13 +30,14 @@ namespace Bite.Core
             /*
              * Get project file path
              */
-            string projectFilePath = expectedProjectSettingsPath + @"\Project.rproject";
+            string projectFilePath = expectedProjectSettingsPath + @"\Project.vproject";
 
             /*
              * Validate file
              */
             if(!File.Exists(projectFilePath))
             {
+                Console.WriteLine("Not found: " + projectFilePath);
                 EditorSession.ShutdownRequest();
                 return;
             }
