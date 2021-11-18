@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slope.Windowing;
 using Vex.Platform;
+using System.IO;
 
 namespace Slope.Editor
 {
@@ -14,10 +15,58 @@ namespace Slope.Editor
 
         public GUIEditor(in WindowCreateParams createParameters,in WindowUpdateParams updateParameters)
         {
+            /*
+             * Create new window
+             */
             m_Window = new Slope.Windowing.Window("Slope Launcher",createParameters,updateParameters);
+
+            /*
+             *  Set application delegate
+             */
             m_Window.SetApplicationEventDelegate(OnReceiveWindowEvent);
+
+            /*
+             * Create renderer
+             */
             m_Renderer = new GUIRenderer(createParameters.Width, createParameters.Height);
-            m_GUILayout = new EditorGUILayout();
+
+            /*
+             * Create editor layout
+             */
+            string localApplicationPath = PlatformPaths.LocalApplicationData;
+            string localApplicationVexPath = localApplicationPath + @"\Vex";
+            string localApplicationSlopePath = localApplicationVexPath + @"\Slope";
+            string localApplicationSlopeProjectsPath = localApplicationSlopePath + @"\validatedProjectes.txt";
+
+            /*
+             * Validate vex path
+             */
+            if (!Directory.Exists(localApplicationVexPath))
+            {
+                Directory.CreateDirectory(localApplicationVexPath);
+            }
+
+            /*
+             * Validate slope path
+             */
+            if (!Directory.Exists(localApplicationSlopePath))
+            {
+                Directory.CreateDirectory(localApplicationSlopePath);
+            }
+
+            /*
+             * Validate validated projects file
+             */
+            if(!File.Exists(localApplicationSlopeProjectsPath))
+            {
+                File.CreateText(localApplicationSlopeProjectsPath);
+            }
+
+            /*
+             * Create gui layout
+             */
+            m_GUILayout = new EditorGUILayout(File.ReadAllLines(localApplicationSlopeProjectsPath));
+
         }
         public void Run()
         {
@@ -28,6 +77,8 @@ namespace Slope.Editor
 
             while (!m_Window.HasWindowCloseRequest)
             {
+                if (m_GUILayout.ExitCall)
+                    break;
                 /*
                  * Update input
                  */

@@ -15,6 +15,21 @@ namespace Game
         static void Main(string[] args)
         {
             /*
+             * Validate project start
+             */
+            if(args.Length == 0)
+            {
+                Console.WriteLine("Editor not satisfied with requied argument");
+                return;
+            }
+            Console.WriteLine("Editor intialized with target project path: " + args[0] );
+
+            /*
+             * Set paths
+             */
+            PlatformPaths.DomainDirectory = args[0] + @"\Domain";
+
+            /*
              * Initialize application create parameters
              */
             WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Normal, "Vex Engine", 100, 100, 1280, 720, false);

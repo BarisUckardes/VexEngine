@@ -73,9 +73,15 @@ namespace Vex.Platform
         {
             get
             {
-                return ProjectDirectory + @"\Domain";
+                return s_DomainDirectory;
+            }
+            set
+            {
+                s_DomainDirectory = value;
+
             }
         }
-        
+
+        private static string s_DomainDirectory;
     }
 }

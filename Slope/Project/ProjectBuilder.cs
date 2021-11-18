@@ -108,11 +108,11 @@ namespace Slope.Project
              */
             if(!File.Exists(localApplicationSlopeProjectsPath))
             {
-                File.WriteAllText(localApplicationSlopeProjectsPath, m_Directory);
+                File.WriteAllText(localApplicationSlopeProjectsPath, projectDirectoryWithProjectName);
             }
             else // already exists append anew line
             {
-                File.AppendAllText(localApplicationSlopeProjectsPath, "\n" + m_Directory);
+                File.AppendAllText(localApplicationSlopeProjectsPath, "\n" + projectDirectoryWithProjectName);
             }
 
         }

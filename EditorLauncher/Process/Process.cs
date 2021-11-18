@@ -5,15 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Security;
+using Vex.Platform;
+
 namespace EditorLauncher
 {
     internal class Process
     {
-        public Process(string processName, string executablePath, string[] args)
+        public Process(string processName,  string projectPath)
         {
             m_ProcessName = processName;
-            m_ExecutablePath = executablePath;
-            m_Args = args;
+            m_ProjectPath = projectPath;
+            m_Process = null;
         }
 
         public void CreateProcess()
@@ -29,7 +31,11 @@ namespace EditorLauncher
              */
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.Password = password;
-            startInfo.FileName = m_ExecutablePath;
+            startInfo.Arguments = m_ProjectPath;
+            startInfo.FileName = PlatformPaths.ProgramfilesDirectory +@"\Vex\Vex\Editor.exe";
+
+            Console.WriteLine("Editor launcher create process with project path: " + m_ProjectPath);
+            Console.WriteLine("Editor launcher target editor path: " + PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\Editor.exe");
 
             /*
              * Createa process
@@ -49,7 +55,6 @@ namespace EditorLauncher
         }
         private System.Diagnostics.Process m_Process;
         private string m_ProcessName;
-        private string m_ExecutablePath;
-        private string[] m_Args;
+        private string m_ProjectPath;
     }
 }
