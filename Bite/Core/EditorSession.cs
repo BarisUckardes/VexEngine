@@ -143,7 +143,7 @@ namespace Bite.Core
         /// <param name="fileName"></param>
         /// <param name="category"></param>
         /// <param name="categoryName"></param>
-        public void CreateShaderProgramContent(DomainFolderView folder,string fileName,string category,string categoryName)
+        public void CreateShaderProgramDomainContent(DomainFolderView folder,string fileName,string category,string categoryName)
         {
             /*
              * Create new shader program
@@ -154,7 +154,7 @@ namespace Bite.Core
             /*
              * Create physical shader program file
              */
-             string definitionPath = folder.FolderPath + @"\" + fileName + @".vdefinition";
+            string definitionPath = folder.FolderPath + @"\" + fileName + @".vdefinition";
             string assetPath = folder.FolderPath + @"\" + fileName + @".vasset";
             AssetDefinition definition = m_ApplicationSession.AssetPool.CreateAssetOnPath(definitionPath,assetPath,AssetType.ShaderProgram,program);
 
@@ -162,6 +162,27 @@ namespace Bite.Core
              * Register new content to domain folder view
              */
             folder.CreateNewFile(fileName, definitionPath,assetPath,definition);
+        }
+
+        public void CreateMaterialDomianContent(DomainFolderView folder,string fileName)
+        {
+            /*
+             * Create new material
+             */
+            Material material = new Material();
+            material.Name = fileName;
+
+            /*
+             * Create physical material file
+             */
+            string definitionPath = folder.FolderPath + @"\" + fileName + @".vdefinition";
+            string assetPath = folder.FolderPath + @"\" + fileName + @".vasset";
+            AssetDefinition definition = m_ApplicationSession.AssetPool.CreateAssetOnPath(definitionPath, assetPath, AssetType.Material, material);
+
+            /*
+             * Register new content to domain foler view
+             */
+            folder.CreateNewFile(fileName, definitionPath, assetPath, definition);
         }
 
         /// <summary>

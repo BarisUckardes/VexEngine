@@ -45,6 +45,7 @@ namespace Bite.GUI
             m_BackButtonIcon = Session.GetEditorResource("BackButtonIcon", AssetType.Texture2D) as Texture2D;
             m_ShaderIcon = Session.GetEditorResource("ShaderFileIcon", AssetType.Texture2D) as Texture2D;
             m_ShaderProgramIcon = Session.GetEditorResource("ShaderProgramFileIcon", AssetType.Texture2D) as Texture2D;
+            m_MaterialIcon = Session.GetEditorResource("MaterialFileIcon", AssetType.Texture2D) as Texture2D;
 
             /*
              * Initialize
@@ -204,6 +205,10 @@ namespace Bite.GUI
                 {
                     GUIRenderCommands.CreateImage(m_ShaderProgramIcon, new Vector2(128, 128));
                 }
+                else if(file.AssetType == AssetType.Material)
+                {
+                    GUIRenderCommands.CreateImage(m_MaterialIcon, new Vector2(128, 128));
+                }
 
                 /*
                  * Set anchor back
@@ -273,9 +278,10 @@ namespace Bite.GUI
             bool isCreateShader = false;
             bool isFolderCreate = false;
             bool isShaderProgramCreate = false;
+            bool isMaterialCreate = false;
             if (GUIRenderCommands.CreatePopup("Domain_Create_Asset"))
             {
-                RenderAssetCreatePopup(ref isCreateShader,ref isFolderCreate,ref isShaderProgramCreate);
+                RenderAssetCreatePopup(ref isCreateShader,ref isFolderCreate,ref isShaderProgramCreate,ref isMaterialCreate);
                 GUIRenderCommands.FinalizePopup();
             }
 
@@ -298,6 +304,12 @@ namespace Bite.GUI
                 GUIRenderCommands.SignalPopupCreate("Domain_Create_ShaderProgram");
 
             /*
+             * Open create material popup
+             */
+            if (isMaterialCreate)
+                GUIRenderCommands.SignalPopupCreate("Domain_Create_Material");
+
+            /*
              * Render create shader popup
              */
             if (GUIRenderCommands.CreatePopup("Domain_Create_Shader"))
@@ -315,6 +327,11 @@ namespace Bite.GUI
                 CreateShaderProgramCreatePopup();
                 GUIRenderCommands.FinalizePopup();
             }
+            else if (GUIRenderCommands.CreatePopup("Domain_Create_Material"))
+            {
+                CreateMaterialCreatePopup();
+                GUIRenderCommands.FinalizePopup();
+            }
 
             /*
             * Validate clikc to void
@@ -326,7 +343,7 @@ namespace Bite.GUI
             }
 
         }
-        private void RenderAssetCreatePopup(ref bool isCreateShader,ref bool isFolderCreate,ref bool isShaderProgramCreate)
+        private void RenderAssetCreatePopup(ref bool isCreateShader,ref bool isFolderCreate,ref bool isShaderProgramCreate,ref bool isMaterialCreate)
         {
             if (GUIRenderCommands.CreateMenu("Create",""))
             {
@@ -340,6 +357,10 @@ namespace Bite.GUI
                     if (GUIRenderCommands.CreateMenuItem("Shader Program",""))
                     {
                         isShaderProgramCreate = true;
+                    }
+                    if (GUIRenderCommands.CreateMenuItem("Material", ""))
+                    {
+                        isMaterialCreate = true;
                     }
                     GUIRenderCommands.FinalizeMenu();
                 }
@@ -419,6 +440,7 @@ namespace Bite.GUI
                 Console.WriteLine("Shader created");
                 GUIRenderCommands.TerminateCurrentPopup();
                 m_ShaderStage = ShaderStage.Vertex;
+                m_CreateShaderNameInput = string.Empty;
             }
         }
         private void CreateShaderProgramCreatePopup()
@@ -434,10 +456,36 @@ namespace Bite.GUI
 
             if(GUIRenderCommands.CreateButton("Create"," "))
             {
-                Session.CreateShaderProgramContent(m_CurrentFolder, m_CreateShaderProgramNameInput, m_CreateShaderProgramCategoryInput, m_CreateShaderProgramCategoryNameInput);
+                Session.CreateShaderProgramDomainContent(m_CurrentFolder, m_CreateShaderProgramNameInput, m_CreateShaderProgramCategoryInput, m_CreateShaderProgramCategoryNameInput);
                 GUIRenderCommands.TerminateCurrentPopup();
+                m_CreateShaderProgramNameInput = string.Empty;
+                m_CreateShaderProgramCategoryInput = string.Empty;
+                m_CreateShaderProgramCategoryNameInput = string.Empty;
             }
         }
+
+        /// <summary>
+        /// A popup which handles the creation of a material asset
+        /// </summary>
+        private void CreateMaterialCreatePopup()
+        {
+            GUIRenderCommands.CreateText("Create a Material", "");
+            GUIRenderCommands.CreateSeperatorLine();
+            GUIRenderCommands.CreateText("Name", " ");
+            GUIRenderCommands.CreateTextInput("", "n", ref m_CreateMaterialNameInput);
+
+            if (GUIRenderCommands.CreateButton("Create", " "))
+            {
+                Session.CreateMaterialDomianContent(m_CurrentFolder, m_CreateMaterialNameInput);
+                GUIRenderCommands.TerminateCurrentPopup();
+                m_CreateMaterialNameInput = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// A popup which handles the renaming of the target folder
+        /// </summary>
+        /// <param name="folder"></param>
         private void CreateFolderRenamePopup(DomainFolderView folder)
         {
             GUIRenderCommands.CreateText("Folder rename", "frnm");
@@ -458,17 +506,23 @@ namespace Bite.GUI
         private string m_CreateShaderProgramCategoryInput = string.Empty;
         private string m_CreateShaderProgramCategoryNameInput = string.Empty;
         private string m_CreateShaderProgramNameInput = string.Empty;
+        private string m_CreateMaterialNameInput = string.Empty;
 
         private string m_FolderRenameInput = string.Empty;
 
         private uint m_InputBuffer = 24;
+
         private DomainFolderView m_CurrentFolder;
         private DomainView m_Domain;
+
+        private object m_SelectedObject;
+
         private Texture2D m_FolderIcon;
         private Texture2D m_Texture2DIcon;
         private Texture2D m_BackButtonIcon;
         private Texture2D m_ShaderIcon;
         private Texture2D m_ShaderProgramIcon;
-        private object m_SelectedObject;
+        private Texture2D m_MaterialIcon;
+       
     }
 }

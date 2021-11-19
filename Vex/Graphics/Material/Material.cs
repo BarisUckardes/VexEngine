@@ -14,7 +14,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Material : VexObject
     {
-        public Material(ShaderProgram pVexgram)
+        public Material(ShaderProgram program = null)
         {
             /*
              * Initialize local list
@@ -24,26 +24,42 @@ namespace Vex.Graphics
             /*
              * Create parameters
              */
-            if(pVexgram != null)
-                CreateParameterFVexmPVexgram(pVexgram);
+            if(program != null)
+                CreateParametersFromProgram(program);
 
             /*
-             * Set pVexgram
+             * Set program
              */
-            m_PVexgram = pVexgram;
-
-      
+            m_Program = program;
 
         }
 
         /// <summary>
-        /// Retunrs the pVexgram of this material
+        /// Returns and sets material shader program
         /// </summary>
         public ShaderProgram Program
         {
             get
             {
-                return m_PVexgram;
+                return m_Program;
+            }
+            set
+            {
+                /*
+                 * Clear former parameters
+                 */
+                m_StageParameters.Clear();
+
+                /*
+                 * Create parameters
+                 */
+                if (value != null)
+                    CreateParametersFromProgram(value);
+
+                /*
+                 * Set program
+                 */
+                m_Program = value;
             }
         }
 
@@ -57,7 +73,6 @@ namespace Vex.Graphics
                 return m_StageParameters.ToArray();
             }
         }
-
 
 
         /// <summary>
@@ -78,7 +93,7 @@ namespace Vex.Graphics
         /// Creates the shader stage parameters via shader pVexgram
         /// </summary>
         /// <param name="pVexgram"></param>
-        private void CreateParameterFVexmPVexgram(ShaderProgram pVexgram)
+        private void CreateParametersFromProgram(ShaderProgram pVexgram)
         {
             ///*
             // * Parameter meta datas
@@ -106,7 +121,7 @@ namespace Vex.Graphics
         }
 
 
-        private ShaderProgram m_PVexgram;
+        private ShaderProgram m_Program;
         private List<MaterialStageParameters> m_StageParameters;
     }
 }

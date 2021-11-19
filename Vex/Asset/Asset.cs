@@ -112,6 +112,7 @@ namespace Vex.Asset
                     asset = assetInterface.GenerateAsset(AssetType.ShaderProgram, assetYaml);
                     break;
                 case AssetType.Material:
+                    asset = assetInterface.GenerateAsset(AssetType.Material, assetYaml);
                     break;
                 case AssetType.Framebuffer1D:
                     break;
