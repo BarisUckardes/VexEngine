@@ -226,6 +226,36 @@ namespace Fang.Commands
         {
             ImGui.PopStyleColor();
         }
+        public static void EnableStyle(ImGuiStyleVar target,float value)
+        {
+            ImGui.PushStyleVar(target,value);
+        }
+        public static void DisableStyle()
+        {
+            ImGui.PopStyleVar();
+        }
+        public static void CreateObjectField(object targetObject,string code)
+        {
+            /*
+             * Get cursor
+             */
+            Vector2 cursorPos = GUILayoutCommands.GetCursor();
+
+            /*
+             * Render a selectable
+             */
+            GUIRenderCommands.EnableStyle(ImGuiStyleVar.FrameBorderSize, 30.0f);
+            GUIRenderCommands.CreateSelectableItem("", code);
+            GUIRenderCommands.DisableStyle();
+            
+
+            /*
+             * Render selectable text
+             */
+            GUILayoutCommands.SetCursorPos(cursorPos);
+            GUIRenderCommands.CreateText(targetObject == null ? "Empty" : targetObject.GetType().Name," ");
+        }
+
 
     }
 }

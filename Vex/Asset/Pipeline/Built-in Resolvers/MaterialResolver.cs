@@ -42,60 +42,71 @@ namespace Vex.Asset
              */
             programAssetID = Guid.Parse(GetParserValue(parser));
 
-            ///*
-            // * Move to shader stages mapping start
-            // */
-            //parser.MoveNext();
+            /*
+             * Move to shader stages begin
+             */
+            parser.MoveNext();
+            parser.MoveNext();
+            parser.MoveNext();
 
-            ///*
-            // * Move to shader stage type || mapping end if there is no shader stage
-            // */
-            //parser.MoveNext();
+            /*
+             * Iterate shader stages
+             */
+            while (GetParserValue(parser) != "Stage Parameters End")
+            {
+                /*
+                 * Move to shader stage type
+                 */
+                parser.MoveNext();
 
-            ///*
-            // * Iterate shader stages
-            // */
-            //while(parser.Current.GetType() != typeof(MappingEnd))
-            //{
-            //    /*
-            //     * Move to shader stage type
-            //     */
-            //    parser.MoveNext();
+                /*
+                 * Get shader stage
+                 */
+                stages.Add((ShaderStage)(int.Parse(GetParserValue(parser))));
 
-            //    /*
-            //     * Get shader stage
-            //     */
-            //    stages.Add((ShaderStage)(int.Parse(GetParserValue(parser))));
+                /*
+                 * Move to float parameters begin
+                 */
+                parser.MoveNext();
+                parser.MoveNext();
+                parser.MoveNext();
 
-            //    /*
-            //     * Move to float parameters first entry
-            //     */
-            //    parser.MoveNext();
-            //    parser.MoveNext();
+                /*
+                 * Iterate flaot parameters
+                 */
+                List<MaterialParameterField<float>> floatParams = new List<MaterialParameterField<float>>();
+                while (GetParserValue(parser) != "Float Parameters End")
+                {
+                    /*
+                     * Get parameter name
+                     */
+                    string parameterName = GetParserValue(parser);
 
-            //    /*
-            //     * Iterate flaot parameters
-            //     */
-            //    List<MaterialParameterField<float>> floatParams = new List<MaterialParameterField<float>>();
-            //    while(parser.Current.GetType() != typeof(MappingEnd))
-            //    {
-            //        /*
-            //         * Get parameter name
-            //         */
-            //        string parameterName = GetParserValue(parser);
+                    /*
+                     * Move to value
+                     */
+                    parser.MoveNext();
 
-            //        /*
-            //         * Move to value
-            //         */
-            //        parser.MoveNext();
+                    /*
+                     * Get parameter value
+                     */
+                    float value = float.Parse(GetParserValue(parser));
 
-            //        /*
-            //         * Get parameter value
-            //         */
-            //        float value = float.Parse(GetParserValue(parser));
-            //    }
-                
-            //}
+                    /*
+                     * Move to next parameters
+                     */
+                    parser.MoveNext();
+                }
+
+
+                /*
+                 * Move to next parameters (for now to the end)
+                 */
+                parser.MoveNext();
+                parser.MoveNext();
+                parser.MoveNext();
+            }
+            parser.MoveNext();
 
             ///*
             // * Get stage parameters
@@ -384,96 +395,118 @@ namespace Vex.Asset
             emitter.Emit(new Scalar(null, "Shader Program"));
             emitter.Emit(new Scalar(null, programYaml));
 
-            ///*
-            // * Emit shader stage parameters
-            // */
-            //MaterialStageParameters[] stageParameters = material.StageParameters;
+            /*
+             * Emit shader stage parameters
+             */
+            MaterialStageParameters[] stageParameters = material.StageParameters;
 
-            ///*
-            // * Set stage parameters begin
-            // */
-            //emitter.Emit(new SequenceStart(null, null, true, SequenceStyle.Block));
-            //for (int stageIndex = 0; stageIndex < stageParameters.Length; stageIndex++)
-            //{
-            //    /*
-            //     * Emit stage begin
-            //     */
-            //    emitter.Emit(new Scalar(null, "Stage"));
-            //    emitter.Emit(new Scalar(null, ((int)stageParameters[stageIndex].Stage).ToString()));
+            /*
+             * Set stage parameters begin
+             */
+            emitter.Emit(new Scalar(null, "Stage Parameters Begin"));
+            emitter.Emit(new Scalar(null, ""));
+            for (int stageIndex = 0; stageIndex < stageParameters.Length; stageIndex++)
+            {
+                /*
+                 * Emit stage signal
+                 */
+                emitter.Emit(new Scalar(null, "Stage Begin"));
+                emitter.Emit(new Scalar(null, ""));
 
-            //    /*
-            //     * Begin float parameters
-            //     */
-            //    emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
-            //    MaterialParameterField<float>[] floatParameters = stageParameters[stageIndex].FloatParameters;
-            //    for (int parameterIndex = 0; parameterIndex < floatParameters.Length; parameterIndex++)
-            //    {
-            //        emitter.Emit(new Scalar(null, floatParameters[parameterIndex].Name));
-            //        emitter.Emit(new Scalar(null, floatParameters[parameterIndex].Data.ToString()));
-            //    }
-            //    emitter.Emit(new MappingEnd());
+                /*
+                 * Emit stage begin
+                 */
+                emitter.Emit(new Scalar(null, "Stage"));
+                emitter.Emit(new Scalar(null, ((int)stageParameters[stageIndex].Stage).ToString()));
 
-            //    continue;
-            //    /*
-            //    * Begin Matrix4x4 parameters
-            //     */
-            //    MaterialParameterField<Matrix4>[] matrix4x4Parameters = stageParameters[stageIndex].Matrix4x4Parameters;
-            //    emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
-            //    for (int parameterIndex = 0; parameterIndex < matrix4x4Parameters.Length; parameterIndex++)
-            //    {
-            //        Matrix4 matrix = matrix4x4Parameters[parameterIndex].Data;
-            //        string matrixYaml =
-            //            matrix.Row0.X + " " + matrix.Row0.Y + " " + matrix.Row0.Z + " " + matrix.Row0.W +
-            //            " " + matrix.Row1.X + " " + matrix.Row1.Y + " " + matrix.Row1.Z + " " + matrix.Row1.W +
-            //            " " + matrix.Row2.X + " " + matrix.Row2.Y + " " + matrix.Row2.Z + " " + matrix.Row2.W +
-            //            " " + matrix.Row3.X + " " + matrix.Row3.Y + " " + matrix.Row3.Z + " " + matrix.Row3.W;
+                /*
+                 * Signal float parameters begin
+                 */
+                emitter.Emit(new Scalar(null, "Float Parameters Begin"));
+                emitter.Emit(new Scalar(null, ""));
 
-            //        emitter.Emit(new Scalar(null, matrix4x4Parameters[parameterIndex].Name));
-            //        emitter.Emit(new Scalar(null, matrixYaml));
-            //    }
-            //    emitter.Emit(new MappingEnd());
+                /*
+                 * Begin float parameters
+                 */
+                MaterialParameterField<float>[] floatParameters = stageParameters[stageIndex].FloatParameters;
+                for (int parameterIndex = 0; parameterIndex < floatParameters.Length; parameterIndex++)
+                {
+                    emitter.Emit(new Scalar(null, floatParameters[parameterIndex].Name));
+                    emitter.Emit(new Scalar(null, floatParameters[parameterIndex].Data.ToString()));
+                }
+
+                /*
+                 * Signal float parameters end
+                 */
+                emitter.Emit(new Scalar(null, "Float parameters End"));
+                emitter.Emit(new Scalar(null, ""));
+                /*
+                 * Signal stage end
+                 */
+                emitter.Emit(new Scalar(null, "Stage End"));
+                emitter.Emit(new Scalar(null, ""));
+                continue;
+                ///*
+                //* Begin Matrix4x4 parameters
+                // */
+                //MaterialParameterField<Matrix4>[] matrix4x4Parameters = stageParameters[stageIndex].Matrix4x4Parameters;
+                //emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
+                //for (int parameterIndex = 0; parameterIndex < matrix4x4Parameters.Length; parameterIndex++)
+                //{
+                //    Matrix4 matrix = matrix4x4Parameters[parameterIndex].Data;
+                //    string matrixYaml =
+                //        matrix.Row0.X + " " + matrix.Row0.Y + " " + matrix.Row0.Z + " " + matrix.Row0.W +
+                //        " " + matrix.Row1.X + " " + matrix.Row1.Y + " " + matrix.Row1.Z + " " + matrix.Row1.W +
+                //        " " + matrix.Row2.X + " " + matrix.Row2.Y + " " + matrix.Row2.Z + " " + matrix.Row2.W +
+                //        " " + matrix.Row3.X + " " + matrix.Row3.Y + " " + matrix.Row3.Z + " " + matrix.Row3.W;
+
+                //    emitter.Emit(new Scalar(null, matrix4x4Parameters[parameterIndex].Name));
+                //    emitter.Emit(new Scalar(null, matrixYaml));
+                //}
+                //emitter.Emit(new MappingEnd());
 
 
-            //    /*
-            //    * Begin Vector4 parameters
-            //     */
-            //    MaterialParameterField<Vector4>[] vector4Parameters = stageParameters[stageIndex].Vector4Parameters;
-            //    emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
-            //    for (int parameterIndex = 0; parameterIndex < vector4Parameters.Length; parameterIndex++)
-            //    {
-            //        Vector4 vector = vector4Parameters[parameterIndex].Data;
-            //        string vectorYaml = vector.X.ToString() + " " + vector.Y.ToString() + " " + vector.Z.ToString() + " " + vector.W.ToString();
+                ///*
+                //* Begin Vector4 parameters
+                // */
+                //MaterialParameterField<Vector4>[] vector4Parameters = stageParameters[stageIndex].Vector4Parameters;
+                //emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
+                //for (int parameterIndex = 0; parameterIndex < vector4Parameters.Length; parameterIndex++)
+                //{
+                //    Vector4 vector = vector4Parameters[parameterIndex].Data;
+                //    string vectorYaml = vector.X.ToString() + " " + vector.Y.ToString() + " " + vector.Z.ToString() + " " + vector.W.ToString();
 
 
-            //        emitter.Emit(new Scalar(null, vector4Parameters[parameterIndex].Name));
-            //        emitter.Emit(new Scalar(null, vectorYaml));
-            //    }
-            //    emitter.Emit(new MappingEnd());
+                //    emitter.Emit(new Scalar(null, vector4Parameters[parameterIndex].Name));
+                //    emitter.Emit(new Scalar(null, vectorYaml));
+                //}
+                //emitter.Emit(new MappingEnd());
 
 
-            //    /*
-            //     * Emit Texture2D parameters
-            //     */
-            //    MaterialParameterField<Texture2D>[] texture2DParameters = stageParameters[stageIndex].Texture2DParameters;
-            //    emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
-            //    for (int parameterIndex = 0; parameterIndex < texture2DParameters.Length; parameterIndex++)
-            //    {
-            //        string textureYaml;
-            //        if (texture2DParameters[parameterIndex].Data == null)
-            //        {
-            //            textureYaml = "[NULL]";
-            //        }
-            //        else
-            //        {
-            //            textureYaml = "[ASSET]" + texture2DParameters[parameterIndex].Data.ID.ToString();
-            //        }
-            //        emitter.Emit(new Scalar(null, texture2DParameters[parameterIndex].Name));
-            //        emitter.Emit(new Scalar(null, textureYaml));
-            //    }
-            //    emitter.Emit(new MappingEnd());
+                ///*
+                // * Emit Texture2D parameters
+                // */
+                //MaterialParameterField<Texture2D>[] texture2DParameters = stageParameters[stageIndex].Texture2DParameters;
+                //emitter.Emit(new MappingStart(null, null, false, MappingStyle.Block));
+                //for (int parameterIndex = 0; parameterIndex < texture2DParameters.Length; parameterIndex++)
+                //{
+                //    string textureYaml;
+                //    if (texture2DParameters[parameterIndex].Data == null)
+                //    {
+                //        textureYaml = "[NULL]";
+                //    }
+                //    else
+                //    {
+                //        textureYaml = "[ASSET]" + texture2DParameters[parameterIndex].Data.ID.ToString();
+                //    }
+                //    emitter.Emit(new Scalar(null, texture2DParameters[parameterIndex].Name));
+                //    emitter.Emit(new Scalar(null, textureYaml));
+                //}
+                //emitter.Emit(new MappingEnd());
 
-            //}
-            //emitter.Emit(new SequenceEnd());
+            }
+            emitter.Emit(new Scalar(null, "Stage Parameters End"));
+            emitter.Emit(new Scalar(null, ""));
 
             /*
              * Mapping end
