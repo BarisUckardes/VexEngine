@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Vex.Asset;
+using Microsoft.VisualBasic;
+
 namespace Bite.Core
 {
     public class DomainFolderView
@@ -139,7 +141,28 @@ namespace Bite.Core
                 return m_Path;
             }
         }
+        public void Rename(string name,EditorSession session)
+        {
+            /*
+             * Get new path
+             */
+            string newPath = Directory.GetParent(m_Path).FullName + @"\" + name;
 
+            /*
+             * Rename
+             */
+            Directory.Move(m_Path, newPath);
+
+            /*
+             * Set name
+             */
+            m_Name = name;
+
+            /*
+             * Signal rename
+             */
+            SignalRename(m_Path,newPath);
+        }
         public void CreateNewSubFolder(string folderName)
         {
             m_SubFolders.Add(new DomainFolderView(this, m_Path + @"\" + folderName, folderName));
@@ -147,6 +170,35 @@ namespace Bite.Core
         public void CreateNewFile(string fileName,string definitionAbsolutePath,string assetAbsolutePath,in AssetDefinition definition)
         {
             m_Files.Add(new DomainFileView(definition, DomainFileState.Valid, definitionAbsolutePath, assetAbsolutePath));
+        }
+
+        private void SignalRename(string oldRoot,string newRoot)
+        {
+            /*
+             * Replace old root with the new root
+             */
+            string path = m_Path.Replace(oldRoot, newRoot);
+
+            /*
+             * Set self path
+             */
+            m_Path = path;
+
+            /*
+             * Broadcast renaming to sub folders
+             */
+            for(int subFolderIndex = 0;subFolderIndex < m_SubFolders.Count;subFolderIndex++)
+            {
+                m_SubFolders[subFolderIndex].SignalRename(oldRoot, newRoot);
+            }
+
+            /*
+             * Broadcast renaming to files
+             */
+            for(int fileIndex =0;fileIndex < m_Files.Count;fileIndex++)
+            {
+                m_Files[fileIndex].RenamePaths(oldRoot, newRoot);
+            }
         }
       
         private List<DomainFolderView> m_SubFolders;

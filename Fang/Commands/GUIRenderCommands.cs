@@ -170,9 +170,11 @@ namespace Fang.Commands
             return state;
         }
 
-        public static void CreateImage(Texture2D texture, in Vector2 size)
+        public static void CreateImage(Texture2D texture,string code, in Vector2 size)
         {
+            ImGui.PushID(code);
             ImGui.Image((IntPtr)texture.Handle, size);
+            ImGui.PopID();
         }
         public static void CreateImage(Texture texture, in Vector2 size)
         {

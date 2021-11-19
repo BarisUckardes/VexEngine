@@ -17,7 +17,6 @@ namespace Bite.GUI
     [WindowLayout("Domain Observer")]
     public class DomainObserverGUIWindow : WindowGUILayout
     {
-        
         public override void OnInVisible()
         {
             
@@ -28,13 +27,30 @@ namespace Bite.GUI
         }
         public override void OnLayoutBegin()
         {
+            /*
+             * Get file domain
+             */
             m_Domain = Session.FileDomain;
+
+            /*
+             * Get root folder
+             */
             m_CurrentFolder = m_Domain.RootFolder;
+
+            /*
+             * Get resources
+             */
             m_FolderIcon = Session.GetEditorResource("FolderIcon",AssetType.Texture2D) as Texture2D;
             m_Texture2DIcon = Session.GetEditorResource("Texture2DIcon", AssetType.Texture2D) as Texture2D;
             m_BackButtonIcon = Session.GetEditorResource("BackButtonIcon", AssetType.Texture2D) as Texture2D;
             m_ShaderIcon = Session.GetEditorResource("ShaderIcon", AssetType.Texture2D) as Texture2D;
             m_ShaderProgramIcon = Session.GetEditorResource("ShaderProgramIcon", AssetType.Texture2D) as Texture2D;
+
+            /*
+             * Initialize
+             */
+            m_SelectedFile = null;
+            m_SelectedFolder = null;
         }
 
         public override void OnLayoutFinalize()
@@ -61,6 +77,25 @@ namespace Bite.GUI
             GUILayoutCommands.StayOnSameLine();
             GUIRenderCommands.CreateText(folder.Name.Replace(PlatformPaths.DomainDirectory,""),"");
 
+
+            /*
+             * Folder Rename event
+             */
+            if(m_SelectedFolder != null)
+            {
+                if(ImGui.IsKeyPressed((int)Vex.Input.Keys.F2))
+                {
+                    GUIRenderCommands.SignalPopupCreate("Domain_Folder_Rename");
+                }
+
+            }
+
+            if(GUIRenderCommands.CreatePopup("Domain_Folder_Rename"))
+            {
+                CreateFolderRenamePopup(m_SelectedFolder);
+                GUIRenderCommands.FinalizePopup();
+            }
+
             /*
              * Draw sub folders
              */
@@ -73,18 +108,43 @@ namespace Bite.GUI
                 DomainFolderView subFolder = subFolders.ElementAt(folderIndex);
 
                 /*
-                 * Draw Folder
+                 * Get folder anchor position
                  */
                 Vector2 folderAnchorPos = GUILayoutCommands.GetCursor();
-                GUIRenderCommands.CreateImage(m_FolderIcon,new Vector2(128,128));
+
+                /*
+                * Draw image
+                */
+                GUIRenderCommands.CreateImage(m_FolderIcon, subFolder.FolderPath, new Vector2(128, 128));
+
+                /*
+                 * Set cursor back to its position
+                 */
+                GUILayoutCommands.SetCursorPos(folderAnchorPos);
+
+                /*
+                 * Validate and draw selecteable
+                 */
+                if (m_SelectedFolder == subFolder)
+                {
+                    ImGui.Selectable("##" + subFolder.FolderPath, m_SelectedFolder == subFolder, ImGuiSelectableFlags.None, new Vector2(128, 128));
+                }
 
                 /*
                  * Set click event on folder
                  */
-                if(GUIEventCommands.IsCurrentItemClicked())
+                if (GUIEventCommands.IsCurrentItemDoubleClicked() && GUIEventCommands.IsCurrentItemHavored())
                 {
                     m_CurrentFolder = subFolder;
-                    Console.WriteLine("Switch to sub folder: " + subFolder.Name);
+                    m_SelectedFolder = null;
+                    m_SelectedFile = null;
+                    Console.WriteLine("Double clikced: " + subFolder.Name);
+                }
+                else if(GUIEventCommands.IsCurrentItemClicked() && GUIEventCommands.IsCurrentItemHavored())
+                {
+                    //m_CurrentFolder = subFolder;
+                     m_SelectedFolder = subFolder;
+                    Console.WriteLine("Single clicked: " + subFolder.Name);
                 }
 
                 /*
@@ -121,15 +181,15 @@ namespace Bite.GUI
                  * Draw file
                  */
                 Vector2 fileAnchor = GUILayoutCommands.GetCursor();
-                if (file.Definition.Type == AssetType.Texture2D)
+                if (file.AssetType == AssetType.Texture2D)
                 {
                     GUIRenderCommands.CreateImage(m_Texture2DIcon,new Vector2(128,128));
                 }
-                else if(file.Definition.Type == AssetType.Shader)
+                else if(file.AssetType == AssetType.Shader)
                 {
                     GUIRenderCommands.CreateImage(m_ShaderIcon, new Vector2(128, 128));
                 }
-                else if(file.Definition.Type == AssetType.ShaderProgram)
+                else if(file.AssetType == AssetType.ShaderProgram)
                 {
                     GUIRenderCommands.CreateImage(m_ShaderProgramIcon, new Vector2(128, 128));
                 }
@@ -139,7 +199,7 @@ namespace Bite.GUI
                  */
                 if(GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsCurrentItemDoubleClicked())
                 {
-                    Console.WriteLine($"File {file.Definition.Name} is double clicked");
+                    Console.WriteLine($"File {file.AssetName} is double clicked");
 
                     /*
                      * Validate loaded
@@ -155,13 +215,13 @@ namespace Bite.GUI
                 /*
                  * Set texture to center of the file icon
                  */
-                float charSize = ImGui.CalcTextSize(file.Definition.Name).X;
+                float charSize = ImGui.CalcTextSize(file.AssetName).X;
                 float textLengthInPixels = charSize * GUILayoutCommands.GetCurrentFontSize() * 1.3333f / 2.0f;
                 float halfTextSize = (float)textLengthInPixels / 2.0f;
                 float offset = 48.0f - halfTextSize;
                 offset = offset < 0 ? 0 : offset;
                 GUILayoutCommands.SetCursorPos(fileAnchor + new Vector2(offset, 128));
-                GUIRenderCommands.CreateText(file.Definition.Name, file.Definition.ID.ToString());
+                GUIRenderCommands.CreateText(file.AssetName, file.AssetID.ToString());
                 GUILayoutCommands.SetCursorPos(fileAnchor + new Vector2(128, 0));
             }
 
@@ -336,7 +396,18 @@ namespace Bite.GUI
                 GUIRenderCommands.TerminateCurrentPopup();
             }
         }
-
+        private void CreateFolderRenamePopup(DomainFolderView folder)
+        {
+            GUIRenderCommands.CreateText("Folder rename", "frnm");
+            GUIRenderCommands.CreateSeperatorLine();
+            GUIRenderCommands.CreateEmptySpace();
+            GUIRenderCommands.CreateTextInput("", "frnmi", ref m_FolderRenameInput);
+            if(GUIRenderCommands.CreateButton("Apply","applyFrnmi"))
+            {
+                folder.Rename(m_FolderRenameInput,Session);
+                GUIRenderCommands.TerminateCurrentPopup();
+            }
+        }
         private ShaderStage m_ShaderStage = ShaderStage.Vertex;
         private string m_CreateShaderNameInput = string.Empty;
 
@@ -346,6 +417,8 @@ namespace Bite.GUI
         private string m_CreateShaderProgramCategoryNameInput = string.Empty;
         private string m_CreateShaderProgramNameInput = string.Empty;
 
+        private string m_FolderRenameInput = string.Empty;
+
         private uint m_InputBuffer = 24;
         private DomainFolderView m_CurrentFolder;
         private DomainView m_Domain;
@@ -354,5 +427,7 @@ namespace Bite.GUI
         private Texture2D m_BackButtonIcon;
         private Texture2D m_ShaderIcon;
         private Texture2D m_ShaderProgramIcon;
+        private DomainFolderView m_SelectedFolder;
+        private DomainFileView m_SelectedFile;
     }
 }

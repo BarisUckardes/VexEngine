@@ -9,7 +9,7 @@ namespace Vex.Asset
     /// <summary>
     /// Primitive for storing meta data about the asset
     /// </summary>
-    public readonly struct AssetRecord
+    public struct AssetRecord
     {
 
         public AssetRecord(string name, string definitionPath,string assetPath, AssetType type, Guid iD)
@@ -29,12 +29,12 @@ namespace Vex.Asset
         /// <summary>
         /// Absolute path of the asset definition
         /// </summary>
-        public readonly string DefinitionPath;
+        public string DefinitionPath;
 
         /// <summary>
         /// Absolute path of the asset object
         /// </summary>
-        public readonly string AssetPath;
+        public string AssetPath;
 
         /// <summary>
         /// Type of the asset

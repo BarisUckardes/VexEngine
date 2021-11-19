@@ -18,6 +18,9 @@ namespace Bite.Core
             m_Resources = new List<EditorResource>();
         }
 
+        /// <summary>
+        /// Returns the loaded worlds vex session has
+        /// </summary>
         public IReadOnlyCollection<World> Worlds
         {
             get
@@ -25,6 +28,10 @@ namespace Bite.Core
                 return m_ApplicationSession.Worlds;
             }
         }
+
+        /// <summary>
+        /// Returns the window title
+        /// </summary>
         public string ApplicationWindowTitle
         {
             get
@@ -37,6 +44,9 @@ namespace Bite.Core
             }
         }
 
+        /// <summary>
+        /// Returns the domain file views this editor has
+        /// </summary>
         public DomainView FileDomain
         {
             get
@@ -49,6 +59,9 @@ namespace Bite.Core
             }
         }
 
+        /// <summary>
+        /// Returns the project file content
+        /// </summary>
         public ProjectFileContent ProjectFile
         {
             get
@@ -60,18 +73,24 @@ namespace Bite.Core
                 m_ProjectFile = value;
             }
         }
-        public void UpdateDomainAsset(Guid id,VexObject asset)
+
+        /// <summary>
+        /// Updates the asset content of a domain asset
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="asset"></param>
+        public void UpdateDomainAsset(in Guid id,VexObject asset)
         {
             /*
              * Try find asset record
              */
-            AssetRecord record;
-            bool recordFound = m_ApplicationSession.AssetPool.FindRecord(id, out record);
+            Asset foundAsset = null;
+            bool assetFound = m_ApplicationSession.AssetPool.FindAsset(id, out foundAsset);
 
             /*
              * Validate found result
              */
-            if(!recordFound)
+            if(!assetFound)
             {
                 Console.WriteLine("No asset found to update");
                 return;
@@ -80,8 +99,21 @@ namespace Bite.Core
             /*
              * Update asset path
              */
-            m_ApplicationSession.AssetPool.UpdateAssetOnPath(record.AssetPath,record.Type, asset);
+            foundAsset.UpdateAssetContentOnPath(asset,m_ApplicationSession.AssetPool);
         }
+
+        public void RenameDomainAssetPaths(in Guid id,string oldPath,string newPath)
+        {
+
+        }
+
+        /// <summary>
+        /// Creates a new shader asset in the domain
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="fileName"></param>
+        /// <param name="stage"></param>
+        /// <param name="source"></param>
         public void CreateShaderDomainContent(DomainFolderView folder,string fileName,ShaderStage stage,string source)
         {
             /*
@@ -103,6 +135,14 @@ namespace Bite.Core
              */
             folder.CreateNewFile(fileName, definitionPath,assetPath,definition);
         }
+
+        /// <summary>
+        /// Creates a new shader program asset in the domain
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="fileName"></param>
+        /// <param name="category"></param>
+        /// <param name="categoryName"></param>
         public void CreateShaderProgramContent(DomainFolderView folder,string fileName,string category,string categoryName)
         {
             /*
@@ -124,10 +164,22 @@ namespace Bite.Core
             folder.CreateNewFile(fileName, definitionPath,assetPath,definition);
         }
 
+        /// <summary>
+        /// Requests a load or get a specific asset via its id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public VexObject GetOrLoadAsset(Guid id)
         {
             return m_ApplicationSession.AssetPool.GetOrLoadAsset(id);
         }
+
+        /// <summary>
+        /// Gets a already loaded editor resource
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public VexObject GetEditorResource(string name,AssetType type)
         {
             /*
@@ -156,10 +208,18 @@ namespace Bite.Core
             return null;
         }
 
+        /// <summary>
+        /// Sets all the loaded editor resources
+        /// </summary>
+        /// <param name="resources"></param>
         internal void SetEditorResources(List<EditorResource> resources)
         {
             m_Resources = resources;
         }
+
+        /// <summary>
+        /// Send a shutdown request to vex session through the editor session
+        /// </summary>
         internal void ShutdownRequest()
         {
             m_ApplicationSession.HasShutdownRequest = true;

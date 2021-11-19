@@ -25,18 +25,18 @@ namespace Vex.Asset
             /*
              * Gather asset records
              */
-            m_Records = GatherAssetRecordsRecursive(poolPath);
+            List<AssetRecord> records = GatherAssetRecordsRecursive(poolPath);
 
             /*
              * Gather assets fVexm record
              */
-            m_Assets = GetAssetsFromRecords(m_Records);
+            m_Assets = GetAssetsFromRecords(records);
 
             /*
              * Debug
              */
             Console.WriteLine("Asset pool initialized with...");
-            Console.WriteLine($"{m_Records.Count} records, {m_Assets.Count} assets");
+            Console.WriteLine($"{m_Assets.Count} assets");
         }
 
         /// <summary>
@@ -50,16 +50,7 @@ namespace Vex.Asset
             }
         }
 
-        /// <summary>
-        /// Returns a readonly collection of records
-        /// </summary>
-        public IReadOnlyCollection<AssetRecord> Records
-        {
-            get
-            {
-                return m_Records.AsReadOnly();
-            }
-        }
+      
 
         /// <summary>
         /// Gets already laoded asset or load and get
@@ -71,72 +62,49 @@ namespace Vex.Asset
             /*
              * Try find record
              */
-            int index = -1;
-            for(int i=0;i<m_Records.Count;i++)
+            for(int assetIndex=0; assetIndex < m_Assets.Count; assetIndex++)
             {
-                if(m_Records[i].ID == id)
+                if(m_Assets[assetIndex].AssetID == id)
                 {
-                    index = i;
-                    break;
+                    if (!m_Assets[assetIndex].IsLoaded)
+                        m_Assets[assetIndex].Load();
+
+                    return m_Assets[assetIndex].Object;
                 }
             }
 
-            /*
-             * Record not found return null
-             */
-            if (index == -1)
-                return null;
-
-            /*
-             * Load if its not loaded
-             */
-            if (!m_Assets[index].IsLoaded)
-                m_Assets[index].Load();
-
-            return m_Assets[index].Object;
+            return null;
         }
 
-        public bool FindRecord(in Guid id,out AssetRecord record)
+        public bool FindAsset(in Guid id,out Asset asset)
         {
-            for (int recordIndex = 0;recordIndex < m_Records.Count;recordIndex++)
+            for (int assetIndex = 0; assetIndex < m_Assets.Count; assetIndex++)
             {
-                if(m_Records[recordIndex].ID == id)
+                if(m_Assets[assetIndex].AssetID == id)
                 {
-                    record = m_Records[recordIndex];
+                    asset = m_Assets[assetIndex];
                     return true;
                 }
             }
-            record = new AssetRecord();
+            asset = null;
             return false;
         }
-        public void UpdateAssetOnPath(string assetPath, AssetType type, VexObject obj)
+        public void UpdateAssetPath(string oldRoot,string newRoot,in Guid id)
         {
-
-            /*
-             * Validate path
-             */
-            if (!System.IO.File.Exists(assetPath))
+  
+            for(int assetIndex = 0;assetIndex < m_Assets.Count;assetIndex++)
             {
-                Console.WriteLine("There is no existing asset file to update");
-                return;
+                /*
+                 * Validate asset ids
+                 */
+                if(m_Assets[assetIndex].AssetID == id)
+                {
+                    /*
+                     * Update asset path
+                     */
+                    m_Assets[assetIndex].UpdateAssetPath(oldRoot,newRoot);
+                }
             }
-
-            /*
-             * Create asset interface
-             */
-            AssetInterface assetInterface = new AssetInterface(this);
-
-            /*
-             * Create asset body
-             */
-            string assetYaml = assetInterface.GenerateObjectString(type, obj);
-
-            /*
-             * Write asset 
-             */
-            System.IO.File.WriteAllText(assetPath, assetYaml);
-
-            Console.WriteLine($"Asset[{obj.ID.ToString()}] updated");
         }
         public AssetDefinition CreateAssetOnPath(string definitionPath,string assetPath,AssetType type,VexObject obj)
         {
@@ -159,10 +127,7 @@ namespace Vex.Asset
              */
             Asset asset = new Asset(record);
 
-            /*
-             * Register
-             */
-            m_Records.Add(record);
+   
             m_Assets.Add(asset);
 
             /*
@@ -308,8 +273,9 @@ namespace Vex.Asset
             return assets;
         }
 
+
+
         private List<Asset> m_Assets;
-        private List<AssetRecord> m_Records;
         private string m_Path;
     }
 }

@@ -12,10 +12,12 @@ namespace Bite.Core
     {
         public DomainFileView(in AssetDefinition definition,DomainFileState fileState,string definitionAbsolutePath,string assetAbsolutePath)
         {
-            m_Definition = definition;
             m_DefinitonAbsolutePath = definitionAbsolutePath;
             m_AssetAbsolutePath = assetAbsolutePath;
             m_FileState = fileState;
+            m_AssetName = definition.Name;
+            m_AssetID = definition.ID;
+            m_AssetType = definition.Type;
         }
 
         public VexObject TargetAssetObject
@@ -25,18 +27,12 @@ namespace Bite.Core
                 return m_LoadedObject;
             }
         }
-        public AssetDefinition Definition
+
+        public Guid AssetID
         {
             get
             {
-                return m_Definition;
-            }
-        }
-        public DomainFileState FileState
-        {
-            get
-            {
-                return m_FileState;
+                return m_AssetID;
             }
         }
         public string DefinitionAbsolutePath
@@ -53,6 +49,27 @@ namespace Bite.Core
                 return m_AssetAbsolutePath;
             }
         }
+        public string AssetName
+        {
+            get
+            {
+                return m_AssetName;
+            }
+        }
+        public AssetType AssetType
+        {
+            get
+            {
+                return m_AssetType;
+            }
+        }
+        public DomainFileState FileState
+        {
+            get
+            {
+                return m_FileState;
+            }
+        }
         public void TryLoad(EditorSession session)
         {
             if(!m_Loaded)
@@ -60,7 +77,7 @@ namespace Bite.Core
                 /*
                  * Get or loade object
                  */
-                m_LoadedObject = session.GetOrLoadAsset(m_Definition.ID);
+                m_LoadedObject = session.GetOrLoadAsset(m_AssetID);
 
                 /*
                  * Set load state
@@ -72,11 +89,18 @@ namespace Bite.Core
             }
         }
 
+        internal void RenamePaths(string oldRoot,string newRoot)
+        {
+            m_AssetAbsolutePath = m_AssetAbsolutePath.Replace(oldRoot, newRoot);
+            m_DefinitonAbsolutePath = m_DefinitonAbsolutePath.Replace(oldRoot, newRoot);
+        }
         private VexObject m_LoadedObject;
-        private AssetDefinition m_Definition;
         private DomainFileState m_FileState;
         private string m_DefinitonAbsolutePath;
         private string m_AssetAbsolutePath;
+        private string m_AssetName;
+        private Guid m_AssetID;
+        private AssetType m_AssetType;
         private bool m_Loaded;
     }
 }
