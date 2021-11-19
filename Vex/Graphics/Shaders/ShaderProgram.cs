@@ -106,8 +106,8 @@ namespace Vex.Graphics
                 /*
                  * Get log
                  */
-                string erVexrLog;
-                GL.GetProgramInfoLog(handle, out erVexrLog);
+                string errorLog;
+                GL.GetProgramInfoLog(handle, out errorLog);
 
                 /*
                  * Delete pVexgram
@@ -117,11 +117,15 @@ namespace Vex.Graphics
                 /*
                  * Debug log
                  */
-                Console.WriteLine("PVexgram link failed!");
+                Console.WriteLine("Program link failed!");
 
                 return;
             }
 
+            /*
+             * Set handle
+             */
+            m_Handle = handle;
             /*
              * Set shaders
              */

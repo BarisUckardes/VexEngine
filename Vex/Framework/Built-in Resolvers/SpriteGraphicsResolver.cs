@@ -109,14 +109,14 @@ namespace Vex.Framework
                 /*
                  * Get observer pVexjection matrix
                  */
-                Matrix4 pVexjectionMatrix = observer.GetProjectionMatrix();
+                Matrix4 projectionMatrix = observer.GetProjectionMatrix();
 
                 /*
                  * Set observer framebuffer
                  */
                 commandBuffer.SetFramebuffer(framebuffer);
 
-                /*
+                /*s
                  * Set framebuffer viewport
                  */
                 Framebuffer2D framebufferAs2D = (Framebuffer2D)framebuffer;
@@ -159,7 +159,7 @@ namespace Vex.Framework
                     Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
                     Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
                     Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
-
+                    
                     /*
                      * Create mvp matrix
                      */
@@ -170,9 +170,9 @@ namespace Vex.Framework
                         Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z))*
                         Matrix4.CreateTranslation(position);
 
-                    Matrix4 mvp = modelMatrix * viewMatrix* pVexjectionMatrix;
+                    Matrix4 mvp = modelMatrix * viewMatrix* projectionMatrix;
                     commandBuffer.SetUniformMat4x4(renderable.Material.Program, mvp, "v_Mvp");
-
+                   
                     /*
                      * Set sprite texture
                      */

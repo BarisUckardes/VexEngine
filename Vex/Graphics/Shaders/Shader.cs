@@ -81,6 +81,7 @@ namespace Vex.Graphics
         {
             CompileAs(m_Type, source);
         }
+
         /// <summary>
         /// Creates a new shader
         /// </summary>
@@ -113,6 +114,7 @@ namespace Vex.Graphics
         /// <param name="source"></param>
         private void CreateAsVertexShader(string source)
         {
+            Console.WriteLine("Compiled as vertex shader");
             /*
              * Create shader
              */
@@ -150,6 +152,7 @@ namespace Vex.Graphics
         /// <param name="source"></param>
         private void CreateAsFragmentShader(string source)
         {
+            Console.WriteLine("Compiled as fragment shader");
             /*
             * Create shader
             */

@@ -47,14 +47,14 @@ void main()
             string fragmentSource = @"
 #version 450
 
-layout(location = 0) out vec4 f_ColoVexut;
+layout(location = 0) out vec4 f_ColorOut;
 in vec2 f_Uv;
 
 
 uniform sampler2D f_SpriteTexture;
 void main()
 {
-f_ColoVexut = vec4(texture(f_SpriteTexture,f_Uv).rgb,1.0f);
+f_ColorOut = vec4(0.1f,0.3f,0.88f,1.0f);
 }";
 
             Shader vertexShader = new Shader(ShaderStage.Vertex);
@@ -63,8 +63,8 @@ f_ColoVexut = vec4(texture(f_SpriteTexture,f_Uv).rgb,1.0f);
             fragmenShader.Compile(fragmentSource);
             ShaderProgram shaderProgram = new ShaderProgram("Sprite","Unlit");
             shaderProgram.LinkProgram(new List<Shader>() { vertexShader,fragmenShader});
-            Material material = new Material(shaderProgram);
 
+            Material material = new Material(shaderProgram);
             SpriteMesh mesh = new SpriteMesh();
             SpriteVertex[] vertexes = {
             new SpriteVertex(-0.5f, -0.5f,1.0f,1.0f), //Bottom-left vertex

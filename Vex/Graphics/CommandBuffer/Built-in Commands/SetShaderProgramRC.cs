@@ -12,13 +12,14 @@ namespace Vex.Graphics
     public sealed class SetShaderProgramRC : RenderCommand
     {
 
-        public SetShaderProgramRC(in ShaderProgram pVexgram)
+        public SetShaderProgramRC(in ShaderProgram program)
         {
-            m_Program = pVexgram;
+            m_Program = program;
         }
         protected override void ExecuteImpl()
         {
             GL.UseProgram(m_Program.Handle);
+           // Console.WriteLine("Program used: " + m_Program.Handle);
         }
 
 

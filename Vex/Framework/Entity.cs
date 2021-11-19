@@ -33,6 +33,8 @@ namespace Vex.Framework
              * Register this entity to world logic view
              */
             world.GetView<WorldLogicView>().OnEntityRegister(this);
+
+            Console.WriteLine("Entity created as: " + Name);
         }
 
         /// <summary>

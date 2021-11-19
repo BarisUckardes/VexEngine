@@ -26,7 +26,6 @@ namespace Bite.GUI
 
         public override void OnLayoutRender()
         {
-
             /*
              * Render each field
              */
