@@ -20,6 +20,10 @@ namespace Fang.Commands
         {
             return ImGui.IsMouseClicked(ImGuiMouseButton.Right);
         }
+        public static bool IsMouseLeftButtonClicked()
+        {
+            return ImGui.IsMouseClicked(ImGuiMouseButton.Left);
+        }
         public static bool IsCurrentItemHavored()
         {
             return ImGui.IsItemHovered();
