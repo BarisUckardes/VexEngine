@@ -20,14 +20,20 @@ namespace Vex.Profiling
              * Generate entry title
              */
             GenerateEntryTitle();
+            m_Custom = false;
 
+        }
+        public ProfileEntry(string name)
+        {
+            m_FunctionName = name;
+            m_Custom = true;
         }
 
         public string Title
         {
             get
             {
-                return m_ClassName +"::"+m_FunctionName;
+                return m_Custom == true ? m_FunctionName : m_ClassName + "::" + m_FunctionName;
             }
         }
         public long ElapsedTime
@@ -97,6 +103,7 @@ namespace Vex.Profiling
         private long m_ElapsedTime;
         private long m_StartTime;
         private long m_EndTime;
+        private bool m_Custom;
         
     }
 }

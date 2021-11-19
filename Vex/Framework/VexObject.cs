@@ -28,6 +28,10 @@ namespace Vex.Framework
             {
                 return m_ID;
             }
+            internal set
+            {
+                m_ID = value;
+            }
         }
 
         /// <summary>

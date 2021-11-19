@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vex.Framework;
+using Vex.Profiling;
+
 namespace Vex.Engine
 {
 
@@ -30,6 +32,7 @@ namespace Vex.Engine
 
         public override void OnUpdate()
         {
+            Profiler.StartProfile();
             /*
              * Get all the session worlds
              */
@@ -55,6 +58,8 @@ namespace Vex.Engine
                     logicResolvers[resolverIndex].Resolve();
                 }
             }
+
+            Profiler.EndProfile();
         }
     }
 }

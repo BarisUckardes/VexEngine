@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 using Vex.Extensions;
-
+using Vex.Profiling;
 namespace Vex.Framework
 {
 
@@ -82,8 +82,10 @@ namespace Vex.Framework
             /*
              * Iterate each observer
              */
+            
             for (int observerIndex = 0;observerIndex < m_Observers.Count; observerIndex++)
             {
+                Profiler.StartProfile("Observer Submit");
                 /*
                  * Get observer and its data
                  */
@@ -130,6 +132,7 @@ namespace Vex.Framework
                  */
                 for (int renderableIndex = 0; renderableIndex< m_Renderables.Count; renderableIndex++)
                 {
+                    Profiler.StartProfile("Submit draw call");
                     /*
                      * Set sprite renderable
                      */
@@ -204,7 +207,11 @@ namespace Vex.Framework
                      * Draw
                      */
                     commandBuffer.DrawIndexed((int)renderable.Mesh.IndexBuffer.IndexCount);
-                } 
+
+                    Profiler.EndProfile();
+                }
+
+                Profiler.EndProfile();
             }
 
             /*
@@ -215,7 +222,9 @@ namespace Vex.Framework
             /*
              * Execute command buffer
              */
+            Profiler.StartProfile("Render");
             commandBuffer.Execute();
+            Profiler.EndProfile();
 
             Profiling.Profiler.EndProfile();
         }

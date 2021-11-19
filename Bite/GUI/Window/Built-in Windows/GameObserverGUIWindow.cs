@@ -9,6 +9,7 @@ using System.Numerics;
 
 namespace Bite.GUI
 {
+    [WindowLayout("Game Observer")]
     public sealed class GameObserverGUIWindow : WindowGUILayout
     {
         public override void OnInVisible()

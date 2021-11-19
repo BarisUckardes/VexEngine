@@ -37,7 +37,11 @@ namespace Bite.Core
             /*
              * Collect files
              */
-            string[] files = Directory.GetFiles(domainFolderPath + @"\","*.rdefinition");
+            string[] files = Directory.GetFiles(domainFolderPath + @"\","*.vdefinition");
+            for(int i = 0;i<files.Length;i++)
+            {
+                Console.WriteLine("File: " + files[i]);
+            }
 
             /*
              * Create this domainfolder

@@ -14,57 +14,17 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class ShaderProgram : VexObject
     {
-        public ShaderProgram(in string category,in string categoryName,params Shader[] shaders)
+        public ShaderProgram(in string category,in string categoryName)
         {
-            /*
-             * First create a pVexgram
-             */
-            int handle = GL.CreateProgram();
-
-            /*
-             * Attach shaders
-             */
-            for(int i=0;i<shaders.Length;i++)
-            {
-                GL.AttachShader(handle, shaders[i].Handle);
-            }
-
-            /*
-             * Link program
-             */
-            GL.LinkProgram(handle);
-
-            /*
-             * Check pVexgram link 
-             */
-            int programLinkStatus = 0;
-            GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out programLinkStatus);
-            if(programLinkStatus == 0)
-            {
-                /*
-                 * Get log
-                 */
-                string erVexrLog;
-                GL.GetProgramInfoLog(handle,out erVexrLog);
-
-                /*
-                 * Delete pVexgram
-                 */
-                GL.DeleteProgram(handle);
-
-                /*
-                 * Debug log
-                 */
-                Console.WriteLine("PVexgram link failed!");
-
-                return;
-            }
-
-            m_Handle = handle;
-            m_Shaders = shaders;
+            m_Handle = 0;
             m_Category = category;
             m_CategoryName = categoryName;
+            m_Shaders = new List<Shader>();
         }
+       
+        /// <summary>
+        /// Returns the shader set of this program
+        /// </summary>
         public Shader[] Shaders
         {
             get
@@ -72,6 +32,10 @@ namespace Vex.Graphics
                 return m_Shaders.ToArray();
             }
         }
+
+        /// <summary>
+        /// Returns the category of this program
+        /// </summary>
         public string Category
         {
             get
@@ -80,6 +44,9 @@ namespace Vex.Graphics
             }
         }
         
+        /// <summary>
+        /// Returns the category name of this program
+        /// </summary>
         public string CategoryName
         {
             get
@@ -98,6 +65,68 @@ namespace Vex.Graphics
             }
         }
 
+
+        /// <summary>
+        /// Links the program againts the given shader
+        /// </summary>
+        /// <param name="shaders"></param>
+        public void LinkProgram(List<Shader> shaders)
+        {
+            /*
+             * Validate and delete program handle
+             */
+            if (m_Handle != 0)
+                GL.DeleteProgram(m_Handle);
+
+            /*
+             * First create a pVexgram
+             */
+            int handle = GL.CreateProgram();
+
+            /*
+             * Attach shaders
+             */
+            for (int i = 0; i < shaders.Count; i++)
+            {
+                GL.AttachShader(handle, shaders[i].Handle);
+            }
+
+            /*
+             * Link program
+             */
+            GL.LinkProgram(handle);
+
+            /*
+             * Check pVexgram link 
+             */
+            int programLinkStatus = 0;
+            GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out programLinkStatus);
+            if (programLinkStatus == 0)
+            {
+                /*
+                 * Get log
+                 */
+                string erVexrLog;
+                GL.GetProgramInfoLog(handle, out erVexrLog);
+
+                /*
+                 * Delete pVexgram
+                 */
+                GL.DeleteProgram(handle);
+
+                /*
+                 * Debug log
+                 */
+                Console.WriteLine("PVexgram link failed!");
+
+                return;
+            }
+
+            /*
+             * Set shaders
+             */
+            m_Shaders = new List<Shader>(shaders);
+        }
         /// <summary>
         /// Returns the shader with the specified type
         /// </summary>
@@ -105,7 +134,7 @@ namespace Vex.Graphics
         /// <returns></returns>
         public Shader GetShader(ShaderStage type)
         {
-            for(int i=0;i<m_Shaders.Length;i++)
+            for(int i=0;i<m_Shaders.Count; i++)
             {
                 if(m_Shaders[i].Type == type)
                 {
@@ -123,13 +152,13 @@ namespace Vex.Graphics
         {
             List<ShaderStageParameters> stageParameters = new List<ShaderStageParameters>();
 
-            List<string> shaderSources = new List<string>(m_Shaders.Length);
-            List<ShaderStage> shaderStages = new List<ShaderStage>(m_Shaders.Length);
+            List<string> shaderSources = new List<string>(m_Shaders.Count);
+            List<ShaderStage> shaderStages = new List<ShaderStage>(m_Shaders.Count);
 
             /*
              * Get shader source and type
              */
-            for(int i=0;i<m_Shaders.Length;i++)
+            for(int i=0;i<m_Shaders.Count;i++)
             {
                 shaderSources.Add(m_Shaders[i].Source);
                 shaderStages.Add(m_Shaders[i].Type);
@@ -229,7 +258,7 @@ namespace Vex.Graphics
             parameterName = parameterNameText;
         }
 
-        private Shader[] m_Shaders;
+        private List<Shader> m_Shaders;
         private int m_Handle;
         private string m_Category;
         private string m_CategoryName;

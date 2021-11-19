@@ -103,10 +103,15 @@ namespace Bite.Core
         {
             @"Bite\Resources\FolderIcon.png",
             @"Bite\Resources\Texture2DIcon.png",
-            @"Bite\Resources\BackButtonIcon.png"
+            @"Bite\Resources\BackButtonIcon.png",
+            @"Bite\Resources\ShaderIcon.png",
+            @"Bite\Resources\ShaderProgramIcon.png"
+
         };
         private readonly AssetType[] m_AssetTypes = new AssetType[]
         {
+            AssetType.Texture2D,
+            AssetType.Texture2D,
             AssetType.Texture2D,
             AssetType.Texture2D,
             AssetType.Texture2D

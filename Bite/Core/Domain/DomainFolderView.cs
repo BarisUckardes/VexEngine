@@ -54,12 +54,12 @@ namespace Bite.Core
                 string fileName = Path.GetFileNameWithoutExtension(files[fileIndex]);
                 string extension = Path.GetExtension(files[fileIndex]);
                 string folderPath = Path.GetDirectoryName(files[fileIndex]);
-                string expectedAssetPath = folderPath + @"\" + fileName + ".rasset";
+                string expectedAssetPath = folderPath + @"\" + fileName + ".vasset";
 
                 /*
                 * Validate if its an asset definition file
                 */
-                if (extension != ".rdefinition")
+                if (extension != ".vdefinition")
                 {
                     continue;
                 }
@@ -88,6 +88,14 @@ namespace Bite.Core
                  */
                 m_Files.Add(new DomainFileView(definition,state,files[fileIndex], expectedAssetPath));
             }
+        }
+        public DomainFolderView(DomainFolderView parentFolder,string seflPath,string selfName)
+        {
+            m_ParentFolder = parentFolder;
+            m_Path = seflPath;
+            m_Name = selfName;
+            m_Files = new List<DomainFileView>();
+            m_SubFolders = new List<DomainFolderView>();
         }
         public IReadOnlyCollection<DomainFolderView> SubFolders
         {
@@ -132,6 +140,14 @@ namespace Bite.Core
             }
         }
 
+        public void CreateNewSubFolder(string folderName)
+        {
+            m_SubFolders.Add(new DomainFolderView(this, m_Path + @"\" + folderName, folderName));
+        }
+        public void CreateNewFile(string fileName,string definitionAbsolutePath,string assetAbsolutePath,in AssetDefinition definition)
+        {
+            m_Files.Add(new DomainFileView(definition, DomainFileState.Valid, definitionAbsolutePath, assetAbsolutePath));
+        }
       
         private List<DomainFolderView> m_SubFolders;
         private List<DomainFileView> m_Files;

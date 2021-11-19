@@ -44,8 +44,17 @@ namespace Vex.Asset
              */
             string shaderSource = GetParserValue(parser);
 
+            /*
+             * Create shader
+             */
+            Shader shader = new Shader(stage);
 
-            return new Shader(stage, shaderSource);
+            /*
+             * Try compile shader
+             */
+            shader.Compile(shaderSource);
+
+            return shader;
 
         }
 

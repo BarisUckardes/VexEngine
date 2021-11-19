@@ -81,9 +81,29 @@ namespace Vex.Application
             m_Session = new ApplicationSession(m_WindowInterface);
 
             /*
+             * Detach modules
+             */
+            for (int i = 0; i < m_DetachPendingModules.Count; i++)
+            {
+                m_DetachPendingModules[i].OnAttach();
+            }
+            m_DetachPendingModules.Clear();
+
+            /*
+             * Attach modules
+             */
+            for (int i = 0; i < m_AttachPendingModules.Count; i++)
+            {
+                m_AttachPendingModules[i].SetSession(m_Session);
+                m_AttachPendingModules[i].OnAttach();
+                m_ActiveModules.Add(m_AttachPendingModules[i]);
+            }
+            m_AttachPendingModules.Clear();
+
+            /*
              * Run application loop
              */
-            while(!hasExitRequest)
+            while (!hasExitRequest)
             {
 
                 /*
@@ -105,12 +125,14 @@ namespace Vex.Application
                 /*
                  * Update window
                  */
+                Profiler.StartProfile("Update window input");
                 m_WindowInterface.UpdateInput();
-
+                Profiler.EndProfile();
 
                 /*
                  * Stream through events
                  */
+                Profiler.StartProfile("Broadcast events");
                 PlatformEvent[] events = m_WindowInterface.Events;
                 for (int eventIndex = 0; eventIndex < events.Length; eventIndex++)
                 {
@@ -132,39 +154,25 @@ namespace Vex.Application
                     }
                    
                 }
-              
-                /*
-                 * Detach modules
-                 */
-                for (int i = 0; i < m_DetachPendingModules.Count; i++)
-                {
-                    m_DetachPendingModules[i].OnAttach();
-                }
-                m_DetachPendingModules.Clear();
+                Profiler.EndProfile();
 
-                /*
-                 * Attach modules
-                 */
-                for (int i = 0; i < m_AttachPendingModules.Count; i++)
-                {
-                    m_AttachPendingModules[i].SetSession(m_Session);
-                    m_AttachPendingModules[i].OnAttach();
-                    m_ActiveModules.Add(m_AttachPendingModules[i]);
-                }
-                m_AttachPendingModules.Clear();
 
                 /*
                  * Run application modules
                  */
+                Profiler.StartProfile("Application Modules");
                 for(int i=0;i<m_ActiveModules.Count;i++)
                 {
                     m_ActiveModules[i].OnUpdate();
                 }
+                Profiler.EndProfile();
 
                 /*
                  * Swap window buffer
                  */
+                Profiler.StartProfile("Swapbuffers");
                 m_WindowInterface.Swapbuffers();
+                Profiler.EndProfile();
 
                
 

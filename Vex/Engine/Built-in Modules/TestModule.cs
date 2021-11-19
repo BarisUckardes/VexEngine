@@ -57,9 +57,12 @@ void main()
 f_ColoVexut = vec4(texture(f_SpriteTexture,f_Uv).rgb,1.0f);
 }";
 
-            Shader vertexShader = new Shader(ShaderStage.Vertex, vertexSource);
-            Shader fragmenShader = new Shader(ShaderStage.Fragment, fragmentSource);
-            ShaderProgram shaderProgram = new ShaderProgram("Sprite","Unlit",vertexShader, fragmenShader);
+            Shader vertexShader = new Shader(ShaderStage.Vertex);
+            Shader fragmenShader = new Shader(ShaderStage.Fragment);
+            vertexShader.Compile(vertexSource);
+            fragmenShader.Compile(fragmentSource);
+            ShaderProgram shaderProgram = new ShaderProgram("Sprite","Unlit");
+            shaderProgram.LinkProgram(new List<Shader>() { vertexShader,fragmenShader});
             Material material = new Material(shaderProgram);
 
             SpriteMesh mesh = new SpriteMesh();

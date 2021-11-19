@@ -32,6 +32,12 @@ namespace Bite
             GUIWindow.CreateWindow(typeof(GameObserverGUIWindow));
         }
 
+        [MainMenuItem("Windows/Performance Observer")]
+        public static void CreatePerformanceObserver()
+        {
+            GUIWindow.CreateWindow(typeof(PerformanceObserverGUIWindow));
+        }
+
 
     }
 }

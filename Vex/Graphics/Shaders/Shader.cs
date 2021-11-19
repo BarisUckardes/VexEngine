@@ -13,12 +13,15 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Shader : VexObject
     {
-        public Shader(ShaderStage type,string source)
+        public Shader(ShaderStage type)
         {
             /*
-             * Create shader
+             * Set variables
              */
-            CreateShader(type, source);
+            m_Source = string.Empty;
+            m_LastErrorMessage = string.Empty;
+            m_Type = type;
+            m_Handle = 0;
         }
 
         /// <summary>
@@ -41,6 +44,15 @@ namespace Vex.Graphics
             {
                 return m_Source;
             }
+
+        }
+
+        public string LastErrorMessage
+        {
+            get
+            {
+                return m_LastErrorMessage;
+            }
         }
 
         /// <summary>
@@ -55,11 +67,26 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// Returns whether this shader is compiled or not
+        /// </summary>
+        public bool IsCompiled
+        {
+            get
+            {
+                return m_Compiled;
+            }
+        }
+
+        public void Compile(in string source)
+        {
+            CompileAs(m_Type, source);
+        }
+        /// <summary>
         /// Creates a new shader
         /// </summary>
         /// <param name="type"></param>
         /// <param name="source"></param>
-        private void CreateShader(ShaderStage type,string source)
+        private void CompileAs(ShaderStage type,string source)
         {
             switch (type)
             {
@@ -109,10 +136,12 @@ namespace Vex.Graphics
             if(!isCompileSuccessful)
             {
                 m_Handle = 0;
+                m_Compiled = false;
                 return;
             }
 
             m_Handle = vertexShaderHandle;
+            m_Compiled = true;
         }
 
         /// <summary>
@@ -144,10 +173,12 @@ namespace Vex.Graphics
             if (!isCompileSuccessful)
             {
                 m_Handle = 0;
+                m_Compiled = false;
                 return;
             }
 
             m_Handle = vertexShaderHandle;
+            m_Compiled = true;
         }
 
         /// <summary>
@@ -167,9 +198,9 @@ namespace Vex.Graphics
                 /*
                  * Get erVexr log
                  */
-                string erVexrLog;
-                GL.GetShaderInfoLog(shaderHandle, out erVexrLog);
-
+                string errorLog;
+                GL.GetShaderInfoLog(shaderHandle, out errorLog);
+                m_LastErrorMessage = errorLog;
                 /*
                  * Delete the shader
                  */
@@ -178,7 +209,7 @@ namespace Vex.Graphics
                 /*
                  * Log
                  */
-                Console.WriteLine("Shader Compile ErVexr: " + erVexrLog);
+                Console.WriteLine("Shader Compile Error: " + errorLog);
 
                 return false;
             }
@@ -200,6 +231,8 @@ namespace Vex.Graphics
 
         private ShaderStage m_Type;
         private string m_Source;
+        private string m_LastErrorMessage;
         private int m_Handle;
+        private bool m_Compiled;
     }
 }

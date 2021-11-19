@@ -20,6 +20,7 @@ namespace Vex.Profiling
             /*
              * Clear old profile elements
              */
+            s_LastSesionResult = s_Result;
             s_Result = null;
             s_ProfileSession = true;
             s_CurrentStack?.Clear();
@@ -113,6 +114,74 @@ namespace Vex.Profiling
             }
 
         }
+        public static void StartProfile(string name)
+        {
+            /*
+             * Create new profile entry
+             */
+            ProfileEntry newEntry = new ProfileEntry(name);
+
+            /*
+             * Validate if this title is a unique title
+             */
+            ProfileEntry searchResult = null;
+            foreach (ProfileEntry entry in s_Entries)
+            {
+                if (entry.Title == newEntry.Title)
+                {
+                    searchResult = entry;
+                    break;
+                }
+            }
+
+            if (searchResult != null) // find the existing one and increment invoke count
+            {
+                /*
+                 * Register it to the entries
+                 */
+                s_Entries.Add(newEntry);
+
+                /*
+                 * Start entry
+                 */
+                newEntry.Start();
+
+                /*
+                 * Push and register new tree to current stack
+                 */
+                if (s_CurrentStack.Count > 0)
+                    s_CurrentStack.Peek().RegisterSubTree(searchResult.SelfTree);
+
+                s_CurrentStack.Push(searchResult.SelfTree);
+            }
+            else // push new one
+            {
+                /*
+                 * Register it to the entries
+                 */
+                s_Entries.Add(newEntry);
+
+                /*
+                 * Create new profile tree and bind it to the entry
+                 */
+                ProfileTree tree = new ProfileTree(newEntry.Title);
+                newEntry.Bind(tree);
+
+                /*
+                 * Start entry
+                 */
+                newEntry.Start();
+
+                /*
+                 * Push and register new tree to current stack
+                 */
+                if (s_CurrentStack.Count > 0)
+                    s_CurrentStack.Peek().RegisterSubTree(tree);
+
+                s_CurrentStack.Push(tree);
+            }
+
+        }
         public static void EndProfile()
         {
             /*
@@ -145,11 +214,16 @@ namespace Vex.Profiling
         {
             return s_Result;
         }
+        public static ProfileTree GetLastSessionResult()
+        {
+            return s_LastSesionResult;
+        }
 
         private static List<ProfileEntry> s_Entries;
         private static ProfileTree s_Current;
         private static Stack<ProfileTree> s_CurrentStack;
         private static ProfileTree s_Result;
+        private static ProfileTree s_LastSesionResult;
         private static bool s_ProfileSession;
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vex.Framework;
+using Bite.Core;
 
 namespace Bite.GUI
 {
@@ -23,10 +24,25 @@ namespace Bite.GUI
          
         }
 
+        protected EditorSession Session
+        {
+            get
+            {
+                return m_Session;
+            }
+            
+        }
+
         internal void SetObject(VexObject obj)
         {
             m_Object = obj;
         }
+        internal void SetSession(EditorSession session)
+        {
+            m_Session = session;
+        }
+
         private VexObject m_Object;
+        private EditorSession m_Session;
     }
 }

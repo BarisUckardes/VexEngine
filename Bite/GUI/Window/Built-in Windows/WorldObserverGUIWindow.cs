@@ -8,6 +8,7 @@ using Vex.Framework;
 using Fang.Commands;
 namespace Bite.GUI
 {
+    [WindowLayout("World Observer")]
     public sealed class WorldObserverGUIWindow : WindowGUILayout
     {
         public override void OnVisible()

@@ -9,6 +9,7 @@ using Vex.Framework;
 
 namespace Bite.GUI
 {
+    [WindowLayout("Object Observer")]
     public sealed class ObjectObserverGUIWindow : WindowGUILayout
     {
         public override void OnVisible()
@@ -44,11 +45,11 @@ namespace Bite.GUI
             }
             else
             {
-                RendeVexbjectLayout();
+                RenderVexObjectLayout();
             }
         }
         
-        private void RendeVexbjectLayout()
+        private void RenderVexObjectLayout()
         {
             m_Layout.OnLayoutRender();
         }
@@ -73,6 +74,7 @@ namespace Bite.GUI
             /*
              * Validate layout null
              */
+            m_Layout?.SetSession(Session);
             m_Layout?.SetObject(obj);
 
             /*

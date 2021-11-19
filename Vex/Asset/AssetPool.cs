@@ -96,7 +96,49 @@ namespace Vex.Asset
             return m_Assets[index].Object;
         }
 
-        public void CreateAssetOnPath(string definitionPath,string assetPath,AssetType type,VexObject obj)
+        public bool FindRecord(in Guid id,out AssetRecord record)
+        {
+            for (int recordIndex = 0;recordIndex < m_Records.Count;recordIndex++)
+            {
+                if(m_Records[recordIndex].ID == id)
+                {
+                    record = m_Records[recordIndex];
+                    return true;
+                }
+            }
+            record = new AssetRecord();
+            return false;
+        }
+        public void UpdateAssetOnPath(string assetPath, AssetType type, VexObject obj)
+        {
+
+            /*
+             * Validate path
+             */
+            if (!System.IO.File.Exists(assetPath))
+            {
+                Console.WriteLine("There is no existing asset file to update");
+                return;
+            }
+
+            /*
+             * Create asset interface
+             */
+            AssetInterface assetInterface = new AssetInterface(this);
+
+            /*
+             * Create asset body
+             */
+            string assetYaml = assetInterface.GenerateObjectString(type, obj);
+
+            /*
+             * Write asset 
+             */
+            System.IO.File.WriteAllText(assetPath, assetYaml);
+
+            Console.WriteLine($"Asset[{obj.ID.ToString()}] updated");
+        }
+        public AssetDefinition CreateAssetOnPath(string definitionPath,string assetPath,AssetType type,VexObject obj)
         {
             /*
              * Validate path
@@ -104,7 +146,7 @@ namespace Vex.Asset
             if(System.IO.File.Exists(definitionPath) || System.IO.File.Exists(assetPath))
             {
                 Console.WriteLine("Asset exists on path");
-                return;
+                return null;
             }
 
             /*
@@ -153,6 +195,8 @@ namespace Vex.Asset
              */
             System.IO.File.WriteAllText(assetPath, assetYaml);
 
+            return definition;
+
         }
 
         /// <summary>
@@ -180,8 +224,8 @@ namespace Vex.Asset
                  */
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(recordPaths[i]);
                 string pathName = System.IO.Path.GetDirectoryName(recordPaths[i]);
-                string definitionPath = pathName + @"\" + fileName + ".rdefinition";
-                string assetPath = pathName + @"\" +fileName + ".rasset";
+                string definitionPath = pathName + @"\" + fileName + ".vdefinition";
+                string assetPath = pathName + @"\" +fileName + ".vasset";
 
                 /*
                  * Read asset definition string
@@ -225,7 +269,7 @@ namespace Vex.Asset
             /*
              * Get file paths
              */
-            string[] filePaths = Directory.GetFiles(inspectionPath,"*.rdefinition");
+            string[] filePaths = Directory.GetFiles(inspectionPath,"*.vdefinition");
            
             /*
              * Append current directory file paths

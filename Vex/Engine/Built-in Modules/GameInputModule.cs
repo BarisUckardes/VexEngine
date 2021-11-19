@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Profiling;
 
 namespace Vex.Engine
 {
@@ -35,7 +36,7 @@ namespace Vex.Engine
 
         public override void OnEvent(PlatformEvent eventData)
         {
-
+            
             if(eventData.Type == PlatformEventType.KeyPressed)
             {
                 m_PressedKeysBuffer.Add(((PlatformKeyPressedEvent)eventData).KeyCode);

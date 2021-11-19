@@ -22,11 +22,90 @@ namespace Vex.Asset
 
         protected override object ReadAsset(IParser parser, AssetPool pool)
         {
-            throw new NotImplementedException();
+            /*
+             * Initialize
+             */
+            List<Shader> shaders = new List<Shader>();
+            string category;
+            string categoryName;
+            
+            /*
+             * Move to category
+             */
+            parser.MoveNext();
+
+            /*
+             * Get category
+             */
+            category = GetParserValue(parser);
+
+            /*
+             * Move to category name
+             */
+            parser.MoveNext();
+            parser.MoveNext();
+
+            /*
+             * Get category name
+             */
+            categoryName = GetParserValue(parser);
+
+            /*
+             * Move to shaders sqeunce start
+             */
+            parser.MoveNext();
+            parser.MoveNext();
+
+            /*
+             * Move to first squence element
+             */
+            parser.MoveNext();
+
+            /*
+             * Get shaders
+             */
+            while (parser.Current.GetType() != typeof(SequenceEnd))
+            {
+                /*
+                 * Get id text
+                 */
+                string idText = GetParserValue(parser);
+
+                /*
+                 * Create id
+                 */
+                Guid id = Guid.Parse(idText);
+
+                /*
+                 * Try load shader
+                 */
+                Shader shader = pool.GetOrLoadAsset(id) as Shader;
+
+                /*
+                 * Add it to shaders
+                 */
+                shaders.Add(shader);
+
+                /*
+                 * Move to next shader entry
+                 */
+                parser.MoveNext();
+            }
+
+
+            /*
+             * Create shader program
+             */
+            ShaderProgram program = new ShaderProgram(category, categoryName);
+            program.LinkProgram(shaders);
+
+            return program;
         }
 
         protected override void WriteAsset(IEmitter emitter, object targetObject)
         {
+            Console.WriteLine("Shader programm");
+
             /*
              * Get Shader program
              */

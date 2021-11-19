@@ -18,6 +18,7 @@ namespace Fang.Commands
         }
         public static bool CreateWindow(string name,string code,ref bool exitRequest,WindowCreateFlags flags = WindowCreateFlags.None)
         {
+            
             bool exRequest = true;
             ImGui.PushID(code);
             bool isVisible = ImGui.Begin(name, ref exRequest, (ImGuiWindowFlags)flags);
@@ -100,9 +101,14 @@ namespace Fang.Commands
             ImGui.PopID();
         }
 
+
         public static void CreateSeperatorLine()
         {
             ImGui.Separator();
+        }
+        public static void CreateEmptySpace()
+        {
+            ImGui.Spacing();
         }
 
         public static bool CreateSelectableItem(string name,string code)
@@ -148,6 +154,14 @@ namespace Fang.Commands
             ImGui.PopID();
             return state;
         }
+        public static bool CreateMultilineTextInput(string name,string code,ref string value,in Vector2 size,ImGuiInputTextFlags flags = ImGuiInputTextFlags.None,uint length = 1500)
+        {
+
+            ImGui.PushID(code);
+            bool state = ImGui.InputTextMultiline("", ref value, length, size,flags);
+            ImGui.PopID();
+            return state;
+        }
         public static bool CreateCheckbox(string name,string code,ref bool value)
         {
             ImGui.PushID(code);
@@ -171,6 +185,44 @@ namespace Fang.Commands
         public static void CreateMainDockspace()
         {
             ImGui.DockSpace(0,new Vector2(0,0),ImGuiDockNodeFlags.None | ImGuiDockNodeFlags.NoResize | ImGuiDockNodeFlags.PassthruCentralNode);
+        }
+
+        public static void SignalPopupCreate(string popupID)
+        {
+            ImGui.OpenPopup(popupID);
+        }
+        public static bool CreatePopup(string popupID)
+        {
+            return ImGui.BeginPopup(popupID);
+        }
+        public static void FinalizePopup()
+        {
+            ImGui.EndPopup();
+        }
+        public static void TerminateCurrentPopup()
+        {
+            ImGui.CloseCurrentPopup();
+        }
+        public static bool CreateCombo(string name,string preview,string code)
+        {
+            bool state = false;
+            ImGui.PushID(code);
+            state = ImGui.BeginCombo(name, preview);
+            ImGui.PopID();
+            return state;
+        }
+        public static void FinalizeCombo()
+        {
+            
+            ImGui.EndCombo();
+        }
+        public static void EnableStyleColor(ImGuiCol target,in Vector4 color)
+        {
+            ImGui.PushStyleColor(target,color);
+        }
+        public static void DisableStyleColor()
+        {
+            ImGui.PopStyleColor();
         }
 
     }
