@@ -67,7 +67,7 @@ namespace Vex.Asset
                 if(m_Assets[assetIndex].AssetID == id)
                 {
                     if (!m_Assets[assetIndex].IsLoaded)
-                        m_Assets[assetIndex].Load();
+                        m_Assets[assetIndex].Load(this);
 
                     return m_Assets[assetIndex].Object;
                 }

@@ -10,24 +10,18 @@ namespace Vex.Graphics
     /// Single material parameter field for specified generic type
     /// </summary>
     /// <typeparam name="TData"></typeparam>
-    public class  MaterialParameterField<TData>
+    public class MaterialParameterField<TData>
     {
-        public MaterialParameterField(string name, TData data,int nativeHandle)
+        public MaterialParameterField(string name, TData data)
         {
             Name = name;
             Data = data;
-            NativeHandle = nativeHandle;
         }
 
         /// <summary>
         /// Name of the parameter
         /// </summary>
         public readonly string Name;
-
-        /// <summary>
-        /// Native api handle of the parameter
-        /// </summary>
-        public readonly int NativeHandle;
 
         /// <summary>
         /// Generic data

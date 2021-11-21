@@ -140,6 +140,29 @@ namespace Fang.Commands
             vector.Y = intermediateVec.Y;
             return state;
         }
+        public static bool CreateVector3Slider(string name, string code, ref Vector2 vector, float min = 0.00f, float max = 5.0f)
+        {
+            System.Numerics.Vector3 intermediateVec = new System.Numerics.Vector3(vector.X, vector.Y,vector.Z);
+            ImGui.PushID(code);
+            bool state = ImGui.SliderFloat3(name, ref intermediateVec, min, max);
+            ImGui.PopID();
+            vector.X = intermediateVec.X;
+            vector.Y = intermediateVec.Y;
+            vector.Z = intermediateVec.Z;
+            return state;
+        }
+        public static bool CreateVector4Slider(string name, string code, ref Vector4 vector, float min = 0.00f, float max = 5.0f)
+        {
+            System.Numerics.Vector4 intermediateVec = new System.Numerics.Vector4(vector.X, vector.Y, vector.Z,vector.W);
+            ImGui.PushID(code);
+            bool state = ImGui.SliderFloat4(name, ref intermediateVec, min, max);
+            ImGui.PopID();
+            vector.X = intermediateVec.X;
+            vector.Y = intermediateVec.Y;
+            vector.Z = intermediateVec.Z;
+            vector.W = intermediateVec.W;
+            return state;
+        }
         public static bool CreateFloatSlider(string name,string code,ref float value,float min = 0.00f,float max = 5.0f)
         {
             ImGui.PushID(code);

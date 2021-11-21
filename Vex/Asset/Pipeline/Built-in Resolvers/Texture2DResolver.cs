@@ -134,5 +134,7 @@ namespace Vex.Asset
 
             emitter.Emit(new MappingEnd());
         }
+
+       
     }
 }

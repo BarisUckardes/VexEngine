@@ -209,7 +209,8 @@ namespace Vex.Graphics
                     /*
                      *  Create shader meta data
                      */
-                    metaDatas.Add(new ShaderParameterMetaData(parameterName, GL.GetUniformLocation(m_Handle, parameterName), parameterType));
+                    // metaDatas.Add(new ShaderParameterMetaData(parameterName, GL.GetUniformLocation(m_Handle, parameterName), parameterType));
+                    metaDatas.Add(new ShaderParameterMetaData(parameterName, parameterType));
 
                     /*
                      * Search for next parameter

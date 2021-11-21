@@ -24,9 +24,12 @@ namespace Vex.Graphics
              * Initialize local lists
              */
             m_FloatParameters = new List<MaterialParameterField<float>>();
+            m_Vector2Parameters = new List<MaterialParameterField<Vector2>>();
+            m_Vector3Parameters = new List<MaterialParameterField<Vector3>>();
             m_Vector4Parameters = new List<MaterialParameterField<Vector4>>();
-            m_Texture2DParameters = new List<MaterialParameterField<Texture2D>>();
             m_Matrix4x4Parameters = new List<MaterialParameterField<Matrix4>>();
+            m_Texture2DParameters = new List<MaterialParameterField<Texture2D>>();
+            
 
             /*
              * Get parameters
@@ -36,24 +39,26 @@ namespace Vex.Graphics
                 switch (stageParameters.Parameters[i].Type)
                 {
                     case ShaderParameterType.Float:
-                        m_FloatParameters.Add(new MaterialParameterField<float>(stageParameters.Parameters[i].Name, 0.0f, stageParameters.Parameters[i].Handle));
+                        m_FloatParameters.Add(new MaterialParameterField<float>(stageParameters.Parameters[i].Name, 0.0f));
                         break;
                     case ShaderParameterType.Vector2:
+                        m_Vector2Parameters.Add(new MaterialParameterField<Vector2>(stageParameters.Parameters[i].Name, Vector2.Zero));
                         break;
                     case ShaderParameterType.Vector3:
+                        m_Vector3Parameters.Add(new MaterialParameterField<Vector3>(stageParameters.Parameters[i].Name, Vector3.Zero));
                         break;
                     case ShaderParameterType.Vector4:
-                        m_Vector4Parameters.Add(new MaterialParameterField<Vector4>(stageParameters.Parameters[i].Name, Vector4.Zero, stageParameters.Parameters[i].Handle));
+                        m_Vector4Parameters.Add(new MaterialParameterField<Vector4>(stageParameters.Parameters[i].Name, Vector4.Zero));
                         break;
                     case ShaderParameterType.Color:
                         break;
                     case ShaderParameterType.Matrix3x3:
                         break;
                     case ShaderParameterType.Matrix4x4:
-                        m_Matrix4x4Parameters.Add(new MaterialParameterField<Matrix4>(stageParameters.Parameters[i].Name, Matrix4.Identity, stageParameters.Parameters[i].Handle));
+                        m_Matrix4x4Parameters.Add(new MaterialParameterField<Matrix4>(stageParameters.Parameters[i].Name, Matrix4.Identity));
                         break;
                     case ShaderParameterType.Texture2D:
-                        m_Texture2DParameters.Add(new MaterialParameterField<Texture2D>(stageParameters.Parameters[i].Name, null, stageParameters.Parameters[i].Handle));
+                        m_Texture2DParameters.Add(new MaterialParameterField<Texture2D>(stageParameters.Parameters[i].Name, null));
                         break;
                 }
             }
@@ -88,17 +93,33 @@ namespace Vex.Graphics
         }
 
         /// <summary>
-        /// Sets a matrix4x4 parameter
+        /// Sets a vector2 parameter
         /// </summary>
         /// <param name="parameterName"></param>
         /// <param name="value"></param>
-        public void SetMatrix4x4Parameter(string parameterName,in Matrix4 value)
+        public void SetVector2Parameter(string parameterName, in Vector2 value)
         {
-            for (int i = 0; i < m_Matrix4x4Parameters.Count; i++)
+            for (int i = 0; i < m_Vector2Parameters.Count; i++)
             {
-                if (m_Matrix4x4Parameters[i].Name == parameterName)
+                if (m_Vector2Parameters[i].Name == parameterName)
                 {
-                    m_Matrix4x4Parameters[i].Data = value;
+                    m_Vector2Parameters[i].Data = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets a vector3 parameter
+        /// </summary>
+        /// <param name="parameterName"></param>
+        /// <param name="value"></param>
+        public void SetVector3Parameter(string parameterName, in Vector3 value)
+        {
+            for (int i = 0; i < m_Vector4Parameters.Count; i++)
+            {
+                if (m_Vector3Parameters[i].Name == parameterName)
+                {
+                    m_Vector3Parameters[i].Data = value;
                 }
             }
         }
@@ -118,6 +139,24 @@ namespace Vex.Graphics
                 }
             }
         }
+
+        /// <summary>
+        /// Sets a matrix4x4 parameter
+        /// </summary>
+        /// <param name="parameterName"></param>
+        /// <param name="value"></param>
+        public void SetMatrix4x4Parameter(string parameterName,in Matrix4 value)
+        {
+            for (int i = 0; i < m_Matrix4x4Parameters.Count; i++)
+            {
+                if (m_Matrix4x4Parameters[i].Name == parameterName)
+                {
+                    m_Matrix4x4Parameters[i].Data = value;
+                }
+            }
+        }
+
+       
 
         /// <summary>
         /// Sets a texture2 parameter
@@ -158,6 +197,39 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// Returns all vector2 parameters
+        /// </summary>
+        public MaterialParameterField<Vector2>[] Vector2Parameters
+        {
+            get
+            {
+                return m_Vector2Parameters.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Returns all vector3 parameters
+        /// </summary>
+        public MaterialParameterField<Vector3>[] Vector3Parameters
+        {
+            get
+            {
+                return m_Vector3Parameters.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Returns all vector4 parameters
+        /// </summary>
+        public MaterialParameterField<Vector4>[] Vector4Parameters
+        {
+            get
+            {
+                return m_Vector4Parameters.ToArray();
+            }
+        }
+
+        /// <summary>
         /// Returns all matrix4x4 parameter
         /// </summary>
         public MaterialParameterField<Matrix4>[] Matrix4x4Parameters
@@ -168,18 +240,12 @@ namespace Vex.Graphics
             }
         }
 
-        /// <summary>
-        /// Returns all vecto4 parameters
-        /// </summary>
-        public MaterialParameterField<Vector4>[] Vector4Parameters
-        {
-            get
-            {
-                return m_Vector4Parameters.ToArray();
-            }
-        }
+       
+
 
         private List<MaterialParameterField<float>> m_FloatParameters;
+        private List<MaterialParameterField<Vector2>> m_Vector2Parameters;
+        private List<MaterialParameterField<Vector3>> m_Vector3Parameters;
         private List<MaterialParameterField<Vector4>> m_Vector4Parameters;
         private List<MaterialParameterField<Matrix4>> m_Matrix4x4Parameters;
         private List<MaterialParameterField<Texture2D>> m_Texture2DParameters;

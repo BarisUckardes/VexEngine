@@ -32,17 +32,29 @@ namespace Vex.Asset
                 case AssetType.Undefined:
                     break;
                 case AssetType.Texture2D:
-                    return new DeserializerBuilder().WithTypeConverter(new Texture2DResolver()).Build().Deserialize<Texture2D>(yamlText);
-                    break;
+                    {
+                        Texture2DResolver resolver = new Texture2DResolver();
+                        resolver.SetTargetPool(m_Pool);
+                        return new DeserializerBuilder().WithTypeConverter(resolver).Build().Deserialize<Texture2D>(yamlText);
+                    }
                 case AssetType.Shader:
-                    return new DeserializerBuilder().WithTypeConverter(new ShaderResolver()).Build().Deserialize<Shader>(yamlText);
-                    break;
+                    {
+                        ShaderResolver resolver = new ShaderResolver();
+                        resolver.SetTargetPool(m_Pool);
+                        return new DeserializerBuilder().WithTypeConverter(resolver).Build().Deserialize<Shader>(yamlText);
+                    }
                 case AssetType.ShaderProgram:
-                    return new DeserializerBuilder().WithTypeConverter(new ShaderProgramResolver()).Build().Deserialize<ShaderProgram>(yamlText);
-                    break;
+                    {
+                        ShaderProgramResolver resolver = new ShaderProgramResolver();
+                        resolver.SetTargetPool(m_Pool);
+                        return new DeserializerBuilder().WithTypeConverter(resolver).Build().Deserialize<ShaderProgram>(yamlText);
+                    }
                 case AssetType.Material:
-                    return new DeserializerBuilder().WithTypeConverter(new MaterialResolver()).Build().Deserialize<Material>(yamlText);
-                    break;
+                    {
+                        MaterialResolver resolver = new MaterialResolver();
+                        resolver.SetTargetPool(m_Pool);
+                        return new DeserializerBuilder().WithTypeConverter(resolver).Build().Deserialize<Material>(yamlText);
+                    }
                 case AssetType.Framebuffer1D:
                     break;
                 case AssetType.Framebuffer2D:
@@ -54,10 +66,11 @@ namespace Vex.Asset
                 case AssetType.EntityPrefab:
                     break;
                 case AssetType.Definition:
-                    IDeserializer deserializer = new DeserializerBuilder().WithTypeConverter(new AssetDefinitionResolver()).Build();
-                    AssetDefinition def = deserializer.Deserialize<AssetDefinition>(yamlText);
-                    return def;
-                    break;
+                    {
+                        AssetDefinitionResolver resolver = new AssetDefinitionResolver();
+                        resolver.SetTargetPool(m_Pool);
+                        return new DeserializerBuilder().WithTypeConverter(new AssetDefinitionResolver()).Build().Deserialize<AssetDefinition>(yamlText);
+                    }
             }
 
             return null;

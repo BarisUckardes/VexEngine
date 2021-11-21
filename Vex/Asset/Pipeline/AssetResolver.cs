@@ -22,11 +22,6 @@ namespace Vex.Asset
             return (parser.Current as Scalar).Value;
         }
 
-        public AssetResolver()
-        {
-
-        }
-
         /// <summary>
         /// The expected object type of this resolver
         /// </summary>
@@ -47,7 +42,7 @@ namespace Vex.Asset
             /*
              * Get object via parser
              */
-            object obj = ReadAsset(parser,m_Pool);
+            object obj = ReadAsset(parser, m_TargetPool);
             
             /*
              * Move to document end
@@ -62,6 +57,10 @@ namespace Vex.Asset
             WriteAsset(emitter, value);
         }
 
+        internal void SetTargetPool(AssetPool targetPool)
+        {
+            m_TargetPool = targetPool;
+        }
         /// <summary>
         /// Gets the object via parser
         /// </summary>
@@ -78,6 +77,7 @@ namespace Vex.Asset
         protected abstract void WriteAsset(IEmitter emitter,object targetObject);
 
 
-        private AssetPool m_Pool;
+
+        private AssetPool m_TargetPool;
     }
 }

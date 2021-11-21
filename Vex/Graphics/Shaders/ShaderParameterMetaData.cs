@@ -11,10 +11,9 @@ namespace Vex.Graphics
     /// </summary>
     public readonly struct ShaderParameterMetaData
     {
-        public ShaderParameterMetaData(string name, int handle, ShaderParameterType type)
+        public ShaderParameterMetaData(string name, ShaderParameterType type)
         {
             Name = name;
-            Handle = handle;
             Type = type;
         }
 
@@ -22,11 +21,6 @@ namespace Vex.Graphics
         /// Parameter name
         /// </summary>
         public readonly string Name;
-
-        /// <summary>
-        /// Graphics api handle
-        /// </summary>
-        public readonly int Handle;
 
         /// <summary>
         /// Type of the shader parameter

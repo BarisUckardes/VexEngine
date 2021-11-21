@@ -76,12 +76,12 @@ namespace Vex.Asset
         /// <summary>
         /// Loads this asset
         /// </summary>
-        public void Load()
+        public void Load(AssetPool targetPool)
         {
             /*
              * Create asset interface
              */
-            AssetInterface assetInterface = new AssetInterface(null);
+            AssetInterface assetInterface = new AssetInterface(targetPool);
 
             /*
              * First try load asset yaml text
