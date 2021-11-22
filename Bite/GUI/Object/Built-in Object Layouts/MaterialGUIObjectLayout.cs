@@ -25,6 +25,7 @@ namespace Bite.GUI
 
         public override void OnLayoutRender()
         {
+            GUIRenderCommands.CreateObjectField(this, "kodde");
             /*
              * Render header
              */

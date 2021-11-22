@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Fang.GUI;
 using ImGuiNET;
 using Vex.Graphics;
+using Vex.Extensions;
+using System.Runtime.InteropServices;
 
 namespace Fang.Commands
 {
@@ -255,8 +257,47 @@ namespace Fang.Commands
         {
             ImGui.PopStyleVar();
         }
-        public static void CreateObjectField(object targetObject,string code)
+        static GCHandle s_LastObjectHandle;
+        public static object CreateObjectField(object targetObject,string code)
         {
+            /*
+             * Start drag drop source
+             */
+            if (targetObject != null && ImGui.BeginDragDropSource()) // dragged from here
+            {
+                /*
+                 * Get native ptr
+                 */
+                IntPtr targetObjectPtr = IntPtr.Zero;
+                s_LastObjectHandle = targetObject.GetNativePtr(out targetObjectPtr);
+
+                ImGui.SetDragDropPayload("Object Field", targetObjectPtr,8);
+                ImGui.EndDragDropSource();
+            }
+
+            /*
+             * Receive drag drop 
+             */
+            if(ImGui.BeginDragDropTarget()) // dropped here
+            {
+                /*
+                 * Get payload ptr
+                 */
+                ImGuiPayloadPtr ptr = ImGui.AcceptDragDropPayload("Object Field");
+
+                /*
+                 * Get payload object
+                 */
+                object receivedObject = s_LastObjectHandle as object;
+
+                /*
+                 * Validate object
+                 */
+
+                ImGui.EndDragDropTarget();
+
+            }
+
             /*
              * Get cursor
              */
@@ -265,16 +306,15 @@ namespace Fang.Commands
             /*
              * Render a selectable
              */
-            GUIRenderCommands.EnableStyle(ImGuiStyleVar.FrameBorderSize, 30.0f);
             GUIRenderCommands.CreateSelectableItem("", code);
-            GUIRenderCommands.DisableStyle();
             
-
             /*
              * Render selectable text
              */
             GUILayoutCommands.SetCursorPos(cursorPos);
             GUIRenderCommands.CreateText(targetObject == null ? "Empty" : targetObject.GetType().Name," ");
+
+            return null;
         }
         public static GUIOpenFileDialogHandle CreateOpenFileDialog(List<string> targetExtensions,string buttonName,Texture2D folderTexture,Texture2D fileTexture,bool showFolders = true)
         {
