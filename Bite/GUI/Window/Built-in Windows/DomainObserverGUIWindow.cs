@@ -282,7 +282,6 @@ namespace Bite.GUI
                 }
                 else if(file.AssetType == AssetType.Material)
                 {
-  
                     GUIRenderCommands.CreateImage(m_MaterialIcon, new Vector2(128, 128));
                 }
 
@@ -297,7 +296,22 @@ namespace Bite.GUI
                  */
                 if (m_SelectedObject == file)
                 {
-                    ImGui.Selectable("##" + file.AssetAbsolutePath, m_SelectedObject == file, ImGuiSelectableFlags.None, new Vector2(128, 128));
+
+                    GUIRenderCommands.CreateObjectField(file.TargetAssetObject,"file_" + file.AssetID.ToString(),new Vector2(128,128));
+                    ///*
+                    // * Render a selectable
+                    // */
+                    //GUIRenderCommands.CreateSelectableItem("", "kode", new Vector2(128,128));
+
+                    ///*
+                    // * Start drag drop source
+                    // */
+                    //if (ImGui.BeginDragDropSource()) // dragged from here
+                    //{
+                    //   // s_LastVexObjectObjectField = targetObject;
+                    //    ImGui.SetDragDropPayload("Object Field", IntPtr.Zero, 0);
+                    //    ImGui.EndDragDropSource();
+                    //}
                 }
 
                 /*

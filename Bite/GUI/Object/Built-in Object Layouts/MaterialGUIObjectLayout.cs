@@ -25,7 +25,7 @@ namespace Bite.GUI
 
         public override void OnLayoutRender()
         {
-            GUIRenderCommands.CreateObjectField(this, "kodde");
+            
             /*
              * Render header
              */
@@ -38,7 +38,7 @@ namespace Bite.GUI
              */
             GUIRenderCommands.CreateText("Shader Program: "," ");
             GUILayoutCommands.StayOnSameLine();
-            GUIRenderCommands.CreateObjectField(m_TargetMaterial.Program, "prg");
+            m_TargetMaterial.Program = GUIRenderCommands.CreateObjectField(m_TargetMaterial.Program, "shaderProgram0") as ShaderProgram;
 
             /*
              * Render stage parameters

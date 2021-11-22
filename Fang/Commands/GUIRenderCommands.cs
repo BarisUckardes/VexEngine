@@ -9,6 +9,7 @@ using ImGuiNET;
 using Vex.Graphics;
 using Vex.Extensions;
 using System.Runtime.InteropServices;
+using Vex.Framework;
 
 namespace Fang.Commands
 {
@@ -121,8 +122,16 @@ namespace Fang.Commands
             ImGui.PopID();
             return state;
         }
+        public static bool CreateSelectableItem(string name, string code,in Vector2 size)
+        {
+            bool s = false;
+            ImGui.PushID(code);
+            bool state = ImGui.Selectable(name, ref s, ImGuiSelectableFlags.DontClosePopups,size);
+            ImGui.PopID();
+            return state;
+        }
 
-       
+
         public static bool CreateVector2Slider(string name, string code, ref Vector2 vector, float min = 0.00f, float max = 5.0f)
         {
             System.Numerics.Vector2 intermediateVec = new System.Numerics.Vector2(vector.X, vector.Y);
@@ -257,28 +266,30 @@ namespace Fang.Commands
         {
             ImGui.PopStyleVar();
         }
-        static GCHandle s_LastObjectHandle;
-        public static object CreateObjectField(object targetObject,string code)
+       
+        private static VexObject s_LastVexObjectObjectField;
+        public static VexObject CreateObjectField(VexObject targetObject, string code)
         {
+            /*
+          * Render a selectable
+          */
+            GUIRenderCommands.CreateSelectableItem(targetObject == null ? "" : targetObject.GetType().Name, code);
+
             /*
              * Start drag drop source
              */
-            if (targetObject != null && ImGui.BeginDragDropSource()) // dragged from here
+            if (ImGui.BeginDragDropSource()) // dragged from here
             {
-                /*
-                 * Get native ptr
-                 */
-                IntPtr targetObjectPtr = IntPtr.Zero;
-                s_LastObjectHandle = targetObject.GetNativePtr(out targetObjectPtr);
-
-                ImGui.SetDragDropPayload("Object Field", targetObjectPtr,8);
+                s_LastVexObjectObjectField = targetObject;
+                ImGui.SetDragDropPayload("Object Field", IntPtr.Zero, 0);
                 ImGui.EndDragDropSource();
             }
 
+
             /*
-             * Receive drag drop 
+             * Draw drag drop
              */
-            if(ImGui.BeginDragDropTarget()) // dropped here
+            if (ImGui.BeginDragDropTarget()) // dropped here
             {
                 /*
                  * Get payload ptr
@@ -286,36 +297,89 @@ namespace Fang.Commands
                 ImGuiPayloadPtr ptr = ImGui.AcceptDragDropPayload("Object Field");
 
                 /*
-                 * Get payload object
+                 * Validate object
                  */
-                object receivedObject = s_LastObjectHandle as object;
+                ImGui.EndDragDropTarget();
+            }
+
+            /*
+             * Receive drag drop 
+             */
+            if (ImGui.BeginDragDropTarget() && ImGui.IsItemHovered() && ImGui.IsMouseReleased(ImGuiMouseButton.Left)) // dropped here
+            {
+                /*
+                 * Get payload ptr
+                 */
+                ImGuiPayloadPtr ptr = ImGui.AcceptDragDropPayload("Object Field");
 
                 /*
                  * Validate object
                  */
-
                 ImGui.EndDragDropTarget();
+                Console.WriteLine("Drag accepted by code " + code);
 
+                return s_LastVexObjectObjectField;
+            }
+
+            return targetObject;
+        }
+
+        public static VexObject CreateObjectField(VexObject targetObject, string code,in Vector2 size)
+        {
+            /*
+            * Render a selectable
+            */
+            GUIRenderCommands.CreateSelectableItem(targetObject == null ? "" : targetObject.GetType().Name, code,size);
+
+            /*
+             * Start drag drop source
+             */
+            if (ImGui.BeginDragDropSource()) // dragged from here
+            {
+                s_LastVexObjectObjectField = targetObject;
+                ImGui.SetDragDropPayload("Object Field", IntPtr.Zero, 0);
+                ImGui.EndDragDropSource();
+            }
+
+
+            /*
+             * Draw drag drop
+             */
+            if (ImGui.BeginDragDropTarget()) // dropped here
+            {
+                /*
+                 * Get payload ptr
+                 */
+                ImGuiPayloadPtr ptr = ImGui.AcceptDragDropPayload("Object Field");
+
+                /*
+                 * Validate object
+                 */
+                ImGui.EndDragDropTarget();
             }
 
             /*
-             * Get cursor
+             * Receive drag drop 
              */
-            Vector2 cursorPos = GUILayoutCommands.GetCursor();
+            if (ImGui.BeginDragDropTarget() && ImGui.IsItemHovered() && ImGui.IsMouseReleased(ImGuiMouseButton.Left)) // dropped here
+            {
+                /*
+                 * Get payload ptr
+                 */
+                ImGuiPayloadPtr ptr = ImGui.AcceptDragDropPayload("Object Field");
 
-            /*
-             * Render a selectable
-             */
-            GUIRenderCommands.CreateSelectableItem("", code);
-            
-            /*
-             * Render selectable text
-             */
-            GUILayoutCommands.SetCursorPos(cursorPos);
-            GUIRenderCommands.CreateText(targetObject == null ? "Empty" : targetObject.GetType().Name," ");
+                /*
+                 * Validate object
+                 */
+                ImGui.EndDragDropTarget();
+                Console.WriteLine("Drag accepted by code " + code);
 
-            return null;
+                return s_LastVexObjectObjectField;
+            }
+
+            return targetObject;
         }
+
         public static GUIOpenFileDialogHandle CreateOpenFileDialog(List<string> targetExtensions,string buttonName,Texture2D folderTexture,Texture2D fileTexture,bool showFolders = true)
         {
             return new GUIOpenFileDialogHandle(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),buttonName, targetExtensions, showFolders,folderTexture,fileTexture);
