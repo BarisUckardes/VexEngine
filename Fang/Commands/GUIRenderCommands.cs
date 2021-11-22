@@ -271,9 +271,9 @@ namespace Fang.Commands
         public static VexObject CreateObjectField(VexObject targetObject, string code)
         {
             /*
-          * Render a selectable
-          */
-            GUIRenderCommands.CreateSelectableItem(targetObject == null ? "" : targetObject.GetType().Name, code);
+             * Render a selectable
+            */
+            GUIRenderCommands.CreateSelectableItem(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})", code);
 
             /*
              * Start drag drop source
@@ -301,11 +301,11 @@ namespace Fang.Commands
                  */
                 ImGui.EndDragDropTarget();
             }
-
+            
             /*
              * Receive drag drop 
              */
-            if (ImGui.BeginDragDropTarget() && ImGui.IsItemHovered() && ImGui.IsMouseReleased(ImGuiMouseButton.Left)) // dropped here
+            if (ImGui.BeginDragDropTarget() && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem) && ImGui.IsMouseReleased(ImGuiMouseButton.Left)) // dropped here
             {
                 /*
                  * Get payload ptr
@@ -329,7 +329,7 @@ namespace Fang.Commands
             /*
             * Render a selectable
             */
-            GUIRenderCommands.CreateSelectableItem(targetObject == null ? "" : targetObject.GetType().Name, code,size);
+            GUIRenderCommands.CreateSelectableItem(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})", code,size);
 
             /*
              * Start drag drop source
@@ -361,7 +361,7 @@ namespace Fang.Commands
             /*
              * Receive drag drop 
              */
-            if (ImGui.BeginDragDropTarget() && ImGui.IsItemHovered() && ImGui.IsMouseReleased(ImGuiMouseButton.Left)) // dropped here
+            if (ImGui.BeginDragDropTarget() && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem) && ImGui.IsMouseReleased(ImGuiMouseButton.Left)) // dropped here
             {
                 /*
                  * Get payload ptr

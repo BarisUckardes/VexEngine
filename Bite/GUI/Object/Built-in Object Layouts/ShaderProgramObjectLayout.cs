@@ -13,6 +13,7 @@ namespace Bite.GUI
         public override void OnAttach()
         {
             m_TargetProgram = Object as ShaderProgram;
+            m_Shaders = m_TargetProgram.Shaders;
         }
 
         public override void OnDetach()
@@ -22,34 +23,70 @@ namespace Bite.GUI
 
         public override void OnLayoutRender()
         {
+            /*
+             * Render header
+             */
             GUIRenderCommands.CreateText("SHADER PROGRAM", " ");
             GUIRenderCommands.CreateSeperatorLine();
 
+            /*
+             * Render category
+             */
             GUIRenderCommands.CreateText("Category: ", " ");
             GUILayoutCommands.StayOnSameLine();
             GUIRenderCommands.CreateText(m_TargetProgram.Category, " ");
 
+            /*
+             * Render category name
+             */
             GUIRenderCommands.CreateText("Category Name: ", " ");
             GUILayoutCommands.StayOnSameLine();
             GUIRenderCommands.CreateText(m_TargetProgram.CategoryName, " ");
             GUIRenderCommands.CreateEmptySpace();
 
+            /*
+             * Render shader set
+             */
+            GUIRenderCommands.CreateEmptySpace();
             GUIRenderCommands.CreateText("SHADER SET", " ");
             GUIRenderCommands.CreateSeperatorLine();
             GUIRenderCommands.CreateEmptySpace();
-            Shader[] shaders = m_TargetProgram.Shaders;
-            for(int shaderIndex = 0;shaderIndex < shaders.Length;shaderIndex++)
+            List<Shader> shaders = m_Shaders;
+            for(int shaderIndex = 0;shaderIndex < shaders.Count;shaderIndex++)
             {
-                /*
-                 * Get shader
-                 */
-                Shader shader = shaders[shaderIndex];
-                GUIRenderCommands.CreateSelectableItem(shader.Type.ToString(), " ");
+                shaders[shaderIndex] = GUIRenderCommands.CreateObjectField(shaders[shaderIndex], "shdr_" + shaderIndex) as Shader;
                 GUIRenderCommands.CreateEmptySpace();
             }
 
+            /*
+             * Render add shader
+             */
+            if(GUIRenderCommands.CreateButton("+","add_shdr"))
+            {
+                m_Shaders.Add(null);
+            }
+
+            /*
+             * Render button
+             */
+            if(GUIRenderCommands.CreateButton("Apply","apply"))
+            {
+                m_TargetProgram.LinkProgram(m_Shaders);
+            }
+
+            /*
+             * Render error
+             */
+            if(m_TargetProgram.LastErrorMessage != string.Empty)
+            {
+                string message = m_TargetProgram.LastErrorMessage;
+                GUIRenderCommands.CreateMultilineTextInput("", "shdr_prg_err", ref message, ImGuiNET.ImGui.GetContentRegionMax(),ImGuiNET.ImGuiInputTextFlags.ReadOnly);
+            }
+
+ 
         }
 
         private ShaderProgram m_TargetProgram;
+        private List<Shader> m_Shaders;
     }
 }

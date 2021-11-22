@@ -131,14 +131,14 @@ namespace Vex.Asset
             /*
              * Write Each shader
              */
-            Shader[] shaders = program.Shaders;
+            List<Shader> shaders = program.Shaders;
 
             /*
              * Iterate shaders
              */
             emitter.Emit(new Scalar(null, "Shaders"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for(int shaderIndex = 0;shaderIndex < shaders.Length;shaderIndex++)
+            for(int shaderIndex = 0;shaderIndex < shaders.Count;shaderIndex++)
             {
                 /*
                  * Get shader 

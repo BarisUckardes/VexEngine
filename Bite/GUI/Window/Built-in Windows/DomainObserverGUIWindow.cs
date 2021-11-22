@@ -298,20 +298,7 @@ namespace Bite.GUI
                 {
 
                     GUIRenderCommands.CreateObjectField(file.TargetAssetObject,"file_" + file.AssetID.ToString(),new Vector2(128,128));
-                    ///*
-                    // * Render a selectable
-                    // */
-                    //GUIRenderCommands.CreateSelectableItem("", "kode", new Vector2(128,128));
-
-                    ///*
-                    // * Start drag drop source
-                    // */
-                    //if (ImGui.BeginDragDropSource()) // dragged from here
-                    //{
-                    //   // s_LastVexObjectObjectField = targetObject;
-                    //    ImGui.SetDragDropPayload("Object Field", IntPtr.Zero, 0);
-                    //    ImGui.EndDragDropSource();
-                    //}
+                   
                 }
 
                 /*

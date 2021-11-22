@@ -20,16 +20,17 @@ namespace Vex.Graphics
             m_Category = category;
             m_CategoryName = categoryName;
             m_Shaders = new List<Shader>();
+            m_LastLinkErrorMessage = string.Empty;
         }
        
         /// <summary>
         /// Returns the shader set of this program
         /// </summary>
-        public Shader[] Shaders
+        public List<Shader> Shaders
         {
             get
             {
-                return m_Shaders.ToArray();
+                return m_Shaders;
             }
         }
 
@@ -54,6 +55,13 @@ namespace Vex.Graphics
                 return m_CategoryName;
             }
         }
+        public string LastErrorMessage
+        {
+            get
+            {
+                return m_LastLinkErrorMessage;
+            }
+        }
         /// <summary>
         /// Returns the grapics handle
         /// </summary>
@@ -72,6 +80,11 @@ namespace Vex.Graphics
         /// <param name="shaders"></param>
         public void LinkProgram(List<Shader> shaders)
         {
+            /*
+             * Reset error state
+             */
+            m_LastLinkErrorMessage = string.Empty;
+
             /*
              * Validate and delete program handle
              */
@@ -118,6 +131,7 @@ namespace Vex.Graphics
                  * Debug log
                  */
                 Console.WriteLine("Program link failed!");
+                m_LastLinkErrorMessage = errorLog;
 
                 return;
             }
@@ -267,5 +281,6 @@ namespace Vex.Graphics
         private int m_Handle;
         private string m_Category;
         private string m_CategoryName;
+        private string m_LastLinkErrorMessage;
     }
 }

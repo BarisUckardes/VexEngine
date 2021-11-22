@@ -38,7 +38,12 @@ namespace Bite.GUI
              */
             GUIRenderCommands.CreateText("Shader Program: "," ");
             GUILayoutCommands.StayOnSameLine();
-            m_TargetMaterial.Program = GUIRenderCommands.CreateObjectField(m_TargetMaterial.Program, "shaderProgram0") as ShaderProgram;
+            ShaderProgram program = GUIRenderCommands.CreateObjectField(m_TargetMaterial.Program, "shaderProgram0") as ShaderProgram;
+
+            if(m_TargetMaterial.Program != program && program != null)
+            {
+                m_TargetMaterial.Program = program;
+            }
 
             /*
              * Render stage parameters
