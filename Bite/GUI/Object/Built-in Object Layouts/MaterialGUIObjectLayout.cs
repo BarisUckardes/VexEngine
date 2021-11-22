@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Vex.Graphics;
 using Fang.Commands;
 using OpenTK.Mathematics;
+using Vex.Extensions;
 
 namespace Bite.GUI
 {
@@ -70,7 +71,7 @@ namespace Bite.GUI
                         float value = floatParameters[parameterIndex].Data;
                         GUIRenderCommands.CreateText(floatParameters[parameterIndex].Name, " ");
                         GUILayoutCommands.StayOnSameLine();
-                        GUIRenderCommands.CreateFloatSlider(" ", floatParameters[parameterIndex].Name, ref value);
+                        GUIRenderCommands.CreateFloatSlider(floatParameters[parameterIndex].Name," ", ref value);
                         
                     }
 
@@ -80,10 +81,10 @@ namespace Bite.GUI
                     MaterialParameterField<Vector2>[] vector2Parameters = stage.Vector2Parameters;
                     for (int parameterIndex = 0; parameterIndex < vector2Parameters.Length; parameterIndex++)
                     {
-                        Vector2 value = vector2Parameters[parameterIndex].Data;
-                        GUIRenderCommands.CreateText(floatParameters[parameterIndex].Name, " ");
+                        System.Numerics.Vector2 value = vector2Parameters[parameterIndex].Data.GetAsNumerics();
+                        GUIRenderCommands.CreateText(vector2Parameters[parameterIndex].Name, " ");
                         GUILayoutCommands.StayOnSameLine();
-                        GUIRenderCommands.CreateVector2Slider(" ", floatParameters[parameterIndex].Name, ref value);
+                        GUIRenderCommands.CreateVector2Slider(floatParameters[parameterIndex].Name," ", ref value);
                     }
 
                     /*
@@ -92,7 +93,10 @@ namespace Bite.GUI
                     MaterialParameterField<Vector3>[] vector3Parameters = stage.Vector3Parameters;
                     for (int parameterIndex = 0; parameterIndex < vector3Parameters.Length; parameterIndex++)
                     {
-
+                        System.Numerics.Vector3 value = vector3Parameters[parameterIndex].Data.GetAsNumerics();
+                        GUIRenderCommands.CreateText(vector3Parameters[parameterIndex].Name, " ");
+                        GUILayoutCommands.StayOnSameLine();
+                        GUIRenderCommands.CreateVector3Slider(vector3Parameters[parameterIndex].Name," ",ref value);
                     }
 
                     /*
@@ -101,7 +105,10 @@ namespace Bite.GUI
                     MaterialParameterField<Vector4>[] vector4Parameters = stage.Vector4Parameters;
                     for (int parameterIndex = 0; parameterIndex < vector4Parameters.Length; parameterIndex++)
                     {
-
+                        System.Numerics.Vector4 value = vector4Parameters[parameterIndex].Data.GetAsNumerics();
+                        GUIRenderCommands.CreateText(vector4Parameters[parameterIndex].Name, " ");
+                        GUILayoutCommands.StayOnSameLine();
+                        GUIRenderCommands.CreateVector4Slider(vector4Parameters[parameterIndex].Name," ",ref value);
                     }
 
                     /*
@@ -110,7 +117,8 @@ namespace Bite.GUI
                     MaterialParameterField<Matrix4>[] matrix4x4Parameters = stage.Matrix4x4Parameters;
                     for (int parameterIndex = 0; parameterIndex < matrix4x4Parameters.Length; parameterIndex++)
                     {
-
+                        Matrix4 value = matrix4x4Parameters[parameterIndex].Data;
+                        GUIRenderCommands.CreateText(matrix4x4Parameters[parameterIndex].Name, " ");
                     }
 
                     /*
@@ -119,7 +127,10 @@ namespace Bite.GUI
                     MaterialParameterField<Texture2D>[] texture2DParameters = stage.Texture2DParameters;
                     for (int parameterIndex = 0; parameterIndex < texture2DParameters.Length; parameterIndex++)
                     {
-
+                        Texture2D value = texture2DParameters[parameterIndex].Data;
+                        GUIRenderCommands.CreateText(texture2DParameters[parameterIndex].Name, " ");
+                        GUILayoutCommands.StayOnSameLine();
+                        GUIRenderCommands.CreateObjectField(value, " ");
                     }
                 }
             }

@@ -68,6 +68,7 @@ namespace Vex.Application
              */
             bool hasExitRequest = false;
             ApplicationExitType exitType = ApplicationExitType.Undefined;
+            string exitMessage = string.Empty;
 
             /*
              * Set initialization properties
@@ -113,11 +114,13 @@ namespace Vex.Application
                 {
                     hasExitRequest = true;
                     exitType = ApplicationExitType.WindowClose;
+                    exitMessage = "Window closed manually";
                 }
                 else if (m_Session.HasShutdownRequest)
                 {
                     hasExitRequest = true;
                     exitType = ApplicationExitType.SessionRequest;
+                    exitMessage = m_Session.ShutdownRequestMessage;
                 }
 
                 Profiler.StartProfileSession();
@@ -184,6 +187,11 @@ namespace Vex.Application
              */
             m_Session.Shutdown();
             m_Session = null;
+
+            /*
+             * Display shutdown message
+             */
+            Console.WriteLine("Application close reason: [" + exitMessage + "]");
         }
     
         /// <summary>

@@ -38,14 +38,23 @@ namespace Bite.GUI
             m_CurrentFolder = m_Domain.RootFolder;
 
             /*
-             * Get resources
+             * Get texture2d resources
              */
             m_FolderIcon = Session.GetEditorResource("FolderIcon",AssetType.Texture2D) as Texture2D;
-            m_Texture2DIcon = Session.GetEditorResource("Texture2DIcon", AssetType.Texture2D) as Texture2D;
             m_BackButtonIcon = Session.GetEditorResource("BackButtonIcon", AssetType.Texture2D) as Texture2D;
             m_ShaderIcon = Session.GetEditorResource("ShaderFileIcon", AssetType.Texture2D) as Texture2D;
             m_ShaderProgramIcon = Session.GetEditorResource("ShaderProgramFileIcon", AssetType.Texture2D) as Texture2D;
             m_MaterialIcon = Session.GetEditorResource("MaterialFileIcon", AssetType.Texture2D) as Texture2D;
+            m_Texture2DIcon = Session.GetEditorResource("Texture2DFileIcon", AssetType.Texture2D) as Texture2D;
+            m_ComputerPathIcon = Session.GetEditorResource("ComputerPathIcon", AssetType.Texture2D) as Texture2D;
+
+            /*
+             * Get texture format resources
+             */
+            m_TextureFormatEnumNames = Enum.GetNames(typeof(TextureFormat));
+            m_TextureInternalFormatEnumNames = Enum.GetNames(typeof(TextureInternalFormat));
+            m_SelectedTextureFormat = TextureFormat.None;
+            m_SelectedTextureInternalFormat = TextureInternalFormat.None;
 
             /*
              * Initialize
@@ -65,7 +74,6 @@ namespace Bite.GUI
 
         private void RenderDomainView(DomainFolderView folder)
         {
-
             bool isClickedEmpty = true;
             bool isClicked = false;
 
@@ -82,9 +90,65 @@ namespace Bite.GUI
             GUIRenderCommands.CreateText(folder.Name.Replace(PlatformPaths.DomainDirectory,""),"");
 
             /*
+             * Render import
+             */
+            GUILayoutCommands.StayOnSameLine();
+            bool isImportTexture2D = false;
+            if(GUIRenderCommands.CreateButton("Import","import"))
+            {
+                GUIRenderCommands.SignalPopupCreate("Domain_Import");
+            }
+
+            /*
+             * Render import menu
+             */
+            if(GUIRenderCommands.CreatePopup("Domain_Import"))
+            {
+                RenderAssetImportPopup(ref isImportTexture2D);
+                GUIRenderCommands.FinalizePopup();
+            }
+
+            /*
+             * Try first time create import 2d texture2d
+             */
+            if(isImportTexture2D)
+            {
+                m_Texture2DOpenFileDialog = GUIRenderCommands.CreateOpenFileDialog(new List<string>() { "*.jpg","*.png" },"Import",m_FolderIcon,m_Texture2DIcon);
+            }
+
+            /*
+             * Render open file dialog for texture2d
+             */
+            m_Texture2DOpenFileDialog?.Render();
+
+            /*
+             * Validate texture2d selected
+             */
+            if(m_Texture2DOpenFileDialog != null && m_Texture2DOpenFileDialog.SelectedPath != string.Empty)
+            {
+                /*
+                 * Validate file
+                 */
+                if(!File.Exists(m_Texture2DOpenFileDialog.SelectedPath))
+                {
+                    Console.WriteLine("Selected image file is not found!");
+                }
+                else
+                {
+                    Session.CreateTexture2DomainContent(m_CurrentFolder, m_Texture2DOpenFileDialog.SelectedFileName, m_Texture2DOpenFileDialog.SelectedPath);
+                }
+
+                /*
+                 * Close file dialog
+                 */
+                GUIRenderCommands.CloseOpenFileDialog(m_Texture2DOpenFileDialog);
+                m_Texture2DOpenFileDialog = null;
+            }
+
+            /*
              * Folder Rename event
              */
-            if(m_SelectedObject != null)
+            if (m_SelectedObject != null)
             {
                 if(ImGui.IsKeyPressed((int)Vex.Input.Keys.F2) && m_SelectedObject.GetType() == typeof(DomainFolderView))
                 {
@@ -92,7 +156,6 @@ namespace Bite.GUI
                 }
 
             }
-
 
             /*
              * Render folder rename popup
@@ -195,7 +258,19 @@ namespace Bite.GUI
                  */
                 if (file.AssetType == AssetType.Texture2D)
                 {
-                    GUIRenderCommands.CreateImage(m_Texture2DIcon, new Vector2(128, 128));
+                    /*
+                     * Create flipped uvs
+                     */
+                    Vector2 uv0 = new Vector2(0, 1);
+                    Vector2 uv1 = new Vector2(1, 0);
+
+                    /*
+                     * Validate load
+                     */
+                    if (file.TargetAssetObject == null)
+                        GUIRenderCommands.CreateImage(m_Texture2DIcon, new Vector2(128, 128),uv0,uv1);
+                    else
+                        GUIRenderCommands.CreateImage((file.TargetAssetObject as Texture2D), new Vector2(128, 128), uv0, uv1);
                 }
                 else if (file.AssetType == AssetType.Shader)
                 {
@@ -207,8 +282,10 @@ namespace Bite.GUI
                 }
                 else if(file.AssetType == AssetType.Material)
                 {
+  
                     GUIRenderCommands.CreateImage(m_MaterialIcon, new Vector2(128, 128));
                 }
+
 
                 /*
                  * Set anchor back
@@ -272,6 +349,7 @@ namespace Bite.GUI
             }
 
 
+
             /*
              * Render create asset popup
              */
@@ -309,6 +387,8 @@ namespace Bite.GUI
             if (isMaterialCreate)
                 GUIRenderCommands.SignalPopupCreate("Domain_Create_Material");
 
+ 
+
             /*
              * Render create shader popup
              */
@@ -332,6 +412,7 @@ namespace Bite.GUI
                 CreateMaterialCreatePopup();
                 GUIRenderCommands.FinalizePopup();
             }
+          
 
             /*
             * Validate clikc to void
@@ -342,6 +423,24 @@ namespace Bite.GUI
                 m_SelectedObject = false;
             }
 
+        }
+        private void RenderAssetImportPopup(ref bool texture2DImport)
+        {
+            if (GUIRenderCommands.CreateMenu("Import", ""))
+            {
+                if (GUIRenderCommands.CreateMenu("Graphics", ""))
+                {
+                   
+                    if (GUIRenderCommands.CreateMenuItem("Texture2D", ""))
+                    {
+                        GUIRenderCommands.TerminateCurrentPopup();
+                        texture2DImport = true;
+                    }
+
+                    GUIRenderCommands.FinalizeMenu();
+                }
+                GUIRenderCommands.FinalizeMenu();
+            }
         }
         private void RenderAssetCreatePopup(ref bool isCreateShader,ref bool isFolderCreate,ref bool isShaderProgramCreate,ref bool isMaterialCreate)
         {
@@ -362,6 +461,7 @@ namespace Bite.GUI
                     {
                         isMaterialCreate = true;
                     }
+                   
                     GUIRenderCommands.FinalizeMenu();
                 }
                 if(GUIRenderCommands.CreateMenu("Misc",""))
@@ -498,16 +598,34 @@ namespace Bite.GUI
                 GUIRenderCommands.TerminateCurrentPopup();
             }
         }
+
+       
+        /*
+         * Create resources
+         */
         private ShaderStage m_ShaderStage = ShaderStage.Vertex;
         private string m_CreateShaderNameInput = string.Empty;
 
+        /*
+         * Create folder resources
+         */
         private string m_CreateFolderNameInput = string.Empty;
 
+        /*
+         * Create shader program resources
+         */
         private string m_CreateShaderProgramCategoryInput = string.Empty;
         private string m_CreateShaderProgramCategoryNameInput = string.Empty;
         private string m_CreateShaderProgramNameInput = string.Empty;
+
+        /*
+         * Create material resources
+         */
         private string m_CreateMaterialNameInput = string.Empty;
 
+        /*
+         * Rename folder resources
+         */
         private string m_FolderRenameInput = string.Empty;
 
         private uint m_InputBuffer = 24;
@@ -517,12 +635,27 @@ namespace Bite.GUI
 
         private object m_SelectedObject;
 
+        /*
+         * Texture2D resources
+         */
         private Texture2D m_FolderIcon;
-        private Texture2D m_Texture2DIcon;
         private Texture2D m_BackButtonIcon;
         private Texture2D m_ShaderIcon;
         private Texture2D m_ShaderProgramIcon;
         private Texture2D m_MaterialIcon;
-       
+        private Texture2D m_Texture2DIcon;
+        private Texture2D m_ComputerPathIcon;
+
+        /*
+         * Texture format resources
+         */
+        private GUIOpenFileDialogHandle m_Texture2DOpenFileDialog = null;
+        private string[] m_TextureFormatEnumNames;
+        private string[] m_TextureInternalFormatEnumNames;
+        private TextureFormat m_SelectedTextureFormat;
+        private TextureInternalFormat m_SelectedTextureInternalFormat;
+        private string m_Texture2DName = string.Empty;
+        private int m_Texture2DWidth;
+        private int m_Texture2DHeight;
     }
 }

@@ -104,6 +104,7 @@ namespace Vex.Asset
                 case AssetType.Undefined:
                     break;
                 case AssetType.Texture2D:
+                    asset = assetInterface.GenerateAsset(AssetType.Texture2D, assetYaml);
                     break;
                 case AssetType.Shader:
                     asset = assetInterface.GenerateAsset(AssetType.Shader, assetYaml);

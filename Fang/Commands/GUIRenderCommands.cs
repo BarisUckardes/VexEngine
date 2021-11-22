@@ -113,23 +113,14 @@ namespace Fang.Commands
 
         public static bool CreateSelectableItem(string name,string code)
         {
+            bool s = false;
             ImGui.PushID(code);
-            bool state = ImGui.Selectable(name);
+            bool state = ImGui.Selectable(name,ref s,ImGuiSelectableFlags.DontClosePopups);
             ImGui.PopID();
             return state;
         }
 
-        public static bool CreateVector3Slider(string name,string code,ref Vector3 vector,float min =0.00f,float max = 5.0f)
-        {
-            ImGui.PushID(code);
-            System.Numerics.Vector3 intermediateVec = new System.Numerics.Vector3(vector.X, vector.Y, vector.Z);
-            bool state = ImGui.SliderFloat3(name,ref intermediateVec,min,max);
-            ImGui.PopID();
-            vector.X = intermediateVec.X;
-            vector.Y = intermediateVec.Y;
-            vector.Z = intermediateVec.Z;
-            return state;
-        }
+       
         public static bool CreateVector2Slider(string name, string code, ref Vector2 vector, float min = 0.00f, float max = 5.0f)
         {
             System.Numerics.Vector2 intermediateVec = new System.Numerics.Vector2(vector.X, vector.Y);
@@ -140,7 +131,7 @@ namespace Fang.Commands
             vector.Y = intermediateVec.Y;
             return state;
         }
-        public static bool CreateVector3Slider(string name, string code, ref Vector2 vector, float min = 0.00f, float max = 5.0f)
+        public static bool CreateVector3Slider(string name, string code, ref Vector3 vector, float min = 0.00f, float max = 5.0f)
         {
             System.Numerics.Vector3 intermediateVec = new System.Numerics.Vector3(vector.X, vector.Y,vector.Z);
             ImGui.PushID(code);
@@ -167,6 +158,13 @@ namespace Fang.Commands
         {
             ImGui.PushID(code);
             bool state = ImGui.SliderFloat(name,ref value, min, max);
+            ImGui.PopID();
+            return state;
+        }
+        public static bool CreateIntInput(string name,string code,ref int value)
+        {
+            ImGui.PushID(code);
+            bool state =ImGui.InputInt(name, ref value);
             ImGui.PopID();
             return state;
         }
@@ -277,6 +275,14 @@ namespace Fang.Commands
              */
             GUILayoutCommands.SetCursorPos(cursorPos);
             GUIRenderCommands.CreateText(targetObject == null ? "Empty" : targetObject.GetType().Name," ");
+        }
+        public static GUIOpenFileDialogHandle CreateOpenFileDialog(List<string> targetExtensions,string buttonName,Texture2D folderTexture,Texture2D fileTexture,bool showFolders = true)
+        {
+            return new GUIOpenFileDialogHandle(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),buttonName, targetExtensions, showFolders,folderTexture,fileTexture);
+        }
+        public static void CloseOpenFileDialog(GUIOpenFileDialogHandle handle)
+        {
+            handle.CloseHandle();
         }
 
 

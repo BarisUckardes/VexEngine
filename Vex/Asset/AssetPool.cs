@@ -113,7 +113,7 @@ namespace Vex.Asset
              */
             if(System.IO.File.Exists(definitionPath) || System.IO.File.Exists(assetPath))
             {
-                Console.WriteLine("Asset exists on path");
+                Console.WriteLine("Asset exists on path : " + definitionPath + "___" + assetPath);
                 return null;
             }
 

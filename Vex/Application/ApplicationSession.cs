@@ -74,10 +74,20 @@ namespace Vex.Application
             {
                 return m_SessionHasShutdownRequest;
             }
-            set
+          
+        }
+        public string ShutdownRequestMessage
+        {
+            get
             {
-                m_SessionHasShutdownRequest = value;
+                return m_ShutdownReasonMessage;
             }
+        }
+        public void SetShutdownRequest(string reason = "undefined")
+        {
+            m_SessionHasShutdownRequest = true;
+            m_ShutdownReasonMessage = reason;
+
         }
         /// <summary>
         /// Shutdowns the entire session
@@ -109,5 +119,6 @@ namespace Vex.Application
         private WindowInterface m_Window;
         private List<World> m_Worlds;
         private bool m_SessionHasShutdownRequest;
+        private string m_ShutdownReasonMessage;
     }
 }

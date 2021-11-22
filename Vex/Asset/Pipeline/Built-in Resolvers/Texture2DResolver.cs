@@ -127,7 +127,7 @@ namespace Vex.Asset
             /*
             * Emit Data
             */
-            string dataYaml =Convert.ToBase64String(texture.CpuData);
+            string dataYaml =Convert.ToBase64String(texture.CpuData == null ? new byte[0] : texture.CpuData);
             emitter.Emit(new Scalar(null, "Data"));
             emitter.Emit(new Scalar(null, dataYaml));
 

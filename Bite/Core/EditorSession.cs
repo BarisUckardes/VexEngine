@@ -164,6 +164,11 @@ namespace Bite.Core
             folder.CreateNewFile(fileName, definitionPath,assetPath,definition);
         }
 
+        /// <summary>
+        /// Creates anew material domain content
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="fileName"></param>
         public void CreateMaterialDomianContent(DomainFolderView folder,string fileName)
         {
             /*
@@ -181,6 +186,27 @@ namespace Bite.Core
 
             /*
              * Register new content to domain foler view
+             */
+            folder.CreateNewFile(fileName, definitionPath, assetPath, definition);
+        }
+
+        public void CreateTexture2DomainContent(DomainFolderView folder,string fileName,string filePath)
+        {
+            /*
+             * Create new texture2D
+             */
+            Texture2D texture2D = Texture2D.LoadTextureFromPath(filePath);
+            texture2D.Name = fileName;
+
+            /*
+             * Create physical texture file
+             */
+            string definitionPath = folder.FolderPath + @"\" + fileName + @".vdefinition";
+            string assetPath = folder.FolderPath + @"\" + fileName + @".vasset";
+            AssetDefinition definition = m_ApplicationSession.AssetPool.CreateAssetOnPath(definitionPath, assetPath, AssetType.Texture2D, texture2D);
+
+            /*
+             * Register new content to domain folder view
              */
             folder.CreateNewFile(fileName, definitionPath, assetPath, definition);
         }
@@ -206,7 +232,7 @@ namespace Bite.Core
             /*
              * Iterate each resource and validate type
              */
-            for(int resourceIndex =0;resourceIndex < m_Resources.Count;resourceIndex++)
+            for (int resourceIndex =0;resourceIndex < m_Resources.Count;resourceIndex++)
             {
                 /*
                  * Get resource
@@ -241,9 +267,9 @@ namespace Bite.Core
         /// <summary>
         /// Send a shutdown request to vex session through the editor session
         /// </summary>
-        internal void ShutdownRequest()
+        internal void ShutdownRequest(string exitReason)
         {
-            m_ApplicationSession.HasShutdownRequest = true;
+            m_ApplicationSession.SetShutdownRequest(exitReason);
         }
         internal void Shutdown()
         {

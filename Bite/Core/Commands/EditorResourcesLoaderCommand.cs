@@ -82,7 +82,7 @@ namespace Bite.Core
              */
             if(!validationSuccessful)
             {
-                EditorSession.ShutdownRequest();
+                EditorSession.ShutdownRequest($"Editor resource are failed to load");
                 return;
             }
 
@@ -102,15 +102,18 @@ namespace Bite.Core
         private readonly string[] m_ValidateList = new string[] 
         {
             @"Bite\Resources\FolderIcon.png",
-            @"Bite\Resources\Texture2DIcon.png",
             @"Bite\Resources\BackButtonIcon.png",
             @"Bite\Resources\ShaderFileIcon.png",
             @"Bite\Resources\ShaderProgramFileIcon.png",
-            @"Bite\Resources\MaterialFileIcon.png"
+            @"Bite\Resources\MaterialFileIcon.png",
+            @"Bite\Resources\Texture2DFileIcon.png",
+            @"Bite\Resources\ComputerPathIcon.png"
+
 
         };
         private readonly AssetType[] m_AssetTypes = new AssetType[]
         {
+            AssetType.Texture2D,
             AssetType.Texture2D,
             AssetType.Texture2D,
             AssetType.Texture2D,
