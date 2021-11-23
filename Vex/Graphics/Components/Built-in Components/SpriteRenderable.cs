@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class SpriteRenderable : RenderableComponent
     {
-        public SpriteMesh Mesh
+        public StaticMesh Mesh
         {
             get
             {
@@ -43,6 +43,6 @@ namespace Vex.Graphics
         }
 
         private Texture2D m_Texture;
-        private SpriteMesh m_Mesh;
+        private StaticMesh m_Mesh;
     }
 }

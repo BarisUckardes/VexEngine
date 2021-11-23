@@ -47,6 +47,7 @@ namespace Bite.GUI
             m_MaterialIcon = Session.GetEditorResource("MaterialFileIcon", AssetType.Texture2D) as Texture2D;
             m_Texture2DIcon = Session.GetEditorResource("Texture2DFileIcon", AssetType.Texture2D) as Texture2D;
             m_ComputerPathIcon = Session.GetEditorResource("ComputerPathIcon", AssetType.Texture2D) as Texture2D;
+            m_StaticMeshFileIcon = Session.GetEditorResource("MeshFileIcon", AssetType.Texture2D) as Texture2D;
 
             /*
              * Get texture format resources
@@ -94,17 +95,19 @@ namespace Bite.GUI
              */
             GUILayoutCommands.StayOnSameLine();
             bool isImportTexture2D = false;
+            bool isImportStaticMesh = false;
             if(GUIRenderCommands.CreateButton("Import","import"))
             {
                 GUIRenderCommands.SignalPopupCreate("Domain_Import");
             }
+           
 
             /*
              * Render import menu
              */
             if(GUIRenderCommands.CreatePopup("Domain_Import"))
             {
-                RenderAssetImportPopup(ref isImportTexture2D);
+                RenderAssetImportPopup(ref isImportTexture2D,ref isImportStaticMesh);
                 GUIRenderCommands.FinalizePopup();
             }
 
@@ -115,11 +118,21 @@ namespace Bite.GUI
             {
                 m_Texture2DOpenFileDialog = GUIRenderCommands.CreateOpenFileDialog(new List<string>() { "*.jpg","*.png" },"Import",m_FolderIcon,m_Texture2DIcon);
             }
+            else if(isImportStaticMesh)
+            {
+                m_StaticMeshOpenFileDialog = GUIRenderCommands.CreateOpenFileDialog(new List<string>() { "*.obj", "*.fbx" }, "Import", m_FolderIcon, m_Texture2DIcon);
+            }
 
             /*
              * Render open file dialog for texture2d
              */
             m_Texture2DOpenFileDialog?.Render();
+
+            /*
+             * Render open file dialog for static mesh
+             */
+            m_StaticMeshOpenFileDialog?.Render();
+
 
             /*
              * Validate texture2d selected
@@ -143,6 +156,30 @@ namespace Bite.GUI
                  */
                 GUIRenderCommands.CloseOpenFileDialog(m_Texture2DOpenFileDialog);
                 m_Texture2DOpenFileDialog = null;
+            }
+
+            /*
+             * Validate static mesh selected
+             */
+            if (m_StaticMeshOpenFileDialog != null && m_StaticMeshOpenFileDialog.SelectedPath != string.Empty)
+            {
+                /*
+                 * Validate file
+                 */
+                if (!File.Exists(m_StaticMeshOpenFileDialog.SelectedPath))
+                {
+                    Console.WriteLine("Selected static mesh file is not found!");
+                }
+                else
+                {
+                    Session.CreateStaticMeshDomainContent(m_CurrentFolder, m_StaticMeshOpenFileDialog.SelectedFileName, m_StaticMeshOpenFileDialog.SelectedPath);
+                }
+
+                /*
+                 * Close file dialog
+                 */
+                GUIRenderCommands.CloseOpenFileDialog(m_StaticMeshOpenFileDialog);
+                m_StaticMeshOpenFileDialog = null;
             }
 
             /*
@@ -283,6 +320,10 @@ namespace Bite.GUI
                 else if(file.AssetType == AssetType.Material)
                 {
                     GUIRenderCommands.CreateImage(m_MaterialIcon, new Vector2(128, 128));
+                }
+                else if (file.AssetType == AssetType.Mesh)
+                {
+                    GUIRenderCommands.CreateImage(m_StaticMeshFileIcon, new Vector2(128, 128));
                 }
 
 
@@ -425,7 +466,7 @@ namespace Bite.GUI
             }
 
         }
-        private void RenderAssetImportPopup(ref bool texture2DImport)
+        private void RenderAssetImportPopup(ref bool texture2DImport,ref bool staticMeshImport)
         {
             if (GUIRenderCommands.CreateMenu("Import", ""))
             {
@@ -436,6 +477,11 @@ namespace Bite.GUI
                     {
                         GUIRenderCommands.TerminateCurrentPopup();
                         texture2DImport = true;
+                    }
+                    else if (GUIRenderCommands.CreateMenuItem("Static Mesh", ""))
+                    {
+                        GUIRenderCommands.TerminateCurrentPopup();
+                        staticMeshImport = true;
                     }
 
                     GUIRenderCommands.FinalizeMenu();
@@ -637,18 +683,12 @@ namespace Bite.GUI
         private object m_SelectedObject;
 
         /*
-         * Texture2D resources
+         * Static mesh resources
          */
-        private Texture2D m_FolderIcon;
-        private Texture2D m_BackButtonIcon;
-        private Texture2D m_ShaderIcon;
-        private Texture2D m_ShaderProgramIcon;
-        private Texture2D m_MaterialIcon;
-        private Texture2D m_Texture2DIcon;
-        private Texture2D m_ComputerPathIcon;
+        private GUIOpenFileDialogHandle m_StaticMeshOpenFileDialog = null;
 
         /*
-         * Texture format resources
+         * Texture2d resources
          */
         private GUIOpenFileDialogHandle m_Texture2DOpenFileDialog = null;
         private string[] m_TextureFormatEnumNames;
@@ -658,5 +698,17 @@ namespace Bite.GUI
         private string m_Texture2DName = string.Empty;
         private int m_Texture2DWidth;
         private int m_Texture2DHeight;
+
+        /*
+        * Texture2D resources
+        */
+        private Texture2D m_FolderIcon;
+        private Texture2D m_BackButtonIcon;
+        private Texture2D m_ShaderIcon;
+        private Texture2D m_ShaderProgramIcon;
+        private Texture2D m_MaterialIcon;
+        private Texture2D m_Texture2DIcon;
+        private Texture2D m_ComputerPathIcon;
+        private Texture2D m_StaticMeshFileIcon;
     }
 }

@@ -77,7 +77,7 @@ namespace Vex.Framework
              * Set state
              */
             PipelineState state = new PipelineState();
-            commandBuffer.SetPipelineState(state);
+           // commandBuffer.SetPipelineState(state);
 
             /*
              * Iterate each observer
@@ -137,16 +137,19 @@ namespace Vex.Framework
                      * Set sprite renderable
                      */
                     SpriteRenderable renderable = m_Renderables[renderableIndex];
+                    VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
+                    IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
+                    uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;
 
                     /*
                      * Set vertex buffer command
                      */
-                    commandBuffer.SetVertexbuffer(renderable.Mesh.VertexBuffer);
+                    commandBuffer.SetVertexbuffer(vertexBuffer);
 
                     /*
                      * Set index buffer command
                      */
-                    commandBuffer.SetIndexBuffer(renderable.Mesh.IndexBuffer);
+                    commandBuffer.SetIndexBuffer(indexBuffer);
 
                     /*
                      * Set shader pVexgram
@@ -206,7 +209,7 @@ namespace Vex.Framework
                     /*
                      * Draw
                      */
-                    commandBuffer.DrawIndexed((int)renderable.Mesh.IndexBuffer.IndexCount);
+                    commandBuffer.DrawIndexed((int)triangleCount);
 
                     Profiler.EndProfile();
                 }

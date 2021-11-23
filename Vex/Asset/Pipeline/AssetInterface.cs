@@ -71,6 +71,12 @@ namespace Vex.Asset
                         resolver.SetTargetPool(m_Pool);
                         return new DeserializerBuilder().WithTypeConverter(new AssetDefinitionResolver()).Build().Deserialize<AssetDefinition>(yamlText);
                     }
+                case AssetType.Mesh:
+                    {
+                        StaticMeshResolver resolver = new StaticMeshResolver();
+                        resolver.SetTargetPool(m_Pool);
+                        return new DeserializerBuilder().WithTypeConverter(resolver).Build().Deserialize<StaticMesh>(yamlText);
+                    }
             }
 
             return null;
@@ -111,6 +117,9 @@ namespace Vex.Asset
                     break;
                 case AssetType.Definition:
                     return new SerializerBuilder().WithTypeConverter(new AssetDefinitionResolver()).Build().Serialize(engineObject);
+                    break;
+                case AssetType.Mesh:
+                    return new SerializerBuilder().WithTypeConverter(new StaticMeshResolver()).Build().Serialize(engineObject);
                     break;
                 default:
                     break;

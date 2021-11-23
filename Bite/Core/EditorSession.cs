@@ -211,6 +211,27 @@ namespace Bite.Core
             folder.CreateNewFile(fileName, definitionPath, assetPath, definition);
         }
 
+        public void CreateStaticMeshDomainContent(DomainFolderView folder, string fileName, string filePath)
+        {
+            /*
+             * Create new texture2D
+             */
+            StaticMesh mesh = StaticMesh.LoadViaPath(filePath);
+            mesh.Name = fileName;
+
+            /*
+             * Create physical texture file
+             */
+            string definitionPath = folder.FolderPath + @"\" + fileName + @".vdefinition";
+            string assetPath = folder.FolderPath + @"\" + fileName + @".vasset";
+            AssetDefinition definition = m_ApplicationSession.AssetPool.CreateAssetOnPath(definitionPath, assetPath, AssetType.Mesh, mesh);
+
+            /*
+             * Register new content to domain folder view
+             */
+            folder.CreateNewFile(fileName, definitionPath, assetPath, definition);
+        }
+
         /// <summary>
         /// Requests a load or get a specific asset via its id
         /// </summary>

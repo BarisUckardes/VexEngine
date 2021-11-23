@@ -21,6 +21,7 @@ namespace Vex.Asset
         Framebuffer3D = 7,
         World = 8,
         EntityPrefab = 9,
-        Definition = 10
+        Definition = 10,
+        Mesh = 11
     }
 }

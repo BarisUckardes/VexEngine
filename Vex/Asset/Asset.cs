@@ -127,6 +127,9 @@ namespace Vex.Asset
                     break;
                 case AssetType.Definition:
                     break;
+                case AssetType.Mesh:
+                    asset = assetInterface.GenerateAsset(AssetType.Mesh, assetYaml);
+                    break;
                 default:
                     break;
             }

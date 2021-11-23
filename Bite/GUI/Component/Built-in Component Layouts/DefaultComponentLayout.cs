@@ -55,14 +55,14 @@ namespace Bite.GUI
                 if (info.PropertyType == typeof(Vector3))
                 {
                     Vector3 value = (Vector3)info.GetValue(TargetComponent);
-                    GUIRenderCommands.CreateVector3Slider(info.Name, "", ref value);
+                    GUIRenderCommands.CreateVector3Slider(info.Name, "", ref value,0,360);
                     info.SetValue(TargetComponent,value,null);
                     
                 }
                 else if(info.PropertyType == typeof(float))
                 {
                     float value = (float)info.GetValue(TargetComponent);
-                    GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value);
+                    GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value,0,360);
                     info.SetValue(TargetComponent, value, null);
                 }
                 else if(info.PropertyType.IsSubclassOf(typeof(VexObject)))

@@ -77,7 +77,7 @@ f_ColorOut = texture(f_SpriteTexture,f_Uv);
 
             Entity spriteEnttiy = new Entity("Sprite entity", world);
             SpriteRenderable spriteRenderable = spriteEnttiy.AddComponent<SpriteRenderable>();
-            spriteRenderable.Mesh = mesh;
+            //spriteRenderable.Mesh = mesh;
             spriteRenderable.Material = material;
             spriteEnttiy.Spatial.Position = new Vector3(0, 0, 1).GetAsNumerics();
             spriteEnttiy.Spatial.Scale = new Vector3(5, 5, 5).GetAsNumerics();

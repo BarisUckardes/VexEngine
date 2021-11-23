@@ -18,7 +18,7 @@ namespace Vex.Graphics
 
         protected override void ExecuteImpl()
         {
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, m_Buffer.IndexBufferID);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, m_Buffer == null ? 0 : m_Buffer.IndexBufferID);
         }
 
         private IndexBuffer m_Buffer;

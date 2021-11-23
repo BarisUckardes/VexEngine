@@ -96,7 +96,17 @@ namespace Bite.GUI
 
         private void RecreateComponentLayouts()
         {
+            /*
+             * Finalize former layouts
+             */
+            foreach (ComponentLayout layout in m_Layouts)
+                layout.OnDetach();
+
+            /*
+             * Clear former layouts
+             */
             m_Layouts.Clear();
+
             /*
              * Create layouts
              */

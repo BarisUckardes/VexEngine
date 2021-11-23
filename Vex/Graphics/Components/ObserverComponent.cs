@@ -17,7 +17,7 @@ namespace Vex.Graphics
         {
             m_Framebuffer = new Framebuffer2D(512,512,TextureFormat.Rgba,TextureInternalFormat.Rgba32f);
             //m_Framebuffer = new Framebuffer2D();
-            m_NearPlane = -1000;
+            m_NearPlane = 0.001f;
             m_FarPlane = 1000.0f;
             m_ClearColor = OpenTK.Mathematics.Color4.CornflowerBlue;
             if(PrimalObserver == null)

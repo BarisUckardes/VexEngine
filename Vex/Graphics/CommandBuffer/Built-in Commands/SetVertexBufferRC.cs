@@ -21,7 +21,7 @@ namespace Vex.Graphics
             /*
              * Get vertex handle
              */
-            VertexBufferHandle handle = m_Buffer.Handle;
+            VertexBufferHandle handle = m_Buffer == null ? new VertexBufferHandle(0,0) : m_Buffer.Handle;
 
             /*
              * Set vertex array
