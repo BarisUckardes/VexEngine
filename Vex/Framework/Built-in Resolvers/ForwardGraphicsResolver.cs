@@ -12,7 +12,7 @@ namespace Vex.Framework
 {
 
     /// <summary>
-    /// Customized sprite graphics resolver
+    /// Customized forward graphics resolver
     /// </summary>
     public sealed class ForwardGraphicsResolver : GraphicsResolver
     {
