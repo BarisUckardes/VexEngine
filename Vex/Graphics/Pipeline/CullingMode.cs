@@ -11,16 +11,16 @@ namespace Vex.Graphics
     /// </summary>
     public readonly struct CullingMode
     {
-        public CullingMode(FVexntFace fVexntFace = FVexntFace.CCW, CullFace cullFace = CullFace.Back)
+        public CullingMode(TriangleFrontFace triangleFrontFace = TriangleFrontFace.CCW, CullFace cullFace = CullFace.Back)
         {
-            FVexntFace = fVexntFace;
+            TriangleFrontFace = triangleFrontFace;
             CullFace = cullFace;
         }
 
         /// <summary>
         /// The fVexnt face which will be drawn
         /// </summary>
-        public readonly FVexntFace FVexntFace;
+        public readonly TriangleFrontFace TriangleFrontFace;
         /// <summary>
         /// Back face which will be culled and discarded
         /// </summary>

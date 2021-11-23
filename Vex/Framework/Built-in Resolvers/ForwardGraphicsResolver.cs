@@ -76,8 +76,8 @@ namespace Vex.Framework
             /*
              * Set state
              */
-            PipelineState state = new PipelineState();
-            commandBuffer.SetPipelineState(state);
+            //PipelineState state = new PipelineState();
+            //commandBuffer.SetPipelineState(state);
 
             /*
              * Iterate each observer

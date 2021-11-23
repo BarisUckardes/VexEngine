@@ -69,12 +69,13 @@ namespace Vex.Graphics
             if(!m_State.FaceCulling)
             {
                 GL.Disable(EnableCap.CullFace);
+
             }
             else
             {
                 GL.Enable(EnableCap.CullFace);
 
-                GL.FrontFace(FVexntFaceUtility.GetNative(m_State.CullingMode.FVexntFace));
+                GL.FrontFace(TriangleFrontFaceUtility.GetNative(m_State.CullingMode.TriangleFrontFace));
                 GL.CullFace(CullFaceUtility.GetNative(m_State.CullingMode.CullFace));
             }
         }

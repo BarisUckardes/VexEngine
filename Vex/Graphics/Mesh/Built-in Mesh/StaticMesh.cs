@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -83,7 +84,7 @@ namespace Vex.Graphics
                             /*
                              * Get components
                              */
-                            positions.Add(new Vector3(float.Parse(splitSubString[0]), float.Parse(splitSubString[1]), float.Parse(splitSubString[2])));
+                            positions.Add(new Vector3(float.Parse(splitSubString[0], CultureInfo.InvariantCulture), float.Parse(splitSubString[1], CultureInfo.InvariantCulture), float.Parse(splitSubString[2], CultureInfo.InvariantCulture)));
                             break;
                         }
                     case "vn":

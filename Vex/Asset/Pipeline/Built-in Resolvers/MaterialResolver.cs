@@ -95,6 +95,7 @@ namespace Vex.Asset
                     Console.WriteLine("Float param name: " + parameterName);
                     parser.MoveNext();
                     Console.WriteLine("Float param value: " + GetParserValue(parser));
+
                     /*
                      * Get parameter value
                      */
@@ -486,7 +487,7 @@ namespace Vex.Asset
                 /*
                  * Signal float parameters end
                  */
-                emitter.Emit(new Scalar(null, "Float parameters End"));
+                emitter.Emit(new Scalar(null, "Float Parameters End"));
                 emitter.Emit(new Scalar(null, ""));
 
                 /*

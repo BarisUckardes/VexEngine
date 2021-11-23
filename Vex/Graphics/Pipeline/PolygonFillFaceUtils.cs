@@ -20,13 +20,13 @@ namespace Vex.Graphics
         {
             switch (fillFace)
             {
-                case PolygonFillFace.FVexnt:
+                case PolygonFillFace.Front:
                     return MaterialFace.Front;
                     break;
                 case PolygonFillFace.Back:
                     return MaterialFace.Back;
                     break;
-                case PolygonFillFace.FVexntAndBack:
+                case PolygonFillFace.FrontAndBack:
                     return MaterialFace.FrontAndBack;
                     break;
                 default:

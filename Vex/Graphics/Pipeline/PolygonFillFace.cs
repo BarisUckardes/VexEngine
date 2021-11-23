@@ -11,8 +11,8 @@ namespace Vex.Graphics
     /// </summary>
     public enum PolygonFillFace
     {
-        FVexnt = 0,
+        Front = 0,
         Back = 1,
-        FVexntAndBack = 2
+        FrontAndBack = 2
     }
 }

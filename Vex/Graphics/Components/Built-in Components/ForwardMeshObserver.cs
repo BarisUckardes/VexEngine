@@ -15,29 +15,30 @@ namespace Vex.Graphics
         public ForwardMeshObserver()
         {
             AspectRatio = 720.0f / 1280.0f;
-            m_OrthoSize = 5.0f;
+            m_FieldOfView = 5.0f;
+            m_FieldOfView = 60;
         }
 
         /// <summary>
         ///Get&Set ortho size of this sprite observer
         /// </summary>
-        public float OrthoSize
+        public float FieldOfView
         {
             get
             {
-                return m_OrthoSize;
+                return m_FieldOfView;
             }
             set
             {
-                m_OrthoSize = value;
+                m_FieldOfView = value;
             }
         }
 
        
         public override Matrix4 GetProjectionMatrix()
         {
-            return Matrix4.CreatePerspectiveFieldOfView(1.0f, AspectRatio, NearPlane, FarPlane);
-            //return Matrix4.CreateOrthographicOffCenter(-OrthoSize*AspectRatio,OrthoSize*AspectRatio,-OrthoSize,OrthoSize,NearPlane,FarPlane);
+            return Matrix4.CreatePerspectiveFieldOfView((float)((Math.PI / 180) * m_FieldOfView), AspectRatio, NearPlane, FarPlane);
+
         }
 
         public override Matrix4 GetViewMatrix()
@@ -54,6 +55,6 @@ namespace Vex.Graphics
         }
 
 
-        private float m_OrthoSize;
+        private float m_FieldOfView;
     }
 }

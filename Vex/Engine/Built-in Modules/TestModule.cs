@@ -28,19 +28,18 @@ namespace Vex.Engine
             string vertexSource  = @"
 #version 450
 
-layout(location = 0) in vec2 v_Position;
+layout(location = 0) in vec3 v_Position;
+layout(location = 0) in vec3 v_Normal;
 layout(location = 1) in vec2 v_Uv;
 
 out vec2 f_Uv;
 
 uniform mat4 v_Mvp;
-uniform vec4 v_TestVec;
-uniform sampler2D v_TestTexture;
-uniform float v_TestFloat;
+
 
 void main()
 {
-    gl_Position = v_Mvp*vec4(v_Position,0, 1);
+    gl_Position = v_Mvp*vec4(v_Position, 1);
     f_Uv = v_Uv;
 }";
 

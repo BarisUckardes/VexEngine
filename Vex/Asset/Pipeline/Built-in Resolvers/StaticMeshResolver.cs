@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,16 +45,17 @@ namespace Vex.Asset
                 /*
                  * Create and add new vertex
                  */
-                Vector3 position = new Vector3(float.Parse(vertexString[0]),
-                    float.Parse(vertexString[1]),
-                    float.Parse(vertexString[2]));
-                Vector3 normal = new Vector3(float.Parse(vertexString[3]),
+                Vector3 position = new Vector3(float.Parse(vertexString[0], CultureInfo.InvariantCulture),
+                    float.Parse(vertexString[1], CultureInfo.InvariantCulture),
+                    float.Parse(vertexString[2], CultureInfo.InvariantCulture));
+                Vector3 normal = new Vector3(float.Parse(vertexString[3], CultureInfo.InvariantCulture),
                     float.Parse(vertexString[4]),
                     float.Parse(vertexString[5]));
-                Vector2 uv = new Vector2(float.Parse(vertexString[6]),
+                Vector2 uv = new Vector2(float.Parse(vertexString[6], CultureInfo.InvariantCulture),
                     float.Parse(vertexString[7]));
                 vertexes.Add(new StaticMeshVertex(position, normal, uv));
 
+                Console.WriteLine("Position:" + position.X + " " + position.Y + " " + position.Z);
                 /*
                  * Move to next vertex
                  */
@@ -123,6 +125,8 @@ namespace Vex.Asset
                 string vertexText = vertex.Position.X + " " + vertex.Position.Y + " " + vertex.Position.Z +
                     " " + vertex.Normal.Y + " " + vertex.Normal.Y + " " + vertex.Normal.Y +
                     " " + vertex.Uv.X + " " + vertex.Uv.Y;
+
+                
 
                 /*
                  * Emiter vertex

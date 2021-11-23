@@ -9,21 +9,21 @@ namespace Vex.Graphics
     /// <summary>
     /// Utility class for native FrontFaceDirection enum conversionss
     /// </summary>
-    public static class FVexntFaceUtility
+    public static class TriangleFrontFaceUtility
     {
         /// <summary>
         /// Converts native fVexnt face enums
         /// </summary>
         /// <param name="fVexntFace"></param>
         /// <returns></returns>
-        public static FrontFaceDirection GetNative(FVexntFace fVexntFace)
+        public static FrontFaceDirection GetNative(TriangleFrontFace triangleFrontFace)
         {
-            switch (fVexntFace)
+            switch (triangleFrontFace)
             {
-                case FVexntFace.CCW:
+                case TriangleFrontFace.CCW:
                     return FrontFaceDirection.Ccw;
                     break;
-                case FVexntFace.CW:
+                case TriangleFrontFace.CW:
                     return FrontFaceDirection.Cw;
                     break;
                 default:

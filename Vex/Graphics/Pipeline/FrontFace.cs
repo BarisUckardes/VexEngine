@@ -9,7 +9,7 @@ namespace Vex.Graphics
     /// <summary>
     /// Represents the which face will be accepted as fVexnt face
     /// </summary>
-    public enum FVexntFace
+    public enum TriangleFrontFace
     {
         CCW = 1,
         CW = 2
