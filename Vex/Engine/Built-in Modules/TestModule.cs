@@ -21,9 +21,9 @@ namespace Vex.Engine
             world.AddView<WorldLogicView>();
             world.Register();
 
-            Entity observerEntity = new Entity("Sprite observer entity", world);
-            SpriteObserver spriteObserverComponent = observerEntity.AddComponent<SpriteObserver>();
-            spriteObserverComponent.ClearColor = OpenTK.Mathematics.Color4.Crimson;
+            Entity observerEntity = new Entity("Forward observer entity", world);
+            ForwardMeshObserver forwardMeshObserver = observerEntity.AddComponent<ForwardMeshObserver>();
+            forwardMeshObserver.ClearColor = OpenTK.Mathematics.Color4.Crimson;
             observerEntity.Spatial.Position = new OpenTK.Mathematics.Vector3(0, 0, 0).GetAsNumerics();
             string vertexSource  = @"
 #version 450
@@ -61,37 +61,16 @@ f_ColorOut = texture(f_SpriteTexture,f_Uv);
             Shader fragmenShader = new Shader(ShaderStage.Fragment);
             vertexShader.Compile(vertexSource);
             fragmenShader.Compile(fragmentSource);
-            ShaderProgram shaderProgram = new ShaderProgram("Sprite","Unlit");
+            ShaderProgram shaderProgram = new ShaderProgram("Forward","Unlit");
             shaderProgram.LinkProgram(new List<Shader>() { vertexShader,fragmenShader});
 
             Material material = new Material(shaderProgram);
-            SpriteMesh mesh = new SpriteMesh();
-            SpriteVertex[] vertexes = {
-            new SpriteVertex(-0.5f, -0.5f,1.0f,1.0f), //Bottom-left vertex
-            new SpriteVertex( 0.5f, -0.5f,1.0f,0.0f), //Bottom-right vertex
-            new SpriteVertex(0.0f,  0.5f,0.0f,1.0f)}; //Top vertex
-            int[] triangles = new int[] { 0, 1, 2};
-
-            mesh.SetVertexData(vertexes);
-            mesh.SetTriangleData(triangles);
-
-            Entity spriteEnttiy = new Entity("Sprite entity", world);
-            SpriteRenderable spriteRenderable = spriteEnttiy.AddComponent<SpriteRenderable>();
-            //spriteRenderable.Mesh = mesh;
-            spriteRenderable.Material = material;
-            spriteEnttiy.Spatial.Position = new Vector3(0, 0, 1).GetAsNumerics();
-            spriteEnttiy.Spatial.Scale = new Vector3(5, 5, 5).GetAsNumerics();
-
-            //Texture2D sprite = Texture2D.LoadTextureFromPath(@"C:\Users\baris\Desktop\Images\image0.jpg");
-            //spriteRenderable.SpriteTexture = sprite;
-
-            AssetInterface assetInterface = new AssetInterface(null);
-            //AssetDefinition definition = new AssetDefinition("Sprite", sprite.ID, AssetType.Texture2D);
-            //string definitionYaml = assetInterface.GenerateObjectString(AssetType.Definition, definition);
-            //string assetYaml = assetInterface.GenerateObjectString(AssetType.Texture2D, sprite);
-            //System.IO.File.WriteAllText(PlatformPaths.DomainDirectory + @"\sprite.rdefinition", definitionYaml);
-            //System.IO.File.WriteAllText(PlatformPaths.DomainDirectory + @"\sprite.rasset", assetYaml);
-
+           
+            Entity renderableEntity = new Entity("Forward entity", world);
+            ForwardMeshRenderable renderableComponent = renderableEntity.AddComponent<ForwardMeshRenderable>();
+            renderableComponent.Material = material;
+            renderableEntity.Spatial.Position = new Vector3(0, 0, 1).GetAsNumerics();
+            renderableEntity.Spatial.Scale = new Vector3(5, 5, 5).GetAsNumerics();
         }
 
         public override void OnDetach()

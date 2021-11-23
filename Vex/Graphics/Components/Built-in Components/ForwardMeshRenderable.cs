@@ -9,7 +9,7 @@ namespace Vex.Graphics
     /// <summary>
     /// Custom sprite renderable component
     /// </summary>
-    public sealed class SpriteRenderable : RenderableComponent
+    public sealed class ForwardMeshRenderable : RenderableComponent
     {
         public StaticMesh Mesh
         {
@@ -22,17 +22,7 @@ namespace Vex.Graphics
                 m_Mesh = value;
             }
         }
-        public Texture2D SpriteTexture
-        {
-            get
-            {
-                return m_Texture;
-            }
-            set
-            {
-                m_Texture = value;
-            }
-        }
+       
 
         public override bool ShouldTick
         {
@@ -42,7 +32,6 @@ namespace Vex.Graphics
             }
         }
 
-        private Texture2D m_Texture;
         private StaticMesh m_Mesh;
     }
 }

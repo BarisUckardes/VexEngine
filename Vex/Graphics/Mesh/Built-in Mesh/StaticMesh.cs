@@ -112,6 +112,8 @@ namespace Vex.Graphics
                                  * Get triangle index
                                  */
                                 triangles.Add(int.Parse(triangleIndexString));
+
+                                
                             }
                             break;
                         }

@@ -17,7 +17,7 @@ namespace Vex.Framework
         {
             m_Resolvers = new List<GraphicsResolver>();
 
-            RegisterResolver<SpriteGraphicsResolver>();
+            RegisterResolver<ForwardGraphicsResolver>();
         }
 
 

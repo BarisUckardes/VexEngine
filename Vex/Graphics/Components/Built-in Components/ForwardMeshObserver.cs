@@ -10,9 +10,9 @@ namespace Vex.Graphics
     /// <summary>
     /// Custom sprite observer component
     /// </summary>
-    public sealed class SpriteObserver : ObserverComponent
+    public sealed class ForwardMeshObserver : ObserverComponent
     {
-        public SpriteObserver()
+        public ForwardMeshObserver()
         {
             AspectRatio = 720.0f / 1280.0f;
             m_OrthoSize = 5.0f;

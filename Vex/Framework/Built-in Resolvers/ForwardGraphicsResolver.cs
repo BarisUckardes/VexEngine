@@ -14,20 +14,20 @@ namespace Vex.Framework
     /// <summary>
     /// Customized sprite graphics resolver
     /// </summary>
-    public sealed class SpriteGraphicsResolver : GraphicsResolver
+    public sealed class ForwardGraphicsResolver : GraphicsResolver
     {
        
-        public SpriteGraphicsResolver()
+        public ForwardGraphicsResolver()
         {
-            m_Renderables = new List<SpriteRenderable>();
-            m_Observers = new List<SpriteObserver>();
+            m_Renderables = new List<ForwardMeshRenderable>();
+            m_Observers = new List<ForwardMeshObserver>();
            
         }
         public override Type ExpectedRenderableType
         {
             get
             {
-                return typeof(SpriteRenderable);
+                return typeof(ForwardMeshRenderable);
             }
         }
 
@@ -35,28 +35,28 @@ namespace Vex.Framework
         {
             get
             {
-                return typeof(SpriteObserver);
+                return typeof(ForwardMeshObserver);
             }
         }
 
         public override void OnObserverRegistered(ObserverComponent observer)
         {
-            m_Observers.Add(observer as SpriteObserver);
+            m_Observers.Add(observer as ForwardMeshObserver);
         }
 
         public override void OnObserverRemoved(ObserverComponent observer)
         {
-            m_Observers.Remove(observer as SpriteObserver);
+            m_Observers.Remove(observer as ForwardMeshObserver);
         }
 
         public override void OnRenderableRegistered(RenderableComponent renderable)
         {
-            m_Renderables.Add(renderable as SpriteRenderable);
+            m_Renderables.Add(renderable as ForwardMeshRenderable);
         }
 
         public override void OnRenderableRemoved(RenderableComponent renderable)
         {
-            m_Renderables.Remove(renderable as SpriteRenderable);
+            m_Renderables.Remove(renderable as ForwardMeshRenderable);
         }
 
         public override void Resolve()
@@ -77,7 +77,7 @@ namespace Vex.Framework
              * Set state
              */
             PipelineState state = new PipelineState();
-           // commandBuffer.SetPipelineState(state);
+            commandBuffer.SetPipelineState(state);
 
             /*
              * Iterate each observer
@@ -89,7 +89,7 @@ namespace Vex.Framework
                 /*
                  * Get observer and its data
                  */
-                SpriteObserver observer = m_Observers[observerIndex];
+                ForwardMeshObserver observer = m_Observers[observerIndex];
 
                 /*
                  * Get observer clear color
@@ -136,7 +136,7 @@ namespace Vex.Framework
                     /*
                      * Set sprite renderable
                      */
-                    SpriteRenderable renderable = m_Renderables[renderableIndex];
+                    ForwardMeshRenderable renderable = m_Renderables[renderableIndex];
                     VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
                     IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
                     uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;
@@ -175,11 +175,6 @@ namespace Vex.Framework
 
                     Matrix4 mvp = modelMatrix * viewMatrix* projectionMatrix;
                     commandBuffer.SetUniformMat4x4(renderable.Material.Program, mvp, "v_Mvp");
-                   
-                    /*
-                     * Set sprite texture
-                     */
-                    renderable.Material.GetStageParameters(ShaderStage.Fragment).SetTexture2DParameter("f_SpriteTexture", renderable.SpriteTexture);
 
                     /*
                      * Set material parameters
@@ -232,7 +227,7 @@ namespace Vex.Framework
             Profiling.Profiler.EndProfile();
         }
 
-        private List<SpriteObserver> m_Observers;
-        private List<SpriteRenderable> m_Renderables;
+        private List<ForwardMeshObserver> m_Observers;
+        private List<ForwardMeshRenderable> m_Renderables;
     }
 }
