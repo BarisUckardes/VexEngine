@@ -132,18 +132,18 @@ namespace Vex.Graphics
                  */
                 Console.WriteLine("Program link failed!");
                 m_LastLinkErrorMessage = errorLog;
-
-                return;
             }
 
             /*
              * Set handle
              */
             m_Handle = handle;
+
             /*
              * Set shaders
              */
             m_Shaders = new List<Shader>(shaders);
+            Console.WriteLine("Set new shaders of " + shaders.Count);
         }
         /// <summary>
         /// Returns the shader with the specified type

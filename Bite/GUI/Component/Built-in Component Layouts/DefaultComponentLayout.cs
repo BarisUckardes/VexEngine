@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Fang.Commands;
 using System.Numerics;
+using Vex.Framework;
+
 namespace Bite.GUI
 {
     public sealed class DefaultComponentLayout : ComponentLayout
@@ -37,6 +39,12 @@ namespace Bite.GUI
                     GUIRenderCommands.CreateVector3Slider(info.Name, "", ref value);
                     info.SetValue(TargetComponent, value);
                 }
+                else if(info.FieldType.IsSubclassOf(typeof(VexObject)))
+                {
+                    GUIRenderCommands.CreateText(info.FieldType.Name, "");
+                    VexObject value = (VexObject)info.GetValue(TargetComponent);
+                    info.SetValue(TargetComponent, GUIRenderCommands.CreateObjectField(value, value == null ? "nll_obj_" + info.GetHashCode().ToString() : value.ID.ToString()));
+                }
             }
 
             /*
@@ -56,6 +64,12 @@ namespace Bite.GUI
                     float value = (float)info.GetValue(TargetComponent);
                     GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value);
                     info.SetValue(TargetComponent, value, null);
+                }
+                else if(info.PropertyType.IsSubclassOf(typeof(VexObject)))
+                {
+                    GUIRenderCommands.CreateText(info.PropertyType.Name, "");
+                    VexObject value = (VexObject)info.GetValue(TargetComponent);
+                    info.SetValue(TargetComponent, GUIRenderCommands.CreateObjectField(value, value == null ? "nll_obj_" + info.GetHashCode().ToString() : value.ID.ToString()));
                 }
             }
         }

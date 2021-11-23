@@ -43,13 +43,14 @@ namespace Bite.GUI
             if(m_TargetMaterial.Program != program && program != null)
             {
                 m_TargetMaterial.Program = program;
+                Session.UpdateDomainAsset(m_TargetMaterial.ID, m_TargetMaterial);
             }
 
             /*
              * Render stage parameters
              */
             MaterialStageParameters[] stageParameters = m_TargetMaterial.StageParameters;
-
+            
             /*
              * Iterate stage parameters
              */
@@ -78,6 +79,7 @@ namespace Bite.GUI
                         GUIRenderCommands.CreateText(floatParameters[parameterIndex].Name, " ");
                         GUILayoutCommands.StayOnSameLine();
                         GUIRenderCommands.CreateFloatSlider(floatParameters[parameterIndex].Name," ", ref value);
+                        stage.SetFloatParameter(floatParameters[parameterIndex].Name, value);
                         
                     }
 
@@ -136,7 +138,7 @@ namespace Bite.GUI
                         Texture2D value = texture2DParameters[parameterIndex].Data;
                         GUIRenderCommands.CreateText(texture2DParameters[parameterIndex].Name, " ");
                         GUILayoutCommands.StayOnSameLine();
-                        GUIRenderCommands.CreateObjectField(value, " ");
+                        stage.SetTexture2DParameter(texture2DParameters[parameterIndex].Name, GUIRenderCommands.CreateObjectField(value,"mat_prm_tx2d") as Texture2D);
                     }
                 }
             }

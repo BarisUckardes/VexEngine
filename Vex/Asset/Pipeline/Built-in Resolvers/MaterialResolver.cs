@@ -23,6 +23,9 @@ namespace Vex.Asset
 
         protected override object ReadAsset(IParser parser,AssetPool pool)
         {
+            /*
+             * Initialize variables
+             */
             Guid programAssetID;
             ShaderProgram shaderProgram = null;
             List<ShaderStage> stages = new List<ShaderStage>();
@@ -32,7 +35,6 @@ namespace Vex.Asset
             List<List<MaterialParameterField<Vector4>>> vector4Parameters = new List<List<MaterialParameterField<Vector4>>>();
             List<List<MaterialParameterField<Matrix4>>> matrix4x4Parameters = new List<List<MaterialParameterField<Matrix4>>>();
             List<List<MaterialParameterField<Texture2D>>> texture2DParameters = new List<List<MaterialParameterField<Texture2D>>>();
-
 
             /*
              * Move to program id
@@ -60,7 +62,10 @@ namespace Vex.Asset
                  * Move to shader stage type
                  */
                 parser.MoveNext();
+                parser.MoveNext();
+                parser.MoveNext();
 
+                Console.WriteLine("Shader Type: " + GetParserValue(parser));
                 /*
                  * Get shader stage
                  */
@@ -87,8 +92,9 @@ namespace Vex.Asset
                     /*
                      * Move to value
                      */
+                    Console.WriteLine("Float param name: " + parameterName);
                     parser.MoveNext();
-
+                    Console.WriteLine("Float param value: " + GetParserValue(parser));
                     /*
                      * Get parameter value
                      */
@@ -112,7 +118,7 @@ namespace Vex.Asset
                 parser.MoveNext();
                 parser.MoveNext();
                 parser.MoveNext();
-
+                parser.MoveNext();
 
                 /*
                  * Iterate vector2 parameters
@@ -150,6 +156,7 @@ namespace Vex.Asset
                 /*
                 * Move to vector3 parameters
                 */
+                parser.MoveNext();
                 parser.MoveNext();
                 parser.MoveNext();
                 parser.MoveNext();
@@ -194,6 +201,7 @@ namespace Vex.Asset
                 parser.MoveNext();
                 parser.MoveNext();
                 parser.MoveNext();
+                parser.MoveNext();
 
                 /*
                  * Iterate vector4 parameters
@@ -231,6 +239,7 @@ namespace Vex.Asset
                 /*
                 * Move to matrix4x4 parameters
                 */
+                parser.MoveNext();
                 parser.MoveNext();
                 parser.MoveNext();
                 parser.MoveNext();
@@ -279,6 +288,7 @@ namespace Vex.Asset
                 parser.MoveNext();
                 parser.MoveNext();
                 parser.MoveNext();
+                parser.MoveNext();
 
                 /*
                  * Iterate texture2D parameters
@@ -322,11 +332,15 @@ namespace Vex.Asset
                 matrix4x4Parameters.Add(matrix4x4ParameterBlock);
                 texture2DParameters.Add(texture2DParameterBlock);
 
+                parser.MoveNext();
+                parser.MoveNext();
+                parser.MoveNext();
+                parser.MoveNext();
 
             }
 
             /*
-             * Move to end
+             * Move to mapping end
              */
             parser.MoveNext();
 
@@ -524,7 +538,7 @@ namespace Vex.Asset
                 /*
                  * Signal vector3 parameters end
                  */
-                emitter.Emit(new Scalar(null, "Vector2 Parameters End"));
+                emitter.Emit(new Scalar(null, "Vector3 Parameters End"));
                 emitter.Emit(new Scalar(null, ""));
 
 

@@ -16,17 +16,14 @@ namespace Bite.GUI
             m_Layouts = new List<ComponentLayout>();
 
             /*
-             * Create layouts
+             * Get all commponents
              */
-            Component[] components = m_TargetEntity.Components;
+            m_AllComponentTypes = GUIComponentManager.Current.AllComponentTypes;
 
-            for(int i=0;i<components.Length;i++)
-            {
-                ComponentLayout layout = GUIComponentManager.Current.FetchComponentLayout(components[i].GetType());
-                layout.TargetComponent = components[i];
-                layout.OnAttach();
-                m_Layouts.Add(layout);
-            }
+            /*
+             * recreate component layouts
+             */
+            RecreateComponentLayouts();
         }
 
         public override void OnDetach()
@@ -63,13 +60,26 @@ namespace Bite.GUI
             GUIRenderCommands.CreateSeperatorLine();
 
             /*
-             * Spacing between entity name and components
+             * Create components
              */
             GUILayoutCommands.Spacing();
-
             GUIRenderCommands.CreateText("Components","");
+            GUILayoutCommands.StayOnSameLine();
+            if(GUIRenderCommands.CreateButton("+","add_new_entty"))
+            {
+                GUIRenderCommands.SignalPopupCreate("Entity_Add_Component");
+            }
             GUIRenderCommands.CreateSeperatorLine();
             GUILayoutCommands.Spacing();
+
+            /*
+             * Render popup
+             */
+            if(GUIRenderCommands.CreatePopup("Entity_Add_Component"))
+            {
+                RenderAddComponentPopup();
+                GUIRenderCommands.FinalizePopup();
+            }
 
             /*
              * Render component layouts
@@ -84,7 +94,51 @@ namespace Bite.GUI
 
         }
 
+        private void RecreateComponentLayouts()
+        {
+            m_Layouts.Clear();
+            /*
+             * Create layouts
+             */
+            Component[] components = m_TargetEntity.Components;
+
+            for (int i = 0; i < components.Length; i++)
+            {
+                ComponentLayout layout = GUIComponentManager.Current.FetchComponentLayout(components[i].GetType());
+                layout.TargetComponent = components[i];
+                layout.OnAttach();
+                m_Layouts.Add(layout);
+            }
+        }
+        private void RenderAddComponentPopup()
+        {
+            
+            /*
+             * Render header
+             */
+            GUIRenderCommands.CreateText("Add new component","");
+            GUIRenderCommands.CreateSeperatorLine();
+            GUIRenderCommands.CreateEmptySpace();
+
+            /*
+             * Render List components
+             */
+            for(int componentIndex = 0;componentIndex < m_AllComponentTypes.Count;componentIndex++)
+            {
+                /*
+                 * Render selectable
+                 */
+                if(GUIRenderCommands.CreateSelectableItem(m_AllComponentTypes[componentIndex].Name, "cmp_list_" + componentIndex))
+                {
+                    m_TargetEntity.AddComponent(m_AllComponentTypes[componentIndex]);
+                    RecreateComponentLayouts();
+                }
+            }
+            
+        }
+
         private List<ComponentLayout> m_Layouts;
+        private List<Type> m_AllComponentTypes;
         private Entity m_TargetEntity;
     }
 }

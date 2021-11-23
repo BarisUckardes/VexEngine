@@ -54,7 +54,7 @@ in vec2 f_Uv;
 uniform sampler2D f_SpriteTexture;
 void main()
 {
-f_ColorOut = vec4(0.1f,0.3f,0.88f,1.0f);
+f_ColorOut = texture(f_SpriteTexture,f_Uv);
 }";
 
             Shader vertexShader = new Shader(ShaderStage.Vertex);

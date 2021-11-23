@@ -297,14 +297,14 @@ namespace Bite.GUI
                 if (m_SelectedObject == file)
                 {
 
-                    GUIRenderCommands.CreateObjectField(file.TargetAssetObject,"file_" + file.AssetID.ToString(),new Vector2(128,128));
+                   
                    
                 }
-
+                GUIRenderCommands.CreateObjectField(file.TargetAssetObject, "file_" + file.AssetID.ToString(), new Vector2(128, 128));
                 /*
                  * Double click event
                  */
-                if(GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsCurrentItemDoubleClicked())
+                if (GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsCurrentItemDoubleClicked())
                 {
                     Console.WriteLine($"File {file.AssetName} is double clicked");
 

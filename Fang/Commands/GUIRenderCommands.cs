@@ -273,7 +273,9 @@ namespace Fang.Commands
             /*
              * Render a selectable
             */
+            GUIRenderCommands.EnableStyleColor(ImGuiCol.Text, new Vector4(1.0f, 1.0f, 102.0f/255.0f, 1.0f));
             GUIRenderCommands.CreateSelectableItem(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})", code);
+            GUIRenderCommands.DisableStyleColor();
 
             /*
              * Start drag drop source
@@ -324,12 +326,12 @@ namespace Fang.Commands
             return targetObject;
         }
 
-        public static VexObject CreateObjectField(VexObject targetObject, string code,in Vector2 size)
+        public static VexObject CreateObjectField(VexObject targetObject, string code,in Vector2 size,bool showName = false)
         {
             /*
             * Render a selectable
             */
-            GUIRenderCommands.CreateSelectableItem(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})", code,size);
+            GUIRenderCommands.CreateSelectableItem(showName == true ? targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})" : "", code,size);
 
             /*
              * Start drag drop source

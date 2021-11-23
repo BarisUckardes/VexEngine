@@ -72,6 +72,7 @@ namespace Bite.GUI
             if(GUIRenderCommands.CreateButton("Apply","apply"))
             {
                 m_TargetProgram.LinkProgram(m_Shaders);
+                Session.UpdateDomainAsset(m_TargetProgram.ID, m_TargetProgram);
             }
 
             /*

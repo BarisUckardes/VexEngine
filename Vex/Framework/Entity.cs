@@ -98,6 +98,37 @@ namespace Vex.Framework
         }
 
         /// <summary>
+        /// Adds anew component with the specified type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Component AddComponent(Type type)
+        {
+            /*
+             * Create component
+             */
+            Component component = Activator.CreateInstance(type) as Component;
+
+
+            /*
+             * Set this component as its owner entity
+             */
+            component.OwnerEntity = this;
+
+            /*
+             * Call on attach
+             */
+            component.OnAttach();
+
+            /*
+             * Add it to local registry
+             */
+            m_Components.Add(component);
+
+            return component;
+        }
+
+        /// <summary>
         /// Return the component with the specified typw
         /// </summary>
         /// <typeparam name="TComponent"></typeparam>
