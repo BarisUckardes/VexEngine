@@ -16,8 +16,6 @@ namespace Vex.Framework
         public WorldGraphicsView()
         {
             m_Resolvers = new List<GraphicsResolver>();
-
-            RegisterResolver<ForwardGraphicsResolver>();
         }
 
 
@@ -93,7 +91,16 @@ namespace Vex.Framework
             m_Resolvers.Add(new TResolver());
         }
 
-     
+        public override void InitializeWithWorldSettings(in WorldSettings settings)
+        {
+            /*
+             * Register each resolver via world settings
+             */
+            for(int resolverIndex = 0;resolverIndex < settings.GraphicsResolvers.Count;resolverIndex++)
+            {
+                m_Resolvers.Add(Activator.CreateInstance(settings.GraphicsResolvers[resolverIndex]) as GraphicsResolver);
+            }
+        }
         private List<GraphicsResolver> m_Resolvers;
     }
 }

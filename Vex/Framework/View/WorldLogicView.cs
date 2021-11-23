@@ -15,7 +15,6 @@ namespace Vex.Framework
         {
             m_Entities = new List<Entity>();
             m_Resolvers = new List<LogicResolver>();
-            m_Resolvers.Add(new DefaultLogicResolver());
         }
 
         /// <summary>
@@ -35,7 +34,7 @@ namespace Vex.Framework
                 return m_Entities.ToArray();
             }
         }
-
+        
         /// <summary>
         /// Called when registering a new component
         /// </summary>
@@ -68,8 +67,10 @@ namespace Vex.Framework
         {
             m_Entities.Remove(entity);
         }
-
-
+        public override void InitializeWithWorldSettings(in WorldSettings worldSettings)
+        {
+            m_Resolvers.Add(Activator.CreateInstance(worldSettings.LogicResolver) as LogicResolver);
+        }
         private List<LogicResolver> m_Resolvers;
         private List<Entity> m_Entities;
 

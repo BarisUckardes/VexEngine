@@ -45,21 +45,23 @@ namespace Bite.GUI
             /*
              * Display each entity
              */
-            for(int i=0;i<entities.Length;i++)
+            if(GUIRenderCommands.CreateCollapsingHeader(m_TargetWorld.Name,"world_"+m_TargetWorld.ID.ToString()))
             {
-                if (GUIRenderCommands.CreateTreeNode(entities[i].Name,entities[i].ID.ToString()))
+                for (int i = 0; i < entities.Length; i++)
                 {
-                    /*
-                     * Check if this item clicked
-                     */
-                    
-                    GUIRenderCommands.FinalizeTreeNode();
-                }
-                if (GUIEventCommands.IsCurrentItemClicked())
-                {
-                    GUIObject.SignalNewObject(entities[i]);
-                }
+                    if (GUIRenderCommands.CreateTreeNode(entities[i].Name, entities[i].ID.ToString()))
+                    {
+                        /*
+                         * Check if this item clicked
+                         */
+                        GUIRenderCommands.FinalizeTreeNode();
+                    }
+                    if (GUIEventCommands.IsCurrentItemClicked())
+                    {
+                        GUIObject.SignalNewObject(entities[i]);
+                    }
 
+                }
             }
         }
         private World m_TargetWorld;

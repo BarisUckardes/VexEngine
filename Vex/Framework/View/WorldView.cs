@@ -27,6 +27,8 @@ namespace Vex.Framework
                 m_World = value;
             }
         }
+
+        public abstract void InitializeWithWorldSettings(in WorldSettings settings);
         private World m_World;
     }
 }

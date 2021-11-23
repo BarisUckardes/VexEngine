@@ -33,7 +33,7 @@ namespace Bite.GUI
             GUILayoutCommands.StayOnSameLine();
             GUIRenderCommands.CreateText("["+m_TargetShader.Type.ToString()+"]", " ");
             GUIRenderCommands.CreateSeperatorLine();
-            GUIRenderCommands.CreateMultilineTextInput("","code",ref source,new System.Numerics.Vector2(ImGui.GetContentRegionMax().X,256),ImGuiInputTextFlags.ReadOnly);
+            GUIRenderCommands.CreateMultilineTextInput("","code",ref source,new System.Numerics.Vector2(ImGui.GetContentRegionMax().X,512),ImGuiInputTextFlags.ReadOnly);
 
             bool isEditSource = false;
             if(GUIRenderCommands.CreateButton("Edit Source"," "))
@@ -65,7 +65,7 @@ namespace Bite.GUI
             GUIRenderCommands.CreateText("EDIT SHADER SOURCE CODE", " ");
             GUIRenderCommands.CreateSeperatorLine();
             GUIRenderCommands.CreateEmptySpace();
-            GUIRenderCommands.CreateMultilineTextInput(" ", "mmm", ref m_ShaderSourceEditText, new System.Numerics.Vector2(256, 256));
+            GUIRenderCommands.CreateMultilineTextInput(" ", "mmm", ref m_ShaderSourceEditText, new System.Numerics.Vector2(512, 512));
             if(GUIRenderCommands.CreateButton("Apply&Compile","apply-But"))
             {
                 m_TargetShader.Compile(m_ShaderSourceEditText);

@@ -16,7 +16,7 @@ namespace Vex.Engine
     {
         public override void OnAttach()
         {
-            World world = new World(Session);
+            World world = new World(Session,new WorldSettings(typeof(DefaultLogicResolver),new List<Type>() {typeof(ForwardGraphicsResolver)}));
             world.AddView<WorldGraphicsView>();
             world.AddView<WorldLogicView>();
             world.Register();

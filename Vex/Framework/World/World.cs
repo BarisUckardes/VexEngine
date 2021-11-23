@@ -13,10 +13,11 @@ namespace Vex.Framework
     /// </summary>
     public sealed class World : VexObject
     {
-        public World(ApplicationSession session)
+        public World(ApplicationSession session,in WorldSettings worldSettings)
         {
             m_Views = new List<WorldView>();
             m_Session = session;
+            m_Settings = worldSettings;
         }
 
         /// <summary>
@@ -58,6 +59,11 @@ namespace Vex.Framework
             TView view = new TView();
 
             /*
+             * Initialize with world settings
+             */
+            view.InitializeWithWorldSettings(m_Settings);
+
+            /*
              * Register the view
              */
             m_Views.Add(view);
@@ -66,5 +72,6 @@ namespace Vex.Framework
        
         private List<WorldView> m_Views;
         private ApplicationSession m_Session;
+        private WorldSettings m_Settings;
     }
 }
