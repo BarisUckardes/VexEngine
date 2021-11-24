@@ -16,6 +16,7 @@ namespace Bite.Core
         {
             m_ApplicationSession = applicationSession;
             m_Resources = new List<EditorResource>();
+            m_CurrentWindowSettings = new List<WindowLayoutSettings>();
         }
 
         /// <summary>
@@ -71,6 +72,18 @@ namespace Bite.Core
             internal set
             {
                 m_ProjectFile = value;
+            }
+        }
+
+        internal List<WindowLayoutSettings> WindowLayoutSettings
+        {
+            get
+            {
+                return m_CurrentWindowSettings;
+            }
+            set
+            {
+                m_CurrentWindowSettings = value;
             }
         }
 
@@ -288,6 +301,7 @@ namespace Bite.Core
         {
             m_Resources = resources;
         }
+        
 
         /// <summary>
         /// Send a shutdown request to vex session through the editor session
@@ -302,6 +316,7 @@ namespace Bite.Core
         }
 
         private List<EditorResource> m_Resources;
+        private List<WindowLayoutSettings> m_CurrentWindowSettings;
         private ApplicationSession m_ApplicationSession;
         private DomainView m_Domain;
         private ProjectFileContent m_ProjectFile;

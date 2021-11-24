@@ -13,15 +13,11 @@ namespace Bite.GUI
         public WindowGUILayout()
         {
             m_DetachRequest = false;
+            m_ID = Guid.NewGuid();
         }
 
-        internal bool HasDetachRequest
-        {
-            get
-            {
-                return m_DetachRequest;
-            }
-        }
+
+        
         public bool IsVisible
         {
             get
@@ -42,6 +38,24 @@ namespace Bite.GUI
             internal set
             {
                 m_Session = value;
+            }
+        }
+        public Guid ID
+        {
+            get
+            {
+                return m_ID;
+            }
+            internal set
+            {
+                m_ID = value;
+            }
+        }
+        internal bool HasDetachRequest
+        {
+            get
+            {
+                return m_DetachRequest;
             }
         }
         public abstract void OnVisible();

@@ -7,6 +7,10 @@ using Fang.Commands;
 using System.Reflection;
 using ImGuiNET;
 using System.Numerics;
+using Bite.Core;
+using Vex.Platform;
+using System.IO;
+using YamlDotNet.Serialization;
 
 namespace Bite.GUI
 {
@@ -20,14 +24,70 @@ namespace Bite.GUI
         public override void OnAttach()
         {
             /*
+             * Collect window types across the appdomain
+             */
+            List<Type> validWindowLayoutTypes = new List<Type>();
+            foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach(Type type in assembly.GetTypes())
+                {
+                    if (type.IsSubclassOf(typeof(WindowGUILayout)))
+                        validWindowLayoutTypes.Add(type);
+                }
+            }
+
+            /*
+            * Validate layout file
+            */
+            string layoutPath = PlatformPaths.DomainRootDirectoy + @"\Project Settings\EditorLayout.vsettings";
+            List<WindowLayoutCreateParams> layoutCreateParams = new List<WindowLayoutCreateParams>();
+            if (File.Exists(layoutPath))
+            {
+                /*
+                * Load layout
+                */
+                string yamlContent = File.ReadAllText(layoutPath);
+                List<WindowLayoutSettings> layouts = new DeserializerBuilder().Build().Deserialize<List<WindowLayoutSettings>>(yamlContent);
+                Console.WriteLine("Read intial layout count: " + layouts.Count);
+                for (int layoutIndex = 0; layoutIndex < layouts.Count; layoutIndex++)
+                {
+                    /*
+                     * Find type
+                     */
+                    foreach (Type type in validWindowLayoutTypes)
+                        if (type.Name == layouts[layoutIndex].TypeName)
+                            layoutCreateParams.Add(new WindowLayoutCreateParams(type, layouts[layoutIndex].ID));
+                }
+            }
+            else
+            {
+                Console.WriteLine("Editor layout file dont exists on path: " + layoutPath);
+            }
+
+            /*
              * Set pending window list reference to GUIWindow class
              */
-            GUIWindow.Initialize(Session);
+            GUIWindow.Initialize(Session,layoutCreateParams);
         }
 
         public override void OnDetach()
         {
-            GUIWindow.Shutdown();
+            /*
+            * Shutdown GUI window static class and collect final window settings
+            */
+            List<WindowLayoutSettings> finalLayouts = GUIWindow.Shutdown();
+
+            /*
+            * Validate or create new editor layout settings
+            */
+            string layoutPath = PlatformPaths.DomainRootDirectoy + @"\Project Settings\EditorLayout.vsettings";
+
+            string yamlContent = new SerializerBuilder().Build().Serialize(finalLayouts);
+            File.WriteAllText(layoutPath, yamlContent);
+
+            Console.WriteLine("layout detach");
+
+           
         }
 
         public override void OnUpdate()
@@ -54,8 +114,7 @@ namespace Bite.GUI
                 /*
                  * Draw window
                  */
-                WindowLayoutAttribute layoutAttribute = (WindowLayoutAttribute)layout.GetType().GetCustomAttribute<WindowLayoutAttribute>();
-                isVisible = GUIRenderCommands.CreateWindow(layoutAttribute != null ? layoutAttribute.WindowName : layout.GetType().Name,"",ref isExitRequested);
+                isVisible = GUIRenderCommands.CreateWindow(layout.GetType().Name, layout.ID.ToString(),ref isExitRequested);
 
                 /*
                  * Check if window is visible

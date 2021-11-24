@@ -183,6 +183,14 @@ namespace Vex.Application
             }
 
             /*
+             * Detach modules
+             */
+            for (int i = 0; i < m_ActiveModules.Count; i++)
+            {
+                m_ActiveModules[i].OnDetach();
+            }
+
+            /*
              * Shutdown session
              */
             m_Session.Shutdown();

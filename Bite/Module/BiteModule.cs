@@ -83,7 +83,7 @@ namespace Bite.Module
             */
             for (int commandIndex = 0; commandIndex < m_CoreCommands.Count; commandIndex++)
             {
-                m_CoreCommands[commandIndex].OnAttach();
+                m_CoreCommands[commandIndex].OnDetach();
             }
             m_CoreCommands.Clear();
             m_CoreCommands = null;
