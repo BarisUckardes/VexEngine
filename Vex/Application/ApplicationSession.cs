@@ -83,6 +83,8 @@ namespace Vex.Application
                 return m_ShutdownReasonMessage;
             }
         }
+
+       
         public void SetShutdownRequest(string reason = "undefined")
         {
             m_SessionHasShutdownRequest = true;

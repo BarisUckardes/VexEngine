@@ -74,6 +74,14 @@ namespace Bite.Core
             }
         }
 
+        public void RenameAsset(in Guid id,string name)
+        {
+            m_ApplicationSession.AssetPool.RenameAsset(id, name);
+        }
+        public void RenameAssetPaths(in Guid id,string oldRoot,string newRoot)
+        {
+            m_ApplicationSession.AssetPool.RenameAssetPaths(id, oldRoot, newRoot);
+        }
         /// <summary>
         /// Updates the asset content of a domain asset
         /// </summary>
@@ -102,11 +110,7 @@ namespace Bite.Core
             foundAsset.UpdateAssetContentOnPath(asset,m_ApplicationSession.AssetPool);
         }
 
-        public void RenameDomainAssetPaths(in Guid id,string oldPath,string newPath)
-        {
-
-        }
-
+      
         /// <summary>
         /// Creates a new shader asset in the domain
         /// </summary>
@@ -133,7 +137,7 @@ namespace Bite.Core
             /*
              * Register new content to domain folder view
              */
-            folder.CreateNewFile(fileName, definitionPath,assetPath,definition);
+            folder.CreateNewFile(folder,fileName, definitionPath,assetPath,definition);
         }
 
         /// <summary>
@@ -161,7 +165,7 @@ namespace Bite.Core
             /*
              * Register new content to domain folder view
              */
-            folder.CreateNewFile(fileName, definitionPath,assetPath,definition);
+            folder.CreateNewFile(folder,fileName, definitionPath,assetPath,definition);
         }
 
         /// <summary>
@@ -187,7 +191,7 @@ namespace Bite.Core
             /*
              * Register new content to domain foler view
              */
-            folder.CreateNewFile(fileName, definitionPath, assetPath, definition);
+            folder.CreateNewFile(folder,fileName, definitionPath, assetPath, definition);
         }
 
         public void CreateTexture2DomainContent(DomainFolderView folder,string fileName,string filePath)
@@ -208,7 +212,7 @@ namespace Bite.Core
             /*
              * Register new content to domain folder view
              */
-            folder.CreateNewFile(fileName, definitionPath, assetPath, definition);
+            folder.CreateNewFile(folder,fileName, definitionPath, assetPath, definition);
         }
 
         public void CreateStaticMeshDomainContent(DomainFolderView folder, string fileName, string filePath)
@@ -229,7 +233,7 @@ namespace Bite.Core
             /*
              * Register new content to domain folder view
              */
-            folder.CreateNewFile(fileName, definitionPath, assetPath, definition);
+            folder.CreateNewFile(folder,fileName, definitionPath, assetPath, definition);
         }
 
         /// <summary>
@@ -237,11 +241,11 @@ namespace Bite.Core
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public VexObject GetOrLoadAsset(Guid id)
+        public VexObject GetOrLoadAsset(in Guid id)
         {
             return m_ApplicationSession.AssetPool.GetOrLoadAsset(id);
         }
-
+     
         /// <summary>
         /// Gets a already loaded editor resource
         /// </summary>

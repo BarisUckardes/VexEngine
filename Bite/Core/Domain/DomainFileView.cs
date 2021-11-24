@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,9 @@ namespace Bite.Core
 {
     public sealed class DomainFileView
     {
-        public DomainFileView(in AssetDefinition definition,DomainFileState fileState,string definitionAbsolutePath,string assetAbsolutePath)
+        public DomainFileView(in AssetDefinition definition,DomainFolderView parentFolder,DomainFileState fileState,string definitionAbsolutePath,string assetAbsolutePath)
         {
+            m_ParentFolder = parentFolder;
             m_DefinitonAbsolutePath = definitionAbsolutePath;
             m_AssetAbsolutePath = assetAbsolutePath;
             m_FileState = fileState;
@@ -93,13 +95,41 @@ namespace Bite.Core
                 Console.WriteLine("Try load asset: " + m_AssetName);
             }
         }
-
-        internal void RenamePaths(string oldRoot,string newRoot)
+        public void Rename(string newName,EditorSession session)
         {
+            /*
+             * Rename self
+             */
+            string oldDefinitionPath = m_DefinitonAbsolutePath;
+            string oldAssetPath = m_AssetAbsolutePath;
+            m_DefinitonAbsolutePath = m_ParentFolder.FolderPath + @"\" + newName + @".vdefinition";
+            m_AssetAbsolutePath = m_ParentFolder.FolderPath + @"\" + newName + @".vasset";
+            m_AssetName = newName;
+
+            /*
+             * Rename physical file
+             */
+            File.Move(oldDefinitionPath, m_DefinitonAbsolutePath);
+            File.Move(oldAssetPath, m_AssetAbsolutePath);
+
+            session.RenameAsset(m_AssetID,newName);
+        }
+        internal void RenamePaths(string oldRoot,string newRoot,EditorSession session)
+        {
+            /*
+             * Rename self paths
+             */
             m_AssetAbsolutePath = m_AssetAbsolutePath.Replace(oldRoot, newRoot);
             m_DefinitonAbsolutePath = m_DefinitonAbsolutePath.Replace(oldRoot, newRoot);
+
+            /*
+             * Rename assetpool
+             */
+            session.RenameAssetPaths(m_AssetID,oldRoot,newRoot);
         }
+
         private VexObject m_LoadedObject;
+        private DomainFolderView m_ParentFolder;
         private DomainFileState m_FileState;
         private string m_DefinitonAbsolutePath;
         private string m_AssetAbsolutePath;

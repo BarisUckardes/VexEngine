@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// </summary>
     public readonly struct PolygonMode
     {
-        public PolygonMode(PolygonFillFace fillFace = PolygonFillFace.FrontAndBack, PolygonFillMethod fillMethod = PolygonFillMethod.Fill)
+        public PolygonMode(PolygonFillFace fillFace, PolygonFillMethod fillMethod)
         {
             FillFace = fillFace;
             FillMethod = fillMethod;

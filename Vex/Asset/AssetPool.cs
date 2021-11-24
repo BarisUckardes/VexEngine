@@ -164,6 +164,22 @@ namespace Vex.Asset
 
         }
 
+        public void RenameAsset(in Guid id, string name)
+        {
+            Asset asset = null;
+            if(FindAsset(id,out asset))
+            {
+                asset.Rename(name);
+            }
+        }
+        public void RenameAssetPaths(in Guid id,string oldRoot,string newRoot)
+        {
+            Asset asset = null;
+            if(FindAsset(id,out asset))
+            {
+                asset.RenamePaths(oldRoot, newRoot);
+            }
+        }
         /// <summary>
         /// Gathers all the asset records recursively
         /// </summary>

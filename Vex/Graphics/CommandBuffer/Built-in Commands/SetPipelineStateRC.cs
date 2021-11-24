@@ -17,9 +17,7 @@ namespace Vex.Graphics
         }
         protected override void ExecuteImpl()
         {
-            GL.Disable(EnableCap.DepthTest);
-            GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
-            return;
+            
             /*
              * Set polygon mode
              */
@@ -58,7 +56,6 @@ namespace Vex.Graphics
             else
             {
                 GL.Enable(EnableCap.DepthTest);
-
                 GL.DepthFunc(DepthFunctionUtils.GetNative(m_State.DepthFunction));
             }
 

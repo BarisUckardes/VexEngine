@@ -88,7 +88,7 @@ namespace Bite.Core
                 /*
                  * Register domain file
                  */
-                m_Files.Add(new DomainFileView(definition,state,files[fileIndex], expectedAssetPath));
+                m_Files.Add(new DomainFileView(definition,this,state,files[fileIndex], expectedAssetPath));
             }
         }
         public DomainFolderView(DomainFolderView parentFolder,string seflPath,string selfName)
@@ -161,18 +161,18 @@ namespace Bite.Core
             /*
              * Signal rename
              */
-            SignalRename(m_Path,newPath);
+            SignalRename(m_Path,newPath,session);
         }
         public void CreateNewSubFolder(string folderName)
         {
             m_SubFolders.Add(new DomainFolderView(this, m_Path + @"\" + folderName, folderName));
         }
-        public void CreateNewFile(string fileName,string definitionAbsolutePath,string assetAbsolutePath,in AssetDefinition definition)
+        public void CreateNewFile(DomainFolderView parentFolder,string fileName,string definitionAbsolutePath,string assetAbsolutePath,in AssetDefinition definition)
         {
-            m_Files.Add(new DomainFileView(definition, DomainFileState.Valid, definitionAbsolutePath, assetAbsolutePath));
+            m_Files.Add(new DomainFileView(definition,parentFolder, DomainFileState.Valid, definitionAbsolutePath, assetAbsolutePath));
         }
 
-        private void SignalRename(string oldRoot,string newRoot)
+        private void SignalRename(string oldRoot,string newRoot,EditorSession session)
         {
             /*
              * Replace old root with the new root
@@ -189,7 +189,7 @@ namespace Bite.Core
              */
             for(int subFolderIndex = 0;subFolderIndex < m_SubFolders.Count;subFolderIndex++)
             {
-                m_SubFolders[subFolderIndex].SignalRename(oldRoot, newRoot);
+                m_SubFolders[subFolderIndex].SignalRename(oldRoot, newRoot,session);
             }
 
             /*
@@ -197,7 +197,7 @@ namespace Bite.Core
              */
             for(int fileIndex =0;fileIndex < m_Files.Count;fileIndex++)
             {
-                m_Files[fileIndex].RenamePaths(oldRoot, newRoot);
+                m_Files[fileIndex].RenamePaths(oldRoot, newRoot,session);
             }
         }
       

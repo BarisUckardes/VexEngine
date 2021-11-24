@@ -19,7 +19,8 @@ namespace Vex.Graphics
         protected override void ExecuteImpl()
         {
             GL.ClearColor(m_Color.R, m_Color.G, m_Color.B, m_Color.A);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.ClearDepth(0);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
 

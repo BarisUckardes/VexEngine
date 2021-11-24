@@ -163,11 +163,11 @@ namespace Vex.Graphics
             /*
              * Set depth render buffer
              */
-            //int renderBufferID;
-            //GL.GenRenderbuffers(1, out renderBufferID);
-            //GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderBufferID);
-            //GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, 32, 32);
-            //GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, renderBufferID);
+            int renderBufferID;
+            GL.GenRenderbuffers(1, out renderBufferID);
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderBufferID);
+            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, backTextureAttachment.Width, backTextureAttachment.Height);
+            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, renderBufferID);
 
             /*
              * Unbind framebuffer
@@ -178,7 +178,7 @@ namespace Vex.Graphics
              * Unbind texture
              */
             GL.BindTexture(TextureTarget.Texture2D, 0);
-
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
             /*
              * Set attachment
              */

@@ -73,6 +73,45 @@ namespace Vex.Asset
             }
         }
 
+        internal void Rename(string name)
+        {
+            /*
+             * Get folder path
+             */
+            string folderPath = Path.GetDirectoryName(m_AssetAbsolutePath);
+            string oldPath = m_AssetAbsolutePath;
+
+            /*
+             * Set absolute paths
+             */
+            m_AssetAbsolutePath = folderPath + @"\" + name + @".vasset";
+            m_DefinitionAbsolutePath = folderPath + @"\" + name + @".vdefinition";
+
+            /*
+             * Update asset definition file
+             */
+            AssetInterface assetInterface = new AssetInterface(null);
+            AssetDefinition newDefinition = new AssetDefinition(name, m_AssetID, m_AssetType);
+            string yamlText = assetInterface.GenerateObjectString(AssetType.Definition, newDefinition);
+            File.WriteAllText(m_DefinitionAbsolutePath, yamlText);
+            
+            Console.WriteLine($"Asset path renamed from [{oldPath}] to [{m_AssetAbsolutePath}]");
+        }
+
+        internal void RenamePaths(string oldRoot,string newRoot)
+        {
+            /*
+             * Rename self paths
+             */
+            m_AssetAbsolutePath = m_AssetAbsolutePath.Replace(oldRoot, newRoot);
+            m_DefinitionAbsolutePath = m_DefinitionAbsolutePath.Replace(oldRoot, newRoot);
+
+            /*
+             * 
+             */
+            Console.WriteLine("Asset paths renamed to :" + m_AssetAbsolutePath);
+        }
+
         /// <summary>
         /// Loads this asset
         /// </summary>

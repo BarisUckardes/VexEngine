@@ -76,13 +76,12 @@ namespace Vex.Framework
             /*
              * Set state
              */
-            //PipelineState state = new PipelineState();
-            //commandBuffer.SetPipelineState(state);
+            PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.FrontAndBack,PolygonFillMethod.Fill),new CullingMode(TriangleFrontFace.CCW,CullFace.Back));
+            commandBuffer.SetPipelineState(state);
 
             /*
              * Iterate each observer
              */
-            
             for (int observerIndex = 0;observerIndex < m_Observers.Count; observerIndex++)
             {
                 Profiler.StartProfile("Observer Submit");

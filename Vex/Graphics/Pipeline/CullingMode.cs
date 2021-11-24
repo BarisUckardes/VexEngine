@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// </summary>
     public readonly struct CullingMode
     {
-        public CullingMode(TriangleFrontFace triangleFrontFace = TriangleFrontFace.CCW, CullFace cullFace = CullFace.Back)
+        public CullingMode(TriangleFrontFace triangleFrontFace, CullFace cullFace)
         {
             TriangleFrontFace = triangleFrontFace;
             CullFace = cullFace;

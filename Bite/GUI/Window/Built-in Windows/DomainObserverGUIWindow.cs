@@ -191,6 +191,11 @@ namespace Bite.GUI
                 {
                     GUIRenderCommands.SignalPopupCreate("Domain_Folder_Rename");
                 }
+                else if(ImGui.IsKeyPressed((int)Vex.Input.Keys.F2) && m_SelectedObject.GetType() == typeof(DomainFileView))
+                {
+                    GUIRenderCommands.SignalPopupCreate("Domain_File_Rename");
+                    
+                }
 
             }
 
@@ -200,6 +205,12 @@ namespace Bite.GUI
             if(GUIRenderCommands.CreatePopup("Domain_Folder_Rename"))
             {
                 CreateFolderRenamePopup(m_SelectedObject as DomainFolderView);
+                GUIRenderCommands.FinalizePopup();
+            }
+            if (GUIRenderCommands.CreatePopup("Domain_File_Rename"))
+            {
+                Console.WriteLine("File rename with: " + (m_SelectedObject as DomainFileView).AssetName);
+                CreateFileRenamePopup(m_SelectedObject as DomainFileView);
                 GUIRenderCommands.FinalizePopup();
             }
 
@@ -243,7 +254,6 @@ namespace Bite.GUI
                 if (GUIEventCommands.IsCurrentItemDoubleClicked() && GUIEventCommands.IsCurrentItemHavored())
                 {
                     m_CurrentFolder = subFolder;
-                    m_SelectedObject = null;
                     Console.WriteLine("Double clikced: " + subFolder.Name);
                     isClickedEmpty = false;
                 }
@@ -337,11 +347,14 @@ namespace Bite.GUI
                  */
                 if (m_SelectedObject == file)
                 {
-
-                   
-                   
+                    //ImGui.Selectable("##" + file.AssetAbsolutePath, true, ImGuiSelectableFlags.None, new Vector2(128, 128));
                 }
+
+                /*
+                 * Create dragable field
+                 */
                 GUIRenderCommands.CreateObjectField(file.TargetAssetObject, "file_" + file.AssetID.ToString(), new Vector2(128, 128));
+
                 /*
                  * Double click event
                  */
@@ -462,7 +475,7 @@ namespace Bite.GUI
             if (GUIEventCommands.IsMouseLeftButtonClicked() && isClickedEmpty)
             {
                 Console.WriteLine("Clicked to empty space");
-                m_SelectedObject = false;
+                //m_SelectedObject = false;
             }
 
         }
@@ -646,7 +659,24 @@ namespace Bite.GUI
             }
         }
 
-       
+        /// <summary>
+        /// A popup which handles the renaming of the target file
+        /// </summary>
+        /// <param name="folder"></param>
+        private void CreateFileRenamePopup(DomainFileView file)
+        {
+            GUIRenderCommands.CreateText("File rename", "frnm");
+            GUIRenderCommands.CreateSeperatorLine();
+            GUIRenderCommands.CreateEmptySpace();
+            GUIRenderCommands.CreateTextInput("", "frnmi", ref m_FolderRenameInput);
+            if (GUIRenderCommands.CreateButton("Apply", "applyFrnmi"))
+            {
+                file.Rename(m_FolderRenameInput,Session);
+                GUIRenderCommands.TerminateCurrentPopup();
+            }
+        }
+
+
         /*
          * Create resources
          */
@@ -674,6 +704,11 @@ namespace Bite.GUI
          * Rename folder resources
          */
         private string m_FolderRenameInput = string.Empty;
+
+        /*
+         * Rename file resources
+         */
+        private string m_FileRenameInput = string.Empty;
 
         private uint m_InputBuffer = 24;
 
