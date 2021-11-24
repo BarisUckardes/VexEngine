@@ -161,6 +161,7 @@ namespace Vex.Asset
                 case AssetType.Framebuffer3D:
                     break;
                 case AssetType.World:
+                    asset = assetInterface.GenerateAsset(AssetType.World, assetYaml);
                     break;
                 case AssetType.EntityPrefab:
                     break;

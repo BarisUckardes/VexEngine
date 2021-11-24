@@ -103,24 +103,18 @@ namespace Bite.Core
         public void UpdateDomainAsset(in Guid id,VexObject asset)
         {
             /*
-             * Try find asset record
-             */
-            Asset foundAsset = null;
-            bool assetFound = m_ApplicationSession.AssetPool.FindAsset(id, out foundAsset);
-
-            /*
              * Validate found result
              */
-            if(!assetFound)
+            Asset foundAsset = null;
+            if (m_ApplicationSession.AssetPool.FindAsset(id, out foundAsset))
             {
-                Console.WriteLine("No asset found to update");
+                /*
+                * Update asset path
+                 */
+                foundAsset.UpdateAssetContentOnPath(asset, m_ApplicationSession.AssetPool);
                 return;
             }
-
-            /*
-             * Update asset path
-             */
-            foundAsset.UpdateAssetContentOnPath(asset,m_ApplicationSession.AssetPool);
+            Console.WriteLine("No asset found to update");
         }
 
       

@@ -60,8 +60,15 @@ namespace Bite.GUI
                     {
                         GUIObject.SignalNewObject(entities[i]);
                     }
-
                 }
+            }
+
+            /*
+             * Render save button
+             */
+            if(GUIRenderCommands.CreateButton("Save","save_world_btn"))
+            {
+                Session.UpdateDomainAsset(m_TargetWorld.ID, m_TargetWorld);
             }
         }
         private World m_TargetWorld;

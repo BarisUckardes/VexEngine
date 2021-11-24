@@ -62,7 +62,11 @@ namespace Vex.Asset
                 case AssetType.Framebuffer3D:
                     break;
                 case AssetType.World:
-                    break;
+                    {
+                        WorldResolver resolver = new WorldResolver();
+                        resolver.SetTargetPool(m_Pool);
+                        return new DeserializerBuilder().WithTypeConverter(resolver).Build().Deserialize<World>(yamlText);
+                    }
                 case AssetType.EntityPrefab:
                     break;
                 case AssetType.Definition:
@@ -112,6 +116,7 @@ namespace Vex.Asset
                 case AssetType.Framebuffer3D:
                     break;
                 case AssetType.World:
+                    return new SerializerBuilder().WithTypeConverter(new WorldResolver()).Build().Serialize(engineObject);
                     break;
                 case AssetType.EntityPrefab:
                     break;

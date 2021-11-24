@@ -48,15 +48,19 @@ namespace Vex.Graphics
              */
             string[] lines = File.ReadAllLines(path);
 
-            
             List<StaticMeshVertex> vertexes = new List<StaticMeshVertex>();
             List<int> triangles = new List<int>();
+
             List<Vector3> positions = new List<Vector3>();
-            Console.WriteLine("Obj lines: " + lines.Length);
+            List<Vector3> normals = new List<Vector3>();
+            List<Vector2> uvs = new List<Vector2>();
+
+            List<Tuple<int, int, int>> faces = new List<Tuple<int, int, int>>();
+
             /*
              * Iterate lines
              */
-            for(int lineIndex = 0;lineIndex < lines.Length;lineIndex++)
+            for (int lineIndex = 0;lineIndex < lines.Length;lineIndex++)
             {
                 /*
                  * Get index
@@ -82,14 +86,35 @@ namespace Vex.Graphics
                             string[] splitSubString = content.Split(" ");
 
                             /*
-                             * Get components
+                             * Add position
                              */
                             positions.Add(new Vector3(float.Parse(splitSubString[0], CultureInfo.InvariantCulture), float.Parse(splitSubString[1], CultureInfo.InvariantCulture), float.Parse(splitSubString[2], CultureInfo.InvariantCulture)));
                             break;
                         }
                     case "vn":
                         {
-                            
+                            /*
+                             * Sptlit into component x,y,z
+                             */
+                            string[] splitSubString = content.Split(" ");
+
+                            /*
+                             * Add normal
+                             */
+                            normals.Add(new Vector3(float.Parse(splitSubString[0], CultureInfo.InvariantCulture), float.Parse(splitSubString[1], CultureInfo.InvariantCulture), float.Parse(splitSubString[2], CultureInfo.InvariantCulture)));
+                            break;
+                        }
+                    case "vt":
+                        {
+                            /*
+                             * Sptlit into component x,y
+                             */
+                            string[] splitSubString = content.Split(" ");
+
+                            /*
+                             * Add uv
+                             */
+                            uvs.Add(new Vector2(float.Parse(splitSubString[0], CultureInfo.InvariantCulture), float.Parse(splitSubString[1], CultureInfo.InvariantCulture)));
                             break;
                         }
                     case "f":
@@ -100,21 +125,20 @@ namespace Vex.Graphics
                             string[] sections = content.Split(" ");
 
                             /*
-                             * Get only triangles
+                             * Iterate face properties
                              */
                             for(int sectionIndex = 0;sectionIndex < 3;sectionIndex++)
                             {
                                 /*
-                                 * Get triangle string
+                                 * Get Properties
                                  */
-                                string triangleIndexString = sections[sectionIndex].Split("/")[0];
-
-                                /*
-                                 * Get triangle index
-                                 */
-                                triangles.Add(int.Parse(triangleIndexString));
-
+                                int vertexIndex =int.Parse(sections[sectionIndex].Split("/")[0]);
+                                int uvIndex = int.Parse(sections[sectionIndex].Split("/")[1]);
+                                int normalIndex = int.Parse(sections[sectionIndex].Split("/")[2]);
                                 
+                                faces.Add(new Tuple<int, int, int>(vertexIndex, uvIndex, normalIndex));
+
+
                             }
                             break;
                         }
@@ -126,11 +150,30 @@ namespace Vex.Graphics
             /*
              * Create vertexes
              */
-            for(int positionIndex = 0;positionIndex < positions.Count;positionIndex++)
+            for (int vertexIndex = 0; vertexIndex < positions.Count; vertexIndex++)
             {
-                vertexes.Add(new StaticMeshVertex(positions[positionIndex], Vector3.Zero, Vector2.Zero));
+                /*
+                 * Add vertex
+                 */
+                vertexes.Add(new StaticMeshVertex(positions[vertexIndex],Vector3.Zero,Vector2.Zero));
             }
+            for(int faceIndex = 0;faceIndex< faces.Count;faceIndex++)
+            {
+                /*
+                 * Get face
+                 */
+                Tuple<int, int, int> face = faces[faceIndex];
 
+                /*
+                 * Set uv and normal
+                 */
+                vertexes[face.Item1 - 1] = new StaticMeshVertex(vertexes[face.Item1 - 1].Position,normals[face.Item3-1],uvs[face.Item2-1]);
+
+                /*
+                 * Add triangle
+                 */
+                triangles.Add(face.Item1 - 1);
+            }
             /*
              * Create mesh
              */

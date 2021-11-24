@@ -55,8 +55,6 @@ namespace Vex.Asset
                     float.Parse(vertexString[7]));
                 vertexes.Add(new StaticMeshVertex(position, normal, uv));
 
-                Console.WriteLine($"Position String: [{vertexString[0]}]-[{vertexString[1]}]-[{vertexString[2]}]");
-                Console.WriteLine("Position:" + position.X + " " + position.Y + " " + position.Z);
                 /*
                  * Move to next vertex
                  */
@@ -79,12 +77,9 @@ namespace Vex.Asset
                 /*
                  * Create and add new triangles
                  */
-                
-                triangles.Add(int.Parse(triangleBatch[0]) - 1);
-                triangles.Add(int.Parse(triangleBatch[1])-1);
-                triangles.Add(int.Parse(triangleBatch[2]) - 1);
-
-
+                triangles.Add(int.Parse(triangleBatch[0]));
+                triangles.Add(int.Parse(triangleBatch[1]));
+                triangles.Add(int.Parse(triangleBatch[2]));
 
                 /*
                  * Move to next triangle
@@ -127,10 +122,8 @@ namespace Vex.Asset
                 StaticMeshVertex vertex = vertexes[vertexIndex];
 
                 string vertexText = vertex.Position.X + " " + vertex.Position.Y + " " + vertex.Position.Z +
-                    " " + vertex.Normal.Y + " " + vertex.Normal.Y + " " + vertex.Normal.Y +
+                    " " + vertex.Normal.X + " " + vertex.Normal.Y + " " + vertex.Normal.Z +
                     " " + vertex.Uv.X + " " + vertex.Uv.Y;
-
-                
 
                 /*
                  * Emiter vertex

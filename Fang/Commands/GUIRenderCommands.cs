@@ -214,7 +214,7 @@ namespace Fang.Commands
         }
         public static void CreateImage(Texture texture, in Vector2 size,in Vector2 uv0,in Vector2 uv1)
         {
-            ImGui.Image((IntPtr)texture.Handle, size,uv0,uv1);
+            ImGui.Image(texture == null ? IntPtr.Zero : (IntPtr)texture.Handle, size,uv0,uv1);
         }
         public static void CreateMainDockspace()
         {

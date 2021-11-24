@@ -84,7 +84,7 @@ namespace Bite.GUI
             if (folder.ParentFolder != null)
             {
                 GUIRenderCommands.CreateImage(m_BackButtonIcon, new Vector2(16, 16));
-                if (GUIEventCommands.IsCurrentItemClicked())
+                if (GUIEventCommands.IsCurrentItemClicked() & GUIEventCommands.IsWindowHovered())
                     m_CurrentFolder = folder.ParentFolder;
             }
             GUILayoutCommands.StayOnSameLine();
@@ -187,11 +187,11 @@ namespace Bite.GUI
              */
             if (m_SelectedObject != null)
             {
-                if(ImGui.IsKeyPressed((int)Vex.Input.Keys.F2) && m_SelectedObject.GetType() == typeof(DomainFolderView))
+                if(ImGui.IsKeyPressed((int)Vex.Input.Keys.F2) && m_SelectedObject.GetType() == typeof(DomainFolderView) && GUIEventCommands.IsWindowHovered())
                 {
                     GUIRenderCommands.SignalPopupCreate("Domain_Folder_Rename");
                 }
-                else if(ImGui.IsKeyPressed((int)Vex.Input.Keys.F2) && m_SelectedObject.GetType() == typeof(DomainFileView))
+                else if(ImGui.IsKeyPressed((int)Vex.Input.Keys.F2) && m_SelectedObject.GetType() == typeof(DomainFileView) && GUIEventCommands.IsWindowHovered())
                 {
                     GUIRenderCommands.SignalPopupCreate("Domain_File_Rename");
                     
@@ -257,7 +257,7 @@ namespace Bite.GUI
                     Console.WriteLine("Double clikced: " + subFolder.Name);
                     isClickedEmpty = false;
                 }
-                else if(GUIEventCommands.IsMouseLeftButtonClicked() && GUIEventCommands.IsCurrentItemHavored())
+                else if(GUIEventCommands.IsMouseLeftButtonClicked() && GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsWindowHovered())
                 {
                     //m_CurrentFolder = subFolder;
                     m_SelectedObject = subFolder;
@@ -374,7 +374,7 @@ namespace Bite.GUI
 
                     isClickedEmpty = false;
                 }
-                else if (GUIEventCommands.IsMouseLeftButtonClicked() && GUIEventCommands.IsCurrentItemHavored())
+                else if (GUIEventCommands.IsMouseLeftButtonClicked() && GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsWindowHovered())
                 {
                     m_SelectedObject = file;
                     Console.WriteLine("File clicked: " + file.AssetName);
@@ -398,12 +398,10 @@ namespace Bite.GUI
             /*
              * Valdate if create menu required
              */
-            if (GUIEventCommands.IsMouseRightButtonClicked())
+            if (GUIEventCommands.IsMouseRightButtonClicked() && GUIEventCommands.IsWindowHovered())
             {
                 GUIRenderCommands.SignalPopupCreate("Domain_Create_Asset");
             }
-
-
 
             /*
              * Render create asset popup
@@ -472,10 +470,10 @@ namespace Bite.GUI
             /*
             * Validate clikc to void
             */
-            if (GUIEventCommands.IsMouseLeftButtonClicked() && isClickedEmpty)
+            if (GUIEventCommands.IsMouseLeftButtonClicked() && isClickedEmpty && GUIEventCommands.IsWindowHovered())
             {
                 Console.WriteLine("Clicked to empty space");
-                //m_SelectedObject = false;
+                m_SelectedObject = false;
             }
 
         }

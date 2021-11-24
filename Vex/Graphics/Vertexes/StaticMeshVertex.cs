@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 namespace Vex.Graphics
 {
-    public readonly struct StaticMeshVertex
+    public struct  StaticMeshVertex
     {
         public StaticMeshVertex(Vector3 position, Vector3 normal, Vector2 uv)
         {
@@ -14,9 +14,9 @@ namespace Vex.Graphics
             Normal = normal;
             Uv = uv;
         }
-        public readonly Vector3 Position;
-        public readonly Vector3 Normal;
-        public readonly Vector2 Uv;
+        public Vector3 Position;
+        public Vector3 Normal;
+        public Vector2 Uv;
 
        
     }
