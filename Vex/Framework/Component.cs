@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Vex.Types;
 namespace Vex.Framework
 {
     /// <summary>
@@ -16,6 +16,7 @@ namespace Vex.Framework
         /// <summary>
         /// Retunrs the entity which this component attached to
         /// </summary>
+        [DontExposeThis]
         public Entity OwnerEntity
         {
             get

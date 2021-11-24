@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using Vex.Framework;
+using Vex.Types;
 
 namespace Bite.GUI
 {
@@ -35,7 +36,7 @@ namespace Bite.GUI
                     ComponentLayoutAttribute attribute = type.GetCustomAttribute(typeof(ComponentLayoutAttribute)) as ComponentLayoutAttribute;
 
                     /*
-                     * Validate
+                     * Validate has attribute
                      */
                     if (attribute != null) // found a layout
                     {
@@ -74,7 +75,7 @@ namespace Bite.GUI
                     List<PropertyInfo> hasGetSetProperties = new List<PropertyInfo>();
                     PropertyInfo[] allProperties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty);
                     foreach (PropertyInfo property in allProperties)
-                        if (property.CanWrite && property.CanRead)
+                        if (property.CanWrite && property.CanRead && property.GetCustomAttribute<DontExposeThis>() == null)
                             hasGetSetProperties.Add(property);
 
                     DefaultComponentLayoutInfo defaultLayoutInfo = new DefaultComponentLayoutInfo(type.GetFields(BindingFlags.Public | BindingFlags.Instance), hasGetSetProperties.ToArray(), type);

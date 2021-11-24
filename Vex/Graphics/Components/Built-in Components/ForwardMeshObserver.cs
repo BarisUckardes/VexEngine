@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
 using Vex.Extensions;
+using Vex.Types;
+
 namespace Vex.Graphics
 {
     /// <summary>
@@ -22,6 +24,7 @@ namespace Vex.Graphics
         /// <summary>
         ///Get&Set ortho size of this sprite observer
         /// </summary>
+        [FloatSlider(20,179)]
         public float FieldOfView
         {
             get

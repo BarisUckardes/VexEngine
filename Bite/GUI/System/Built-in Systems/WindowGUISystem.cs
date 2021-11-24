@@ -48,7 +48,10 @@ namespace Bite.GUI
                 */
                 string yamlContent = File.ReadAllText(layoutPath);
                 List<WindowLayoutSettings> layouts = new DeserializerBuilder().Build().Deserialize<List<WindowLayoutSettings>>(yamlContent);
-                Console.WriteLine("Read intial layout count: " + layouts.Count);
+
+                /*
+                 * Catch window type
+                 */
                 for (int layoutIndex = 0; layoutIndex < layouts.Count; layoutIndex++)
                 {
                     /*
@@ -61,7 +64,26 @@ namespace Bite.GUI
             }
             else
             {
-                Console.WriteLine("Editor layout file dont exists on path: " + layoutPath);
+                ///*
+                // * Load default layouts
+                // */
+                //List<WindowLayoutSettings> layouts = WindowLayoutSettings.CreateDefaultLayout();
+
+                ///*
+                // * Catch window type
+                // */
+                //for (int layoutIndex = 0; layoutIndex < layouts.Count; layoutIndex++)
+                //{
+                //    /*
+                //     * Find type
+                //     */
+                //    foreach (Type type in validWindowLayoutTypes)
+                //        if (type.Name == layouts[layoutIndex].TypeName)
+                //            layoutCreateParams.Add(new WindowLayoutCreateParams(type, layouts[layoutIndex].ID));
+                //}
+
+                Console.WriteLine("Editor layout file dont exists on path: " + layoutPath + "| Created default layout");
+                Console.WriteLine("Default editor layout not supported");
             }
 
             /*

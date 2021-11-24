@@ -7,6 +7,7 @@ using System.Reflection;
 using Fang.Commands;
 using System.Numerics;
 using Vex.Framework;
+using Vex.Types;
 
 namespace Bite.GUI
 {
@@ -61,8 +62,27 @@ namespace Bite.GUI
                 }
                 else if(info.PropertyType == typeof(float))
                 {
+                    /*
+                     * Get float range if has ones
+                     */
+                    FloatSlider sliderAttribute = info.GetCustomAttribute<FloatSlider>();
+
+                    /*
+                     * Get current value
+                     */
                     float value = (float)info.GetValue(TargetComponent);
-                    GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value,0,360);
+
+                    /*
+                     * Render slider
+                     */
+                    if(sliderAttribute != null)
+                        GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value, sliderAttribute.Min, sliderAttribute.Max);
+                    else
+                        GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value, 0, 360);
+
+                    /*
+                     * Set value
+                     */
                     info.SetValue(TargetComponent, value, null);
                 }
                 else if(info.PropertyType.IsSubclassOf(typeof(VexObject)))
