@@ -13,7 +13,7 @@ namespace Vex.Graphics
     {
         public PipelineState(PolygonMode polygonMode , CullingMode cullingMode,
             BlendFunction sourceBlendFunction = BlendFunction.Zero, BlendFunction destinationBlendFunction = BlendFunction.Zero, BlendEquation blendEquation = BlendEquation.FuncAdd,
-            DepthFunction depthFunction = DepthFunction.Gequal,bool depthTest = true,bool blending = false,bool faceCulling = true)
+            DepthFunction depthFunction = DepthFunction.Lequal,bool depthTest = true,bool blending = false,bool faceCulling = true)
         {
             PolygonMode = polygonMode;
             CullingMode = cullingMode;

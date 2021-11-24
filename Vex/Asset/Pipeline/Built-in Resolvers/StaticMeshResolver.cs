@@ -55,6 +55,7 @@ namespace Vex.Asset
                     float.Parse(vertexString[7]));
                 vertexes.Add(new StaticMeshVertex(position, normal, uv));
 
+    
                 /*
                  * Move to next vertex
                  */
@@ -121,9 +122,9 @@ namespace Vex.Asset
                  */
                 StaticMeshVertex vertex = vertexes[vertexIndex];
 
-                string vertexText = vertex.Position.X + " " + vertex.Position.Y + " " + vertex.Position.Z +
-                    " " + vertex.Normal.X + " " + vertex.Normal.Y + " " + vertex.Normal.Z +
-                    " " + vertex.Uv.X + " " + vertex.Uv.Y;
+                string vertexText = vertex.Position.X.ToString(CultureInfo.InvariantCulture) + " " + vertex.Position.Y.ToString(CultureInfo.InvariantCulture) + " " + vertex.Position.Z.ToString(CultureInfo.InvariantCulture) +
+                    " " + vertex.Normal.X.ToString(CultureInfo.InvariantCulture) + " " + vertex.Normal.Y.ToString(CultureInfo.InvariantCulture) + " " + vertex.Normal.Z.ToString(CultureInfo.InvariantCulture) +
+                    " " + vertex.Uv.X.ToString(CultureInfo.InvariantCulture) + " " + vertex.Uv.Y.ToString(CultureInfo.InvariantCulture);
 
                 /*
                  * Emiter vertex
