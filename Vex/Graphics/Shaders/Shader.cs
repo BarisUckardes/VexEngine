@@ -98,6 +98,7 @@ namespace Vex.Graphics
                     CreateAsFragmentShader(source);
                     break;
                 case ShaderStage.Geometry:
+                    CreateAsGeometryShader(source);
                     break;
             }
 
@@ -136,6 +137,44 @@ namespace Vex.Graphics
             bool isCompileSuccessful = CompilationCheck(vertexShaderHandle);
 
             if(!isCompileSuccessful)
+            {
+                m_Handle = 0;
+                m_Compiled = false;
+                return;
+            }
+
+            m_Handle = vertexShaderHandle;
+            m_Compiled = true;
+        }
+
+        /// <summary>
+        /// Creates this shader as vertex shader
+        /// </summary>
+        /// <param name="source"></param>
+        private void CreateAsGeometryShader(string source)
+        {
+            Console.WriteLine("Compiled as vertex shader");
+            /*
+             * Create shader
+             */
+            int vertexShaderHandle = GL.CreateShader(OpenTK.Graphics.OpenGL4.ShaderType.GeometryShader);
+
+            /*
+             * Set shader source
+             */
+            GL.ShaderSource(vertexShaderHandle, source);
+
+            /*
+             * Compile shader
+             */
+            GL.CompileShader(vertexShaderHandle);
+
+            /*
+             * Check compile status
+             */
+            bool isCompileSuccessful = CompilationCheck(vertexShaderHandle);
+
+            if (!isCompileSuccessful)
             {
                 m_Handle = 0;
                 m_Compiled = false;
@@ -216,7 +255,7 @@ namespace Vex.Graphics
 
                 return false;
             }
-
+            m_LastErrorMessage = string.Empty;
             return true;
         }
 
