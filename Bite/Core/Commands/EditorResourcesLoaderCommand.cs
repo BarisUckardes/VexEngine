@@ -51,7 +51,7 @@ namespace Bite.Core
                     case AssetType.Undefined:
                         break;
                     case AssetType.Texture2D:
-                        resources.Add(new EditorResource(Texture2D.LoadTextureFromPath(fileAbsolutePath,false),name,assetType));
+                        resources.Add(new EditorResource(Texture2D.LoadTextureFromPath(fileAbsolutePath),name,assetType));
                         break;
                     case AssetType.Shader:
                         break;

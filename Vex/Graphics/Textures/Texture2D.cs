@@ -17,7 +17,7 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Texture2D : Texture
     {
-        public static Texture2D LoadTextureFromPath(string path, bool flipVertically = true)
+        public static Texture2D LoadTextureFromPath(string path,bool flipVertically = false)
         {
 
             /*
@@ -31,6 +31,7 @@ namespace Vex.Graphics
              */
             if (flipVertically)
             {
+                Console.WriteLine("Flipped");
                 image.Mutate(x => x.Flip(FlipMode.Vertical));
             }
 
@@ -58,7 +59,7 @@ namespace Vex.Graphics
                 format.DefaultMimeType.GetAsTextureFormat(image.PixelType.AlphaRepresentation == null),
                 format.DefaultMimeType.GetAsTextureInternalFormat(image.PixelType.BitsPerPixel, image.PixelType.AlphaRepresentation == PixelAlphaRepresentation.Associated));
 
-            texture.SetData(pixels.ToArray());
+            texture.SetData(pixels.ToArray(),true);
 
             /*
              * Dispose image data
@@ -68,7 +69,7 @@ namespace Vex.Graphics
             return texture;
         }
 
-        public Texture2D(int width,int height,TextureFormat format,TextureInternalFormat internalFormat)
+        public Texture2D(int width, int height, TextureFormat format, TextureInternalFormat internalFormat)
         {
             /*
              * Create texture
@@ -84,18 +85,14 @@ namespace Vex.Graphics
             /*
              * Set empty data
              */
-            GL.TexImage2D(TextureTarget.Texture2D, 0,(PixelInternalFormat)internalFormat, width, height, 0, (PixelFormat)format, PixelType.UnsignedByte, IntPtr.Zero);
-            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)internalFormat, width, height, 0, (PixelFormat)format, PixelType.UnsignedByte, IntPtr.Zero);
 
-            /*
-             * Set texture parameters
-             */
+
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
-            
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
             /*
@@ -138,7 +135,7 @@ namespace Vex.Graphics
         /// Set texture data via byte array
         /// </summary>
         /// <param name="data"></param>
-        public void SetData(byte[] data)
+        public void SetData(byte[] data,bool generateMipmaps)
         {
             /*
              * Bind texture
@@ -149,6 +146,15 @@ namespace Vex.Graphics
              * Set data
              */
             GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)InternalFormat, m_Width, m_Height, 0, (PixelFormat)Format, PixelType.UnsignedByte, data);
+
+            /*
+             * Set texture parameters
+             */
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, generateMipmaps ? (int)TextureMinFilter.LinearMipmapLinear : (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             /*
              * Unbind texture

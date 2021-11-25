@@ -85,7 +85,7 @@ namespace Vex.Asset
             /*
              * Set texture data
              */
-            texture.SetData(Convert.FromBase64String(dataYaml));
+            texture.SetData(Convert.FromBase64String(dataYaml),true);
 
 
             return texture;
