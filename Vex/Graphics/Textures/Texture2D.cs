@@ -85,6 +85,7 @@ namespace Vex.Graphics
              * Set empty data
              */
             GL.TexImage2D(TextureTarget.Texture2D, 0,(PixelInternalFormat)internalFormat, width, height, 0, (PixelFormat)format, PixelType.UnsignedByte, IntPtr.Zero);
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             /*
              * Set texture parameters
