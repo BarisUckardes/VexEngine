@@ -13,7 +13,7 @@ namespace Vex.Framework
     {
         public WorldLogicView()
         {
-            m_Entities = new List<Entity>();
+            m_Entities = new List<Entity>(1000);
             m_Resolvers = new List<LogicResolver>();
         }
 
@@ -34,7 +34,7 @@ namespace Vex.Framework
                 return m_Entities.ToArray();
             }
         }
-        
+
         /// <summary>
         /// Called when registering a new component
         /// </summary>

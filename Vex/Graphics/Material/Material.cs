@@ -12,7 +12,7 @@ namespace Vex.Graphics
     /// <summary>
     /// Material class for encapsualting shaders and their parameters
     /// </summary>
-    public sealed class Material : VexObject
+    public sealed class Material : AssetObject
     {
         public Material(ShaderProgram program = null)
         {
@@ -120,6 +120,10 @@ namespace Vex.Graphics
             return stageParams;
         }
 
+        public override void Destroy()
+        {
+            throw new NotImplementedException();
+        }
 
         private ShaderProgram m_Program;
         private List<MaterialStageParameters> m_StageParameters;

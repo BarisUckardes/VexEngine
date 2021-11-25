@@ -253,6 +253,11 @@ namespace Vex.Graphics
             m_CpuTriangles = triangles;
         }
 
+        public override void Destroy()
+        {
+            throw new NotImplementedException();
+        }
+
         private int[] m_CpuTriangles;
         private StaticMeshVertex[] m_CpuVertexes;
     }

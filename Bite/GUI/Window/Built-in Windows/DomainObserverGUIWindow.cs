@@ -191,7 +191,7 @@ namespace Bite.GUI
                 {
                     GUIRenderCommands.SignalPopupCreate("Domain_Folder_Rename");
                 }
-                else if(ImGui.IsKeyPressed((int)Vex.Input.Keys.F2) && m_SelectedObject.GetType() == typeof(DomainFileView) && GUIEventCommands.IsWindowHovered())
+                if(ImGui.IsKeyPressed((int)Vex.Input.Keys.F2) && m_SelectedObject.GetType() == typeof(DomainFileView) && GUIEventCommands.IsWindowHovered())
                 {
                     GUIRenderCommands.SignalPopupCreate("Domain_File_Rename");
                     
@@ -207,9 +207,12 @@ namespace Bite.GUI
                 CreateFolderRenamePopup(m_SelectedObject as DomainFolderView);
                 GUIRenderCommands.FinalizePopup();
             }
+
+            /*
+             * Render file rename popup
+             */
             if (GUIRenderCommands.CreatePopup("Domain_File_Rename"))
             {
-                Console.WriteLine("File rename with: " + (m_SelectedObject as DomainFileView).AssetName);
                 CreateFileRenamePopup(m_SelectedObject as DomainFileView);
                 GUIRenderCommands.FinalizePopup();
             }
@@ -374,7 +377,7 @@ namespace Bite.GUI
 
                     isClickedEmpty = false;
                 }
-                else if (GUIEventCommands.IsMouseLeftButtonClicked() && GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsWindowHovered())
+                else if (GUIEventCommands.IsMouseLeftButtonClicked() && GUIEventCommands.IsCurrentItemHavored())
                 {
                     m_SelectedObject = file;
                     Console.WriteLine("File clicked: " + file.AssetName);

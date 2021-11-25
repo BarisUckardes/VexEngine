@@ -73,6 +73,7 @@ f_ColorOut = texture(f_SpriteTexture,f_Uv);
             renderableEntity.Spatial.Scale = new Vector3(5, 5, 5).GetAsNumerics();
 
             Entity renderableEntity2 = new Entity("Forward entity", world);
+            renderableEntity2.AddComponent<TestComponent>();
             ForwardMeshRenderable renderableComponent2 = renderableEntity2.AddComponent<ForwardMeshRenderable>();
             renderableComponent2.Material = material;
             renderableEntity2.Spatial.Position = new Vector3(0, 0, 1).GetAsNumerics();

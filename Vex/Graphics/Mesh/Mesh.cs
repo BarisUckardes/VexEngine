@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// <summary>
     /// Base mesh class for all meshes
     /// </summary>
-    public abstract class Mesh : VexObject
+    public abstract class Mesh : AssetObject
     {
         public abstract VertexLayout Layout { get; }
 

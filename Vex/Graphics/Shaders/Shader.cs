@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// <summary>
     /// Shader class for all shader operations
     /// </summary>
-    public sealed class Shader : VexObject
+    public sealed class Shader : AssetObject
     {
         public Shader(ShaderStage type)
         {
@@ -269,6 +269,11 @@ namespace Vex.Graphics
                 GL.DeleteShader(m_Handle);
                 m_Handle = 0;
             }
+        }
+
+        public override void Destroy()
+        {
+            throw new NotImplementedException();
         }
 
         private ShaderStage m_Type;

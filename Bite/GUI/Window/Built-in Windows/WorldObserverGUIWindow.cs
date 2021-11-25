@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Vex.Application;
 using Vex.Framework;
 using Fang.Commands;
+using Vex.Asset;
+using System.IO;
+
 namespace Bite.GUI
 {
     [WindowLayout("World Observer")]
@@ -68,7 +71,11 @@ namespace Bite.GUI
              */
             if(GUIRenderCommands.CreateButton("Save","save_world_btn"))
             {
-                Session.UpdateDomainAsset(m_TargetWorld.ID, m_TargetWorld);
+                //Session.UpdateDomainAsset(m_TargetWorld.ID, m_TargetWorld);
+
+                AssetInterface assetInterface = new AssetInterface(null);
+                string worldYaml = assetInterface.GenerateObjectString(AssetType.World, m_TargetWorld);
+                File.WriteAllText(@"C:\Users\baris\Desktop\FolderTest\worldtest.vasset",worldYaml);
             }
         }
         private World m_TargetWorld;

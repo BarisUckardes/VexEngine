@@ -11,7 +11,7 @@ namespace Vex.Framework
     /// <summary>
     /// Represents single world in a session
     /// </summary>
-    public sealed class World : VexObject
+    public sealed class World : AssetObject
     {
         public World(ApplicationSession session,in WorldSettings worldSettings)
         {
@@ -69,7 +69,11 @@ namespace Vex.Framework
             m_Views.Add(view);
         }
 
-       
+        public override void Destroy()
+        {
+            throw new NotImplementedException();
+        }
+
         private List<WorldView> m_Views;
         private ApplicationSession m_Session;
         private WorldSettings m_Settings;

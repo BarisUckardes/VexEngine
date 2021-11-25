@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// <summary>
     /// Base texture class for all textures
     /// </summary>
-    public abstract class Texture : VexObject,IDestroyableObject
+    public abstract class Texture : AssetObject
     {
        
 
@@ -77,7 +77,7 @@ namespace Vex.Graphics
 
         public bool IsDestroyed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public void Destroy()
+        public override void Destroy()
         {
             throw new NotImplementedException();
         }

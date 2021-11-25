@@ -12,7 +12,7 @@ namespace Vex.Graphics
     /// <summary>
     /// Shader pVexgram class
     /// </summary>
-    public sealed class ShaderProgram : VexObject
+    public sealed class ShaderProgram : AssetObject
     {
         public ShaderProgram(in string category,in string categoryName)
         {
@@ -275,6 +275,11 @@ namespace Vex.Graphics
              * Set parameter name
              */
             parameterName = parameterNameText;
+        }
+
+        public override void Destroy()
+        {
+            throw new NotImplementedException();
         }
 
         private List<Shader> m_Shaders;

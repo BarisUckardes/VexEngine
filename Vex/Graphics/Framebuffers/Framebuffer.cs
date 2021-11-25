@@ -12,7 +12,7 @@ namespace Vex.Graphics
     /// <summary>
     /// Base class for all the framebuffers
     /// </summary>
-    public abstract class Framebuffer : VexObject,IDestroyableObject
+    public abstract class Framebuffer : AssetObject
     {
         public Framebuffer()
         {
@@ -225,7 +225,7 @@ namespace Vex.Graphics
             m_BackTexture = backTexture;
         }
 
-        public void Destroy()
+        public override void Destroy()
         {
             throw new NotImplementedException();
         }
