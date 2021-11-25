@@ -329,12 +329,6 @@ namespace Vex.Asset
                      * Emit begin component
                      */
                     emitter.Emit(new Scalar(null, "Begin Component"));
-                    emitter.Emit(new Scalar(null, ""));
-
-                    /*
-                     * Emit component type id and owner entity id
-                     */
-                    emitter.Emit(new Scalar(null, "Index"));
                     emitter.Emit(new Scalar(null, totalComponents.IndexOf(component).ToString()));
 
                     /*
