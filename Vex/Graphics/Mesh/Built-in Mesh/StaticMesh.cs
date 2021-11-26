@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assimp;
+using Assimp.Configs;
 
 namespace Vex.Graphics
 {
@@ -60,7 +62,7 @@ namespace Vex.Graphics
             /*
              * Iterate lines
              */
-            for (int lineIndex = 0;lineIndex < lines.Length;lineIndex++)
+            for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
             {
                 /*
                  * Get index
@@ -71,7 +73,7 @@ namespace Vex.Graphics
                  * Get header
                  */
                 string header = line.Substring(0, line.IndexOf(" "));
-                string content =line.Substring(line.IndexOf(" ")+1,line.Length- line.IndexOf(" ")-1);
+                string content = line.Substring(line.IndexOf(" ") + 1, line.Length - line.IndexOf(" ") - 1);
 
                 /*
                 * Catch vertex,normal and uv
@@ -127,15 +129,15 @@ namespace Vex.Graphics
                             /*
                              * Iterate face properties
                              */
-                            for(int sectionIndex = 0;sectionIndex < 3;sectionIndex++)
+                            for (int sectionIndex = 0; sectionIndex < 3; sectionIndex++)
                             {
                                 /*
                                  * Get Properties
                                  */
-                                int vertexIndex =int.Parse(sections[sectionIndex].Split("/")[0]);
+                                int vertexIndex = int.Parse(sections[sectionIndex].Split("/")[0]);
                                 int uvIndex = int.Parse(sections[sectionIndex].Split("/")[1]);
                                 int normalIndex = int.Parse(sections[sectionIndex].Split("/")[2]);
-                                
+
                                 faces.Add(new Tuple<int, int, int>(vertexIndex, uvIndex, normalIndex));
 
 
@@ -148,16 +150,46 @@ namespace Vex.Graphics
             }
 
             /*
-             * Create vertexes
+             * Create vertexes with only positons
              */
             for (int vertexIndex = 0; vertexIndex < positions.Count; vertexIndex++)
             {
                 /*
+                 * Initialize vertex
+                 */
+                Vector3 position = positions[vertexIndex];
+                Vector3 normal = Vector3.Zero;
+                Vector2 uv = Vector2.Zero;
+
+                /*
+                 * Look for normal and uv
+                 */
+                for (int faceIndex = 0; faceIndex < faces.Count; faceIndex++)
+                {
+                    /*
+                    * Get face
+                    */
+                    Tuple<int, int, int> face = faces[faceIndex];
+
+                    /*
+                     * Validate normal and uv
+                     */
+                    if (face.Item1 - 1 == vertexIndex) // vertex found
+                    {
+                        normal = normals[face.Item3 - 1];
+                        uv = uvs[face.Item2 - 1];
+                        break;
+                    }
+                }
+
+                /*
                  * Add vertex
                  */
-                vertexes.Add(new StaticMeshVertex(positions[vertexIndex],Vector3.Zero,Vector2.Zero));
+                vertexes.Add(new StaticMeshVertex(position, normal, uv));
             }
-            for(int faceIndex = 0;faceIndex< faces.Count;faceIndex++)
+
+
+            for (int faceIndex = 0; faceIndex < faces.Count; faceIndex++)
             {
                 /*
                  * Get face
@@ -165,15 +197,12 @@ namespace Vex.Graphics
                 Tuple<int, int, int> face = faces[faceIndex];
 
                 /*
-                 * Set uv and normal
-                 */
-                vertexes[face.Item1 - 1] = new StaticMeshVertex(vertexes[face.Item1 - 1].Position,normals[face.Item3-1],uvs[face.Item2-1]);
-
-                /*
                  * Add triangle
                  */
                 triangles.Add(face.Item1 - 1);
             }
+
+
             /*
              * Create mesh
              */
@@ -182,6 +211,10 @@ namespace Vex.Graphics
             mesh.SetTriangleData(triangles.ToArray());
 
             return mesh;
+        }
+        public StaticMesh()
+        {
+           
         }
         public override VertexLayout Layout
         {

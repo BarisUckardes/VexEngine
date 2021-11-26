@@ -45,17 +45,20 @@ namespace Vex.Asset
                 /*
                  * Create and add new vertex
                  */
-                Vector3 position = new Vector3(float.Parse(vertexString[0], CultureInfo.InvariantCulture),
+                Vector3 position = new Vector3(
+                    float.Parse(vertexString[0], CultureInfo.InvariantCulture),
                     float.Parse(vertexString[1], CultureInfo.InvariantCulture),
                     float.Parse(vertexString[2], CultureInfo.InvariantCulture));
-                Vector3 normal = new Vector3(float.Parse(vertexString[3], CultureInfo.InvariantCulture),
-                    float.Parse(vertexString[4]),
-                    float.Parse(vertexString[5]));
-                Vector2 uv = new Vector2(float.Parse(vertexString[6], CultureInfo.InvariantCulture),
-                    float.Parse(vertexString[7]));
+                Vector3 normal = new Vector3(
+                    float.Parse(vertexString[3], CultureInfo.InvariantCulture),
+                    float.Parse(vertexString[4], CultureInfo.InvariantCulture),
+                    float.Parse(vertexString[5], CultureInfo.InvariantCulture));
+                Vector2 uv = new Vector2(
+                    float.Parse(vertexString[6], CultureInfo.InvariantCulture),
+                    float.Parse(vertexString[7], CultureInfo.InvariantCulture));
                 vertexes.Add(new StaticMeshVertex(position, normal, uv));
 
-    
+
                 /*
                  * Move to next vertex
                  */
@@ -70,14 +73,14 @@ namespace Vex.Asset
             parser.MoveNext();
             while(parser.Current.GetType() != typeof(SequenceEnd))
             {
-                /*
-                 * Get triangle batch
-                 */
+                ///*
+                // * Get triangle batch
+                // */
                 string[] triangleBatch = GetParserValue(parser).Split(" ");
 
-                /*
-                 * Create and add new triangles
-                 */
+                ///*
+                // * Create and add new triangles
+                // */
                 triangles.Add(int.Parse(triangleBatch[0]));
                 triangles.Add(int.Parse(triangleBatch[1]));
                 triangles.Add(int.Parse(triangleBatch[2]));
@@ -144,6 +147,7 @@ namespace Vex.Asset
                  * Emiter vertex
                  */
                 emitter.Emit(new Scalar(null, triangles[triangleIndex].ToString() + " " + triangles[triangleIndex+1].ToString() + " " + triangles[triangleIndex+2].ToString()));
+
             }
             emitter.Emit(new SequenceEnd());
 

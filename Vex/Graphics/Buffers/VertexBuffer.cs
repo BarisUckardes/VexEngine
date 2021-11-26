@@ -88,7 +88,6 @@ namespace Vex.Graphics
                     case VertexLayoutDataType.Float2:
                     case VertexLayoutDataType.Float3:
                     case VertexLayoutDataType.float4:
-                        Console.WriteLine("Mesh layout: " + (int)elements[i].ComponentCount);
                         GL.EnableVertexAttribArray(vertexLayoutIndex);
                         GL.VertexAttribPointer((int)vertexLayoutIndex,
                             (int)elements[i].ComponentCount,
@@ -96,6 +95,9 @@ namespace Vex.Graphics
                             elements[i].IsNormalized,
                             (int)layout.Stride,
                             (int)elements[i].Offset);
+                        Console.WriteLine($"Component Count: {(int)elements[i].ComponentCount}");
+                        Console.WriteLine($" Pointer Type: {VertexLayoutDataTypeUtility.GetVertexAttribPointerType(elements[i].Type).ToString()}");
+                        Console.WriteLine($" Stride: {layout.Stride.ToString()}, Offset: {elements[i].Offset}");
                         vertexLayoutIndex++;
                         break;
                     case VertexLayoutDataType.Mat3:
