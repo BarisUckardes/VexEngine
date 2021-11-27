@@ -18,21 +18,14 @@ namespace Bite.GUI
         }
         private static GUIComponentManager s_Current;
 
-        internal GUIComponentManager(in EditorSession session,in List<DefaultComponentLayoutInfo> defaultLayouts,in List<ComponentLayoutEntry> layoutEntries,in List<Type> allComponentTypes)
+        internal GUIComponentManager(in EditorSession session,in List<DefaultComponentLayoutInfo> defaultLayouts,in List<ComponentLayoutEntry> layoutEntries)
         {
             m_DefaultEntries = defaultLayouts;
             m_Entries = layoutEntries;
             m_Session = session;
             s_Current = this;
-            m_AllComponentTypes = allComponentTypes;
         }
-        public List<Type> AllComponentTypes
-        {
-            get
-            {
-                return m_AllComponentTypes;
-            }
-        }
+      
         public ComponentLayout FetchComponentLayout(Type componentType)
         {
             /*
@@ -65,7 +58,6 @@ namespace Bite.GUI
             return defaultLayout;
         }
 
-        private List<Type> m_AllComponentTypes;
         private List<ComponentLayoutEntry> m_Entries;
         private List<DefaultComponentLayoutInfo> m_DefaultEntries;
         private EditorSession m_Session;

@@ -23,6 +23,7 @@ namespace Bite.GUI
             m_PrimaryFramebuffer = m_PrimaryObserver.Framebuffer;
         }
 
+
         public override void OnLayoutFinalize()
         {
             m_PrimaryObserver = null;
@@ -30,6 +31,7 @@ namespace Bite.GUI
 
         public override void OnRenderLayout()
         {
+
             /*
              * Draw game viewport
              */
@@ -59,13 +61,13 @@ namespace Bite.GUI
              * Render framebuffer image
              */
             GUIRenderCommands.CreateImage(m_PrimaryFramebuffer == null ? null : m_PrimaryFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight),uv0,uv1);
+
         }
 
         public override void OnVisible()
         {
 
         }
-
 
         private ObserverComponent m_PrimaryObserver;
         private Framebuffer m_PrimaryFramebuffer;

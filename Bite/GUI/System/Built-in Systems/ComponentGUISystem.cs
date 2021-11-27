@@ -19,7 +19,6 @@ namespace Bite.GUI
             List<ComponentLayoutEntry> entries = new List<ComponentLayoutEntry>();
             List<DefaultComponentLayoutInfo> defaultEntries = new List<DefaultComponentLayoutInfo>();
             List<Type> layoutCreatedComponentTypes = new List<Type>();
-            List<Type> allComponentTypes = new List<Type>();
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 foreach (Type type in assembly.GetTypes())
@@ -83,28 +82,11 @@ namespace Bite.GUI
                 }
             }
 
-            /*
-             * Get all component types
-             */
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                /*
-                 * Iterate each type in assembly
-                 */
-                foreach (Type type in assembly.GetTypes())
-                {
-                    /*
-                     * Validate its a components
-                     */
-                    if (type.IsSubclassOf(typeof(Component)))
-                        allComponentTypes.Add(type); 
-                }
-            }
-
+           
             /*
              * Create Manager
              */
-            m_Manager = new GUIComponentManager(Session, defaultEntries, entries, allComponentTypes);
+            m_Manager = new GUIComponentManager(Session, defaultEntries, entries);
         }
 
         public override void OnDetach()

@@ -90,7 +90,7 @@ namespace Vex.Graphics
                             /*
                              * Add position
                              */
-                            positions.Add(new Vector3(float.Parse(splitSubString[0], CultureInfo.InvariantCulture), float.Parse(splitSubString[1], CultureInfo.InvariantCulture), float.Parse(splitSubString[2], CultureInfo.InvariantCulture)));
+                            positions.Add(new Vector3(float.Parse(splitSubString[0] ), float.Parse(splitSubString[1] ), float.Parse(splitSubString[2] )));
                             break;
                         }
                     case "vn":
@@ -103,7 +103,7 @@ namespace Vex.Graphics
                             /*
                              * Add normal
                              */
-                            normals.Add(new Vector3(float.Parse(splitSubString[0], CultureInfo.InvariantCulture), float.Parse(splitSubString[1], CultureInfo.InvariantCulture), float.Parse(splitSubString[2], CultureInfo.InvariantCulture)));
+                            normals.Add(new Vector3(float.Parse(splitSubString[0]), float.Parse(splitSubString[1] ), float.Parse(splitSubString[2] )));
                             break;
                         }
                     case "vt":
@@ -116,7 +116,7 @@ namespace Vex.Graphics
                             /*
                              * Add uv
                              */
-                            uvs.Add(new Vector2(float.Parse(splitSubString[0], CultureInfo.InvariantCulture), float.Parse(splitSubString[1], CultureInfo.InvariantCulture)));
+                            uvs.Add(new Vector2(float.Parse(splitSubString[0] ), float.Parse(splitSubString[1] )));
                             break;
                         }
                     case "f":

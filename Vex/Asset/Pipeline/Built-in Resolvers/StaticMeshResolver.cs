@@ -46,16 +46,16 @@ namespace Vex.Asset
                  * Create and add new vertex
                  */
                 Vector3 position = new Vector3(
-                    float.Parse(vertexString[0], CultureInfo.InvariantCulture),
-                    float.Parse(vertexString[1], CultureInfo.InvariantCulture),
-                    float.Parse(vertexString[2], CultureInfo.InvariantCulture));
+                    float.Parse(vertexString[0]),
+                    float.Parse(vertexString[1]),
+                    float.Parse(vertexString[2]));
                 Vector3 normal = new Vector3(
-                    float.Parse(vertexString[3], CultureInfo.InvariantCulture),
-                    float.Parse(vertexString[4], CultureInfo.InvariantCulture),
-                    float.Parse(vertexString[5], CultureInfo.InvariantCulture));
+                    float.Parse(vertexString[3]),
+                    float.Parse(vertexString[4]),
+                    float.Parse(vertexString[5]));
                 Vector2 uv = new Vector2(
-                    float.Parse(vertexString[6], CultureInfo.InvariantCulture),
-                    float.Parse(vertexString[7], CultureInfo.InvariantCulture));
+                    float.Parse(vertexString[6]),
+                    float.Parse(vertexString[7]));
                 vertexes.Add(new StaticMeshVertex(position, normal, uv));
 
 
@@ -125,9 +125,9 @@ namespace Vex.Asset
                  */
                 StaticMeshVertex vertex = vertexes[vertexIndex];
 
-                string vertexText = vertex.Position.X.ToString(CultureInfo.InvariantCulture) + " " + vertex.Position.Y.ToString(CultureInfo.InvariantCulture) + " " + vertex.Position.Z.ToString(CultureInfo.InvariantCulture) +
-                    " " + vertex.Normal.X.ToString(CultureInfo.InvariantCulture) + " " + vertex.Normal.Y.ToString(CultureInfo.InvariantCulture) + " " + vertex.Normal.Z.ToString(CultureInfo.InvariantCulture) +
-                    " " + vertex.Uv.X.ToString(CultureInfo.InvariantCulture) + " " + vertex.Uv.Y.ToString(CultureInfo.InvariantCulture);
+                string vertexText = vertex.Position.X.ToString() + " " + vertex.Position.Y.ToString() + " " + vertex.Position.Z.ToString() +
+                    " " + vertex.Normal.X.ToString() + " " + vertex.Normal.Y.ToString() + " " + vertex.Normal.Z.ToString() +
+                    " " + vertex.Uv.X.ToString() + " " + vertex.Uv.Y.ToString();
 
                 /*
                  * Emiter vertex

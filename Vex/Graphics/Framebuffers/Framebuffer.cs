@@ -187,7 +187,7 @@ namespace Vex.Graphics
 
         }
 
-
+     
         /// <summary>
         /// Creates a texture3D via attachment parameters
         /// </summary>

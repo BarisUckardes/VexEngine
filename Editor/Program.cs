@@ -4,6 +4,7 @@ using Bite.Module;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using Vex.Application;
 using Vex.Engine;
 using Vex.Platform;
@@ -38,7 +39,7 @@ namespace Game
             /*
              * Create application
              */ 
-            Application application = new Application("Vex", windowCreateParams, windowUpdateParams,targetProjectDirectory, args);
+            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture,new List<string>() {"UserGameCode.dll"}, targetProjectDirectory, args);
 
             /*
              * Create bite commands

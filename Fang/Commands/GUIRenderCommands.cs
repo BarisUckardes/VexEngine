@@ -145,8 +145,21 @@ namespace Fang.Commands
         public static bool CreateVector3Slider(string name, string code, ref Vector3 vector, float min = 0.00f, float max = 5.0f)
         {
             System.Numerics.Vector3 intermediateVec = new System.Numerics.Vector3(vector.X, vector.Y,vector.Z);
+            ImGui.Text(name);
             ImGui.PushID(code);
-            bool state = ImGui.SliderFloat3(name, ref intermediateVec, min, max);
+            bool state = ImGui.SliderFloat3(name + "##" + code,ref intermediateVec, min, max);
+            ImGui.PopID();
+            vector.X = intermediateVec.X;
+            vector.Y = intermediateVec.Y;
+            vector.Z = intermediateVec.Z;
+            return state;
+        }
+        public static bool CreateVector3Input(string name, string code, ref Vector3 vector)
+        {
+            System.Numerics.Vector3 intermediateVec = new System.Numerics.Vector3(vector.X, vector.Y, vector.Z);
+            ImGui.Text(name);
+            ImGui.PushID(code);
+            bool state = ImGui.InputFloat3(name + "##" + code, ref intermediateVec);
             ImGui.PopID();
             vector.X = intermediateVec.X;
             vector.Y = intermediateVec.Y;

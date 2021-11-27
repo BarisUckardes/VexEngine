@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fang.Commands;
+using Vex.Types;
+
 namespace Bite.GUI
 {
     [ObjectLayout(typeof(Entity))]
@@ -18,7 +20,7 @@ namespace Bite.GUI
             /*
              * Get all commponents
              */
-            m_AllComponentTypes = GUIComponentManager.Current.AllComponentTypes;
+            m_AllComponentTypes = EmittedComponentTypes.ComponentTypes;
 
             /*
              * recreate component layouts

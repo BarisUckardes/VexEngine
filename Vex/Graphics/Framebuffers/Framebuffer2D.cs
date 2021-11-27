@@ -28,6 +28,12 @@ namespace Vex.Graphics
 
         }
 
+        public void Resize(int width,int height)
+        {
+            m_Width = width;
+            m_Height = height;
+            CreateAndAttachTexture2D(new FramebufferAttachmentParams(width, height,0, Format, InternalFormat));
+        }
         /// <summary>
         /// Returns the width of this framebuffer
         /// </summary>

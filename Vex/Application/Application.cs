@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 using Vex.Engine;
 using Vex.Platform;
 using Vex.Profiling;
+using Vex.Framework;
+using Vex.Types;
+using System.IO;
 
 namespace Vex.Application
 {
@@ -14,7 +19,7 @@ namespace Vex.Application
     /// </summary>
     public sealed class Application
     {
-        public Application(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams,string targetDomainRootDirectory,string[] commandLineArguments)
+        public Application(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams,CultureInfo targetCultureInfo,List<string> additionalLibraries,string targetDomainRootDirectory,string[] commandLineArguments)
         {
             /*
             * Initialize local lists
@@ -34,6 +39,16 @@ namespace Vex.Application
              * Set target domain directory
              */
             m_TargetDomainRootDirectory = targetDomainRootDirectory;
+
+            /*
+             * Set additional libraries
+             */
+            m_AdditionalLibraries = additionalLibraries.ToArray();
+
+            /*
+             * Set application target culture info
+             */
+            m_TargetCultureInfo = targetCultureInfo;
         }
 
         /// <summary>
@@ -75,6 +90,53 @@ namespace Vex.Application
              */
             CommandLineArguments.Arguments = m_CommandLineArguments;
             PlatformPaths.DomainRootDirectoy = m_TargetDomainRootDirectory;
+
+            /*
+             * Set target culture info
+             */
+            CultureInfo.CurrentCulture = m_TargetCultureInfo;
+            CultureInfo.CurrentUICulture = m_TargetCultureInfo;
+
+            /*
+             * Load additonal libraries
+             */
+            for(int libraryIndex = 0;libraryIndex < m_AdditionalLibraries.Length;libraryIndex++)
+            {
+                /*
+                 * Get path
+                 */
+                string libraryPath = m_AdditionalLibraries[libraryIndex];
+
+                /*
+                 * Validate file
+                 */
+                if (!File.Exists(libraryPath))
+                    continue;
+
+                /*
+                 * Load assembly into appdomain
+                 */
+                Assembly.LoadFrom(libraryPath);
+            }
+
+            /*
+             * Get all component types
+             */
+            List<Type> componentTypes = new List<Type>(100);
+            foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach(Type type in assembly.GetTypes())
+                {
+                    /*
+                     * Validate if its a component type
+                     */
+                    if(type.IsSubclassOf(typeof(Component)))
+                    {
+                        componentTypes.Add(type);
+                    }
+                }
+            }
+            EmittedComponentTypes.ComponentTypes = componentTypes;
 
             /*
              * Create session
@@ -250,6 +312,8 @@ namespace Vex.Application
         private List<ReceivePlatformEventDelegate> m_ModuleEventDelegates;
         private ApplicationSession m_Session;
         private WindowInterface m_WindowInterface;
+        private CultureInfo m_TargetCultureInfo;
+        private string[] m_AdditionalLibraries;
         private string[] m_CommandLineArguments;
         private string m_TargetDomainRootDirectory;
     }
