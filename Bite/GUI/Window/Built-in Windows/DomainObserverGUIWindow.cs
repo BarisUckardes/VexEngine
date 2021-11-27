@@ -196,7 +196,6 @@ namespace Bite.GUI
                     GUIRenderCommands.SignalPopupCreate("Domain_File_Rename");
                     
                 }
-
             }
 
             /*
@@ -279,7 +278,6 @@ namespace Bite.GUI
                 GUILayoutCommands.SetCursorPos(folderAnchorPos + new Vector2(offset, 128));
                 GUIRenderCommands.CreateText(subFolder.Name, subFolder.ID.ToString());
                 GUILayoutCommands.SetCursorPos(folderAnchorPos + new Vector2(128, 0));
-                
             }
 
             /*

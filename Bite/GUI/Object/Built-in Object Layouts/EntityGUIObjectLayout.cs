@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fang.Commands;
 using Vex.Types;
-
+using ImGuiNET;
 namespace Bite.GUI
 {
     [ObjectLayout(typeof(Entity))]
@@ -88,10 +88,13 @@ namespace Bite.GUI
              */
             for(int i=0;i<m_Layouts.Count;i++)
             {
+                GUIRenderCommands.EnableStyle(ImGuiStyleVar.FrameRounding, 5);
                 if(GUIRenderCommands.CreateCollapsingHeader(m_Layouts[i].TargetComponent.GetType().Name,m_Layouts[i].TargetComponent.ID.ToString()))
                 {
+                    GUIRenderCommands.DisableStyle();
                     m_Layouts[i].OnLayoutRender();
                 }
+                
             }
 
         }

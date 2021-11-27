@@ -98,9 +98,16 @@ namespace Vex.Application
             CultureInfo.CurrentUICulture = m_TargetCultureInfo;
 
             /*
+             * Create temp session
+             */
+            string tempSessionPath = PlatformPaths.LocalApplicationData + @"\Vex\TempSession\";
+
+            Directory.CreateDirectory(tempSessionPath);
+
+            /*
              * Load additonal libraries
              */
-            for(int libraryIndex = 0;libraryIndex < m_AdditionalLibraries.Length;libraryIndex++)
+            for (int libraryIndex = 0;libraryIndex < m_AdditionalLibraries.Length;libraryIndex++)
             {
                 /*
                  * Get path
@@ -114,9 +121,17 @@ namespace Vex.Application
                     continue;
 
                 /*
+                 * Copy to temp folder
+                 */
+                string copyLocation = tempSessionPath + Path.GetFileName(libraryPath);
+                File.Copy(libraryPath, copyLocation,true);
+
+                /*
                  * Load assembly into appdomain
                  */
-                Assembly.LoadFrom(libraryPath);
+                Assembly.LoadFrom(copyLocation);
+
+                Console.WriteLine($"Application loaded assembly [{libraryPath}]");
             }
 
             /*
@@ -133,6 +148,7 @@ namespace Vex.Application
                     if(type.IsSubclassOf(typeof(Component)))
                     {
                         componentTypes.Add(type);
+                        Console.WriteLine("Found a compoent type: " + type.Name);
                     }
                 }
             }
@@ -258,6 +274,7 @@ namespace Vex.Application
             m_Session.Shutdown();
             m_Session = null;
 
+
             /*
              * Display shutdown message
              */
@@ -316,5 +333,6 @@ namespace Vex.Application
         private string[] m_AdditionalLibraries;
         private string[] m_CommandLineArguments;
         private string m_TargetDomainRootDirectory;
+        private string m_ProjectName;
     }
 }

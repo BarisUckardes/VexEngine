@@ -30,20 +30,7 @@ namespace Bite.Core
             }
         }
 
-        /// <summary>
-        /// Returns the window title
-        /// </summary>
-        public string ApplicationWindowTitle
-        {
-            get
-            {
-                return m_ApplicationSession.WindowTitle;
-            }
-            set
-            {
-                m_ApplicationSession.WindowTitle = value;
-            }
-        }
+       
 
         /// <summary>
         /// Returns the domain file views this editor has
@@ -57,21 +44,6 @@ namespace Bite.Core
             internal set
             {
                 m_Domain = value;
-            }
-        }
-
-        /// <summary>
-        /// Returns the project file content
-        /// </summary>
-        public ProjectFileContent ProjectFile
-        {
-            get
-            {
-                return m_ProjectFile;
-            }
-            internal set
-            {
-                m_ProjectFile = value;
             }
         }
 
@@ -313,6 +285,5 @@ namespace Bite.Core
         private List<WindowLayoutSettings> m_CurrentWindowSettings;
         private ApplicationSession m_ApplicationSession;
         private DomainView m_Domain;
-        private ProjectFileContent m_ProjectFile;
     }
 }

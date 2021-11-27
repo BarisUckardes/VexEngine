@@ -54,14 +54,10 @@ namespace Bite.Core
             ProjectFileContent content = deserializer.Deserialize<ProjectFileContent>(projectFileYamlText);
 
             /*
-             * Set window title
+             *  Initialize project properties
              */
-            EditorSession.ApplicationWindowTitle = content.ProjectName;
+            ProjectProperties.ProjectName = content.ProjectName;
 
-            /*
-             * Set project file
-             */
-            EditorSession.ProjectFile = content;
         }
 
         public override void OnDetach()

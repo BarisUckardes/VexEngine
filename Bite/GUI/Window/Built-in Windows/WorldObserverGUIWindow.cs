@@ -8,6 +8,8 @@ using Vex.Framework;
 using Fang.Commands;
 using Vex.Asset;
 using System.IO;
+using Vex.Graphics;
+using System.Numerics;
 
 namespace Bite.GUI
 {
@@ -25,6 +27,7 @@ namespace Bite.GUI
         public override void OnLayoutBegin()
         {
             m_TargetWorld = Session.Worlds.ElementAt(0);
+            m_EntityIcon = Session.GetEditorResource("EntityIcon", AssetType.Texture2D) as Texture2D;
         }
 
         public override void OnLayoutFinalize()
@@ -52,17 +55,21 @@ namespace Bite.GUI
             {
                 for (int i = 0; i < entities.Length; i++)
                 {
-                    if (GUIRenderCommands.CreateTreeNode(entities[i].Name, entities[i].ID.ToString()))
-                    {
-                        /*
-                         * Check if this item clicked
-                         */
-                        GUIRenderCommands.FinalizeTreeNode();
-                    }
-                    if (GUIEventCommands.IsCurrentItemClicked())
+                    /*
+                     * Render image
+                     */
+                    Vector2 anchorPosition = GUILayoutCommands.GetCursor();
+                    GUIRenderCommands.CreateImage(m_EntityIcon, new System.Numerics.Vector2(16, 16));
+
+                    /*
+                     * Render selectable
+                     */
+                    GUILayoutCommands.SetCursorPos(anchorPosition + new Vector2(20, 0));
+                    if (GUIRenderCommands.CreateSelectableItem(entities[i].Name, entities[i].ID.ToString()))
                     {
                         GUIObject.SignalNewObject(entities[i]);
                     }
+                  
                 }
             }
 
@@ -78,6 +85,7 @@ namespace Bite.GUI
                 File.WriteAllText(@"C:\Users\baris\Desktop\FolderTest\worldtest.vasset",worldYaml);
             }
         }
+        private Texture2D m_EntityIcon;
         private World m_TargetWorld;
     }
 }

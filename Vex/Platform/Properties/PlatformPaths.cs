@@ -88,6 +88,7 @@ namespace Vex.Platform
             }
         }
 
+
         private static string s_DomainRootDirectory;
     }
 }
