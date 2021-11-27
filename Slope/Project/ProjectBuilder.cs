@@ -69,14 +69,41 @@ namespace Slope.Project
             commandLineProcess.StartInfo.UseShellExecute = false;
             commandLineProcess.Start();
 
+            /*
+             * Create visual studio project
+             */
             commandLineProcess.StandardInput.WriteLine("cd " + codeBaseFolderPath);
-            commandLineProcess.StandardInput.WriteLine("dotnet new sln --name mysolution.sln");
-            commandLineProcess.StandardInput.WriteLine("dotnet new classlib --output UserGameCode/");
-            commandLineProcess.StandardInput.WriteLine("dotnet new classlib --output UserEditorCode/");
+            commandLineProcess.StandardInput.WriteLine($"dotnet new sln --name {m_ProjectName}.sln"); // creates solution
+            commandLineProcess.StandardInput.WriteLine("dotnet new classlib --output UserGameCode/"); // creates user game project
+            commandLineProcess.StandardInput.WriteLine("dotnet new classlib --output UserEditorCode/"); // creates user editor  project
+            commandLineProcess.StandardInput.WriteLine("dotnet sln add UserGameCode/UserGameCode.csproj"); // adds user game project to solution
+            commandLineProcess.StandardInput.WriteLine("dotnet sln add UserEditorCode/UserEditorCode.csproj"); // adds user editor project to solution
+            
 
             commandLineProcess.StandardInput.Flush();
             commandLineProcess.StandardInput.Close();
             commandLineProcess.WaitForExit();
+
+            /*
+             * Modify usergamecode&usereditorcode project files so they can refer to vex.dll & bite.dll
+             */
+            string userGameCodeProjectFilePath = codeBaseFolderPath + @"\UserGameCode\UserGameCode.csproj";
+            string userEditorCodeProjectFilePath = codeBaseFolderPath + @"\UserEditorCode\UserEditorCode.csproj";
+
+            string vexDllPath = PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\Vex.dll";
+            string biteDllPath = PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\Bite.dll";
+
+            string vexDllEntry = @$"<ItemGroup>  <Reference Include=""Vex""> <HintPath>{vexDllPath} </HintPath> </Reference> </ItemGroup>";
+            string biteDllEntry  = @$"<ItemGroup>  <Reference Include=""Bite""> <HintPath>{biteDllPath} </HintPath> </Reference> </ItemGroup>";
+
+            string userGameCodeProjectFileContent = File.ReadAllText(userGameCodeProjectFilePath);
+            string userEditorCodeProjectFileContent = File.ReadAllText(userEditorCodeProjectFilePath);
+
+            int userGameCodeProjectEndIndex = userGameCodeProjectFileContent.LastIndexOf("</Project>");
+            int userEditorCodeProjectEndIndex = userEditorCodeProjectFileContent.LastIndexOf("</Project>");
+
+            File.WriteAllText(userGameCodeProjectFilePath, userGameCodeProjectFileContent.Insert(userGameCodeProjectEndIndex, vexDllEntry));
+            File.WriteAllText(userEditorCodeProjectFilePath, userEditorCodeProjectFileContent.Insert(userEditorCodeProjectEndIndex, biteDllEntry));
 
             /*
              * Write project file contents
