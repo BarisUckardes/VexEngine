@@ -34,6 +34,11 @@ namespace Bite.Module
             m_Session = new EditorSession(Session);
 
             /*
+            * Set editor commands
+            */
+            EditorCommands.SetSession(m_Session);
+
+            /*
              * Set window
              */
             m_Window = Session.Window;
@@ -115,6 +120,11 @@ namespace Bite.Module
              */
             m_Session.Shutdown();
             m_Session = null;
+
+            /*
+             * Shutdown editor commands
+             */
+            EditorCommands.Shutdown();
         }
 
         public override void OnEvent(PlatformEvent eventData)

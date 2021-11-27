@@ -23,7 +23,7 @@ namespace Bite.Core
             if(!Directory.Exists(expectedProjectSettingsPath))
             {
                 Console.WriteLine("Not found: " + expectedProjectSettingsPath);
-                EditorSession.ShutdownRequest("Project files load failed");
+                EditorSession.SendApplicationShutdownRequest("Project files load failed");
                 return;
             }
 
@@ -38,7 +38,7 @@ namespace Bite.Core
             if(!File.Exists(projectFilePath))
             {
                 Console.WriteLine("Not found: " + projectFilePath);
-                EditorSession.ShutdownRequest("Project files load failed");
+                EditorSession.SendApplicationShutdownRequest("Project files load failed");
                 return;
             }
 

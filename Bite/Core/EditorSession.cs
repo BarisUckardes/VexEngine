@@ -272,7 +272,7 @@ namespace Bite.Core
         /// <summary>
         /// Send a shutdown request to vex session through the editor session
         /// </summary>
-        internal void ShutdownRequest(string exitReason)
+        internal void SendApplicationShutdownRequest(string exitReason)
         {
             m_ApplicationSession.SetShutdownRequest(exitReason);
         }

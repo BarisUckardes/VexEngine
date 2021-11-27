@@ -23,20 +23,24 @@ namespace EditorLauncher
              */
             string projectPath = args[0];
 
-            /*
-             * Create new process
-             */
-            EditorProcess process = new EditorProcess("Test process", projectPath);
+            Console.Clear();
+            while(true)
+            {
+                /*
+                * Create new process
+                */
+                EditorProcess process = new EditorProcess("Test process", projectPath);
 
-            /*
-             * Create new process
-             */
-            process.CreateProcess();
+                /*
+                 * Create new process
+                */
+                process.CreateProcess();
 
-            /*
-             * Wait for it to exit
-             */
-            process.WaitForExit();
+                /*
+                 * Wait for it to exit
+                 */
+                process.WaitForExit();
+            }
 
             /*
              * Signal exit

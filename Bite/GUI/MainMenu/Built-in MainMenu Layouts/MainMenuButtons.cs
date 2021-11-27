@@ -20,17 +20,35 @@ namespace Bite
         [MainMenuItem("Project/Exit")]
         public static void ExitProject()
         {
-
+            EditorCommands.SendEditorShutdownRequest();
         }
 
         [MainMenuItem("Code/Open Solution")]
         public static void OpenSolution()
         {
-            Console.WriteLine("Try sol: " + PlatformPaths.DomainRootDirectoy + @$"\CodeBase\{ProjectProperties.ProjectName}.sln");
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe";
-            startInfo.Arguments = PlatformPaths.DomainRootDirectoy + @$"\CodeBase\{ProjectProperties.ProjectName}.sln";
-            System.Diagnostics.Process.Start(startInfo);
+            //Console.WriteLine("Try sol: " + PlatformPaths.DomainRootDirectoy + @$"\CodeBase\{ProjectProperties.ProjectName}.sln");
+            //ProcessStartInfo startInfo = new ProcessStartInfo();
+            //startInfo.FileName = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe";
+            //startInfo.Arguments = PlatformPaths.DomainRootDirectoy + @$"\CodeBase\{ProjectProperties.ProjectName}.sln";
+
+            //System.Diagnostics.Process.Start(startInfo);
+
+
+            Process commandLineProcess = new Process();
+            commandLineProcess.StartInfo.FileName = "cmd.exe";
+            commandLineProcess.StartInfo.RedirectStandardInput = true;
+            commandLineProcess.StartInfo.RedirectStandardOutput = true;
+            commandLineProcess.StartInfo.CreateNoWindow = false;
+            commandLineProcess.StartInfo.UseShellExecute = false;
+            commandLineProcess.Start();
+
+            /*
+             * Create visual studio project
+             */
+            commandLineProcess.StandardInput.WriteLine("start "+PlatformPaths.DomainRootDirectoy + @$"\CodeBase\{ProjectProperties.ProjectName}.sln"); // builds
+
+            commandLineProcess.StandardInput.Flush();
+            commandLineProcess.StandardInput.Close();
         }
         [MainMenuItem("Code/Compile")]
         public static void CompieSolution()
@@ -66,6 +84,7 @@ namespace Bite
             commandLineProcess.StandardInput.Close();
             commandLineProcess.WaitForExit();
             Console.WriteLine("Compile Finished.");
+            EditorCommands.SendEditorShutdownRequest();
         }
 
         [MainMenuItem("Windows/World Observer")]

@@ -73,7 +73,7 @@ namespace Slope.Project
              * Create visual studio project
              */
             commandLineProcess.StandardInput.WriteLine("cd " + codeBaseFolderPath);
-            commandLineProcess.StandardInput.WriteLine($"dotnet new sln --name {m_ProjectName}.sln"); // creates solution
+            commandLineProcess.StandardInput.WriteLine($"dotnet new sln --name {m_ProjectName}"); // creates solution
             commandLineProcess.StandardInput.WriteLine("dotnet new classlib --output UserGameCode/"); // creates user game project
             commandLineProcess.StandardInput.WriteLine("dotnet new classlib --output UserEditorCode/"); // creates user editor  project
             commandLineProcess.StandardInput.WriteLine("dotnet sln add UserGameCode/UserGameCode.csproj"); // adds user game project to solution

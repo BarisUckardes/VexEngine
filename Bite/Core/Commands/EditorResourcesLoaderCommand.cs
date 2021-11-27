@@ -82,7 +82,7 @@ namespace Bite.Core
              */
             if(!validationSuccessful)
             {
-                EditorSession.ShutdownRequest($"Editor resource are failed to load");
+                EditorSession.SendApplicationShutdownRequest($"Editor resource are failed to load");
                 return;
             }
 
