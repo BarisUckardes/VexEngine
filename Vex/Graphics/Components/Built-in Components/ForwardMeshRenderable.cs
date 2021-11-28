@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Types;
 
 namespace Vex.Graphics
 {
@@ -32,6 +33,7 @@ namespace Vex.Graphics
             }
         }
 
+        [ExposeThis]
         private StaticMesh m_Mesh;
     }
 }

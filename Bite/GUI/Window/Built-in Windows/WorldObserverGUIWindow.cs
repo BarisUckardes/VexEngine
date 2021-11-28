@@ -82,7 +82,7 @@ namespace Bite.GUI
 
                 AssetInterface assetInterface = new AssetInterface(null);
                 string worldYaml = assetInterface.GenerateObjectString(AssetType.World, m_TargetWorld);
-                File.WriteAllText(@"C:\Users\baris\Desktop\FolderTest\worldtest.vasset",worldYaml);
+                File.WriteAllText(@"C:\Users\PC\Desktop\WorldTest\worldtest.vasset", worldYaml);
             }
         }
         private Texture2D m_EntityIcon;

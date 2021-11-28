@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vex.Framework;
+using Vex.Types;
+
 namespace Vex.Graphics
 {
     /// <summary>
@@ -38,7 +40,7 @@ namespace Vex.Graphics
             OwnerEntity.World.GetView<WorldGraphicsView>().RemoveRenderable(this);
         }
 
-
+        [ExposeThis]
         private Material m_Material;
     }
 }

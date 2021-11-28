@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using Vex.Types;
 
 namespace Vex.Framework
 {
@@ -89,8 +90,11 @@ namespace Vex.Framework
 
         }
 
+        [ExposeThis]
         Vector3 m_Position;
+        [ExposeThis]
         Vector3 m_Rotation;
+        [ExposeThis]
         Vector3 m_Scale;
         Vector3 m_Forward;
     }

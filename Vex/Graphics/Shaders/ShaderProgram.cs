@@ -21,6 +21,7 @@ namespace Vex.Graphics
             m_CategoryName = categoryName;
             m_Shaders = new List<Shader>();
             m_LastLinkErrorMessage = string.Empty;
+            Name = "Shader Program";
         }
        
         /// <summary>

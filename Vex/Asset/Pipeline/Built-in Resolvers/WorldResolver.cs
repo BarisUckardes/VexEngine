@@ -74,7 +74,7 @@ namespace Vex.Asset
                 /*
                  * Emit local index and and id
                  */
-                emitter.Emit(new Scalar(null,entity.ID.ToString()));
+                emitter.Emit(new Scalar(null,$"[{entity.Name}] "+entity.ID.ToString()));
             }
             emitter.Emit(new SequenceEnd());
 
@@ -162,9 +162,10 @@ namespace Vex.Asset
                     /*
                      * Get field and property infos
                      */
-                    FieldInfo[] fields = component.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    FieldInfo[] fields = TypeUtils.GetAllFields(component.GetType(),BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToArray();
                     PropertyInfo[] properties = component.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     Console.WriteLine($"Type {component.GetType().Name} || Found {fields.Length} fields, Found {properties.Length}");
+
                     /*
                      * Iterate fields to collect assets
                      */
@@ -202,48 +203,6 @@ namespace Vex.Asset
                             }
                         }
                     }
-
-                    /*
-                     * Iterate properties to collect assets
-                     */
-                    for(int propertyIndex = 0;propertyIndex<properties.Length;propertyIndex++)
-                    {
-                        /*
-                         * Get property
-                         */
-                        PropertyInfo propertyInfo = properties[propertyIndex];
-
-                        /*
-                         * Validate it has getter,setter and permitted to expose
-                         */
-                        MethodInfo getMethodInfo = propertyInfo.GetGetMethod();
-                        MethodInfo setMethodInfo = propertyInfo.GetSetMethod();
-                        if (getMethodInfo != null && setMethodInfo != null && propertyInfo.GetCustomAttribute<DontExposeThis>() == null)
-                        {
-                            /*
-                            * Get target property object
-                            */
-                            AssetObject targetAssetObject = getMethodInfo.Invoke(component,null) as AssetObject;
-
-                            /*
-                             * Validate uniqueness
-                             */
-                            if(targetAssetObject != null && !totalAssets.Contains(targetAssetObject))
-                            {
-                                /*
-                                 * Register unique asset
-                                 */
-                                totalAssets.Add(targetAssetObject);
-
-                                /*
-                                 * Emit unique asset
-                                 */
-                                emitter.Emit(new Scalar(null, targetAssetObject.ID.ToString()));
-                            }
-                        }
-
-                    }
-
                 }
 
 
@@ -287,7 +246,7 @@ namespace Vex.Asset
                     /*
                      * Register component id and its local entity id
                      */
-                    emitter.Emit(new Scalar(null, entityIndex + " " + component.Name + " " + component.ID.ToString()));
+                    emitter.Emit(new Scalar(null, entityIndex + " [" + component.Name + "] " + component.ID.ToString()));
                 }
             }
             emitter.Emit(new SequenceEnd());
@@ -334,8 +293,7 @@ namespace Vex.Asset
                     /*
                      * Get fields and properties
                      */
-                    FieldInfo[] fields = component.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    PropertyInfo[] properties = component.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    FieldInfo[] fields = TypeUtils.GetAllFields(component.GetType(),BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToArray();
 
                     /*
                      * Iterate and emit fields
@@ -352,7 +310,7 @@ namespace Vex.Asset
                         /*
                          * Validate field type is exposable
                          */
-                        if(field.IsPublic | field.GetCustomAttribute<ExposeThis>() != null) // validated
+                        if(field.IsPublic || field.GetCustomAttribute<ExposeThis>() != null) // validated
                         {
                             /*
                              * Validate if its a asset object or component
@@ -405,13 +363,7 @@ namespace Vex.Asset
                     }
                     emitter.Emit(new SequenceEnd());
 
-                    /*
-                     * Iterate and emit properties
-                     */
-                    for (int propertyIndex = 0;propertyIndex < properties.Length;propertyIndex++)
-                    {
-                        
-                    }
+                 
 
                     /*
                      * Emit end component

@@ -31,7 +31,7 @@ namespace Vex.Graphics
              * Set program
              */
             m_Program = program;
-
+            Name = "Material";
         }
 
         /// <summary>

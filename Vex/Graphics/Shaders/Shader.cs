@@ -22,6 +22,7 @@ namespace Vex.Graphics
             m_LastErrorMessage = string.Empty;
             m_Type = type;
             m_Handle = 0;
+            Name = type.ToString() + " Shader";
         }
 
         /// <summary>
