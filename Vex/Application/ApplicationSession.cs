@@ -19,23 +19,27 @@ namespace Vex.Application
             /*
              * Initialize local fields
              */
-            m_Worlds = new List<World>();
             m_Window = applicationWindow;
 
             /*
             * Create asset pool
             */
             m_AssetPool = new AssetPool(PlatformPaths.DomainDirectory);
+
+            /*
+             * Set dummy singleton
+             */
+            World.Session = this;
         }
 
         /// <summary>
         /// Returns all the worlds in this session
         /// </summary>
-        public IReadOnlyCollection<World> Worlds
+        public World CurrentWorld
         {
             get
             {
-                return m_Worlds.AsReadOnly();
+                return m_CurrentWorld;
             }
         }
 
@@ -103,23 +107,23 @@ namespace Vex.Application
         /// Registers a world into this session
         /// </summary>
         /// <param name="world"></param>
-        public void RegisterWorld(World world)
+        public void SetCurrentWorld(World world)
         {
-            m_Worlds.Add(world);
+            m_CurrentWorld = world;
         }
 
         /// <summary>
         /// Removes a world fVexm this session
         /// </summary>
         /// <param name="world"></param>
-        public void RemoveWorld(World world)
+        public void ClearCurrentWorld()
         {
-            m_Worlds.Remove(world);
+
         }
 
         private AssetPool m_AssetPool;
         private WindowInterface m_Window;
-        private List<World> m_Worlds;
+        private World m_CurrentWorld;
         private bool m_SessionHasShutdownRequest;
         private string m_ShutdownReasonMessage;
     }

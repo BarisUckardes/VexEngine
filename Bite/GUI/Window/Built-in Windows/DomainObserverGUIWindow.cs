@@ -11,6 +11,7 @@ using Vex.Asset;
 using System.Numerics;
 using ImGuiNET;
 using System.IO;
+using Vex.Framework;
 
 namespace Bite.GUI
 {
@@ -48,6 +49,8 @@ namespace Bite.GUI
             m_Texture2DIcon = Session.GetEditorResource("Texture2DFileIcon", AssetType.Texture2D) as Texture2D;
             m_ComputerPathIcon = Session.GetEditorResource("ComputerPathIcon", AssetType.Texture2D) as Texture2D;
             m_StaticMeshFileIcon = Session.GetEditorResource("MeshFileIcon", AssetType.Texture2D) as Texture2D;
+            m_WorldFileIcon = Session.GetEditorResource("WorldFileIcon", AssetType.Texture2D) as Texture2D;
+
 
             /*
              * Get texture format resources
@@ -336,6 +339,10 @@ namespace Bite.GUI
                 {
                     GUIRenderCommands.CreateImage(m_StaticMeshFileIcon, new Vector2(128, 128));
                 }
+                else if (file.AssetType == AssetType.World)
+                {
+                    GUIRenderCommands.CreateImage(m_WorldFileIcon, new Vector2(128, 128));
+                }
 
 
                 /*
@@ -372,6 +379,12 @@ namespace Bite.GUI
                      * Signal object
                      */
                     GUIObject.SignalNewObject(file.TargetAssetObject);
+
+                    /*
+                     * Try open if its a world
+                     */
+                    if (file.AssetType == AssetType.World)
+                        World.LoadAndPlay(file.AssetID);
 
                     isClickedEmpty = false;
                 }
@@ -411,9 +424,10 @@ namespace Bite.GUI
             bool isFolderCreate = false;
             bool isShaderProgramCreate = false;
             bool isMaterialCreate = false;
+            bool isWorldCreate = false;
             if (GUIRenderCommands.CreatePopup("Domain_Create_Asset"))
             {
-                RenderAssetCreatePopup(ref isCreateShader,ref isFolderCreate,ref isShaderProgramCreate,ref isMaterialCreate);
+                RenderAssetCreatePopup(ref isCreateShader,ref isFolderCreate,ref isShaderProgramCreate,ref isMaterialCreate,ref  isWorldCreate);
                 GUIRenderCommands.FinalizePopup();
             }
 
@@ -441,7 +455,13 @@ namespace Bite.GUI
             if (isMaterialCreate)
                 GUIRenderCommands.SignalPopupCreate("Domain_Create_Material");
 
- 
+            /*
+            * Open create material popup
+            */
+            if (isWorldCreate)
+                GUIRenderCommands.SignalPopupCreate("Domain_Create_World");
+
+
 
             /*
              * Render create shader popup
@@ -466,7 +486,12 @@ namespace Bite.GUI
                 CreateMaterialCreatePopup();
                 GUIRenderCommands.FinalizePopup();
             }
-          
+            else if (GUIRenderCommands.CreatePopup("Domain_Create_World"))
+            {
+                RenderWorldCreatePopup();
+                GUIRenderCommands.FinalizePopup();
+            }
+
 
             /*
             * Validate clikc to void
@@ -501,7 +526,7 @@ namespace Bite.GUI
                 GUIRenderCommands.FinalizeMenu();
             }
         }
-        private void RenderAssetCreatePopup(ref bool isCreateShader,ref bool isFolderCreate,ref bool isShaderProgramCreate,ref bool isMaterialCreate)
+        private void RenderAssetCreatePopup(ref bool isCreateShader,ref bool isFolderCreate,ref bool isShaderProgramCreate,ref bool isMaterialCreate,ref bool isCreateWorld)
         {
             if (GUIRenderCommands.CreateMenu("Create",""))
             {
@@ -523,7 +548,7 @@ namespace Bite.GUI
                    
                     GUIRenderCommands.FinalizeMenu();
                 }
-                if(GUIRenderCommands.CreateMenu("Misc",""))
+                if(GUIRenderCommands.CreateMenu("Domain",""))
                 {
                     if(GUIRenderCommands.CreateMenuItem("Folder"," "))
                     {
@@ -531,7 +556,37 @@ namespace Bite.GUI
                     }
                     GUIRenderCommands.FinalizeMenu();
                 }
+                if (GUIRenderCommands.CreateMenu("World", ""))
+                {
+                    if (GUIRenderCommands.CreateMenuItem("World", " "))
+                    {
+                        isCreateWorld = true;
+                    }
+                    GUIRenderCommands.FinalizeMenu();
+                }
                 GUIRenderCommands.FinalizeMenu();
+            }
+        }
+        private void RenderWorldCreatePopup()
+        {
+            GUIRenderCommands.CreateText("Create World", " ");
+            GUIRenderCommands.CreateTextInput(" ", " ", ref m_WorldNameInput);
+            if (GUIRenderCommands.CreateButton("Create", "create_world"))
+            {
+                /*
+                 * Create default template world
+                 */
+                Session.CreateWorldDomainAsset(m_CurrentFolder, m_WorldNameInput);
+
+                /*
+                 * Clear input
+                 */
+                m_WorldNameInput = string.Empty;
+
+                /*
+                 * Terminate popup
+                 */
+                GUIRenderCommands.TerminateCurrentPopup();
             }
         }
         private void RenderFolderCreatePopup()
@@ -700,6 +755,11 @@ namespace Bite.GUI
         private string m_CreateMaterialNameInput = string.Empty;
 
         /*
+         * Create world resources
+         */
+        private string m_WorldNameInput = string.Empty;
+
+        /*
          * Rename folder resources
          */
         private string m_FolderRenameInput = string.Empty;
@@ -744,5 +804,6 @@ namespace Bite.GUI
         private Texture2D m_Texture2DIcon;
         private Texture2D m_ComputerPathIcon;
         private Texture2D m_StaticMeshFileIcon;
+        private Texture2D m_WorldFileIcon;
     }
 }

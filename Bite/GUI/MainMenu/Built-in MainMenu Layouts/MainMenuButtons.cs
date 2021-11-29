@@ -26,14 +26,6 @@ namespace Bite
         [MainMenuItem("Code/Open Solution")]
         public static void OpenSolution()
         {
-            //Console.WriteLine("Try sol: " + PlatformPaths.DomainRootDirectoy + @$"\CodeBase\{ProjectProperties.ProjectName}.sln");
-            //ProcessStartInfo startInfo = new ProcessStartInfo();
-            //startInfo.FileName = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe";
-            //startInfo.Arguments = PlatformPaths.DomainRootDirectoy + @$"\CodeBase\{ProjectProperties.ProjectName}.sln";
-
-            //System.Diagnostics.Process.Start(startInfo);
-
-
             Process commandLineProcess = new Process();
             commandLineProcess.StartInfo.FileName = "cmd.exe";
             commandLineProcess.StartInfo.RedirectStandardInput = true;
@@ -67,7 +59,7 @@ namespace Bite
             Process commandLineProcess = new Process();
             commandLineProcess.StartInfo.FileName = "cmd.exe";
             commandLineProcess.StartInfo.RedirectStandardInput = true;
-            commandLineProcess.StartInfo.RedirectStandardOutput = true;
+            commandLineProcess.StartInfo.RedirectStandardOutput = false;
             commandLineProcess.StartInfo.CreateNoWindow = false;
             commandLineProcess.StartInfo.UseShellExecute = false;
             commandLineProcess.Start();

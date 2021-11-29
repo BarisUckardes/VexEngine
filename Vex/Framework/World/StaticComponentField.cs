@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Vex.Framework
 {
-    internal readonly struct StaticComponentField
+    public readonly struct StaticComponentField
     {
         public StaticComponentField(FieldInfo fieldInfo,StaticComponentFieldType fieldType,string expectedFieldName,string fieldDataString)
         {

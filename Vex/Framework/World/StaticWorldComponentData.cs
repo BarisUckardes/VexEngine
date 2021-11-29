@@ -8,9 +8,9 @@ using Vex.Types;
 
 namespace Vex.Framework
 {
-    internal readonly struct StaticWorldComponentData
+    public struct StaticWorldComponentData
     {
-        public StaticWorldComponentData(Type targetComponentType,List<Tuple<string,string>> fieldMetaDatas)
+        public StaticWorldComponentData(int localComponentIndex,Type targetComponentType,List<Tuple<string,string,string>> fieldMetaDatas)
         {
             /*
              * Initialize
@@ -23,21 +23,22 @@ namespace Vex.Framework
             m_ComponentType = targetComponentType;
 
             /*
+             * Set component index
+             */
+            m_LocalComponentIndex = localComponentIndex;
+
+            /*
              * Create field-data pairs
              */
-            foreach(Tuple<string, string> fieldMetaData in fieldMetaDatas)
+            foreach (Tuple<string, string,string> fieldMetaData in fieldMetaDatas)
             {
-                /*
-                 * Get tuple value
-                 */
-                string[] fieldTypeNameValue = fieldMetaData.Item1.Split(" ");
 
                 /*
                  * Get field type and name
                  */
-                string fieldTypeString = fieldTypeNameValue[0];
-                string fieldName = fieldTypeNameValue[1];
-                string fieldValue = fieldTypeNameValue[2];
+                string fieldTypeString = fieldMetaData.Item1;
+                string fieldName = fieldMetaData.Item2;
+                string fieldValue = fieldMetaData.Item3;
                 StaticComponentFieldType fieldType =(StaticComponentFieldType)Enum.Parse(typeof(StaticComponentFieldType), fieldTypeString);
 
                 /*
@@ -62,7 +63,29 @@ namespace Vex.Framework
             }
         }
 
-        private readonly List<StaticComponentField> m_ComponentFields;
-        private readonly Type m_ComponentType;
+        public List<StaticComponentField> Fields
+        {
+            get
+            {
+                return m_ComponentFields;
+            }
+        }
+        public Type ComponentType
+        {
+            get
+            {
+                return m_ComponentType;
+            }
+        }
+        public int LocalComponentIndex
+        {
+            get
+            {
+                return m_LocalComponentIndex;
+            }
+        }
+        private List<StaticComponentField> m_ComponentFields;
+        private Type m_ComponentType;
+        private int m_LocalComponentIndex;
     }
 }

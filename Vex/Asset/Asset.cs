@@ -143,16 +143,16 @@ namespace Vex.Asset
                 case AssetType.Undefined:
                     break;
                 case AssetType.Texture2D:
-                    asset = assetInterface.GenerateAsset(AssetType.Texture2D, assetYaml);
+                    asset = assetInterface.GenerateAsset(AssetType.Texture2D, assetYaml) as VexObject;
                     break;
                 case AssetType.Shader:
-                    asset = assetInterface.GenerateAsset(AssetType.Shader, assetYaml);
+                    asset = assetInterface.GenerateAsset(AssetType.Shader, assetYaml) as VexObject;
                     break;
                 case AssetType.ShaderProgram:
-                    asset = assetInterface.GenerateAsset(AssetType.ShaderProgram, assetYaml);
+                    asset = assetInterface.GenerateAsset(AssetType.ShaderProgram, assetYaml) as VexObject;
                     break;
                 case AssetType.Material:
-                    asset = assetInterface.GenerateAsset(AssetType.Material, assetYaml);
+                    asset = assetInterface.GenerateAsset(AssetType.Material, assetYaml) as VexObject;
                     break;
                 case AssetType.Framebuffer1D:
                     break;
@@ -161,14 +161,14 @@ namespace Vex.Asset
                 case AssetType.Framebuffer3D:
                     break;
                 case AssetType.World:
-                    asset = assetInterface.GenerateAsset(AssetType.World, assetYaml);
+                    asset = assetInterface.GenerateAsset(AssetType.World, assetYaml) as VexObject;
                     break;
                 case AssetType.EntityPrefab:
                     break;
                 case AssetType.Definition:
                     break;
                 case AssetType.Mesh:
-                    asset = assetInterface.GenerateAsset(AssetType.Mesh, assetYaml);
+                    asset = assetInterface.GenerateAsset(AssetType.Mesh, assetYaml) as VexObject;
                     break;
                 default:
                     break;

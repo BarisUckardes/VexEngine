@@ -28,30 +28,24 @@ namespace Vex.Engine
             /*
              * Get all the session worlds
              */
-            IReadOnlyCollection<World> worlds = Session.Worlds;
+            World currentWorld = Session.CurrentWorld;
 
             /*
-             * Iterate each world
+            * Get world graphics view
+            */
+            WorldGraphicsView graphicsView = currentWorld.GetView<WorldGraphicsView>();
+
+            /*
+             * Get resolvers
              */
-            for(int worldIndex = 0;worldIndex < worlds.Count;worldIndex++)
+            GraphicsResolver[] graphicsResolvers = graphicsView.Resolvers;
+
+            /*
+             * Iterate each resolver
+             */
+            for (int resolverIndex = 0; resolverIndex < graphicsResolvers.Length; resolverIndex++)
             {
-                /*
-                 * Get world graphics view
-                 */
-                WorldGraphicsView graphicsView = worlds.ElementAt(worldIndex).GetView<WorldGraphicsView>();
-
-                /*
-                 * Get resolvers
-                 */
-                GraphicsResolver[] graphicsResolvers = graphicsView.Resolvers;
-
-                /*
-                 * Iterate each resolver
-                 */
-                for (int resolverIndex = 0;resolverIndex < graphicsResolvers.Length;resolverIndex++)
-                {
-                    graphicsResolvers[resolverIndex].Resolve();
-                }
+                graphicsResolvers[resolverIndex].Resolve();
             }
         }
 

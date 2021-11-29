@@ -33,10 +33,8 @@ namespace Vex.Framework
              * Register this entity to world logic view
              */
             world.GetView<WorldLogicView>().OnEntityRegister(this);
-
-            Console.WriteLine("Entity created as: " + Name);
         }
-
+       
         /// <summary>
         /// Returns the world which this entity currently in
         /// </summary>
@@ -59,11 +57,11 @@ namespace Vex.Framework
             }
         }
 
-        public Component[] Components
+        public List<Component> Components
         {
             get
             {
-                return m_Components.ToArray();
+                return m_Components;
             }
         }
 

@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 
 namespace Vex.Framework
 {
-    internal readonly struct StaticComponentEntry
+    public struct StaticComponentEntry
     {
-        public StaticComponentEntry(int localOwnerEntityID, string componentName, Guid comonentID)
+        public StaticComponentEntry(int localOwnerEntityID,int localTypeID, string componentName, Guid comonentID)
         {
             LocalOwnerEntityID = localOwnerEntityID;
+            LocalTypeID = localTypeID;
             ComponentName = componentName;
             ComonentID = comonentID;
         }
-        public readonly int LocalOwnerEntityID;
-        public readonly string ComponentName;
-        public readonly Guid ComonentID;
+        public int LocalOwnerEntityID;
+        public int LocalTypeID;
+        public string ComponentName;
+        public Guid ComonentID;
 
        
     }

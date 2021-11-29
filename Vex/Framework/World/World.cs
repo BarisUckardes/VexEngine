@@ -13,6 +13,43 @@ namespace Vex.Framework
     /// </summary>
     public sealed class World : AssetObject
     {
+        public static World DefaultWorld
+        {
+            get
+            {
+                World defaultWorld = new World(null, new WorldSettings(typeof(DefaultLogicResolver), new List<Type>()));
+                defaultWorld.AddView<WorldLogicView>();
+                Entity entity = new Entity("Default entity", defaultWorld);
+                return defaultWorld;
+            }
+        }
+
+        public static void LoadAndPlay(Guid id)
+        {
+            /*
+             * Try load static world asset content
+             */
+            StaticWorldContent worldContent = Session.AssetPool.GetOrLoadAsset(id) as StaticWorldContent;
+
+            /*
+             * Destroy current world
+             */
+            Session.CurrentWorld.Destroy();
+
+            /*
+             * Create world out of world content
+             */
+            World newWorld = worldContent.CreateFromThis(Session);
+            newWorld.ID = worldContent.ID;
+            newWorld.Name = worldContent.Name;
+
+            /*
+             * Register world 
+             */
+            newWorld.Register();
+        }
+        
+        internal static ApplicationSession Session { get; set; }
         public World(ApplicationSession session,in WorldSettings worldSettings)
         {
             m_Views = new List<WorldView>();
@@ -21,11 +58,21 @@ namespace Vex.Framework
         }
 
         /// <summary>
+        /// Returns the settings of this world
+        /// </summary>
+        public WorldSettings WorldSettings
+        {
+            get
+            {
+                return m_Settings;
+            }
+        }
+        /// <summary>
         /// Registers this world to the current session
         /// </summary>
         public void Register()
         {
-            m_Session.RegisterWorld(this);
+            m_Session.SetCurrentWorld(this);
         }
 
         /// <summary>
@@ -71,7 +118,7 @@ namespace Vex.Framework
 
         public override void Destroy()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("World destroyed");
         }
 
         private List<WorldView> m_Views;

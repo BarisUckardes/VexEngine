@@ -26,7 +26,8 @@ namespace Vex.Asset
              * Gather asset records
              */
             List<AssetRecord> records = GatherAssetRecordsRecursive(poolPath);
-
+            foreach (AssetRecord record in records)
+                Console.WriteLine("Record:" + record.ID.ToString());
             /*
              * Gather assets fVexm record
              */

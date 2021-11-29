@@ -115,9 +115,9 @@ namespace Bite.GUI
             /*
              * Create layouts
              */
-            Component[] components = m_TargetEntity.Components;
+           List<Component> components = m_TargetEntity.Components;
 
-            for (int i = 0; i < components.Length; i++)
+            for (int i = 0; i < components.Count; i++)
             {
                 ComponentLayout layout = GUIComponentManager.Current.FetchComponentLayout(components[i].GetType());
                 layout.TargetComponent = components[i];

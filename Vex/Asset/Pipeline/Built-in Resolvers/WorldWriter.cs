@@ -11,7 +11,7 @@ using Vex.Types;
 
 namespace Vex.Asset
 {
-    public sealed class WorldResolver : AssetResolver
+    public sealed class WorldWriter : AssetResolver
     {
         public override Type ExpectedAssetType
         {
@@ -23,16 +23,12 @@ namespace Vex.Asset
 
         protected override object ReadAsset(IParser parser, AssetPool pool)
         {
-            /*
-             * Initialize variables
-             */
-            World world = null;
-
-            return world;
+            return null;
         }
 
         protected override void WriteAsset(IEmitter emitter, object targetObject)
         {
+            Console.WriteLine("World write asset in action");
             /*
              * Get as world
              */
@@ -64,7 +60,7 @@ namespace Vex.Asset
              */
             emitter.Emit(new Scalar(null, "Entities"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for(int entityIndex = 0;entityIndex<totalEntities.Length;entityIndex++)
+            for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
             {
                 /*
                  * Get entity
@@ -74,7 +70,7 @@ namespace Vex.Asset
                 /*
                  * Emit local index and and id
                  */
-                emitter.Emit(new Scalar(null,$"[{entity.Name}] "+entity.ID.ToString()));
+                emitter.Emit(new Scalar(null, $"[{entity.Name}] " + entity.ID.ToString()));
             }
             emitter.Emit(new SequenceEnd());
 
@@ -84,7 +80,7 @@ namespace Vex.Asset
             List<Type> totalTypes = new List<Type>();
             emitter.Emit(new Scalar(null, "Component Types"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for (int entityIndex = 0;entityIndex < totalEntities.Length;entityIndex++)
+            for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
             {
                 /*
                  * Get entity
@@ -94,12 +90,12 @@ namespace Vex.Asset
                 /*
                  * Get components
                  */
-                Component[] components = entity.Components;
+                List<Component> components = entity.Components;
 
                 /*
                  * Iterate each component
                  */
-                for(int componentIndex = 0;componentIndex < components.Length;componentIndex++)
+                for (int componentIndex = 0; componentIndex < components.Count; componentIndex++)
                 {
                     /*
                      * Get component
@@ -114,7 +110,7 @@ namespace Vex.Asset
                     /*
                      * Validate unique type
                      */
-                    if(!totalTypes.Contains(componentType)) // its a unique type
+                    if (!totalTypes.Contains(componentType)) // its a unique type
                     {
                         /*
                          * Register unique type
@@ -124,7 +120,7 @@ namespace Vex.Asset
                         /*
                          * Emit type
                          */
-                        emitter.Emit(new Scalar(null,componentType.Name));
+                        emitter.Emit(new Scalar(null, componentType.Name));
                     }
                 }
             }
@@ -134,7 +130,7 @@ namespace Vex.Asset
             /*
              * Iterate each entity and their components and collect unique assets
              */
-            List<AssetObject> totalAssets = new List<AssetObject>(1000);
+            List<Guid> totalAssets = new List<Guid>(100);
             emitter.Emit(new Scalar(null, "Assets"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
             for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
@@ -147,12 +143,12 @@ namespace Vex.Asset
                 /*
                  * Get components
                  */
-                Component[] components = entity.Components;
+                List<Component> components = entity.Components;
 
                 /*
                  * Iterate each component
                  */
-                for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
+                for (int componentIndex = 0; componentIndex < components.Count; componentIndex++)
                 {
                     /*
                      * Get component
@@ -162,7 +158,7 @@ namespace Vex.Asset
                     /*
                      * Get field and property infos
                      */
-                    FieldInfo[] fields = TypeUtils.GetAllFields(component.GetType(),BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToArray();
+                    FieldInfo[] fields = TypeUtils.GetAllFields(component.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToArray();
                     PropertyInfo[] properties = component.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     Console.WriteLine($"Type {component.GetType().Name} || Found {fields.Length} fields, Found {properties.Length}");
 
@@ -189,12 +185,12 @@ namespace Vex.Asset
                             /*
                              * Validate uniqueness
                              */
-                            if(targetAssetObject != null & !totalAssets.Contains(targetAssetObject)) //unique asset
+                            if (targetAssetObject != null && !totalAssets.Contains(targetAssetObject.ID) && !totalAssets.Contains(targetAssetObject.ID)) //unique asset
                             {
                                 /*
                                  * Register unique asset
                                  */
-                                totalAssets.Add(targetAssetObject);
+                                totalAssets.Add(targetAssetObject.ID);
 
                                 /*
                                  * Emit unique asset
@@ -216,7 +212,7 @@ namespace Vex.Asset
             List<Component> totalComponents = new List<Component>(1000);
             emitter.Emit(new Scalar(null, "Components"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for (int entityIndex = 0;entityIndex < totalEntities.Length;entityIndex++)
+            for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
             {
                 /*
                 * Get entity
@@ -226,12 +222,12 @@ namespace Vex.Asset
                 /*
                  * Get components
                  */
-                Component[] components = entity.Components;
+                List<Component> components = entity.Components;
 
                 /*
                  * Iterate each component
                  */
-                for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
+                for (int componentIndex = 0; componentIndex < components.Count; componentIndex++)
                 {
                     /*
                      * Get component
@@ -246,7 +242,7 @@ namespace Vex.Asset
                     /*
                      * Register component id and its local entity id
                      */
-                    emitter.Emit(new Scalar(null, entityIndex + " [" + component.Name + "] " + component.ID.ToString()));
+                    emitter.Emit(new Scalar(null, entityIndex + " " + totalTypes.IndexOf(component.GetType()) + " [" + component.Name + "] " + component.ID.ToString()));
                 }
             }
             emitter.Emit(new SequenceEnd());
@@ -256,7 +252,7 @@ namespace Vex.Asset
              */
             emitter.Emit(new Scalar(null, "Begin Components"));
             emitter.Emit(new Scalar(null, ""));
-            for(int entityIndex = 0;entityIndex < totalEntities.Length;entityIndex++)
+            for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
             {
                 /*
                  * Get entity
@@ -271,12 +267,12 @@ namespace Vex.Asset
                 /*
                  * Get components
                  */
-                Component[] components = entity.Components;
+                List<Component> components = entity.Components;
 
                 /*
                  * Iterate components
                  */
-                for(int componentIndex = 0;componentIndex < components.Length;componentIndex++)
+                for (int componentIndex = 0; componentIndex < components.Count; componentIndex++)
                 {
                     /*
                      * Get component
@@ -293,14 +289,14 @@ namespace Vex.Asset
                     /*
                      * Get fields and properties
                      */
-                    FieldInfo[] fields = TypeUtils.GetAllFields(component.GetType(),BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToArray();
+                    FieldInfo[] fields = TypeUtils.GetAllFields(component.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToArray();
 
                     /*
                      * Iterate and emit fields
                      */
                     emitter.Emit(new Scalar(null, "Component Content"));
                     emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-                    for (int fieldIndex = 0;fieldIndex < fields.Length;fieldIndex++)
+                    for (int fieldIndex = 0; fieldIndex < fields.Length; fieldIndex++)
                     {
                         /*
                          * Get field
@@ -310,12 +306,12 @@ namespace Vex.Asset
                         /*
                          * Validate field type is exposable
                          */
-                        if(field.IsPublic || field.GetCustomAttribute<ExposeThis>() != null) // validated
+                        if (field.IsPublic || field.GetCustomAttribute<ExposeThis>() != null) // validated
                         {
                             /*
                              * Validate if its a asset object or component
                              */
-                            if(field.FieldType.IsSubclassOf(typeof(AssetObject))) // its a asset object
+                            if (field.FieldType.IsSubclassOf(typeof(AssetObject))) // its a asset object
                             {
                                 /*
                                  * Try get value
@@ -326,12 +322,12 @@ namespace Vex.Asset
                                  * Emit
                                  */
                                 if (assetObject == null)
-                                    emitter.Emit(new Scalar(null, "A" + " " + field.Name + " " + Guid.Empty.ToString()));
+                                    emitter.Emit(new Scalar(null, "Asset" + " " + field.Name + " " + "-1"));
                                 else
-                                    emitter.Emit(new Scalar(null, "A" + " " + field.Name + " " + assetObject.ID.ToString()));
+                                    emitter.Emit(new Scalar(null, "Asset" + " " + field.Name + " " + totalAssets.IndexOf(assetObject.ID)));
 
                             }
-                            else if(field.FieldType.IsSubclassOf(typeof(Component))) // its a component
+                            else if (field.FieldType.IsSubclassOf(typeof(Component))) // its a component
                             {
                                 /*
                                  * Try get value
@@ -342,9 +338,9 @@ namespace Vex.Asset
                                  * Emit
                                  */
                                 if (targetComponent == null)
-                                    emitter.Emit(new Scalar(null, "C" + " " + field.Name + " " + Guid.Empty.ToString()));
+                                    emitter.Emit(new Scalar(null, "Component" + " " + field.Name + " " + Guid.Empty.ToString()));
                                 else
-                                    emitter.Emit(new Scalar(null, "C" + " " + field.Name + " " + targetComponent.ID.ToString()));
+                                    emitter.Emit(new Scalar(null, "Component" + " " + field.Name + " " + components.IndexOf(targetComponent)));
                             }
                             else // its a raw type
                             {
@@ -356,14 +352,14 @@ namespace Vex.Asset
                                 /*
                                  * Emit
                                  */
-                                emitter.Emit(new Scalar(null, "R" + " " + field.Name + " " + targetRawValue.ToString()));
+                                emitter.Emit(new Scalar(null, "Raw" + " " + field.Name + " " + targetRawValue.ToString()));
                             }
                         }
 
                     }
                     emitter.Emit(new SequenceEnd());
 
-                 
+
 
                     /*
                      * Emit end component

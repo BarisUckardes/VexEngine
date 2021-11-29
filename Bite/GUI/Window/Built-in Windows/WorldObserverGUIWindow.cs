@@ -26,7 +26,7 @@ namespace Bite.GUI
         }
         public override void OnLayoutBegin()
         {
-            m_TargetWorld = Session.Worlds.ElementAt(0);
+            m_TargetWorld = Session.CurrentWorld;
             m_EntityIcon = Session.GetEditorResource("EntityIcon", AssetType.Texture2D) as Texture2D;
         }
 
@@ -38,11 +38,21 @@ namespace Bite.GUI
 
         public override void OnRenderLayout()
         {
+            /*
+             * Set current world
+             */
+            m_TargetWorld = Session.CurrentWorld;
+
+            /*
+             * Validate and render world
+             */
+            if(m_TargetWorld != null)
             RenderWorldView(m_TargetWorld);
         }
 
         private void RenderWorldView(World world)
         {
+            
             /*
              * Get entities
              */
@@ -78,12 +88,9 @@ namespace Bite.GUI
              */
             if(GUIRenderCommands.CreateButton("Save","save_world_btn"))
             {
-                //Session.UpdateDomainAsset(m_TargetWorld.ID, m_TargetWorld);
-
-                AssetInterface assetInterface = new AssetInterface(null);
-                string worldYaml = assetInterface.GenerateObjectString(AssetType.World, m_TargetWorld);
-                File.WriteAllText(@"C:\Users\PC\Desktop\WorldTest\worldtest.vasset", worldYaml);
+                Session.UpdateDomainAsset(m_TargetWorld.ID, m_TargetWorld);
             }
+           
         }
         private Texture2D m_EntityIcon;
         private World m_TargetWorld;

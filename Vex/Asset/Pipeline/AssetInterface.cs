@@ -25,7 +25,7 @@ namespace Vex.Asset
         /// </summary>
         /// <param name="yamlText"></param>
         /// <returns></returns>
-        public VexObject GenerateAsset(AssetType type,string yamlText)
+        public object GenerateAsset(AssetType type,string yamlText)
         {
             switch (type)
             {
@@ -63,9 +63,9 @@ namespace Vex.Asset
                     break;
                 case AssetType.World:
                     {
-                        WorldResolver resolver = new WorldResolver();
+                        WorldStaticContentReader resolver = new WorldStaticContentReader();
                         resolver.SetTargetPool(m_Pool);
-                        return new DeserializerBuilder().WithTypeConverter(resolver).Build().Deserialize<World>(yamlText);
+                        return new DeserializerBuilder().WithTypeConverter(resolver).Build().Deserialize<StaticWorldContent>(yamlText);
                     }
                 case AssetType.EntityPrefab:
                     break;
@@ -116,7 +116,7 @@ namespace Vex.Asset
                 case AssetType.Framebuffer3D:
                     break;
                 case AssetType.World:
-                    return new SerializerBuilder().WithTypeConverter(new WorldResolver()).Build().Serialize(engineObject);
+                    return new SerializerBuilder().WithTypeConverter(new WorldWriter()).Build().Serialize(engineObject);
                     break;
                 case AssetType.EntityPrefab:
                     break;

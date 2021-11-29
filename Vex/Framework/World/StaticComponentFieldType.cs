@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace Vex.Framework
 {
-    internal enum StaticComponentFieldType
+    public enum StaticComponentFieldType
     {
         Invalid = 0,
         Raw = 1,
         Component = 2,
         Asset = 3
     }
+
+    
 }

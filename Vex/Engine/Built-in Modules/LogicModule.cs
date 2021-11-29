@@ -36,27 +36,24 @@ namespace Vex.Engine
             /*
              * Get all the session worlds
              */
-            IReadOnlyCollection<World> worlds = Session.Worlds;
+            World currentWorld = Session.CurrentWorld;
 
-            for(int worldIndex = 0;worldIndex < worlds.Count;worldIndex++)
+            /*
+             * Get world logic view
+             */
+            WorldLogicView logicView = currentWorld.GetView<WorldLogicView>();
+
+            /*
+             * Get logic resolvers
+             */
+            LogicResolver[] logicResolvers = logicView.Resolvers;
+
+            /*
+             * Iterate each resolver
+             */
+            for (int resolverIndex = 0; resolverIndex < logicResolvers.Length; resolverIndex++)
             {
-                /*
-                 * Get world logic view
-                 */
-                WorldLogicView logicView = worlds.ElementAt(worldIndex).GetView<WorldLogicView>();
-
-                /*
-                 * Get logic resolvers
-                 */
-                LogicResolver[] logicResolvers = logicView.Resolvers;
-
-                /*
-                 * Iterate each resolver
-                 */
-                for(int resolverIndex = 0;resolverIndex<logicResolvers.Length; resolverIndex++)
-                {
-                    logicResolvers[resolverIndex].Resolve();
-                }
+                logicResolvers[resolverIndex].Resolve();
             }
 
             Profiler.EndProfile();

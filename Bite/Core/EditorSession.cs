@@ -22,11 +22,11 @@ namespace Bite.Core
         /// <summary>
         /// Returns the loaded worlds vex session has
         /// </summary>
-        public IReadOnlyCollection<World> Worlds
+        public World CurrentWorld
         {
             get
             {
-                return m_ApplicationSession.Worlds;
+                return m_ApplicationSession.CurrentWorld;
             }
         }
 
@@ -171,6 +171,26 @@ namespace Bite.Core
              * Register new content to domain foler view
              */
             folder.CreateNewFile(folder,fileName, definitionPath, assetPath, definition);
+        }
+        public void CreateWorldDomainAsset(DomainFolderView folder,string fileName)
+        {
+            /*
+             * Create template world
+             */
+            World defaultWorld = World.DefaultWorld;
+            defaultWorld.Name = fileName;
+
+            /*
+             * Create physical world file
+             */
+            string definitionPath = folder.FolderPath + @"\" + fileName + @".vdefinition";
+            string assetPath = folder.FolderPath + @"\" + fileName + @".vasset";
+            AssetDefinition definition = m_ApplicationSession.AssetPool.CreateAssetOnPath(definitionPath, assetPath, AssetType.World, defaultWorld);
+
+            /*
+             * Register new content to domain foler view
+             */
+            folder.CreateNewFile(folder, fileName, definitionPath, assetPath, definition);
         }
 
         public void CreateTexture2DomainContent(DomainFolderView folder,string fileName,string filePath)
