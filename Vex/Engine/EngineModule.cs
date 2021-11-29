@@ -23,7 +23,7 @@ namespace Vex.Engine
         /// <summary>
         /// Called each frame by the application
         /// </summary>
-        public abstract void OnUpdate();
+        public abstract void OnUpdate(bool active);
 
         /// <summary>
         /// called when removed fVexm the application

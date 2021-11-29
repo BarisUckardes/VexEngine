@@ -229,6 +229,13 @@ namespace Fang.Commands
         {
             ImGui.Image(texture == null ? IntPtr.Zero : (IntPtr)texture.Handle, size,uv0,uv1);
         }
+        public static bool CreateImageButton(Texture texture,string code, in Vector2 size, in Vector2 uv0, in Vector2 uv1)
+        {
+            ImGui.PushID(code);
+            bool state = ImGui.ImageButton(texture == null ? IntPtr.Zero : (IntPtr)texture.Handle, size, uv0, uv1);
+            ImGui.PopID();
+            return state;
+        }
         public static void CreateMainDockspace()
         {
             ImGui.DockSpace(0,new Vector2(0,0),ImGuiDockNodeFlags.None | ImGuiDockNodeFlags.NoResize | ImGuiDockNodeFlags.PassthruCentralNode);

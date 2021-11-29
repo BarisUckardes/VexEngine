@@ -80,7 +80,7 @@ f_ColorOut = texture(f_SpriteTexture,f_Uv);
 
         }
 
-        public override void OnUpdate()
+        public override void OnUpdate(bool active)
         {
 
         }

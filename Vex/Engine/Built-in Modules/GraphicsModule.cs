@@ -23,7 +23,7 @@ namespace Vex.Engine
 
         }
 
-        public override void OnUpdate()
+        public override void OnUpdate(bool active)
         {
             /*
              * Get all the session worlds

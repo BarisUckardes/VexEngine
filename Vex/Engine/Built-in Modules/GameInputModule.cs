@@ -24,7 +24,7 @@ namespace Vex.Engine
             m_PressedKeysBuffer = new List<Keys>();
         }
 
-        public override void OnUpdate()
+        public override void OnUpdate(bool active)
         {
            
         }

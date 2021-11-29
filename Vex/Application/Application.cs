@@ -244,7 +244,7 @@ namespace Vex.Application
                 Profiler.StartProfile("Application Modules");
                 for(int i=0;i<m_ActiveModules.Count;i++)
                 {
-                    m_ActiveModules[i].OnUpdate();
+                    m_ActiveModules[i].OnUpdate(m_Session.PlayActive);
                 }
                 Profiler.EndProfile();
 

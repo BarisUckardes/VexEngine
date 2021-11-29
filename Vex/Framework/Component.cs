@@ -91,6 +91,7 @@ namespace Vex.Framework
         public abstract bool ShouldTick { get; }
 
         public virtual void OnLogicUpdate() { }
+     
 
         private Entity m_OwnerEntity;
     }

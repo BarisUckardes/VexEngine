@@ -20,8 +20,7 @@ namespace Vex.Graphics
             m_NearPlane = 0.001f;
             m_FarPlane = 1000.0f;
             m_ClearColor = OpenTK.Mathematics.Color4.CornflowerBlue;
-            if(PrimalObserver == null)
-                PrimalObserver = this;
+            PrimalObserver = this;
         }
        
 
@@ -122,6 +121,7 @@ namespace Vex.Graphics
         {
             base.OnDetach();
             OwnerEntity.World.GetView<WorldGraphicsView>().RemoveObserver(this);
+            PrimalObserver = null;
         }
 
         private Framebuffer m_Framebuffer;

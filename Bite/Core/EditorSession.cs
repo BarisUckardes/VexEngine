@@ -30,8 +30,6 @@ namespace Bite.Core
             }
         }
 
-       
-
         /// <summary>
         /// Returns the domain file views this editor has
         /// </summary>
@@ -59,6 +57,47 @@ namespace Bite.Core
             }
         }
 
+        public bool GamePlayState
+        {
+            get
+            {
+                return m_ApplicationSession.PlayActive;
+            }
+        }
+        public void StartGamePlaySession()
+        {
+            /*
+             * First try save current world
+             */
+            UpdateDomainAsset(m_ApplicationSession.CurrentWorld.ID, m_ApplicationSession.CurrentWorld);
+
+            /*
+             * Set current world static world content
+             */
+            m_RootWorld = m_ApplicationSession.AssetPool.GetOrLoadAsset(m_ApplicationSession.CurrentWorld.ID) as StaticWorldContent;
+
+            /*
+             * Start play game session
+             */
+            m_ApplicationSession.PlayActive = true;
+        }
+        public void StopGamePlaySession()
+        {
+            /*
+             * Destroy this world
+             */
+            m_ApplicationSession.CurrentWorld.Destroy();
+
+            /*
+             * Load root world again
+             */
+            World.LoadAndSwitch(m_RootWorld.ID);
+
+            /*
+             * Set play game session
+             */
+            m_ApplicationSession.PlayActive = false;
+        }
         public void RenameAsset(in Guid id,string name)
         {
             m_ApplicationSession.AssetPool.RenameAsset(id, name);
@@ -301,9 +340,11 @@ namespace Bite.Core
 
         }
 
+
         private List<EditorResource> m_Resources;
         private List<WindowLayoutSettings> m_CurrentWindowSettings;
         private ApplicationSession m_ApplicationSession;
         private DomainView m_Domain;
+        private StaticWorldContent m_RootWorld;
     }
 }

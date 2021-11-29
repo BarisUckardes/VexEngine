@@ -14,11 +14,11 @@ namespace Vex.Graphics
 
         public SetShaderProgramRC(in ShaderProgram program)
         {
-            m_Program = program;
+            m_Program = program != null ? program : null;
         }
         protected override void ExecuteImpl()
         {
-            GL.UseProgram(m_Program.Handle);
+            GL.UseProgram(m_Program != null ? m_Program.Handle : 0);
            // Console.WriteLine("Program used: " + m_Program.Handle);
         }
 

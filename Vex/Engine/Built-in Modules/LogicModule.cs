@@ -30,30 +30,38 @@ namespace Vex.Engine
 
         }
 
-        public override void OnUpdate()
+        public override void OnUpdate(bool active)
         {
             Profiler.StartProfile();
+            
             /*
-             * Get all the session worlds
+             * Validate active
              */
-            World currentWorld = Session.CurrentWorld;
-
-            /*
-             * Get world logic view
-             */
-            WorldLogicView logicView = currentWorld.GetView<WorldLogicView>();
-
-            /*
-             * Get logic resolvers
-             */
-            LogicResolver[] logicResolvers = logicView.Resolvers;
-
-            /*
-             * Iterate each resolver
-             */
-            for (int resolverIndex = 0; resolverIndex < logicResolvers.Length; resolverIndex++)
+            if(active)
             {
-                logicResolvers[resolverIndex].Resolve();
+                /*
+                 * Get all the session worlds
+                */
+                World currentWorld = Session.CurrentWorld;
+
+                /*
+                 * Get world logic view
+                 */
+                WorldLogicView logicView = currentWorld.GetView<WorldLogicView>();
+
+                /*
+                 * Get logic resolvers
+                 */
+                LogicResolver[] logicResolvers = logicView.Resolvers;
+
+                /*
+                 * Iterate each resolver
+                 */
+                for (int resolverIndex = 0; resolverIndex < logicResolvers.Length; resolverIndex++)
+                {
+                    logicResolvers[resolverIndex].Resolve();
+                }
+
             }
 
             Profiler.EndProfile();

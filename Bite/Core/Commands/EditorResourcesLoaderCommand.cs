@@ -110,12 +110,16 @@ namespace Bite.Core
             @"Bite\Resources\ComputerPathIcon.png",
             @"Bite\Resources\MeshFileIcon.png",
             @"Bite\Resources\EntityIcon.png",
-            @"Bite\Resources\WorldFileIcon.png"
+            @"Bite\Resources\WorldFileIcon.png",
+            @"Bite\Resources\GamePlayButtonIcon.png",
+            @"Bite\Resources\GameStopButtonIcon.png"
 
 
         };
         private readonly AssetType[] m_AssetTypes = new AssetType[]
         {
+            AssetType.Texture2D,
+            AssetType.Texture2D,
             AssetType.Texture2D,
             AssetType.Texture2D,
             AssetType.Texture2D,

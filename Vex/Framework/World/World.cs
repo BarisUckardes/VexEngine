@@ -24,7 +24,7 @@ namespace Vex.Framework
             }
         }
 
-        public static void LoadAndPlay(Guid id)
+        public static void LoadAndSwitch(Guid id)
         {
             /*
              * Try load static world asset content
@@ -47,6 +47,10 @@ namespace Vex.Framework
              * Register world 
              */
             newWorld.Register();
+        }
+        public static void Load(Guid id)
+        {
+
         }
         
         internal static ApplicationSession Session { get; set; }
@@ -119,6 +123,10 @@ namespace Vex.Framework
         public override void Destroy()
         {
             Console.WriteLine("World destroyed");
+            Entity[] entities = GetView<WorldLogicView>().Entities;
+            foreach (Entity entity in entities)
+                entity.Destroy();
+
         }
 
         private List<WorldView> m_Views;

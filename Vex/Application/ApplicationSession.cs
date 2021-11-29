@@ -87,8 +87,18 @@ namespace Vex.Application
                 return m_ShutdownReasonMessage;
             }
         }
+        public bool PlayActive
+        {
+            get
+            {
+                return m_PlayActive;
+            }
+            set
+            {
+                m_PlayActive = value;
+            }
+        }
 
-       
         public void SetShutdownRequest(string reason = "undefined")
         {
             m_SessionHasShutdownRequest = true;
@@ -125,6 +135,7 @@ namespace Vex.Application
         private WindowInterface m_Window;
         private World m_CurrentWorld;
         private bool m_SessionHasShutdownRequest;
+        private bool m_PlayActive;
         private string m_ShutdownReasonMessage;
     }
 }

@@ -384,7 +384,7 @@ namespace Bite.GUI
                      * Try open if its a world
                      */
                     if (file.AssetType == AssetType.World)
-                        World.LoadAndPlay(file.AssetID);
+                        World.LoadAndSwitch(file.AssetID);
 
                     isClickedEmpty = false;
                 }

@@ -132,10 +132,30 @@ namespace Vex.Framework
                 for (int renderableIndex = 0; renderableIndex< m_Renderables.Count; renderableIndex++)
                 {
                     Profiler.StartProfile("Submit draw call");
+
                     /*
                      * Set sprite renderable
                      */
                     ForwardMeshRenderable renderable = m_Renderables[renderableIndex];
+
+                    /*
+                     * Validate renderable
+                     */
+                    if (renderable == null)
+                        continue;
+
+                    /*
+                     * Validate mesh
+                     */
+                    if (renderable.Mesh == null)
+                        continue;
+
+                    /*
+                     * Validate material
+                     */
+                    if (renderable.Material == null)
+                        continue;
+
                     VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
                     IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
                     uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;
@@ -153,7 +173,7 @@ namespace Vex.Framework
                     /*
                      * Set shader pVexgram
                      */
-                    commandBuffer.SetShaderProgram(renderable.Material.Program);
+                    commandBuffer.SetShaderProgram(renderable.Material != null ? renderable.Material.Program : null);
 
                     /*
                      * Create model matrix

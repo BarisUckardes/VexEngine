@@ -200,6 +200,9 @@ namespace Vex.Framework
             /*
              * DestVexy all components
              */
+            foreach (Component component in m_Components)
+                component.OnDetach();
+            m_Components.Clear();
 
             /*
              * DestVexy this
