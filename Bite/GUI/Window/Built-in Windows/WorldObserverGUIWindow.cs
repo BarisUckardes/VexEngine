@@ -90,7 +90,6 @@ namespace Bite.GUI
             {
                 Session.UpdateDomainAsset(m_TargetWorld.ID, m_TargetWorld);
             }
-           
         }
         private Texture2D m_EntityIcon;
         private World m_TargetWorld;

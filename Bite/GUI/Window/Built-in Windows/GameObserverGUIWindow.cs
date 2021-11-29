@@ -91,7 +91,6 @@ namespace Bite.GUI
              * Render framebuffer image
              */
             GUIRenderCommands.CreateImage(m_PrimaryFramebuffer == null ? null : m_PrimaryFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight-40),uv0,uv1);
-
         }
 
         public override void OnVisible()

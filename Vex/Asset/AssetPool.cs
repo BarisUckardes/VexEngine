@@ -58,7 +58,7 @@ namespace Vex.Asset
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public VexObject GetOrLoadAsset(in Guid id)
+        public VexObject GetOrLoadAsset(in Guid id,bool forceLoad = false)
         {
             /*
              * Try find record
@@ -67,7 +67,7 @@ namespace Vex.Asset
             {
                 if(m_Assets[assetIndex].AssetID == id)
                 {
-                    if (!m_Assets[assetIndex].IsLoaded)
+                    if (!m_Assets[assetIndex].IsLoaded || forceLoad)
                         m_Assets[assetIndex].Load(this);
 
                     return m_Assets[assetIndex].Object;

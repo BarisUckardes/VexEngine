@@ -74,7 +74,7 @@ namespace Bite.Core
             /*
              * Set current world static world content
              */
-            m_RootWorld = m_ApplicationSession.AssetPool.GetOrLoadAsset(m_ApplicationSession.CurrentWorld.ID) as StaticWorldContent;
+            m_RootWorld = m_ApplicationSession.AssetPool.GetOrLoadAsset(m_ApplicationSession.CurrentWorld.ID,true) as StaticWorldContent;
 
             /*
              * Start play game session
