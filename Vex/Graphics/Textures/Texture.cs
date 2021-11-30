@@ -80,7 +80,18 @@ namespace Vex.Graphics
 
         public override void Destroy()
         {
+            /*
+             * Free texture memory
+             */
+            GL.BindTexture(TextureTarget.Texture2D, m_Handle);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)m_Format, 0, 0, 0, (PixelFormat)m_Format, PixelType.UnsignedByte, IntPtr.Zero);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            /*
+             * Delete texture handle
+             */
             GL.DeleteTexture(m_Handle);
+
             m_CpuData = null;
         }
 

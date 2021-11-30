@@ -41,7 +41,6 @@ namespace Vex.Graphics
         public override Matrix4 GetProjectionMatrix()
         {
             return Matrix4.CreatePerspectiveFieldOfView((float)((Math.PI / 180) * m_FieldOfView), AspectRatio, NearPlane, FarPlane);
-
         }
 
         public override Matrix4 GetViewMatrix()

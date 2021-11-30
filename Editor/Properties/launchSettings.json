@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "EditorLauncher": {
+    "Editor": {
       "commandName": "Project",
       "commandLineArgs": "C:\\Users\\PC\\Documents\\Vex_Projects\\DevelopmentLab"
     }
