@@ -17,7 +17,6 @@ namespace Vex.Graphics
         public ForwardMeshObserver()
         {
             AspectRatio = 720.0f / 1280.0f;
-            m_FieldOfView = 5.0f;
             m_FieldOfView = 60;
             Name = "Forward Mesh Observer";
         }
@@ -57,7 +56,6 @@ namespace Vex.Graphics
                 return false;
             }
         }
-
 
         private float m_FieldOfView;
     }

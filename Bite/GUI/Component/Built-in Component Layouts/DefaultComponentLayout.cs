@@ -34,9 +34,9 @@ namespace Bite.GUI
              */
             foreach(FieldInfo info in m_DefaultInfo.FieldInfo)
             {
-                if(info.FieldType == typeof(Vector3))
+                if(info.FieldType == typeof(System.Numerics.Vector3))
                 {
-                    Vector3 value = (Vector3)info.GetValue(TargetComponent);
+                    System.Numerics.Vector3 value = (System.Numerics.Vector3)info.GetValue(TargetComponent);
                     GUIRenderCommands.CreateVector3Slider(info.Name, "", ref value);
                     info.SetValue(TargetComponent, value);
                 }

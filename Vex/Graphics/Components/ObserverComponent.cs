@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
+using Vex.Types;
+
 namespace Vex.Graphics
 {
     /// <summary>
@@ -126,8 +128,11 @@ namespace Vex.Graphics
 
         private Framebuffer m_Framebuffer;
         private Color4 m_ClearColor;
+        [ExposeThis]
         private float m_NearPlane;
+        [ExposeThis]
         private float m_FarPlane;
+        [ExposeThis]
         private float m_AspectRatio;
     }
 }

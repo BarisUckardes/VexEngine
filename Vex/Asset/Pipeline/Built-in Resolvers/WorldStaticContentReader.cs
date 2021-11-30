@@ -204,24 +204,30 @@ namespace Vex.Asset
                 while (parser.Current.GetType() != typeof(SequenceEnd))
                 {
                     /*
-                     * Get component field meta entry
+                     * Get parser value
                      */
-                    string[] splitEntry = GetParserValue(parser).Split(" ");
+                    string parserValue = GetParserValue(parser);
+
+                    /*
+                     * Calculate indexes
+                     */
+                    int firstSpaceIndex = parserValue.IndexOf(" ");
+                    int secondSpaceIndex = parserValue.IndexOf(" ", firstSpaceIndex + 1);
 
                     /*
                      * Get component type
                      */
-                    string fieldType = splitEntry[0];
+                    string fieldType = parserValue.Substring(0,firstSpaceIndex);
 
                     /*
                      * Get field
                      */
-                    string fieldName = splitEntry[1];
+                    string fieldName = parserValue.Substring(firstSpaceIndex+1,secondSpaceIndex-firstSpaceIndex-1);
 
                     /*
                      * Get fieldvalue
                      */
-                    string fieldValue = splitEntry[2];
+                    string fieldValue = parserValue.Substring(secondSpaceIndex+1,parserValue.Length-secondSpaceIndex-1);
 
                     /*
                      * Register component field meta

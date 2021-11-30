@@ -207,7 +207,6 @@ namespace Vex.Framework
                  * Get target component
                  */
                 Component targetComponent = components[componentData.LocalComponentIndex];
-
                 /*
                  * Get Fields
                  */
@@ -219,6 +218,11 @@ namespace Vex.Framework
                 foreach(StaticComponentField field in fields)
                 {
                     /*
+                     * Get field info
+                     */
+                    FieldInfo fieldInfo = TypeUtils.GetField(targetComponent.GetType(), field.ExpectedFieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                    /*
                      * Validate and set fields
                      */
                     switch (field.FieldType)
@@ -226,13 +230,12 @@ namespace Vex.Framework
                         case StaticComponentFieldType.Invalid:
                             break;
                         case StaticComponentFieldType.Raw:
-                           // componentData.ComponentType.GetField(field.ExpectedFieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).SetValue(targetComponent, field.FieldDataString);
+                            TypeUtils.SetDefaultFieldValue(targetComponent, fieldInfo, field.FieldDataString);
                             break;
                         case StaticComponentFieldType.Component:
-                            //AssetObject asset = assets[int.Parse(field.FieldDataString)];
-                            //componentData.ComponentType.GetField(field.ExpectedFieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).SetValue(targetComponent, asset);
                             break;
                         case StaticComponentFieldType.Asset:
+
                             /*
                              * Get asset index
                              */
@@ -245,21 +248,11 @@ namespace Vex.Framework
                                 break;
 
                             /*
-                             * Get component via map
-                             */
-                            Component component = components[int.Parse(field.FieldDataString)];
-
-                            /*
-                             * Get field value
-                             */
-                            FieldInfo fieldInfo = TypeUtils.GetField(component.GetType(),field.ExpectedFieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-                            /*
                              * Validate if field found
                              */
                             if(fieldInfo == null)
                             {
-                                Console.WriteLine($"Field[{field.ExpectedFieldName}] not found in component [{component.GetType().Name}]");
+                                Console.WriteLine($"Field[{field.ExpectedFieldName}] not found in component [{targetComponent.GetType().Name}]");
                                 break;
                             }
 
@@ -272,8 +265,6 @@ namespace Vex.Framework
                             break;
                     }
                 }
-
-
             }
 
             return world;

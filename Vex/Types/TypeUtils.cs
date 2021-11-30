@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,6 +83,53 @@ namespace Vex.Types
 
             return null;
 
+        }
+        public static void SetDefaultFieldValue(object targetObject,FieldInfo fieldInfo,string data)
+        {
+            /*
+             * Validate field info
+             */
+            if (fieldInfo == null)
+                return;
+
+            /*
+             * Get field type
+             */
+            Type fieldType = fieldInfo.FieldType;
+
+            /*
+             * Catch field type
+             */
+            if (fieldType == typeof(Vector4))
+            {
+                string[] splitValue = data.Replace("<", "").Replace(">", "").Replace(" ", "").Split(",");
+                Vector4 value = new Vector4(float.Parse(splitValue[0]), float.Parse(splitValue[1]), float.Parse(splitValue[2]), float.Parse(splitValue[3]));
+                fieldInfo.SetValue(targetObject, value);
+            }
+            else if (fieldType == typeof(Vector3))
+            {
+                string[] splitValue = data.Replace("<","").Replace(">","").Replace(" ","").Split(",");
+                Vector3 value = new Vector3(float.Parse(splitValue[0]), float.Parse(splitValue[1]), float.Parse(splitValue[2]));
+                fieldInfo.SetValue(targetObject, value);
+            }
+            else if (fieldType == typeof(Vector2))
+            {
+                string[] splitValue = data.Replace("<", "").Replace(">", "").Replace(" ", "").Split(",");
+                Vector2 value = new Vector2(float.Parse(splitValue[0]), float.Parse(splitValue[1]));
+                fieldInfo.SetValue(targetObject, value);
+            }
+            else if(fieldType == typeof(float))
+            {
+                fieldInfo.SetValue(targetObject, float.Parse(data));
+            }
+            else if (fieldType == typeof(int))
+            {
+                fieldInfo.SetValue(targetObject, int.Parse(data));
+            }
+            else
+            {
+                fieldInfo.SetValue(targetObject, data);
+            }
         }
     }
 }
