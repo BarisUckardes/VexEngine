@@ -66,6 +66,7 @@ namespace Bite.GUI
                     Session.StartGamePlaySession();
                 }
             }
+
             windowSize -= new Vector2(0, 64);
 
             /*
@@ -84,13 +85,31 @@ namespace Bite.GUI
             /*
              * Set camera aspect ratio
              */
-            if(m_PrimaryObserver!=null)
+            if (m_PrimaryObserver!=null)
                 m_PrimaryObserver.AspectRatio = textureWidth / textureHeight;
+
+            /*
+             * Calculate texture size
+             */
+            Vector2 currentTextureSize = new Vector2(textureWidth, textureHeight - 40);
+
+            /*
+             * Resize framebuffer
+             */
+            if (currentTextureSize != m_OldSize)
+            {
+                Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
+            }
 
             /*
              * Render framebuffer image
              */
             GUIRenderCommands.CreateImage(m_PrimaryFramebuffer == null ? null : m_PrimaryFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight-40),uv0,uv1);
+
+            /*
+             * Set old framebuffer size
+             */
+            m_OldSize = new Vector2(textureWidth, textureHeight - 40);
         }
 
         public override void OnVisible()
@@ -103,12 +122,14 @@ namespace Bite.GUI
             if(m_PrimaryObserver != ObserverComponent.PrimalObserver)
             {
                 m_PrimaryObserver = ObserverComponent.PrimalObserver;
-                m_PrimaryFramebuffer = m_PrimaryObserver != null ? m_PrimaryObserver.Framebuffer : null;
+                m_PrimaryFramebuffer = m_PrimaryObserver != null ? m_PrimaryObserver.Framebuffer as Framebuffer2D : null;
             }
         }
+
         private ObserverComponent m_PrimaryObserver;
-        private Framebuffer m_PrimaryFramebuffer;
+        private Framebuffer2D m_PrimaryFramebuffer;
         private Texture2D m_GamePlayButtonTexture;
         private Texture2D m_GameStopButtonTexture;
+        private Vector2 m_OldSize;
     }
 }

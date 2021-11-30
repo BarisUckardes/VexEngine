@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK.Graphics.OpenGL4;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,20 +21,10 @@ namespace Vex.Graphics
             /*
              * Create texture
              */
-            CreateAndAttachTexture2D(new FramebufferAttachmentParams(width, height, 0, format, internalFormat));
+            CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, format, internalFormat));
         }
 
-        public Framebuffer2D()
-        {
 
-        }
-
-        public void Resize(int width,int height)
-        {
-            m_Width = width;
-            m_Height = height;
-            CreateAndAttachTexture2D(new FramebufferAttachmentParams(width, height,0, Format, InternalFormat));
-        }
         /// <summary>
         /// Returns the width of this framebuffer
         /// </summary>
@@ -55,6 +46,60 @@ namespace Vex.Graphics
             {
                 return m_Height;
             }
+        }
+
+        protected override void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams)
+        {
+            /*
+             * Creat framebuffer
+             */
+            uint framebufferID = 0;
+            GL.GenFramebuffers(1, out framebufferID);
+
+            /*
+             * bind framebuffer
+             */
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebufferID);
+
+            /*
+             * Create texture
+             */
+            Texture2D backTexture = new Texture2D(attachmentParams.Width, attachmentParams.Height, attachmentParams.Format, attachmentParams.InternalFormat);
+
+            /*
+             * Set attachment
+             */
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, backTexture.Handle, 0);
+
+            /*
+             * Set depth render buffer
+             */
+            int renderBufferID;
+            GL.GenRenderbuffers(1, out renderBufferID);
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderBufferID);
+            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, attachmentParams.Width, attachmentParams.Height);
+            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, renderBufferID);
+
+            /*
+             * Unbind framebuffer
+             */
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+
+            /*
+             * Unbind texture
+             */
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+
+            /*
+             * Set attachment
+             */
+            BackTexture = backTexture;
+
+            /*
+             * Set framebuffer id
+             */
+            FramebufferID = framebufferID;
         }
 
         private int m_Width;

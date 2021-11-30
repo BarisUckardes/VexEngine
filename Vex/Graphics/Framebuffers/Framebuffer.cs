@@ -84,6 +84,10 @@ namespace Vex.Graphics
             {
                 return m_BackTexture;
             }
+            protected set
+            {
+                m_BackTexture = value;
+            }
         }
 
         public Texture DepthTexture
@@ -92,139 +96,32 @@ namespace Vex.Graphics
             {
                 return m_DetphTexture;
             }
+            protected set
+            {
+                m_DetphTexture = value;
+            }
         }
+
+
 
         public bool IsDestroyed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-
         /// <summary>
-        /// Creates a texture1D via attachment parameters
+        /// Creates a framebuffer and allocates space on gpu
         /// </summary>
-        /// <param name="backTextureAttachment"></param>
-        protected void CreateAndAttachTexture1D(FramebufferAttachmentParams backTextureAttachment)
+        /// <param name="attachmentParams"></param>
+        protected void CreateFramebuffer(in FramebufferAttachmentParams attachmentParams)
         {
-            /*
-             * bind framebuffer
-             */
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, m_FramebufferID);
-
-            /*
-             * Create texture
-             */
-            Texture1D backTexture = new Texture1D(backTextureAttachment.Width, backTextureAttachment.Format,backTextureAttachment.InternalFormat);
-
-            /*
-             * Set attachment
-             */
-            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, backTexture.Handle, 0);
-
-            /*
-             * Unbind framebuffer
-             */
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
-            /*
-             * Unbind texture
-             */
-            GL.BindTexture(TextureTarget.Texture1D, 0);
-
-            /*
-             * Set attachment
-             */
-            m_BackTexture = backTexture;
+            CreateFramebufferImpl(attachmentParams);
         }
 
         /// <summary>
-        /// Creates a texture2D via attachment parameters
+        /// Framebuffer create implementation
         /// </summary>
-        /// <param name="backTextureAttachment"></param>
-        protected void CreateAndAttachTexture2D(FramebufferAttachmentParams backTextureAttachment)
-        {
-            /*
-             * Creat framebuffer
-             */
-            GL.GenFramebuffers(1, out m_FramebufferID);
+        /// <param name="attachmentParams"></param>
+        protected abstract void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams);
 
-            /*
-             * bind framebuffer
-             */
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, m_FramebufferID);
-
-            /*
-             * Create texture
-             */
-            Texture2D backTexture = new Texture2D(backTextureAttachment.Width, backTextureAttachment.Height, backTextureAttachment.Format,backTextureAttachment.InternalFormat);
-
-            /*
-             * Set attachment
-             */
-            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, backTexture.Handle, 0);
-
-            /*
-             * Set depth render buffer
-             */
-            int renderBufferID;
-            GL.GenRenderbuffers(1, out renderBufferID);
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderBufferID);
-            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, backTextureAttachment.Width, backTextureAttachment.Height);
-            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, renderBufferID);
-
-            /*
-             * Unbind framebuffer
-             */
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
-            /*
-             * Unbind texture
-             */
-            GL.BindTexture(TextureTarget.Texture2D, 0);
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
-            /*
-             * Set attachment
-             */
-            m_BackTexture = backTexture;
-
-
-        }
-
-     
-        /// <summary>
-        /// Creates a texture3D via attachment parameters
-        /// </summary>
-        /// <param name="backTextureAttachment"></param>
-        protected void CreateAndAttachTexture3D(FramebufferAttachmentParams backTextureAttachment)
-        {
-            /*
-             * bind framebuffer
-             */
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, m_FramebufferID);
-
-            /*
-             * Create texture
-             */
-            Texture3D backTexture = new Texture3D(backTextureAttachment.Width, backTextureAttachment.Height,backTextureAttachment.Depth, backTextureAttachment.Format,backTextureAttachment.InternalFormat);
-
-            /*
-             * Set attachment
-             */
-            GL.FramebufferTexture3D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture3D, backTexture.Handle,0, 0);
-
-            /*
-             * Unbind framebuffer
-             */
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
-            /*
-             * Unbind texture
-             */
-            GL.BindTexture(TextureTarget.Texture3D, 0);
-
-            /*
-             * Set attachment
-             */
-            m_BackTexture = backTexture;
-        }
-
+      
         public override void Destroy()
         {
             throw new NotImplementedException();

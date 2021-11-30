@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK.Graphics.OpenGL4;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace Vex.Graphics
             /*
              * Create framebuffer
              */
-            CreateAndAttachTexture1D(new FramebufferAttachmentParams(width, 0, 0, format,internalFormat));
+            CreateFramebuffer(new FramebufferAttachmentParams(width, 0, 0, format,internalFormat));
         }
 
         /// <summary>
@@ -34,6 +35,39 @@ namespace Vex.Graphics
             {
                 return m_Width;
             }
+        }
+
+        protected override void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams)
+        {
+            /*
+             * bind framebuffer
+             */
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferID);
+
+            /*
+             * Create texture
+             */
+            Texture1D backTexture = new Texture1D(attachmentParams.Width, attachmentParams.Format, attachmentParams.InternalFormat);
+
+            /*
+             * Set attachment
+             */
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, backTexture.Handle, 0);
+
+            /*
+             * Unbind framebuffer
+             */
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+
+            /*
+             * Unbind texture
+             */
+            GL.BindTexture(TextureTarget.Texture1D, 0);
+
+            /*
+             * Set attachment
+             */
+            BackTexture = backTexture;
         }
         private int m_Width;
     }
