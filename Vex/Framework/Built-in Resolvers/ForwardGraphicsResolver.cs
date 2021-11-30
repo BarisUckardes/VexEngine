@@ -224,7 +224,6 @@ namespace Vex.Framework
                      * Draw
                      */
                     commandBuffer.DrawIndexed((int)triangleCount);
-
                     Profiler.EndProfile();
                 }
 
