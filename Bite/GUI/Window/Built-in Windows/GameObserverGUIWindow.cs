@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Vex.Graphics;
 using Fang.Commands;
 using System.Numerics;
-
 namespace Bite.GUI
 {
     [WindowLayout("Game Observer")]
@@ -106,10 +105,30 @@ namespace Bite.GUI
             if (currentTextureSize != m_OldSize)
             {
                 Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
-                m_PrimaryFramebuffer = new Framebuffer2D((int)currentTextureSize.X, (int)currentTextureSize.Y, m_PrimaryFramebuffer.Format, m_PrimaryFramebuffer.InternalFormat);
-                m_PrimaryObserver.Framebuffer = m_PrimaryFramebuffer;
-            }
 
+                /*
+                 * Get texture formats
+                 */
+                TextureFormat format = m_PrimaryFramebuffer.Format;
+                TextureInternalFormat internalFormat = m_PrimaryFramebuffer.InternalFormat;
+
+                /*
+                 * Destroy and cleanup former framebuffer
+                 */
+                m_PrimaryFramebuffer?.Destroy();
+                m_PrimaryFramebuffer = null;
+                m_PrimaryObserver.Framebuffer = null;
+
+                /*
+                 * Create new framebuffer
+                 */
+                m_PrimaryFramebuffer = new Framebuffer2D((int)currentTextureSize.X, (int)currentTextureSize.Y, format, internalFormat);
+                m_PrimaryObserver.Framebuffer = m_PrimaryFramebuffer;
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+          
             /*
              * Set old framebuffer size
              */

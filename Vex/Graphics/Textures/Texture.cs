@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vex.Framework;
+using OpenTK.Graphics.OpenGL4;
 
 namespace Vex.Graphics
 {
@@ -79,7 +80,8 @@ namespace Vex.Graphics
 
         public override void Destroy()
         {
-            throw new NotImplementedException();
+            GL.DeleteTexture(m_Handle);
+            m_CpuData = null;
         }
 
         private byte[] m_CpuData;

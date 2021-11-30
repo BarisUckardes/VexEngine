@@ -35,6 +35,21 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// Native depth buffer render buffer
+        /// </summary>
+        public uint RenderbufferID
+        {
+            get
+            {
+                return m_RenderbufferID;
+            }
+            protected set
+            {
+                m_RenderbufferID = value;
+            }
+        }
+
+        /// <summary>
         /// Is this framebuffer the swapchain's backbuffer?
         /// </summary>
         public bool IsSwapchain
@@ -124,7 +139,27 @@ namespace Vex.Graphics
       
         public override void Destroy()
         {
-            throw new NotImplementedException();
+            /*
+             * Delete back texture
+             */
+            m_BackTexture?.Destroy();
+            m_BackTexture = null;
+
+            /*
+             * Delete depth texture
+             */
+            m_DetphTexture?.Destroy();
+            m_DetphTexture = null;
+
+            /*
+             * Delete renderbuffer
+             */
+            GL.DeleteRenderbuffer(m_RenderbufferID);
+
+            /*
+             * Delete framebuffer
+             */
+            GL.DeleteFramebuffer(m_FramebufferID);
         }
 
         private Texture m_BackTexture;
@@ -132,5 +167,6 @@ namespace Vex.Graphics
         private TextureFormat m_Format;
         private TextureInternalFormat m_InternalFormat;
         private uint m_FramebufferID;
+        private uint m_RenderbufferID;
     }
 }
