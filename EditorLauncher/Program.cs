@@ -24,8 +24,8 @@ namespace EditorLauncher
             string projectPath = args[0];
 
             Console.Clear();
-           // while(true)
-           // {
+            while (true)
+            {
                 /*
                 * Create new process
                 */
@@ -40,7 +40,7 @@ namespace EditorLauncher
                  * Wait for it to exit
                  */
                 process.WaitForExit();
-           // }
+            }
 
             /*
              * Signal exit

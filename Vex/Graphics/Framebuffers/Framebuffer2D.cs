@@ -17,6 +17,7 @@ namespace Vex.Graphics
             m_Width = width;
             m_Height = height;
             Format = format;
+            InternalFormat = internalFormat;
 
             /*
              * Create texture

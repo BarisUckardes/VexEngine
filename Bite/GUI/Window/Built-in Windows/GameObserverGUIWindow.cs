@@ -93,18 +93,22 @@ namespace Bite.GUI
              */
             Vector2 currentTextureSize = new Vector2(textureWidth, textureHeight - 40);
 
-            /*
-             * Resize framebuffer
-             */
-            if (currentTextureSize != m_OldSize)
-            {
-                Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
-            }
+          
 
             /*
              * Render framebuffer image
              */
             GUIRenderCommands.CreateImage(m_PrimaryFramebuffer == null ? null : m_PrimaryFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight-40),uv0,uv1);
+
+            /*
+            * Resize framebuffer
+            */
+            if (currentTextureSize != m_OldSize)
+            {
+                Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
+                m_PrimaryFramebuffer = new Framebuffer2D((int)currentTextureSize.X, (int)currentTextureSize.Y, m_PrimaryFramebuffer.Format, m_PrimaryFramebuffer.InternalFormat);
+                m_PrimaryObserver.Framebuffer = m_PrimaryFramebuffer;
+            }
 
             /*
              * Set old framebuffer size

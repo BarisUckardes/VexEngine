@@ -40,6 +40,31 @@ namespace Bite.GUI
                     GUIRenderCommands.CreateVector3Slider(info.Name, "", ref value);
                     info.SetValue(TargetComponent, value);
                 }
+                else if(info.FieldType == typeof(float))
+                {
+                    /*
+                    * Get float range if has ones
+                    */
+                    FloatSlider sliderAttribute = info.GetCustomAttribute<FloatSlider>();
+
+                    /*
+                     * Get current value
+                     */
+                    float value = (float)info.GetValue(TargetComponent);
+
+                    /*
+                     * Render slider
+                     */
+                    if (sliderAttribute != null)
+                        GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value, sliderAttribute.Min, sliderAttribute.Max);
+                    else
+                        GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value, 0, 360);
+
+                    /*
+                     * Set value
+                     */
+                    info.SetValue(TargetComponent, value);
+                }
                 else if(info.FieldType.IsSubclassOf(typeof(VexObject)))
                 {
                     GUIRenderCommands.CreateText(info.FieldType.Name, "");
