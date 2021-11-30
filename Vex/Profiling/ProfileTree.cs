@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Vex.Profiling
 {
+    /// <summary>
+    /// A tree which encapsulates profile elements
+    /// </summary>
     public class ProfileTree
     {
         
@@ -19,6 +22,9 @@ namespace Vex.Profiling
             m_SubTrees = new List<ProfileTree>();
         }
 
+        /// <summary>
+        /// Returns the sub trees
+        /// </summary>
         public List<ProfileTree> SubTrees
         {
             get
@@ -26,6 +32,10 @@ namespace Vex.Profiling
                 return m_SubTrees;
             }
         }
+
+        /// <summary>
+        /// Set&&Get self profiler entry
+        /// </summary>
         internal ProfileEntry SelfEntry
         {
             get
@@ -37,6 +47,10 @@ namespace Vex.Profiling
                 m_SelfEntry = value;
             }
         }
+
+        /// <summary>
+        /// Returns the marker title
+        /// </summary>
         public string Title
         {
             get
@@ -44,6 +58,10 @@ namespace Vex.Profiling
                 return m_Title;
             }
         }
+
+        /// <summary>
+        /// Returns how many times this marker invoked
+        /// </summary>
         public uint InvokeCount
         {
             get
@@ -51,6 +69,10 @@ namespace Vex.Profiling
                 return m_InvokeCount;
             }
         }
+
+        /// <summary>
+        /// Set&&Get time between first marker and the last one
+        /// </summary>
         public long ElapsedTime
         {
             get
@@ -62,6 +84,11 @@ namespace Vex.Profiling
                 m_ElapsedTime = value;
             }
         }
+
+        /// <summary>
+        /// Util function for debugging the tree
+        /// </summary>
+        /// <param name="gap"></param>
         internal void Debug(uint gap)
         {
             /*
@@ -86,10 +113,19 @@ namespace Vex.Profiling
             
 
         }
+
+        /// <summary>
+        /// Increments the invoke count of this profile tree
+        /// </summary>
         internal void IncrementInvoke()
         {
             m_InvokeCount++;
         }
+
+        /// <summary>
+        /// Registers a sub tree
+        /// </summary>
+        /// <param name="tree"></param>
         internal void RegisterSubTree(ProfileTree tree)
         {
             /*

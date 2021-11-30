@@ -9,8 +9,14 @@ using Vex.Types;
 
 namespace Vex.Framework
 {
+    /// <summary>
+    /// Static content which holds required minimal metadata for the creation of a world in runtime
+    /// </summary>
     public sealed class StaticWorldContent : AssetObject
     {
+        /// <summary>
+        /// Necessary default constructor for the yaml 
+        /// </summary>
         public StaticWorldContent()
         {
 
@@ -18,6 +24,7 @@ namespace Vex.Framework
         public StaticWorldContent(List<Tuple<string,Guid>> entityPairs,List<string> existingComponentTypes, List<Guid> assetIds,List<Tuple<int,int,string,Guid>> componentEntries,List<StaticComponentMetaData> componentMetaDatas)
         {
             Console.WriteLine("Creating static world content...");
+
             /*
              * Initialize 
              */
@@ -103,6 +110,9 @@ namespace Vex.Framework
             Console.WriteLine("Creating static world content... DONE");
         }
 
+        /// <summary>
+        /// Returns the total entity count in this static world content
+        /// </summary>
         public int EntityCount
         {
             get
@@ -110,6 +120,10 @@ namespace Vex.Framework
                 return m_EntityEntries.Count;
             }
         }
+
+        /// <summary>
+        /// Returns the total unique component count in this static world content
+        /// </summary>
         public int ComponentTypeCount
         {
             get
@@ -117,6 +131,10 @@ namespace Vex.Framework
                 return m_ComponentTypeEntries.Count;
             }
         }
+
+        /// <summary>
+        /// Returns the total asset count in this static world content
+        /// </summary>
         public int AssetCount
         {
             get
@@ -124,6 +142,10 @@ namespace Vex.Framework
                 return m_AssetEntries.Count;
             }
         }
+
+        /// <summary>
+        /// Returns the total component count in this static world content
+        /// </summary>
         public int ComponentCount
         {
             get
@@ -131,6 +153,12 @@ namespace Vex.Framework
                 return m_ComponentEntries.Count;
             }
         }
+
+        /// <summary>
+        /// Creates a world out of this static content
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
         public World CreateFromThis(ApplicationSession session)
         {
             /*

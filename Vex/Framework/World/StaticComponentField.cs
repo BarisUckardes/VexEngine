@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Vex.Framework
 {
+    /// <summary>
+    /// Data volume for component field
+    /// </summary>
     public readonly struct StaticComponentField
     {
         public StaticComponentField(FieldInfo fieldInfo,StaticComponentFieldType fieldType,string expectedFieldName,string fieldDataString)
@@ -17,6 +20,9 @@ namespace Vex.Framework
             FieldDataString = fieldDataString;
         }
 
+        /// <summary>
+        /// Is this field is a valid field
+        /// </summary>
         public bool IsValid
         {
             get
@@ -24,9 +30,25 @@ namespace Vex.Framework
                 return TargetFieldInfo != null;
             }
         }
+
+        /// <summary>
+        /// Target type field info
+        /// </summary>
         public readonly FieldInfo TargetFieldInfo;
+
+        /// <summary>
+        /// Type of the field
+        /// </summary>
         public readonly StaticComponentFieldType FieldType;
+
+        /// <summary>
+        /// Expected field name
+        /// </summary>
         public readonly string ExpectedFieldName;
+
+        /// <summary>
+        /// Field data in string
+        /// </summary>
         public readonly string FieldDataString;
     }
 }

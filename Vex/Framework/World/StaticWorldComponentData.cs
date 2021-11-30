@@ -8,6 +8,9 @@ using Vex.Types;
 
 namespace Vex.Framework
 {
+    /// <summary>
+    /// Data volume necessary for filling a component in
+    /// </summary>
     public struct StaticWorldComponentData
     {
         public StaticWorldComponentData(int localComponentIndex,Type targetComponentType,List<Tuple<string,string,string>> fieldMetaDatas)
@@ -63,6 +66,9 @@ namespace Vex.Framework
             }
         }
 
+        /// <summary>
+        /// Returns all the component fields
+        /// </summary>
         public List<StaticComponentField> Fields
         {
             get
@@ -70,6 +76,10 @@ namespace Vex.Framework
                 return m_ComponentFields;
             }
         }
+
+        /// <summary>
+        /// Returns the component type of this volume
+        /// </summary>
         public Type ComponentType
         {
             get
@@ -77,6 +87,10 @@ namespace Vex.Framework
                 return m_ComponentType;
             }
         }
+
+        /// <summary>
+        /// Returns the target local compoentn index
+        /// </summary>
         public int LocalComponentIndex
         {
             get
@@ -84,6 +98,7 @@ namespace Vex.Framework
                 return m_LocalComponentIndex;
             }
         }
+
         private List<StaticComponentField> m_ComponentFields;
         private Type m_ComponentType;
         private int m_LocalComponentIndex;

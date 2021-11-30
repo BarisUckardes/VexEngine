@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Vex.Types
 {
+    /// <summary>
+    /// A static class which collects the emitted component types
+    /// </summary>
     public static class EmittedComponentTypes
     {
-
         public static List<Type> ComponentTypes
         {
             get
@@ -20,6 +22,12 @@ namespace Vex.Types
                 s_ComponentTypes = value;
             }
         }
+
+        /// <summary>
+        /// Get component type via its name
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
         public static Type GetTypeViaName(string typeName)
         {
             /*
@@ -30,6 +38,12 @@ namespace Vex.Types
                     return type;
             return null;
         }
+
+        /// <summary>
+        /// Check if a type name exists on the component type list
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
         public static bool IsExist(string typeName)
         {
             /*

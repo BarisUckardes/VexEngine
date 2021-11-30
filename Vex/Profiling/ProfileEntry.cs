@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 namespace Vex.Profiling
 {
   
+    /// <summary>
+    /// Profile entry which holds a profile data specific to a marker
+    /// </summary>
     public class ProfileEntry
     {
         [DllImport("Kernel32.dll", CallingConvention = CallingConvention.Winapi)]
@@ -29,6 +32,9 @@ namespace Vex.Profiling
             m_Custom = true;
         }
 
+        /// <summary>
+        /// Returns the marker title of this profile entry
+        /// </summary>
         public string Title
         {
             get
@@ -36,6 +42,10 @@ namespace Vex.Profiling
                 return m_Custom == true ? m_FunctionName : m_ClassName + "::" + m_FunctionName;
             }
         }
+
+        /// <summary>
+        /// Returns the elapsed time since the first marker
+        /// </summary>
         public long ElapsedTime
         {
             get
@@ -43,6 +53,10 @@ namespace Vex.Profiling
                 return m_ElapsedTime;
             }
         }
+
+        /// <summary>
+        /// Returns owner tree of this profiler entry
+        /// </summary>
         internal ProfileTree SelfTree
         {
             get
@@ -81,12 +95,19 @@ namespace Vex.Profiling
             m_ElapsedTime = DateTime.FromFileTimeUtc(m_EndTime).Millisecond - DateTime.FromFileTimeUtc(m_StartTime).Millisecond;
         }
 
+        /// <summary>
+        /// Binds this profile entry to a profile tree
+        /// </summary>
+        /// <param name="tree"></param>
         internal void Bind(ProfileTree tree)
         {
             m_Tree = tree;
             tree.SelfEntry = this;
         }
        
+        /// <summary>
+        /// Generates stacktrace based marker name
+        /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void GenerateEntryTitle()
         {

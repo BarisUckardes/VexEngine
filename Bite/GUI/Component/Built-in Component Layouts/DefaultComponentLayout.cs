@@ -53,14 +53,14 @@ namespace Bite.GUI
              */
             foreach(PropertyInfo info in m_DefaultInfo.PropertyInfo)
             {
-                if (info.PropertyType == typeof(Vector3))
+                if (info.PropertyType == typeof(Vector3)) // set as vector3
                 {
                     Vector3 value = (Vector3)info.GetValue(TargetComponent);
                     GUIRenderCommands.CreateVector3Slider(info.Name, "", ref value,0,360);
                     info.SetValue(TargetComponent,value,null);
                     
                 }
-                else if(info.PropertyType == typeof(float))
+                else if(info.PropertyType == typeof(float)) // set as float
                 {
                     /*
                      * Get float range if has ones
@@ -85,7 +85,7 @@ namespace Bite.GUI
                      */
                     info.SetValue(TargetComponent, value, null);
                 }
-                else if(info.PropertyType.IsSubclassOf(typeof(VexObject)))
+                else if(info.PropertyType.IsSubclassOf(typeof(VexObject))) // set as vexobject variant
                 {
                     GUIRenderCommands.CreateText(info.PropertyType.Name, "");
                     VexObject value = (VexObject)info.GetValue(TargetComponent);

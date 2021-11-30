@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Vex.Profiling
 {
+    /// <summary>
+    /// A static class for profiler utility
+    /// </summary>
     public static class Profiler
     {
+        /// <summary>
+        /// Returns whether a profile session is currently ongoing
+        /// </summary>
         public static bool IsProfileSessionRunning
         {
             get
@@ -15,6 +21,10 @@ namespace Vex.Profiling
                 return s_ProfileSession;
             }
         }
+
+        /// <summary>
+        /// Starts a new profiler session
+        /// </summary>
         public static void StartProfileSession()
         {
             /*
@@ -36,6 +46,10 @@ namespace Vex.Profiling
             s_CurrentStack.Push(s_Current);
 
         }
+
+        /// <summary>
+        /// Ends the profile session
+        /// </summary>
         public static void EndProfileSession()
         {
             /*
@@ -46,6 +60,9 @@ namespace Vex.Profiling
             s_ProfileSession = false;
         }
 
+        /// <summary>
+        /// Starts a profile marker
+        /// </summary>
         public static void StartProfile()
         {
             /*
@@ -114,6 +131,11 @@ namespace Vex.Profiling
             }
 
         }
+
+        /// <summary>
+        /// Starts a profile marker with a custom name
+        /// </summary>
+        /// <param name="name"></param>
         public static void StartProfile(string name)
         {
             /*
@@ -182,6 +204,10 @@ namespace Vex.Profiling
             }
 
         }
+
+        /// <summary>
+        /// Ends a profile marker
+        /// </summary>
         public static void EndProfile()
         {
             /*
@@ -210,10 +236,19 @@ namespace Vex.Profiling
             lastTree.ElapsedTime+= entry.ElapsedTime;
         }
 
+        /// <summary>
+        /// Returns the result of the current profile session
+        /// </summary>
+        /// <returns></returns>
         public static ProfileTree GetResultTree()
         {
             return s_Result;
         }
+
+        /// <summary>
+        /// Returns the result of the last profile session
+        /// </summary>
+        /// <returns></returns>
         public static ProfileTree GetLastSessionResult()
         {
             return s_LastSesionResult;

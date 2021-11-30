@@ -13,17 +13,35 @@ namespace Vex.Framework
     /// </summary>
     public sealed class World : AssetObject
     {
+        /// <summary>
+        /// Creates and returns a default world
+        /// </summary>
         public static World DefaultWorld
         {
             get
             {
+                /*
+                 * Creates an empty world
+                 */
                 World defaultWorld = new World(null, new WorldSettings(typeof(DefaultLogicResolver), new List<Type>()));
+
+                /*
+                 * Adds a world view
+                 */
                 defaultWorld.AddView<WorldLogicView>();
+
+                /*
+                 * Create a default entity
+                 */
                 Entity entity = new Entity("Default entity", defaultWorld);
                 return defaultWorld;
             }
         }
 
+        /// <summary>
+        /// Loads world with the target id and switches to it
+        /// </summary>
+        /// <param name="id"></param>
         public static void LoadAndSwitch(Guid id)
         {
             /*
@@ -48,6 +66,11 @@ namespace Vex.Framework
              */
             newWorld.Register();
         }
+
+        /// <summary>
+        /// Loads a world using the staticworldcontent and switches to it
+        /// </summary>
+        /// <param name="content"></param>
         public static void LoadAndSwitch(StaticWorldContent content)
         {
             /*
@@ -73,12 +96,12 @@ namespace Vex.Framework
              */
             newWorld.Register();
         }
-        public static void Load(Guid id)
-        {
 
-        }
-        
+        /// <summary>
+        /// Internal application session for world class
+        /// </summary>
         internal static ApplicationSession Session { get; set; }
+
         public World(ApplicationSession session,in WorldSettings worldSettings)
         {
             m_Views = new List<WorldView>();
@@ -147,8 +170,14 @@ namespace Vex.Framework
 
         public override void Destroy()
         {
-            Console.WriteLine("World destroyed");
+            /*
+             * Get all the entities
+             */
             Entity[] entities = GetView<WorldLogicView>().Entities;
+
+            /*
+             * Iterate and destory all
+             */
             foreach (Entity entity in entities)
                 entity.Destroy();
 
