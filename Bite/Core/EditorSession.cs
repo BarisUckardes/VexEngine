@@ -19,6 +19,18 @@ namespace Bite.Core
             m_CurrentWindowSettings = new List<WindowLayoutSettings>();
         }
 
+
+        /// <summary>
+        /// Returns the current world id
+        /// </summary>
+        public Guid EditorRootWorldID
+        {
+            get
+            {
+                return m_RootWorld != null ? m_RootWorld.ID : Guid.Empty;
+            }
+        }
+
         /// <summary>
         /// Returns the loaded worlds vex session has
         /// </summary>
@@ -45,6 +57,9 @@ namespace Bite.Core
             }
         }
 
+        /// <summary>
+        /// Get set window layout settings
+        /// </summary>
         internal List<WindowLayoutSettings> WindowLayoutSettings
         {
             get
@@ -57,6 +72,9 @@ namespace Bite.Core
             }
         }
 
+        /// <summary>
+        /// Returns the current game play state
+        /// </summary>
         public bool GamePlayState
         {
             get
@@ -64,6 +82,32 @@ namespace Bite.Core
                 return m_ApplicationSession.PlayActive;
             }
         }
+
+        /// <summary>
+        /// Setups a world for editor
+        /// </summary>
+        /// <param name="id"></param>
+        public void SetupEditorWorld(Guid id)
+        {
+            /*
+             * Try load target world asset
+             */
+            m_RootWorld = m_ApplicationSession.AssetPool.GetOrLoadAsset(id, true) as StaticWorldContent;
+
+            /*
+             * Load world into vex
+             */
+            World.LoadAndSwitch(m_RootWorld);
+
+            /*
+             * Set play state false 
+             */
+            m_ApplicationSession.PlayActive = false;
+        }
+
+        /// <summary>
+        /// Starts the game play session
+        /// </summary>
         public void StartGamePlaySession()
         {
             /*
@@ -81,6 +125,10 @@ namespace Bite.Core
              */
             m_ApplicationSession.PlayActive = true;
         }
+
+        /// <summary>
+        /// Stops the current game play session
+        /// </summary>
         public void StopGamePlaySession()
         {
             /*
@@ -98,14 +146,28 @@ namespace Bite.Core
              */
             m_ApplicationSession.PlayActive = false;
         }
+
+        /// <summary>
+        /// Renames an asset from the asset pool
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
         public void RenameAsset(in Guid id,string name)
         {
             m_ApplicationSession.AssetPool.RenameAsset(id, name);
         }
+
+        /// <summary>
+        /// Renames all the asset paths from the asset pool
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="oldRoot"></param>
+        /// <param name="newRoot"></param>
         public void RenameAssetPaths(in Guid id,string oldRoot,string newRoot)
         {
             m_ApplicationSession.AssetPool.RenameAssetPaths(id, oldRoot, newRoot);
         }
+
         /// <summary>
         /// Updates the asset content of a domain asset
         /// </summary>
@@ -211,6 +273,12 @@ namespace Bite.Core
              */
             folder.CreateNewFile(folder,fileName, definitionPath, assetPath, definition);
         }
+
+        /// <summary>
+        /// Creates anew world domain content
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="fileName"></param>
         public void CreateWorldDomainAsset(DomainFolderView folder,string fileName)
         {
             /*
@@ -232,6 +300,13 @@ namespace Bite.Core
             folder.CreateNewFile(folder, fileName, definitionPath, assetPath, definition);
         }
 
+
+        /// <summary>
+        /// Creates anew texture2d domain content
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="fileName"></param>
+        /// <param name="filePath"></param>
         public void CreateTexture2DomainContent(DomainFolderView folder,string fileName,string filePath)
         {
             /*
@@ -253,6 +328,12 @@ namespace Bite.Core
             folder.CreateNewFile(folder,fileName, definitionPath, assetPath, definition);
         }
 
+        /// <summary>
+        /// Creates anew static mesh domain content
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="fileName"></param>
+        /// <param name="filePath"></param>
         public void CreateStaticMeshDomainContent(DomainFolderView folder, string fileName, string filePath)
         {
             /*
@@ -335,6 +416,10 @@ namespace Bite.Core
         {
             m_ApplicationSession.SetShutdownRequest(exitReason);
         }
+
+        /// <summary>
+        /// Shutdows the session
+        /// </summary>
         internal void Shutdown()
         {
 

@@ -49,6 +49,7 @@ namespace Game
             coreCommands.Add(new DomainCoreCommand());
             coreCommands.Add(new ProjectLoaderCommand());
             coreCommands.Add(new EditorResourcesLoaderCommand());
+            coreCommands.Add(new LastWorldLoaderCommand());
             
 
             /*

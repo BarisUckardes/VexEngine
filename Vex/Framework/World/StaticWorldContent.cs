@@ -250,9 +250,23 @@ namespace Vex.Framework
                             Component component = components[int.Parse(field.FieldDataString)];
 
                             /*
-                             * Set field data
+                             * Get field value
                              */
-                            componentData.ComponentType.GetField(field.ExpectedFieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).SetValue(targetComponent,assets[assetIndex]);
+                            FieldInfo fieldInfo = TypeUtils.GetField(component.GetType(),field.ExpectedFieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                            /*
+                             * Validate if field found
+                             */
+                            if(fieldInfo == null)
+                            {
+                                Console.WriteLine($"Field[{field.ExpectedFieldName}] not found in component [{component.GetType().Name}]");
+                                break;
+                            }
+
+                            /*
+                             * Set field value
+                             */
+                            fieldInfo.SetValue(targetComponent,assets[assetIndex]);
                             break;
                         default:
                             break;

@@ -31,6 +31,12 @@ namespace Vex.Engine
             World currentWorld = Session.CurrentWorld;
 
             /*
+             * Validate world
+             */
+            if (currentWorld == null)
+                return;
+
+            /*
             * Get world graphics view
             */
             WorldGraphicsView graphicsView = currentWorld.GetView<WorldGraphicsView>();

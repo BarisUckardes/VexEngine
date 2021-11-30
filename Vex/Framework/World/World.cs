@@ -34,7 +34,7 @@ namespace Vex.Framework
             /*
              * Destroy current world
              */
-            Session.CurrentWorld.Destroy();
+            Session.CurrentWorld?.Destroy();
 
             /*
              * Create world out of world content
@@ -42,6 +42,31 @@ namespace Vex.Framework
             World newWorld = worldContent.CreateFromThis(Session);
             newWorld.ID = worldContent.ID;
             newWorld.Name = worldContent.Name;
+
+            /*
+             * Register world 
+             */
+            newWorld.Register();
+        }
+        public static void LoadAndSwitch(StaticWorldContent content)
+        {
+            /*
+            * Destroy current world
+            */
+            Session.CurrentWorld?.Destroy();
+
+            /*
+             * Validate content
+             */
+            if (content == null)
+                return;
+
+            /*
+            * Create world out of world content
+            */
+            World newWorld = content.CreateFromThis(Session);
+            newWorld.ID = content.ID;
+            newWorld.Name = content.Name;
 
             /*
              * Register world 

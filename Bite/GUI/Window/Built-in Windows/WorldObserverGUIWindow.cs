@@ -46,8 +46,10 @@ namespace Bite.GUI
             /*
              * Validate and render world
              */
-            if(m_TargetWorld != null)
-            RenderWorldView(m_TargetWorld);
+            if (m_TargetWorld != null)
+                RenderWorldView(m_TargetWorld);
+            else
+                GUIRenderCommands.CreateText("No world to be observed","w");
         }
 
         private void RenderWorldView(World world)
@@ -89,6 +91,36 @@ namespace Bite.GUI
             if(GUIRenderCommands.CreateButton("Save","save_world_btn"))
             {
                 Session.UpdateDomainAsset(m_TargetWorld.ID, m_TargetWorld);
+            }
+
+            /*
+             * Create world create menu popup
+             */
+            if (GUIEventCommands.IsWindowHovered() && GUIEventCommands.IsMouseRightButtonClicked())
+            {
+                GUIRenderCommands.SignalPopupCreate("World_Create_Menu");
+            }
+
+            /*
+             * Render world create menu
+             */
+            if (GUIRenderCommands.CreatePopup("World_Create_Menu"))
+            {
+                RenderCreateMenu();
+                GUIRenderCommands.FinalizePopup();
+            }
+
+        }
+
+        private void RenderCreateMenu()
+        {
+            if(GUIRenderCommands.CreateMenu("Create", "world_create_menu"))
+            {
+                if(GUIRenderCommands.CreateMenuItem("Entity","w_create_entity"))
+                {
+                    Entity newEntity = new Entity("New Entity", m_TargetWorld);
+                }
+                GUIRenderCommands.FinalizeMenu();
             }
         }
         private Texture2D m_EntityIcon;
