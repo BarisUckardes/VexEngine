@@ -26,7 +26,7 @@ namespace Bite.GUI
                     /*
                      * Validate if its a component
                      */
-                    if (!type.IsSubclassOf(typeof(Component)))
+                    if (!type.IsSubclassOf(typeof(ComponentLayout)))
                         continue;
 
                     /*

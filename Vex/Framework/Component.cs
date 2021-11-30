@@ -92,7 +92,11 @@ namespace Vex.Framework
 
         public virtual void OnLogicUpdate() { }
      
-
+        public void Destroy()
+        {
+            OnDetach();
+            IsDestroyed = true;
+        }
         private Entity m_OwnerEntity;
     }
 }

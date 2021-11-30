@@ -65,8 +65,13 @@ namespace Bite.GUI
              */
             if(GUIRenderCommands.CreateCollapsingHeader(m_TargetWorld.Name,"world_"+m_TargetWorld.ID.ToString()))
             {
-                for (int i = 0; i < entities.Length; i++)
+                for (int entityIndex = 0; entityIndex < entities.Length; entityIndex++)
                 {
+                    /*
+                     * Get entity
+                     */
+                    Entity entity = entities[entityIndex];
+
                     /*
                      * Render image
                      */
@@ -77,9 +82,19 @@ namespace Bite.GUI
                      * Render selectable
                      */
                     GUILayoutCommands.SetCursorPos(anchorPosition + new Vector2(20, 0));
-                    if (GUIRenderCommands.CreateSelectableItem(entities[i].Name, entities[i].ID.ToString()))
+                    if (GUIRenderCommands.CreateSelectableItem(entity.Name, entity.ID.ToString()))
                     {
-                        GUIObject.SignalNewObject(entities[i]);
+                        m_SelectEntity = entity;
+                        GUIObject.SignalNewObject(entity);
+                    }
+
+                    /*
+                     * Catch selected entity
+                     */
+                    if(GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsMouseRightButtonClicked())
+                    {
+                        m_SelectEntity = entity;
+                        GUIRenderCommands.SignalPopupCreate("World_Create_Entity_Popup");
                     }
                   
                 }
@@ -96,7 +111,7 @@ namespace Bite.GUI
             /*
              * Create world create menu popup
              */
-            if (GUIEventCommands.IsWindowHovered() && GUIEventCommands.IsMouseRightButtonClicked())
+            if (GUIEventCommands.IsWindowHovered() && !GUIEventCommands.IsAnyItemHavored() && GUIEventCommands.IsMouseRightButtonClicked())
             {
                 GUIRenderCommands.SignalPopupCreate("World_Create_Menu");
             }
@@ -106,24 +121,86 @@ namespace Bite.GUI
              */
             if (GUIRenderCommands.CreatePopup("World_Create_Menu"))
             {
-                RenderCreateMenu();
+                RenderCreateContextPopup();
+                GUIRenderCommands.FinalizePopup();
+            }
+
+            /*
+             * Render entity popup
+             */
+            bool isRenameEntity = false;
+            if(GUIRenderCommands.CreatePopup("World_Create_Entity_Popup"))
+            {
+                RenderEntityPopup(ref isRenameEntity);
+                GUIRenderCommands.FinalizePopup();
+            }
+
+            /*
+             * Signal rename popup
+             */
+            if (isRenameEntity)
+                GUIRenderCommands.SignalPopupCreate("World_Rename_Entity_Popup");
+
+            /*
+             * Render entity rename
+             */
+            if(GUIRenderCommands.CreatePopup("World_Rename_Entity_Popup"))
+            {
+                RenderEntityRenamePopup();
                 GUIRenderCommands.FinalizePopup();
             }
 
         }
 
-        private void RenderCreateMenu()
+        private void RenderCreateContextPopup()
         {
             if(GUIRenderCommands.CreateMenu("Create", "world_create_menu"))
             {
                 if(GUIRenderCommands.CreateMenuItem("Entity","w_create_entity"))
                 {
                     Entity newEntity = new Entity("New Entity", m_TargetWorld);
+                    GUIRenderCommands.TerminateCurrentPopup();
                 }
                 GUIRenderCommands.FinalizeMenu();
             }
         }
+        private void RenderEntityPopup(ref bool isRenameEntity)
+        {
+            if (GUIRenderCommands.CreateMenuItem("Delete", "w_delete_entity"))
+            {
+                m_SelectEntity?.Destroy();
+            }
+            if(GUIRenderCommands.CreateMenuItem("Rename", "w_delete_entity"))
+            {
+                isRenameEntity = true;
+            }
+        }
+        private void RenderEntityRenamePopup()
+        {
+            /*
+             * Render header
+             */
+            GUIRenderCommands.CreateText("Rename entity", "");
+
+            /*
+             * Render input text
+             */
+            GUIRenderCommands.CreateTextInput("", "w_i_t", ref m_EntityRenameInputText);
+
+            /*
+             * Render button
+             */
+            if(GUIRenderCommands.CreateButton("Rename","w_e_r"))
+            {
+                m_SelectEntity.Name = m_EntityRenameInputText;
+                m_EntityRenameInputText = string.Empty;
+                GUIRenderCommands.TerminateCurrentPopup();
+            }
+        }
+
+        private Entity m_SelectEntity;
         private Texture2D m_EntityIcon;
         private World m_TargetWorld;
+        private string m_EntityRenameInputText = string.Empty;
     }
 }

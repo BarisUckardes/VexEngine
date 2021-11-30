@@ -24,6 +24,7 @@ namespace Bite.GUI
             m_Entries = layoutEntries;
             m_Session = session;
             s_Current = this;
+           
         }
       
         public ComponentLayout FetchComponentLayout(Type componentType)

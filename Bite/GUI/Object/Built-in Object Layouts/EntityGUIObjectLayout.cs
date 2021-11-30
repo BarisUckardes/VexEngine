@@ -42,9 +42,10 @@ namespace Bite.GUI
             /*
              * Validate entity
              */
-            if(m_TargetEntity == null)
+            if(m_TargetEntity == null || m_TargetEntity.IsDestroyed)
             {
                 GUIRenderCommands.CreateText("This entity seems null","");
+                m_TargetEntity = null;
                 return;
             }
 
@@ -147,6 +148,7 @@ namespace Bite.GUI
                 {
                     m_TargetEntity.AddComponent(m_AllComponentTypes[componentIndex]);
                     RecreateComponentLayouts();
+                    GUIRenderCommands.TerminateCurrentPopup();
                 }
             }
             

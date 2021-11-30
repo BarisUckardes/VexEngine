@@ -198,10 +198,10 @@ namespace Vex.Framework
         public void Destroy()
         {
             /*
-             * DestVexy all components
+             * Destroy all components
              */
             foreach (Component component in m_Components)
-                component.OnDetach();
+                component.Destroy();
             m_Components.Clear();
 
             /*
@@ -209,6 +209,10 @@ namespace Vex.Framework
              */
             m_OwnerWorld.GetView<WorldLogicView>().OnEntityRemove(this);
 
+            /*
+             * Set this destroyed
+             */
+            IsDestroyed = true;
         }
 
         private List<Component> m_Components;

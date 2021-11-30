@@ -15,7 +15,7 @@ namespace Vex.Framework
         {
             Name = "Default Vex Object";
             m_ID = Guid.NewGuid();
-            m_DestVexyed = false;
+            m_Destroyed = false;
         }
 
        
@@ -49,16 +49,20 @@ namespace Vex.Framework
             }
         }
 
-        public bool IsDestVexyed
+        public bool IsDestroyed
         {
             get
             {
-                return m_DestVexyed;
+                return m_Destroyed;
+            }
+            protected set
+            {
+                m_Destroyed = value;
             }
         }
 
         private Guid m_ID;
         private string m_Name;
-        private bool m_DestVexyed;
+        private bool m_Destroyed;
     }
 }

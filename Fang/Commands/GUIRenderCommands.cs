@@ -131,7 +131,6 @@ namespace Fang.Commands
             return state;
         }
 
-
         public static bool CreateVector2Slider(string name, string code, ref Vector2 vector, float min = 0.00f, float max = 5.0f)
         {
             System.Numerics.Vector2 intermediateVec = new System.Numerics.Vector2(vector.X, vector.Y);
@@ -409,6 +408,11 @@ namespace Fang.Commands
         public static void CloseOpenFileDialog(GUIOpenFileDialogHandle handle)
         {
             handle.CloseHandle();
+        }
+
+        public static bool CreateColorPicker(string code,ref Vector4 color)
+        {
+            return ImGui.ColorPicker4("##" + code,ref color);
         }
 
 
