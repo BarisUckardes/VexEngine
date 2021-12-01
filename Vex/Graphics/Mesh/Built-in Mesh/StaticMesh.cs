@@ -6,8 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Assimp;
-using Assimp.Configs;
 
 namespace Vex.Graphics
 {

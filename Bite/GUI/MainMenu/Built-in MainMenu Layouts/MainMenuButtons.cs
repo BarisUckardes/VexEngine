@@ -17,6 +17,14 @@ namespace Bite
         {
 
         }
+        [MainMenuItem("Project/Build")]
+        public static void BuildProject()
+        {
+            /*
+             * Publish project
+             */
+
+        }
         [MainMenuItem("Project/Exit")]
         public static void ExitProject()
         {

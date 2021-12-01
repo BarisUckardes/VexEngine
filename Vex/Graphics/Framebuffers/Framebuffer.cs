@@ -152,13 +152,6 @@ namespace Vex.Graphics
             m_DetphTexture = null;
 
             /*
-             * Free render buffer
-             */
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, m_RenderbufferID);
-            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, 0, 0);
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
-
-            /*
              * Delete renderbuffer
              */
             GL.DeleteRenderbuffer(m_RenderbufferID);

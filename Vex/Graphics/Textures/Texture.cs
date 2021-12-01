@@ -14,8 +14,6 @@ namespace Vex.Graphics
     /// </summary>
     public abstract class Texture : AssetObject
     {
-       
-
         /// <summary>
         /// Returns the cpu side data
         /// </summary>
@@ -81,17 +79,13 @@ namespace Vex.Graphics
         public override void Destroy()
         {
             /*
-             * Free texture memory
-             */
-            GL.BindTexture(TextureTarget.Texture2D, m_Handle);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)m_Format, 0, 0, 0, (PixelFormat)m_Format, PixelType.UnsignedByte, IntPtr.Zero);
-            GL.BindTexture(TextureTarget.Texture2D, 0);
-
-            /*
              * Delete texture handle
              */
             GL.DeleteTexture(m_Handle);
 
+            /*
+             * Free cpu side data if have one
+             */
             m_CpuData = null;
         }
 
