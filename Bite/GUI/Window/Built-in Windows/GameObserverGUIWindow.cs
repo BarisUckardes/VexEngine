@@ -88,6 +88,14 @@ namespace Bite.GUI
                 m_PrimaryObserver.AspectRatio = textureWidth / textureHeight;
 
             /*
+             * Validate aspect ratio
+             */
+            if(m_PrimaryObserver!= null && m_PrimaryObserver.AspectRatio < 0)
+            {
+                m_PrimaryObserver.AspectRatio = 1.0f;
+            }
+
+            /*
              * Calculate texture size
              */
             Vector2 currentTextureSize = new Vector2(textureWidth, textureHeight - 40);

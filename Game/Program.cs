@@ -13,15 +13,23 @@ namespace Game
         static void Main(string[] args)
         {
             /*
+             * Get executable root directory
+             */
+            string rootDirectory = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+            /*
             * Initialize application create parameters
             */
             WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Normal, "Vex Engine", 100, 100, 1280, 720, true);
             WindowUpdateParams windowUpdateParams = new WindowUpdateParams(1.0f / 60.0f, 1.0f / 60.0f, false);
 
+            Console.WriteLine("Game start loc: " + rootDirectory + @"\UserGameCode.dll");
+            Console.WriteLine("Domain loc: " + rootDirectory);
+
             /*
              * Create application
              */
-            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture, new List<string>() { Assembly.GetEntryAssembly().Location + @"\UserGameCode.dll" }, "", args);
+            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture, new List<string>() { rootDirectory + @"\UserGameCode.dll" }, rootDirectory, args);
 
 
             /*
