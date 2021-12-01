@@ -72,6 +72,12 @@ namespace Vex.Types
             Type inspectingType = targetType;
 
             /*
+             * Validate inspecting type
+             */
+            if (inspectingType == null)
+                return null;
+
+            /*
              * Iterate each base type until reaching vexobject
              */
             while (inspectingType != typeof(VexObject))

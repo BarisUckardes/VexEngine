@@ -36,10 +36,6 @@ namespace Vex.Framework
              * Set entities
              */
             m_EntityEntries = entityPairs;
-            foreach(Tuple<string, Guid> entityEntry in entityPairs)
-            {
-                Console.WriteLine($"    Entity: [{entityEntry.Item1}]:[{entityEntry.Item2.ToString()}]");
-            }
 
             /*
              * Set existing types
@@ -51,17 +47,12 @@ namespace Vex.Framework
                  */
                 Type matchedType = EmittedComponentTypes.GetTypeViaName(componentTypeName);
                 m_ComponentTypeEntries.Add(matchedType);
-                Console.WriteLine($"    Component Type: [{matchedType.ToString()}]");
             }
 
             /*
              * Set asset ids
              */
             m_AssetEntries = assetIds;
-            foreach(Guid assetId in assetIds)
-            {
-                Console.WriteLine($"    Asset ID: [{assetId.ToString()}]");
-            }
 
             /*
              * Create component meta datas
@@ -80,7 +71,6 @@ namespace Vex.Framework
                  * Create new component meta data
                  */
                 m_ComponentEntries.Add(new StaticComponentEntry(localOwnerEntityIndex, localTypeIndex, componentName, componentID));
-                Console.WriteLine($"    Component Entry: [{localOwnerEntityIndex}][{localTypeIndex}] [{componentName}] [{componentID.ToString()}]");
             }
 
             /*
@@ -97,15 +87,12 @@ namespace Vex.Framework
                 /*
                  * Create required parameters
                  */
-                Console.WriteLine("Component index: " + localComponentIndex);
-                Console.WriteLine("Type id : " + m_ComponentEntries[localComponentIndex].LocalTypeID);
                 Type targetComponentType = m_ComponentTypeEntries[m_ComponentEntries[localComponentIndex].LocalTypeID];
 
                 /*
                  * Register component data
                  */
                 m_ComponentDatas.Add(new StaticWorldComponentData(localComponentIndex,targetComponentType,fieldEntries));
-                Console.WriteLine($"    Component Index: [{localComponentIndex}] [{targetComponentType.Name}]");
             }
             Console.WriteLine("Creating static world content... DONE");
         }
@@ -214,9 +201,19 @@ namespace Vex.Framework
                 }
 
                 /*
+                 * Validate component type
+                 */
+                if (targetComponentType == null)
+                {
+                    components.Add(null);
+                    continue;
+                }
+                    
+
+                /*
                  * Create component
                  */
-                Component component = ownerEntity.AddComponent(m_ComponentTypeEntries[componentEntry.LocalTypeID]);
+                Component component = ownerEntity.AddComponent(targetComponentType);
                 component.Name = componentEntry.ComponentName;
                 component.ID = componentEntry.ComonentID;
 
@@ -235,6 +232,13 @@ namespace Vex.Framework
                  * Get target component
                  */
                 Component targetComponent = components[componentData.LocalComponentIndex];
+
+                /*
+                 * Validate target component
+                 */
+                if (targetComponent == null)
+                    continue;
+
                 /*
                  * Get Fields
                  */

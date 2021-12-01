@@ -107,7 +107,6 @@ namespace Vex.Framework
              */
             Component component = Activator.CreateInstance(type) as Component;
 
-
             /*
              * Set this component as its owner entity
              */
