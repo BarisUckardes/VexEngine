@@ -20,10 +20,7 @@ namespace Bite
         [MainMenuItem("Project/Build")]
         public static void BuildProject()
         {
-            /*
-             * Publish project
-             */
-
+            GUIWindow.CreateWindow(typeof(BuildProjectGUIWindow));
         }
         [MainMenuItem("Project/Exit")]
         public static void ExitProject()

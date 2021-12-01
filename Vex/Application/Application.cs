@@ -19,7 +19,7 @@ namespace Vex.Application
     /// </summary>
     public sealed class Application
     {
-        public Application(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams,CultureInfo targetCultureInfo,List<string> additionalLibraries,string targetDomainRootDirectory,string[] commandLineArguments)
+        public Application(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams,CultureInfo targetCultureInfo,List<string> additionalLibraries,string targetDomainRootDirectory,string[] commandLineArguments,bool startWorldImmediately = false)
         {
             /*
             * Initialize local lists
@@ -49,6 +49,11 @@ namespace Vex.Application
              * Set application target culture info
              */
             m_TargetCultureInfo = targetCultureInfo;
+
+            /*
+             * Set immediate mode
+             */
+            m_StartWorldImmediately = startWorldImmediately;
         }
 
         /// <summary>
@@ -78,6 +83,7 @@ namespace Vex.Application
         /// </summary>
         public void Run()
         {
+           
             /*
              * Create exit state
              */
@@ -102,7 +108,12 @@ namespace Vex.Application
              */
             string tempSessionPath = PlatformPaths.LocalApplicationData + @"\Vex\TempSession\";
 
+            /*
+             * Create temp session mode
+             */
             Directory.CreateDirectory(tempSessionPath);
+
+           
 
             /*
              * Load additonal libraries
@@ -158,6 +169,36 @@ namespace Vex.Application
              * Create session
              */
             m_Session = new ApplicationSession(m_WindowInterface);
+
+            /*
+            * Validate immediate mode
+            */
+            if (m_StartWorldImmediately)
+            {
+                /*
+                 * Validate immediate mode file
+                 */
+                if (!File.Exists(PlatformPaths.DomainRootDirectoy + @"\ImmediateWorld.vsettings"))
+                {
+                    hasExitRequest = true;
+                    exitType = ApplicationExitType.SessionRequest;
+                    exitMessage = "No immediate world file for immediate mode";
+
+                }
+                else
+                {
+                    /*
+                     * Get world id
+                     */
+                    Guid worldID = Guid.Parse(File.ReadAllText(PlatformPaths.DomainRootDirectoy + @"\ImmediateWorld.vsettings"));
+
+                    /*
+                     * Load and switch first world
+                     */
+                    World.LoadAndSwitch(worldID);
+                }
+
+            }
 
             /*
              * Detach modules
@@ -334,5 +375,6 @@ namespace Vex.Application
         private string[] m_CommandLineArguments;
         private string m_TargetDomainRootDirectory;
         private string m_ProjectName;
+        private bool m_StartWorldImmediately;
     }
 }

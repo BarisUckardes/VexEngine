@@ -19,6 +19,7 @@ namespace Vex.Graphics
             Format = format;
             InternalFormat = internalFormat;
 
+            //FramebufferID = 0;
             /*
              * Create texture
              */
