@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fang.Commands;
 using ImGuiNET;
+using Vex.Asset;
 using Vex.Platform;
 
 namespace Bite.GUI
@@ -21,7 +22,8 @@ namespace Bite.GUI
 
         public override void OnLayoutBegin()
         {
-
+            m_AllWorldAssets = Session.GetAssets(AssetType.World);
+            Console.WriteLine("LAYOUT BEGİn++++++++++++");
         }
 
         public override void OnLayoutFinalize()
@@ -42,7 +44,7 @@ namespace Bite.GUI
                 {
                     if (GUIRenderCommands.CreateSelectableItem(m_SupportedPlatforms[platformIndex], platformIndex.ToString()))
                     {
-
+                        m_SelectedPlatformIndex = platformIndex;
                     }
                 }
                     GUIRenderCommands.FinalizeCombo();
@@ -59,23 +61,46 @@ namespace Bite.GUI
                 {
                     if (GUIRenderCommands.CreateSelectableItem(m_SupportedArchitectures[architectureIndex],architectureIndex.ToString()))
                     {
-
+                        m_SelectedArchitectureIndex = architectureIndex;
                     }
                 }
 
+                GUIRenderCommands.FinalizeCombo();
+            }
+
+            /*
+             * Select startup world
+             */
+            ImGui.SetNextItemWidth(ImGui.CalcTextSize("Select target architecture").X);
+            if (GUIRenderCommands.CreateCombo("",m_AllWorldAssets[m_SelectedWorldIndex].Name,"sltw"))
+            {
+                int index = 0;
+                foreach(Asset asset in m_AllWorldAssets)
+                {
+                    if(GUIRenderCommands.CreateSelectableItem(asset.Name,asset.AssetID.ToString()))
+                    {
+                        m_SelectedWorldIndex = index;
+                    }
+                    index++;
+                }
                 GUIRenderCommands.FinalizeCombo();
             }
             /*
              * Render output folder
              */
             string outputFolder = PlatformPaths.DomainRootDirectoy + @"\TestBuild";
+
+            /*
+             * Create output folder
+             */
+            Directory.CreateDirectory(outputFolder);
             
             /*
              * Render build button
              */
             if(GUIRenderCommands.CreateButton("Build","buld"))
             {
-                TryBuild("win-x64",outputFolder);
+                TryBuild("win-x64",outputFolder,m_AllWorldAssets[m_SelectedWorldIndex].AssetID);
             }
         }
 
@@ -83,7 +108,7 @@ namespace Bite.GUI
         {
 
         }
-        private void TryBuild(string command,string outputFolder)
+        private void TryBuild(string command,string outputFolder,Guid startWorldID)
         {
             /*
              * Get user project path
@@ -105,26 +130,44 @@ namespace Bite.GUI
              * Create visual studio project
              */
             commandLineProcess.StandardInput.WriteLine("cd " + userGameCodePath);
-            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {command} --output ./PublishFolder"); // builds
+            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {command} --self-contained --output ./PublishFolder"); // builds
 
             commandLineProcess.StandardInput.Flush();
             commandLineProcess.StandardInput.Close();
             commandLineProcess.WaitForExit();
 
             /*
-             * Copy to build folder
+             * Copy buid files
              */
-            File.Copy(userGameCodePath + @"\PublishFolder\UserGameCode.dll", outputFolder +@"\UserGameCode.dll",true);
+            PlatformFile.CopyDirectory(userGameCodePath + @"\PublishFolder\",outputFolder);
 
             /*
-             * Copy vex game files
+             * Create domain folder
              */
-           // File.Copy()
+            Directory.CreateDirectory(outputFolder + @"\Domain");
+
+            /*
+             * Copy domain files
+             */
+            PlatformFile.CopyDirectory(PlatformPaths.DomainDirectory, outputFolder + @"\Domain");
+
+            /*
+             * Copy game executable
+            */
+            PlatformFile.CopyDirectory(PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\PlatformLaunchers\Windows", outputFolder);
+
+            /*
+             * Create immediate world id file
+             */
+            File.WriteAllText(outputFolder + @"\ImmediateWorld.vsettings", startWorldID.ToString());
+         
         }
 
-        private int m_SelectedPlatformIndex;
-        private int m_SelectedArchitectureIndex;
+        private int m_SelectedPlatformIndex = 0;
+        private int m_SelectedArchitectureIndex = 0;
+        private int m_SelectedWorldIndex = 0;
         private string[] m_SupportedPlatforms = new string[] { "Windows", "Linux","Mac","PS5","Android","IOS" };
         private string[] m_SupportedArchitectures = new string[] { "x86", "x64" };
+        private List<Asset> m_AllWorldAssets;
     }
 }

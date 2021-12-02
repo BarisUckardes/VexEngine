@@ -76,6 +76,24 @@ namespace Vex.Asset
 
             return null;
         }
+        public VexObject GetOrLoadAsset(in string name,bool forceLoad = false)
+        {
+            /*
+             * Try find record
+             */
+            for (int assetIndex = 0; assetIndex < m_Assets.Count; assetIndex++)
+            {
+                if (m_Assets[assetIndex].Name == name)
+                {
+                    if (!m_Assets[assetIndex].IsLoaded || forceLoad)
+                        m_Assets[assetIndex].Load(this);
+
+                    return m_Assets[assetIndex].Object;
+                }
+            }
+
+            return null;
+        }
 
         public bool FindAsset(in Guid id,out Asset asset)
         {
@@ -89,6 +107,32 @@ namespace Vex.Asset
             }
             asset = null;
             return false;
+        }
+        public List<Asset> CollectAllAssetsWithViaType(AssetType type)
+        {
+            /*
+             * Initialize asset list
+             */
+            List<Asset> assets = new List<Asset>();
+
+            /*
+             * Iterate and try find a match
+             */
+            for(int assetIndex = 0;assetIndex<m_Assets.Count;assetIndex++)
+            {
+                /*
+                 * Get asset
+                 */
+                Asset asset = m_Assets[assetIndex];
+
+                /*
+                 * Validate match
+                 */
+                if (asset.Type == type)
+                    assets.Add(asset);
+            }
+
+            return assets;
         }
         public void UpdateAssetPath(string oldRoot,string newRoot,in Guid id)
         {

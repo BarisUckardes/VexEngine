@@ -364,7 +364,27 @@ namespace Bite.Core
         {
             return m_ApplicationSession.AssetPool.GetOrLoadAsset(id);
         }
-     
+
+        /// <summary>
+        /// Requests a load or get a specific asset via its name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public VexObject GetOrLoadAsset(in string name)
+        {
+            return m_ApplicationSession.AssetPool.GetOrLoadAsset(name);
+        }
+
+        /// <summary>
+        /// Returns all the assets with the same asset type specified as parameter
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<Asset> GetAssets(AssetType type)
+        {
+            return m_ApplicationSession.AssetPool.CollectAllAssetsWithViaType(type);
+        }
+
         /// <summary>
         /// Gets a already loaded editor resource
         /// </summary>

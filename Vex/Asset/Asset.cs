@@ -62,6 +62,13 @@ namespace Vex.Asset
                 return m_AssetID;
             }
         }
+        public AssetType Type
+        {
+            get
+            {
+                return m_AssetType;
+            }
+        }
         /// <summary>
         /// Returns whether this asset is already loaded
         /// </summary>
