@@ -8,6 +8,9 @@ using Vex.Platform;
 
 namespace Bite.Core
 {
+    /// <summary>
+    /// A core command which loads the editor's last word settings
+    /// </summary>
     public sealed class LastWorldLoaderCommand : CoreCommand
     {
         public override void OnAttach()

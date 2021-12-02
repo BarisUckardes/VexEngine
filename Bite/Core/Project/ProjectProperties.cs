@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Bite.Core
 {
+    /// <summary>
+    /// Utility class for the user to collect project properties
+    /// </summary>
     public static class ProjectProperties
     {
+        /// <summary>
+        /// Returns the project name
+        /// </summary>
         public static string ProjectName
         {
             get

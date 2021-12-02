@@ -7,6 +7,9 @@ using Vex.Asset;
 using Vex.Framework;
 namespace Bite.Core
 {
+    /// <summary>
+    /// Represents a single pre-loaded editor resource
+    /// </summary>
     public sealed class EditorResource
     {
         public EditorResource(VexObject resource,string name,AssetType type)
@@ -24,6 +27,9 @@ namespace Bite.Core
             m_Name = name;
         }
 
+        /// <summary>
+        /// Returns the resource object
+        /// </summary>
         public VexObject Resource
         {
             get
@@ -31,6 +37,10 @@ namespace Bite.Core
                 return m_Resource;
             }
         }
+
+        /// <summary>
+        /// Returns the resource object's name
+        /// </summary>
         public string Name
         {
             get
@@ -38,6 +48,9 @@ namespace Bite.Core
                 return m_Name;
             }
         }
+        /// <summary>
+        /// Returns the resource object's asset type
+        /// </summary>
         public AssetType Type
         {
             get

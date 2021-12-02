@@ -53,7 +53,7 @@ namespace Bite.Module
              */
             foreach (CoreCommand command in m_CoreCommands)
             {
-                command.EditorSession = m_Session;
+                command.SetEditorSession(m_Session);
             }
 
             /*

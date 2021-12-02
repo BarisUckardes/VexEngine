@@ -11,7 +11,10 @@ using Vex.Types;
 
 namespace Bite.GUI
 {
-    public sealed class DefaultComponentLayout : ComponentLayout
+    /// <summary>
+    /// A component layout which handles the component which has no custom component gui layouts
+    /// </summary>
+    internal sealed class DefaultComponentLayout : ComponentLayout
     {
         public DefaultComponentLayout(DefaultComponentLayoutInfo info)
         {

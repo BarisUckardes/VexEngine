@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Bite.GUI
 {
+    /// <summary>
+    /// Represents a single node in a menu view
+    /// </summary>
     public class MenuItemNode
     {
 
@@ -17,6 +20,10 @@ namespace Bite.GUI
             m_MethodInfo = methodInfo;
             m_SubNodes = new List<MenuItemNode>();
         }
+
+        /// <summary>
+        /// Returns the sub menu nodes
+        /// </summary>
         public List<MenuItemNode> SubNodes
         {
             get
@@ -24,6 +31,10 @@ namespace Bite.GUI
                 return m_SubNodes;
             }
         }
+
+        /// <summary>
+        /// Returns the title/name of this node
+        /// </summary>
         public string Name
         {
             get
@@ -31,6 +42,10 @@ namespace Bite.GUI
                 return m_Name;
             }
         }
+
+        /// <summary>
+        /// Returns the menu node type
+        /// </summary>
         public MenuItemNodeType Type
         {
             get
@@ -38,6 +53,10 @@ namespace Bite.GUI
                 return m_Type;
             }
         }
+
+        /// <summary>
+        /// Renders the node and sub node hieracy recursively
+        /// </summary>
         public void RenderNode()
         {
             if(m_SubNodes.Count > 0)
@@ -59,11 +78,10 @@ namespace Bite.GUI
                 }
             }
         }
-        public void Execute()
-        {
-            m_MethodInfo.Invoke(null, null);
-        }
 
+        /// <summary>
+        /// Creates node properties.Called after creating the menu item tree
+        /// </summary>
         public void Validate()
         {
             /*
@@ -80,6 +98,17 @@ namespace Bite.GUI
             foreach (MenuItemNode node in m_SubNodes)
                 node.Validate();
         }
+
+
+        /// <summary>
+        /// Executes the target function
+        /// </summary>
+        protected void Execute()
+        {
+            m_MethodInfo.Invoke(null, null);
+        }
+
+     
 
         private List<MenuItemNode> m_SubNodes;
         private MenuItemNodeType m_Type;

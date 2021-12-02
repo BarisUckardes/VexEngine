@@ -10,6 +10,9 @@ using Vex.Graphics;
 
 namespace Bite.Core
 {
+    /// <summary>
+    /// A session which encapsulates editor operations and application accesss
+    /// </summary>
     public sealed class EditorSession
     {
         public EditorSession(ApplicationSession applicationSession)

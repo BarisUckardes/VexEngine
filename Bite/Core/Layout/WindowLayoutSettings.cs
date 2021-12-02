@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace Bite.Core
 {
+
+    /// <summary>
+    /// Repesetns the editor's windw layout settings
+    /// </summary>
     public class WindowLayoutSettings
     {
+
+        /// <summary>
+        /// Returns a default window layout settings
+        /// </summary>
+        /// <returns></returns>
         public static List<WindowLayoutSettings> CreateDefaultLayout()
         {
             List<WindowLayoutSettings> layouts = new List<WindowLayoutSettings>();
@@ -34,7 +43,5 @@ namespace Bite.Core
         public string AssemblyName;
         public string TypeName;
         public Guid ID;
-
-       
     }
 }

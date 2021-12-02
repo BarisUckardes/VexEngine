@@ -9,6 +9,9 @@ using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 namespace Bite.Core
 {
+    /// <summary>
+    /// File resolver for project file
+    /// </summary>
     public sealed class ProjectFileResolver : AssetResolver
     {
         public override Type ExpectedAssetType

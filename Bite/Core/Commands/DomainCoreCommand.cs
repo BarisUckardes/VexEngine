@@ -8,18 +8,9 @@ using System.Diagnostics;
 using Vex.Platform;
 namespace Bite.Core
 {
-    /*
-     * Template domain folder
-     * PVexjectSettings
-     * Code
-     *     -Vex.dll
-     *     -Bite.dll
-     *     -UserGameCode.dll
-     *     -UserEditorCode.dll
-     * Domain
-     *       -Folders
-     *       -UserEditorCode 
-     */
+    /// <summary>
+    /// A core command which loads and unloads editor domain view
+    /// </summary>
     public sealed class DomainCoreCommand : CoreCommand
     {
         public override void OnAttach()

@@ -9,6 +9,9 @@ using Microsoft.VisualBasic;
 
 namespace Bite.Core
 {
+    /// <summary>
+    /// Represents a folder view from the physical domain
+    /// </summary>
     public class DomainFolderView
     {
         public DomainFolderView(DomainFolderView parentFolder,string selfPath,string[] files,string[] folders)
@@ -99,6 +102,10 @@ namespace Bite.Core
             m_Files = new List<DomainFileView>();
             m_SubFolders = new List<DomainFolderView>();
         }
+
+        /// <summary>
+        /// Returns the sub folders of this folder view 
+        /// </summary>
         public IReadOnlyCollection<DomainFolderView> SubFolders
         {
             get
@@ -106,6 +113,10 @@ namespace Bite.Core
                 return m_SubFolders.AsReadOnly();
             }
         }
+
+        /// <summary>
+        /// Returns the files of this folder view
+        /// </summary>
         public IReadOnlyCollection<DomainFileView> Files
         {
             get
@@ -113,6 +124,10 @@ namespace Bite.Core
                 return m_Files.AsReadOnly();
             }
         }
+
+        /// <summary>
+        /// Returns the parent folder.(If have any)
+        /// </summary>
         public DomainFolderView ParentFolder
         {
             get
@@ -120,6 +135,10 @@ namespace Bite.Core
                 return m_ParentFolder;
             }
         }
+
+        /// <summary>
+        /// Returns the unique id of this folder
+        /// </summary>
         public Guid ID
         {
             get
@@ -127,6 +146,10 @@ namespace Bite.Core
                 return m_ID;
             }
         }
+
+        /// <summary>
+        /// Returns the name of the folder
+        /// </summary>
         public string Name
         {
             get
@@ -134,6 +157,10 @@ namespace Bite.Core
                 return m_Name;
             }
         }
+
+        /// <summary>
+        /// Returns the full path of the folder
+        /// </summary>
         public string FolderPath
         {
             get
@@ -141,6 +168,12 @@ namespace Bite.Core
                 return m_Path;
             }
         }
+
+        /// <summary>
+        /// Renames the folder
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="session"></param>
         public void Rename(string name,EditorSession session)
         {
             /*
@@ -163,15 +196,35 @@ namespace Bite.Core
              */
             SignalRename(m_Path,newPath,session);
         }
+
+        /// <summary>
+        /// Creates new sub folder
+        /// </summary>
+        /// <param name="folderName"></param>
         public void CreateNewSubFolder(string folderName)
         {
             m_SubFolders.Add(new DomainFolderView(this, m_Path + @"\" + folderName, folderName));
         }
+
+        /// <summary>
+        /// Creates anew file
+        /// </summary>
+        /// <param name="parentFolder"></param>
+        /// <param name="fileName"></param>
+        /// <param name="definitionAbsolutePath"></param>
+        /// <param name="assetAbsolutePath"></param>
+        /// <param name="definition"></param>
         public void CreateNewFile(DomainFolderView parentFolder,string fileName,string definitionAbsolutePath,string assetAbsolutePath,in AssetDefinition definition)
         {
             m_Files.Add(new DomainFileView(definition,parentFolder, DomainFileState.Valid, definitionAbsolutePath, assetAbsolutePath));
         }
 
+        /// <summary>
+        /// Renames the folder files recursively.(Sub folder and files are included)
+        /// </summary>
+        /// <param name="oldRoot"></param>
+        /// <param name="newRoot"></param>
+        /// <param name="session"></param>
         private void SignalRename(string oldRoot,string newRoot,EditorSession session)
         {
             /*

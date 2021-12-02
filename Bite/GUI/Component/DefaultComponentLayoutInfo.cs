@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using System.Reflection;
 namespace Bite.GUI
 {
-    public readonly struct DefaultComponentLayoutInfo
+    /// <summary>
+    /// Data volume for defualt component layout
+    /// </summary>
+    internal readonly struct DefaultComponentLayoutInfo
     {
 
         public DefaultComponentLayoutInfo(FieldInfo[] fieldInfo,PropertyInfo[] propertyInfo,Type targetComponentType)
@@ -16,8 +19,19 @@ namespace Bite.GUI
             TargetComponentType = targetComponentType;
         }
 
+        /// <summary>
+        /// Target component type which has no custom componen layout
+        /// </summary>
         public readonly Type TargetComponentType;
+
+        /// <summary>
+        /// All the fields which are exposable
+        /// </summary>
         public readonly FieldInfo[] FieldInfo;
+
+        /// <summary>
+        /// All the properties which are exosable
+        /// </summary>
         public readonly PropertyInfo[] PropertyInfo;
 
        

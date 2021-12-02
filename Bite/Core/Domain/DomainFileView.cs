@@ -9,6 +9,9 @@ using Vex.Framework;
 
 namespace Bite.Core
 {
+    /// <summary>
+    /// Represents a file view from the physical domain
+    /// </summary>
     public sealed class DomainFileView
     {
         public DomainFileView(in AssetDefinition definition,DomainFolderView parentFolder,DomainFileState fileState,string definitionAbsolutePath,string assetAbsolutePath)
@@ -22,6 +25,9 @@ namespace Bite.Core
             m_AssetType = definition.Type;
         }
 
+        /// <summary>
+        /// Returns the target object which this file view targets
+        /// </summary>
         public VexObject TargetAssetObject
         {
             get
@@ -30,6 +36,9 @@ namespace Bite.Core
             }
         }
 
+        /// <summary>
+        /// Returns the asset id of this file view
+        /// </summary>
         public Guid AssetID
         {
             get
@@ -37,6 +46,10 @@ namespace Bite.Core
                 return m_AssetID;
             }
         }
+
+        /// <summary>
+        /// Returns the absolute path of the defintion this view targets
+        /// </summary>
         public string DefinitionAbsolutePath
         {
             get
@@ -44,6 +57,10 @@ namespace Bite.Core
                 return m_DefinitonAbsolutePath;
             }
         }
+
+        /// <summary>
+        /// Returns the absolute path of the asset this file view targets
+        /// </summary>
         public string AssetAbsolutePath
         {
             get
@@ -51,6 +68,11 @@ namespace Bite.Core
                 return m_AssetAbsolutePath;
             }
         }
+
+
+        /// <summary>
+        /// Returns the asset name of an asset which this file view targets
+        /// </summary>
         public string AssetName
         {
             get
@@ -58,6 +80,10 @@ namespace Bite.Core
                 return m_AssetName;
             }
         }
+
+        /// <summary>
+        /// Returns the asset type of an asset which this file view targets
+        /// </summary>
         public AssetType AssetType
         {
             get
@@ -65,6 +91,10 @@ namespace Bite.Core
                 return m_AssetType;
             }
         }
+
+        /// <summary>
+        /// Returns the file state of this file
+        /// </summary>
         public DomainFileState FileState
         {
             get
@@ -72,6 +102,11 @@ namespace Bite.Core
                 return m_FileState;
             }
         }
+
+        /// <summary>
+        /// Tries to laod this file view's target asset
+        /// </summary>
+        /// <param name="session"></param>
         public void TryLoad(EditorSession session)
         {
             if(!m_Loaded)
@@ -90,6 +125,12 @@ namespace Bite.Core
                     m_Loaded = false;
             }
         }
+
+        /// <summary>
+        /// Renames this file view along with the physical target
+        /// </summary>
+        /// <param name="newName"></param>
+        /// <param name="session"></param>
         public void Rename(string newName,EditorSession session)
         {
             /*
@@ -109,6 +150,13 @@ namespace Bite.Core
 
             session.RenameAsset(m_AssetID,newName);
         }
+
+        /// <summary>
+        /// An ınternal function
+        /// </summary>
+        /// <param name="oldRoot"></param>
+        /// <param name="newRoot"></param>
+        /// <param name="session"></param>
         internal void RenamePaths(string oldRoot,string newRoot,EditorSession session)
         {
             /*

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 namespace Bite.Core
 {
+    /// <summary>
+    /// A view which represents the physical domain
+    /// </summary>
     public class DomainView
     {
         public DomainView(string domainPath)
@@ -20,6 +23,10 @@ namespace Bite.Core
              */
             m_RootFolder = CollectDomainFolders(domainPath);
         }
+
+        /// <summary>
+        /// Returns the main/root folder of the domain
+        /// </summary>
         public DomainFolderView RootFolder
         {
             get
@@ -27,6 +34,12 @@ namespace Bite.Core
                 return m_RootFolder;
             }
         }
+
+        /// <summary>
+        /// Returns the domain folders
+        /// </summary>
+        /// <param name="domainFolderPath"></param>
+        /// <returns></returns>
         private DomainFolderView CollectDomainFolders(string domainFolderPath)
         {
             /*
@@ -51,6 +64,9 @@ namespace Bite.Core
             return folder;
         }
 
+        /// <summary>
+        /// Disposes the domain
+        /// </summary>
         internal void Shutdown()
         {
 

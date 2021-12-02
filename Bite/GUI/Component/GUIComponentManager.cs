@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace Bite.GUI
 {
+    /// <summary>
+    /// A manager which handles component layout creation and handling
+    /// </summary>
     public class GUIComponentManager
     {
+        /// <summary>
+        /// Returns the current component manager
+        /// </summary>
         public static GUIComponentManager Current
         {
             get
@@ -27,6 +33,11 @@ namespace Bite.GUI
            
         }
       
+        /// <summary>
+        /// Tries to create type target specific component layout.If non found will create a default component layout instead
+        /// </summary>
+        /// <param name="componentType"></param>
+        /// <returns></returns>
         public ComponentLayout FetchComponentLayout(Type componentType)
         {
             /*

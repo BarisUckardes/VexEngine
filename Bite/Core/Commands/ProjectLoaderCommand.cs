@@ -8,6 +8,9 @@ using Vex.Platform;
 using YamlDotNet.Serialization;
 namespace Bite.Core
 {
+    /// <summary>
+    /// A core command which loads project file
+    /// </summary>
     public sealed class ProjectLoaderCommand : CoreCommand
     {
         public override void OnAttach()

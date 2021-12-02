@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Bite.GUI
 {
+    /// <summary>
+    /// And attribute which binds a type to component gui layout
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class ComponentLayoutAttribute : Attribute
     {
@@ -13,6 +16,10 @@ namespace Bite.GUI
         {
             TargetType = targetType;
         }
+
+        /// <summary>
+        /// The type which gui component layout targets
+        /// </summary>
         public Type TargetType { get; set; }
     }
 }

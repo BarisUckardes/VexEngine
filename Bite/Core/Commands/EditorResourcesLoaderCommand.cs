@@ -10,6 +10,9 @@ using Vex.Graphics;
 
 namespace Bite.Core
 {
+    /// <summary>
+    /// A core command which loads editor's intial resources on startup and unloads them
+    /// </summary>
     public sealed class EditorResourcesLoaderCommand : CoreCommand
     {
         
