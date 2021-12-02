@@ -20,17 +20,18 @@ namespace Bite.GUI
             /*
              * Gather main menu attributes
              */
-            Assembly currentAssembly = Assembly.GetExecutingAssembly();
-
-            foreach(Type type in currentAssembly.GetTypes())
+            foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach(MethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
+                foreach (Type type in assembly.GetTypes())
                 {
-                    Attribute attribute = method.GetCustomAttribute(typeof(MainMenuItemAttribute));
-                    if(attribute != null)
+                    foreach (MethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
                     {
-                        MainMenuItemAttribute foundAttribute = (MainMenuItemAttribute)method.GetCustomAttribute(typeof(MainMenuItemAttribute));
-                        m_AttributeEntries.Add(new MainMenuItemEntry(foundAttribute.Category,method));
+                        Attribute attribute = method.GetCustomAttribute(typeof(MainMenuItemAttribute));
+                        if (attribute != null)
+                        {
+                            MainMenuItemAttribute foundAttribute = (MainMenuItemAttribute)method.GetCustomAttribute(typeof(MainMenuItemAttribute));
+                            m_AttributeEntries.Add(new MainMenuItemEntry(foundAttribute.Category, method));
+                        }
                     }
                 }
             }

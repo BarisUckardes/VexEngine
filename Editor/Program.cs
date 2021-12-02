@@ -34,7 +34,7 @@ namespace Game
             /*
              * Create additonal library paths
              */
-            List<string> additonalLibraries = new List<string>() { targetProjectDirectory + @"\CodeBase\UserGameCode\bin\debug\net6.0\UserGameCode.dll" };
+            List<string> additonalLibraries = new List<string>() { targetProjectDirectory + @"\CodeBase\UserGameCode\bin\debug\net6.0\UserGameCode.dll", targetProjectDirectory + @"\CodeBase\UserEditorCode\bin\debug\net6.0\UserEditorCode.dll" };
 
             /*
              * Create unique temp session
@@ -54,6 +54,7 @@ namespace Game
             /*
              * Copy addiotnal libraries for session
              */
+            List<string> tempLibraryPaths = new List<string>();
             for (int libraryIndex = 0; libraryIndex < additonalLibraries.Count; libraryIndex++)
             {
                 /*
@@ -72,18 +73,19 @@ namespace Game
                  */
                 string copyLocation = tempSessionPath + Path.GetFileName(libraryPath);
                 File.Copy(libraryPath, copyLocation, true);
+                tempLibraryPaths.Add(copyLocation);
             }
-
+            
             /*
              * Initialize application create parameters
              */
-            WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Normal, "Vex Engine", 100, 100, 1280, 720, false);
+            WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Normal, "Vex Engine", 100, 100, 1280, 720, false,false);
             WindowUpdateParams windowUpdateParams = new WindowUpdateParams(1.0f / 60.0f, 1.0f / 60.0f, false);
 
             /*
              * Create application
              */ 
-            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture,new List<string>() { tempSessionPath+"UserGameCode.dll"}, targetProjectDirectory, args,false,false);
+            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture, tempLibraryPaths, targetProjectDirectory, args,false,false);
 
             /*
              * Create bite commands

@@ -11,7 +11,7 @@ namespace Vex.Platform
     /// </summary>
     public readonly struct WindowCreateParams
     {
-        public WindowCreateParams(WindowState state, string title, int offsetX, int offsetY, int width, int height, bool startsFocused)
+        public WindowCreateParams(WindowState state, string title, int offsetX, int offsetY, int width, int height, bool startsFocused,bool startsFullscreen)
         {
             State = state;
             OffsetX = offsetX;
@@ -19,6 +19,7 @@ namespace Vex.Platform
             Width = width;
             Height = height;
             StartsFocused = startsFocused;
+            StartsFullscreen = startsFullscreen;
         }
 
         /// <summary>
@@ -45,6 +46,10 @@ namespace Vex.Platform
         /// Whether window starts with focuced or not
         /// </summary>
         public readonly bool StartsFocused;
+        /// <summary>
+        /// Whether windows starts a fullscreen
+        /// </summary>
+        public readonly bool StartsFullscreen;
 
        
     }

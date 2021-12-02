@@ -32,7 +32,8 @@ namespace Vex.Platform
                 Location = new OpenTK.Mathematics.Vector2i(windowCreateParams.OffsetX, windowCreateParams.OffsetY),
                 Size = new OpenTK.Mathematics.Vector2i(windowCreateParams.Width, windowCreateParams.Height),
                 StartFocused = windowCreateParams.StartsFocused,
-                Title = applicationTitle
+                Title = applicationTitle,
+                IsFullscreen = windowCreateParams.StartsFullscreen
             }
             )
         {
