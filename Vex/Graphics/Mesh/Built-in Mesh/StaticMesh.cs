@@ -25,7 +25,7 @@ namespace Vex.Graphics
              * Get extension
              */
             string extension = Path.GetExtension(path);
-            Console.WriteLine("Extension: " + extension);
+
             /*
              * Load via x extension
              */

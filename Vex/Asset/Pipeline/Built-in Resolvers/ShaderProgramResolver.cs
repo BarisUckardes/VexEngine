@@ -80,7 +80,7 @@ namespace Vex.Asset
                  * Try load shader
                  */
                 Shader shader = pool.GetOrLoadAsset(id) as Shader;
-                Console.WriteLine($"Shader {shader.ID.ToString()} loaded");
+
                 /*
                  * Add it to shaders
                  */
@@ -103,7 +103,6 @@ namespace Vex.Asset
 
         protected override void WriteAsset(IEmitter emitter, object targetObject)
         {
-            Console.WriteLine("Shader programm");
 
             /*
              * Get Shader program

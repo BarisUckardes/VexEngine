@@ -6,7 +6,7 @@ namespace Fang
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+
         }
     }
 }

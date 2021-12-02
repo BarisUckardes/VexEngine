@@ -67,11 +67,6 @@ namespace Slope.Editor
                     if(ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsItemHovered())
                     {
                         /*
-                         * Execute project
-                         */
-                        Console.WriteLine("Execute project... " + m_ExistingProjectPaths[projectIndex]);
-
-                        /*
                          * Create security key
                         */
                         SecureString password = new SecureString();

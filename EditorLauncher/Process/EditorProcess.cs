@@ -34,10 +34,6 @@ namespace EditorLauncher
             startInfo.Arguments = m_ProjectPath;
             startInfo.FileName = PlatformPaths.ProgramfilesDirectory +@"\Vex\Vex\Editor.exe";
 
-            
-            Console.WriteLine("[Editor Launcher]Editor launcher create process with project path: " + m_ProjectPath);
-            Console.WriteLine("[Editor Launcher]Editor launcher target editor path: " + PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\Editor.exe");
-
             /*
              * Createa process
              */

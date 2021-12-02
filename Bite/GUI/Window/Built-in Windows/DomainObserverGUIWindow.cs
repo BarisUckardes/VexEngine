@@ -259,14 +259,11 @@ namespace Bite.GUI
                 if (GUIEventCommands.IsCurrentItemDoubleClicked() && GUIEventCommands.IsCurrentItemHavored())
                 {
                     m_CurrentFolder = subFolder;
-                    Console.WriteLine("Double clikced: " + subFolder.Name);
                     isClickedEmpty = false;
                 }
                 else if(GUIEventCommands.IsMouseLeftButtonClicked() && GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsWindowHovered())
                 {
-                    //m_CurrentFolder = subFolder;
                     m_SelectedObject = subFolder;
-                    Console.WriteLine("Folder clicked: " + subFolder.Name);
                     isClickedEmpty = false;
                 }
 
@@ -368,8 +365,6 @@ namespace Bite.GUI
                  */
                 if (GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsCurrentItemDoubleClicked())
                 {
-                    Console.WriteLine($"File {file.AssetName} is double clicked");
-
                     /*
                      * Validate loaded
                      */
@@ -391,8 +386,6 @@ namespace Bite.GUI
                 else if (GUIEventCommands.IsMouseLeftButtonClicked() && GUIEventCommands.IsCurrentItemHavored())
                 {
                     m_SelectedObject = file;
-                    Console.WriteLine("File clicked: " + file.AssetName);
-
                     isClickedEmpty = false;
                 }
 
@@ -498,7 +491,6 @@ namespace Bite.GUI
             */
             if (GUIEventCommands.IsMouseLeftButtonClicked() && isClickedEmpty && GUIEventCommands.IsWindowHovered())
             {
-                Console.WriteLine("Clicked to empty space");
                 m_SelectedObject = false;
             }
 
@@ -534,7 +526,6 @@ namespace Bite.GUI
                 {
                     if (GUIRenderCommands.CreateMenuItem("Shader",""))
                     {
-                        Console.WriteLine("Create shader popup");
                         isCreateShader = true;
                     }
                     if (GUIRenderCommands.CreateMenuItem("Shader Program",""))

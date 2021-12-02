@@ -59,7 +59,6 @@ namespace Bite.Core
                 if(SpecialAssemblyNames.Contains(assembly.GetName().Name))
                 {
                     m_SpecialAssemblies.Add(new AssemblyEntry(assembly.GetName().Name, assembly));
-                    Console.WriteLine("Found special assembly name: " + assembly.GetName().Name);
                 }
             }
         }

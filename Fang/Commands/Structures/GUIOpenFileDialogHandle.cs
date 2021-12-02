@@ -87,7 +87,6 @@ namespace Fang.Commands
                     if(GUIRenderCommands.CreateSelectableItem(folderName, "currentPathDir"))
                     {
                         m_CurrentPath = folderPath;
-                        Console.WriteLine("Next path: " + folderPath);
                     }
                    
                 }

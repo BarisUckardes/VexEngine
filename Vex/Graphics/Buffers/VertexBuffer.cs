@@ -95,9 +95,6 @@ namespace Vex.Graphics
                             elements[i].IsNormalized,
                             (int)layout.Stride,
                             (int)elements[i].Offset);
-                        Console.WriteLine($"Component Count: {(int)elements[i].ComponentCount}");
-                        Console.WriteLine($" Pointer Type: {VertexLayoutDataTypeUtility.GetVertexAttribPointerType(elements[i].Type).ToString()}");
-                        Console.WriteLine($" Stride: {layout.Stride.ToString()}, Offset: {elements[i].Offset}");
                         vertexLayoutIndex++;
                         break;
                     case VertexLayoutDataType.Mat3:

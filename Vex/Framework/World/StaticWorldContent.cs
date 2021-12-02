@@ -23,7 +23,6 @@ namespace Vex.Framework
         }
         public StaticWorldContent(List<Tuple<string,Guid>> entityPairs,List<string> existingComponentTypes, List<Guid> assetIds,List<Tuple<int,int,string,Guid>> componentEntries,List<StaticComponentMetaData> componentMetaDatas)
         {
-            Console.WriteLine("Creating static world content...");
 
             /*
              * Initialize 
@@ -94,7 +93,6 @@ namespace Vex.Framework
                  */
                 m_ComponentDatas.Add(new StaticWorldComponentData(localComponentIndex,targetComponentType,fieldEntries));
             }
-            Console.WriteLine("Creating static world content... DONE");
         }
 
         /// <summary>
@@ -284,7 +282,6 @@ namespace Vex.Framework
                              */
                             if(fieldInfo == null)
                             {
-                                Console.WriteLine($"Field[{field.ExpectedFieldName}] not found in component [{targetComponent.GetType().Name}]");
                                 break;
                             }
 

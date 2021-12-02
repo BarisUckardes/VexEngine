@@ -54,7 +54,6 @@ namespace Bite.GUI
             {
                 if(GUIRenderCommands.CreateImageButton(m_GameStopButtonTexture,"Stop_buttn", new Vector2(64, 64), uv0, uv1))
                 {
-                    Console.WriteLine("Game stop");
                     Session.StopGamePlaySession();
                 }
             }
@@ -62,7 +61,6 @@ namespace Bite.GUI
             {
                 if(GUIRenderCommands.CreateImageButton(m_GamePlayButtonTexture,"Play_buttn", new Vector2(64, 64), uv0, uv1))
                 {
-                    Console.WriteLine("Game play");
                     Session.StartGamePlaySession();
                 }
             }
@@ -117,7 +115,7 @@ namespace Bite.GUI
                  * Get intermediate framebuffer
                  */
                 Framebuffer2D targetFramebuffer = Framebuffer2D.IntermediateFramebuffer;
-                Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
+                //Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
               //  targetFramebuffer.Resize((int)currentTextureSize.X, (int)currentTextureSize.Y);
 
                 ///*

@@ -59,7 +59,6 @@ namespace Bite
             /*
             * Create code base files
             */
-            Console.WriteLine($"Paths: {userGameCodePath}--{userEditorCodePath}");
             Console.Write($"Compile started...");
             Process commandLineProcess = new Process();
             commandLineProcess.StartInfo.FileName = "cmd.exe";
@@ -80,7 +79,6 @@ namespace Bite
             commandLineProcess.StandardInput.Flush();
             commandLineProcess.StandardInput.Close();
             commandLineProcess.WaitForExit();
-            Console.WriteLine("Compile Finished.");
             EditorCommands.SendEditorShutdownRequest();
         }
 

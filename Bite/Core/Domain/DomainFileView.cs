@@ -88,11 +88,6 @@ namespace Bite.Core
                     m_Loaded = true;
                 else
                     m_Loaded = false;
-
-                /*
-                 *
-                 */
-                Console.WriteLine("Try load asset: " + m_AssetName);
             }
         }
         public void Rename(string newName,EditorSession session)

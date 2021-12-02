@@ -6,7 +6,7 @@ namespace VexEngine
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+
         }
     }
 }

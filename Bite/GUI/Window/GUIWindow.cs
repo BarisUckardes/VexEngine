@@ -88,7 +88,6 @@ namespace Bite.GUI
             s_Windows = new List<WindowGUILayout>();
             s_Session = session;
 
-            Console.WriteLine("Total intial window layouts: " + initialLayouts.Count);
             /*
              * Create intial windows
              */

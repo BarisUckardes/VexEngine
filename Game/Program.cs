@@ -23,9 +23,6 @@ namespace Game
             WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Normal, "Vex Engine", 100, 100, 1280, 720, true,true);
             WindowUpdateParams windowUpdateParams = new WindowUpdateParams(1.0f / 60.0f, 1.0f / 60.0f, false);
 
-            Console.WriteLine("Game start loc: " + rootDirectory + @"\UserGameCode.dll");
-            Console.WriteLine("Domain loc: " + rootDirectory);
-
             /*
              * Create application
              */

@@ -337,7 +337,6 @@ namespace Fang.Commands
                  * Validate object
                  */
                 ImGui.EndDragDropTarget();
-                Console.WriteLine("Drag accepted by code " + code);
 
                 return s_LastVexObjectObjectField;
             }
@@ -393,7 +392,6 @@ namespace Fang.Commands
                  * Validate object
                  */
                 ImGui.EndDragDropTarget();
-                Console.WriteLine("Drag accepted by code " + code);
 
                 return s_LastVexObjectObjectField;
             }

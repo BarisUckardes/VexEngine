@@ -78,7 +78,6 @@ namespace Bite.GUI
                             hasGetSetProperties.Add(property);
 
                     DefaultComponentLayoutInfo defaultLayoutInfo = new DefaultComponentLayoutInfo(type.GetFields(BindingFlags.Public | BindingFlags.Instance), hasGetSetProperties.ToArray(), type);
-                    Console.WriteLine("Default component created for: " + type.Name);
                     defaultEntries.Add(defaultLayoutInfo);
                 }
             }

@@ -10,9 +10,6 @@ namespace Slope
     {
         static void Main(string[] args)
         {
-            //ProjectBuilder builder = new ProjectBuilder(@"C:\Users\baris\Desktop\TestProject", "MyProject", 33, Guid.NewGuid());
-            //builder.CreateProject();
-
             /*
              * Start a new window
              */

@@ -21,10 +21,9 @@ namespace Game
              */
             if(args.Length == 0)
             {
-                Console.WriteLine("Editor not satisfied with requied argument");
+                Console.WriteLine("Editor not satisfied with an argument");
                 return;
             }
-            Console.WriteLine("Editor intialized with target project path: " + args[0] );
 
             /*
              * Get arg0 as target project directory

@@ -148,7 +148,6 @@ namespace Vex.Application
                     if(type.IsSubclassOf(typeof(Component)))
                     {
                         componentTypes.Add(type);
-                        Console.WriteLine("Found a compoent type: " + type.Name);
                     }
                 }
             }
@@ -199,8 +198,6 @@ namespace Vex.Application
                      * Set play active true
                      */
                     m_Session.PlayActive = true;
-
-                    Console.WriteLine("Play started");
                 }
 
             }

@@ -28,7 +28,6 @@ namespace Vex.Asset
 
         protected override void WriteAsset(IEmitter emitter, object targetObject)
         {
-            Console.WriteLine("World write asset in action");
             /*
              * Get as world
              */
@@ -160,7 +159,6 @@ namespace Vex.Asset
                      */
                     FieldInfo[] fields = TypeUtils.GetAllFields(component.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToArray();
                     PropertyInfo[] properties = component.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    Console.WriteLine($"Type {component.GetType().Name} || Found {fields.Length} fields, Found {properties.Length}");
 
                     /*
                      * Iterate fields to collect assets

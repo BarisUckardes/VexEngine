@@ -16,7 +16,6 @@ namespace Vex.Asset
     {
         public AssetPool(string poolPath)
         {
-            Console.WriteLine("Pool path: " + poolPath);
             /*
              * Set local variables
              */
@@ -26,18 +25,11 @@ namespace Vex.Asset
              * Gather asset records
              */
             List<AssetRecord> records = GatherAssetRecordsRecursive(poolPath);
-            foreach (AssetRecord record in records)
-                Console.WriteLine("Record:" + record.ID.ToString());
+
             /*
              * Gather assets fVexm record
              */
             m_Assets = GetAssetsFromRecords(records);
-
-            /*
-             * Debug
-             */
-            Console.WriteLine("Asset pool initialized with...");
-            Console.WriteLine($"{m_Assets.Count} assets");
         }
 
         /// <summary>
@@ -158,7 +150,6 @@ namespace Vex.Asset
              */
             if(System.IO.File.Exists(definitionPath) || System.IO.File.Exists(assetPath))
             {
-                Console.WriteLine("Asset exists on path : " + definitionPath + "___" + assetPath);
                 return null;
             }
 

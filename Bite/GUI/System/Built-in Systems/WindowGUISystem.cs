@@ -106,10 +106,6 @@ namespace Bite.GUI
 
             string yamlContent = new SerializerBuilder().Build().Serialize(finalLayouts);
             File.WriteAllText(layoutPath, yamlContent);
-
-            Console.WriteLine("layout detach");
-
-           
         }
 
         public override void OnUpdate()

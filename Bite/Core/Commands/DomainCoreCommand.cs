@@ -32,7 +32,6 @@ namespace Bite.Core
             /*
              * Try find domain folder
              */
-            Console.WriteLine(domainPath);
             Debug.Assert(Directory.Exists(domainPath), "Project file was not fould");
 
             /*

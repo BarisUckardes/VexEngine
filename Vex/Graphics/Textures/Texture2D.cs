@@ -31,7 +31,6 @@ namespace Vex.Graphics
              */
             if (flipVertically)
             {
-                Console.WriteLine("Flipped");
                 image.Mutate(x => x.Flip(FlipMode.Vertical));
             }
 

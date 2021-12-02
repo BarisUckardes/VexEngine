@@ -100,9 +100,11 @@ namespace Vex.Asset
             AssetInterface assetInterface = new AssetInterface(null);
             AssetDefinition newDefinition = new AssetDefinition(name, m_AssetID, m_AssetType);
             string yamlText = assetInterface.GenerateObjectString(AssetType.Definition, newDefinition);
+
+            /*
+             * Write to disk
+             */
             File.WriteAllText(m_DefinitionAbsolutePath, yamlText);
-            
-            Console.WriteLine($"Asset path renamed from [{oldPath}] to [{m_AssetAbsolutePath}]");
         }
 
         internal void RenamePaths(string oldRoot,string newRoot)
@@ -112,11 +114,6 @@ namespace Vex.Asset
              */
             m_AssetAbsolutePath = m_AssetAbsolutePath.Replace(oldRoot, newRoot);
             m_DefinitionAbsolutePath = m_DefinitionAbsolutePath.Replace(oldRoot, newRoot);
-
-            /*
-             * 
-             */
-            Console.WriteLine("Asset paths renamed to :" + m_AssetAbsolutePath);
         }
 
         /// <summary>
@@ -144,7 +141,6 @@ namespace Vex.Asset
              * Create Asset
              */
             VexObject asset = null;
-            Console.WriteLine("Load as " + m_AssetType.ToString());
             switch (m_AssetType)
             {
                 case AssetType.Undefined:
@@ -188,8 +184,6 @@ namespace Vex.Asset
             asset.ID = definition.ID;
 
             m_Object = asset;
-
-            Console.WriteLine("Asset from the pool loaded as: " + asset.GetType().Name);
         }
 
         /// <summary>
@@ -207,7 +201,6 @@ namespace Vex.Asset
              */
             m_AssetAbsolutePath = m_AssetAbsolutePath.Replace(oldRoot, newRoot);
             m_DefinitionAbsolutePath = m_DefinitionAbsolutePath.Replace(oldRoot, newRoot);
-            Console.WriteLine("Asset path renamed: " + m_AssetAbsolutePath);
         }
         public void UpdateAssetContentOnPath(VexObject asset,AssetPool pool)
         {
@@ -225,8 +218,6 @@ namespace Vex.Asset
              * Write asset 
              */
             System.IO.File.WriteAllText(m_AssetAbsolutePath, assetYaml);
-
-            Console.WriteLine($"Asset[{m_AssetID.ToString()}] updated");
         }
 
         private VexObject m_Object;

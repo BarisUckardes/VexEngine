@@ -23,7 +23,6 @@ namespace Bite.GUI
         public override void OnLayoutBegin()
         {
             m_AllWorldAssets = Session.GetAssets(AssetType.World);
-            Console.WriteLine("LAYOUT BEGİn++++++++++++");
         }
 
         public override void OnLayoutFinalize()

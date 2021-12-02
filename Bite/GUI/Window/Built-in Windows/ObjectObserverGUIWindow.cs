@@ -56,11 +56,6 @@ namespace Bite.GUI
         private void OnNewObject(VexObject obj)
         {
             /*
-             * Debug
-             */
-            Console.WriteLine("Received new signal");
-
-            /*
              * Detach former layout
              */
             m_Layout?.OnDetach();

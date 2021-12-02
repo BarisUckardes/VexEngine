@@ -19,7 +19,6 @@ namespace Vex.Graphics
         protected override void ExecuteImpl()
         {
             GL.UseProgram(m_Program != null ? m_Program.Handle : 0);
-           // Console.WriteLine("Program used: " + m_Program.Handle);
         }
 
 

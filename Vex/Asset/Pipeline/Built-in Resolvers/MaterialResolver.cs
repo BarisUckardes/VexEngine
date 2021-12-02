@@ -65,7 +65,6 @@ namespace Vex.Asset
                 parser.MoveNext();
                 parser.MoveNext();
 
-                Console.WriteLine("Shader Type: " + GetParserValue(parser));
                 /*
                  * Get shader stage
                  */
@@ -92,9 +91,7 @@ namespace Vex.Asset
                     /*
                      * Move to value
                      */
-                    Console.WriteLine("Float param name: " + parameterName);
                     parser.MoveNext();
-                    Console.WriteLine("Float param value: " + GetParserValue(parser));
 
                     /*
                      * Get parameter value

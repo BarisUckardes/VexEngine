@@ -65,8 +65,6 @@ namespace Vex.Framework
              * Register world 
              */
             newWorld.Register();
-
-            Console.WriteLine("World loaded: " + worldContent.Name);
         }
 
         /// <summary>

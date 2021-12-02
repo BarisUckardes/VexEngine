@@ -187,7 +187,6 @@ namespace Bite.Core
                 foundAsset.UpdateAssetContentOnPath(asset, m_ApplicationSession.AssetPool);
                 return;
             }
-            Console.WriteLine("No asset found to update");
         }
 
       

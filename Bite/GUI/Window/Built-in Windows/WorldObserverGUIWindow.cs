@@ -18,11 +18,11 @@ namespace Bite.GUI
     {
         public override void OnVisible()
         {
-            Console.WriteLine("Visible");
+
         }
         public override void OnInVisible()
         {
-            Console.WriteLine("Invisible");
+
         }
         public override void OnLayoutBegin()
         {
@@ -33,7 +33,7 @@ namespace Bite.GUI
         public override void OnLayoutFinalize()
         {
             m_TargetWorld = null;
-            Console.WriteLine("Finalized");
+
         }
 
         public override void OnRenderLayout()
