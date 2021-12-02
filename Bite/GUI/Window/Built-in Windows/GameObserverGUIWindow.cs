@@ -113,11 +113,12 @@ namespace Bite.GUI
             */
             if (currentTextureSize != m_OldSize)
             {
-                ///*
-                // * Get intermediate framebuffer
-                // */
-                //Framebuffer2D targetFramebuffer = Framebuffer2D.IntermediateFramebuffer;
-                //Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
+                /*
+                 * Get intermediate framebuffer
+                 */
+                Framebuffer2D targetFramebuffer = Framebuffer2D.IntermediateFramebuffer;
+                Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
+              //  targetFramebuffer.Resize((int)currentTextureSize.X, (int)currentTextureSize.Y);
 
                 ///*
                 // * Get texture formats
@@ -141,7 +142,7 @@ namespace Bite.GUI
                 //GC.Collect();
                 //GC.WaitForPendingFinalizers();
             }
-          
+
             /*
              * Set old framebuffer size
              */

@@ -35,7 +35,6 @@ namespace Vex.Graphics
             Format = format;
             InternalFormat = internalFormat;
 
-            //FramebufferID = 0;
             /*
              * Create texture
              */
@@ -85,6 +84,14 @@ namespace Vex.Graphics
             }
         }
 
+        public void Resize(int width,int height)
+        {
+            BackTexture?.Destroy();
+            BackTexture = null;
+            DepthTexture?.Destroy();
+            GL.DeleteFramebuffer(FramebufferID);
+            CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, Format, InternalFormat));
+        }
         protected override void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams)
         {
             /*

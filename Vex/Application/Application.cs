@@ -109,18 +109,7 @@ namespace Vex.Application
             CultureInfo.CurrentCulture = m_TargetCultureInfo;
             CultureInfo.CurrentUICulture = m_TargetCultureInfo;
 
-            /*
-             * Create temp session
-             */
-            string tempSessionPath = PlatformPaths.LocalApplicationData + @"\Vex\TempSession\";
-
-            /*
-             * Create temp session mode
-             */
-            Directory.CreateDirectory(tempSessionPath);
-
-           
-
+            
             /*
              * Load additonal libraries
              */
@@ -138,15 +127,9 @@ namespace Vex.Application
                     continue;
 
                 /*
-                 * Copy to temp folder
-                 */
-                string copyLocation = tempSessionPath + Path.GetFileName(libraryPath);
-                File.Copy(libraryPath, copyLocation,true);
-
-                /*
                  * Load assembly into appdomain
                  */
-                Assembly.LoadFrom(copyLocation);
+                Assembly.LoadFrom(libraryPath);
 
                 Console.WriteLine($"Application loaded assembly [{libraryPath}]");
             }
@@ -183,7 +166,7 @@ namespace Vex.Application
             /*
              * Set default framebuffer
              */
-            Framebuffer2D.IntermediateFramebuffer = m_SetIntermediateFramebufferAsSwapchain == true ? new Framebuffer2D(m_WindowInterface.LocalWindow.Width,m_WindowInterface.LocalWindow.Height) : new Framebuffer2D(512, 512, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
+            Framebuffer2D.IntermediateFramebuffer = m_SetIntermediateFramebufferAsSwapchain == true ? new Framebuffer2D(m_WindowInterface.LocalWindow.Width,m_WindowInterface.LocalWindow.Height) : new Framebuffer2D(1024, 1024, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
 
             /*
             * Validate immediate mode
@@ -211,6 +194,13 @@ namespace Vex.Application
                      * Load and switch first world
                      */
                     World.LoadAndSwitch(worldID);
+
+                    /*
+                     * Set play active true
+                     */
+                    m_Session.PlayActive = true;
+
+                    Console.WriteLine("Play started");
                 }
 
             }

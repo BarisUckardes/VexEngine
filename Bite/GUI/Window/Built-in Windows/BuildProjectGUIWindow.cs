@@ -100,7 +100,7 @@ namespace Bite.GUI
              */
             if(GUIRenderCommands.CreateButton("Build","buld"))
             {
-                TryBuild("win-x64",outputFolder,m_AllWorldAssets[m_SelectedWorldIndex].AssetID);
+                TryBuild(PlatformToBuildCommand(m_SupportedPlatforms[m_SelectedPlatformIndex]),outputFolder,m_AllWorldAssets[m_SelectedWorldIndex].AssetID);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Bite.GUI
         {
 
         }
-        private void TryBuild(string command,string outputFolder,Guid startWorldID)
+        private void TryBuild(string platformCommand,string outputFolder,Guid startWorldID,bool isSelfContained = true)
         {
             /*
              * Get user project path
@@ -130,7 +130,7 @@ namespace Bite.GUI
              * Create visual studio project
              */
             commandLineProcess.StandardInput.WriteLine("cd " + userGameCodePath);
-            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {command} --self-contained --output ./PublishFolder"); // builds
+            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {platformCommand} --self-contained --output ./PublishFolder"); // builds
 
             commandLineProcess.StandardInput.Flush();
             commandLineProcess.StandardInput.Close();
@@ -154,7 +154,7 @@ namespace Bite.GUI
             /*
              * Copy game executable
             */
-            PlatformFile.CopyDirectory(PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\PlatformLaunchers\Windows", outputFolder);
+            PlatformFile.CopyDirectory(PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\PlatformLaunchers\" + PlatformToLauncherFolder(m_SupportedPlatforms[m_SelectedPlatformIndex]), outputFolder);
 
             /*
              * Create immediate world id file
@@ -163,6 +163,34 @@ namespace Bite.GUI
          
         }
 
+        private string PlatformToBuildCommand(string platform)
+        {
+            switch (platform)
+	        {
+                case "Windows":
+                {
+                        return "win-x64";
+                        break;
+                }
+		        default:
+                break;
+	        }
+            return "";
+        }
+        private string PlatformToLauncherFolder(string platform)
+        {
+            switch (platform)
+	        {
+                case "Windows":
+                {
+                        return "Windows";
+                        break;
+                }
+		        default:
+                break;
+	        }
+            return "";
+        }
         private int m_SelectedPlatformIndex = 0;
         private int m_SelectedArchitectureIndex = 0;
         private int m_SelectedWorldIndex = 0;

@@ -32,6 +32,49 @@ namespace Game
             string targetProjectDirectory = args[0];
 
             /*
+             * Create additonal library paths
+             */
+            List<string> additonalLibraries = new List<string>() { targetProjectDirectory + @"\CodeBase\UserGameCode\bin\debug\net6.0\UserGameCode.dll" };
+
+            /*
+             * Create unique temp session
+             */
+            string tempSessionID = Guid.NewGuid().ToString();
+
+            /*
+             * Create new temp session for editor
+             */
+            string tempSessionPath = PlatformPaths.LocalApplicationData + @"\Vex\TempSession\"+ tempSessionID + @"\";
+
+            /*
+             * Create temp session mode
+             */
+            Directory.CreateDirectory(tempSessionPath);
+
+            /*
+             * Copy addiotnal libraries for session
+             */
+            for (int libraryIndex = 0; libraryIndex < additonalLibraries.Count; libraryIndex++)
+            {
+                /*
+                 * Get path
+                 */
+                string libraryPath = additonalLibraries[libraryIndex];
+
+                /*
+                 * Validate file
+                 */
+                if (!File.Exists(libraryPath))
+                    continue;
+
+                /*
+                 * Copy to temp folder
+                 */
+                string copyLocation = tempSessionPath + Path.GetFileName(libraryPath);
+                File.Copy(libraryPath, copyLocation, true);
+            }
+
+            /*
              * Initialize application create parameters
              */
             WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Normal, "Vex Engine", 100, 100, 1280, 720, false);
@@ -40,7 +83,7 @@ namespace Game
             /*
              * Create application
              */ 
-            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture,new List<string>() { targetProjectDirectory + @"\CodeBase\UserGameCode\bin\debug\net6.0\UserGameCode.dll"}, targetProjectDirectory, args,false,false);
+            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture,new List<string>() { tempSessionPath+"UserGameCode.dll"}, targetProjectDirectory, args,false,false);
 
             /*
              * Create bite commands
@@ -80,6 +123,11 @@ namespace Game
              * Run
              */
             application.Run();
+
+            /*
+             * Delete temp session files
+             */
+            Directory.Delete(tempSessionPath, true);
         }
     }
 }

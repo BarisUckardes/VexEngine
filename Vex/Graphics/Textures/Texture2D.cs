@@ -131,6 +131,7 @@ namespace Vex.Graphics
             }
         }
 
+       
         /// <summary>
         /// Set texture data via byte array
         /// </summary>
@@ -165,6 +166,40 @@ namespace Vex.Graphics
              * Set cpu data
              */
             CpuData = data;
+        }
+
+        internal void ResizeInternal(int width, int height)
+        {
+            /*
+            * Bind texture
+            */
+            GL.BindTexture(TextureTarget.Texture2D, Handle);
+
+            /*
+             * Set data
+             */
+            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)InternalFormat, width, height, 0, (PixelFormat)Format, PixelType.UnsignedByte, IntPtr.Zero);
+
+            /*
+             * Set texture parameters
+             */
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+            /*
+             * Unbind texture
+             */
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            /*
+             * Set dimensions
+             */
+            m_Width = width;
+            m_Height = height;
         }
 
         private int m_Width;
