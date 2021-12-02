@@ -98,7 +98,7 @@ namespace Vex.Framework
                 /*
                  * Get observer framebuffer
                  */
-                Framebuffer framebuffer = observer.Framebuffer;
+                Framebuffer framebuffer = observer.Framebuffer == null ? Framebuffer2D.IntermediateFramebuffer : observer.Framebuffer;
 
                 /*
                  * Get observer view matrix

@@ -23,6 +23,7 @@ namespace Bite.GUI
              */
             m_GamePlayButtonTexture = Session.GetEditorResource("GamePlayButtonIcon",Vex.Asset.AssetType.Texture2D) as Texture2D;
             m_GameStopButtonTexture = Session.GetEditorResource("GameStopButtonIcon", Vex.Asset.AssetType.Texture2D) as Texture2D;
+            m_PrimaryFramebuffer = Framebuffer2D.IntermediateFramebuffer;
         }
 
 
@@ -112,29 +113,33 @@ namespace Bite.GUI
             */
             if (currentTextureSize != m_OldSize)
             {
-                Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
+                ///*
+                // * Get intermediate framebuffer
+                // */
+                //Framebuffer2D targetFramebuffer = Framebuffer2D.IntermediateFramebuffer;
+                //Console.WriteLine($"X:Y [{currentTextureSize.X}:{currentTextureSize.Y}]");
 
-                /*
-                 * Get texture formats
-                 */
-                TextureFormat format = m_PrimaryFramebuffer.Format;
-                TextureInternalFormat internalFormat = m_PrimaryFramebuffer.InternalFormat;
+                ///*
+                // * Get texture formats
+                // */
+                //TextureFormat format = m_PrimaryFramebuffer.Format;
+                //TextureInternalFormat internalFormat = m_PrimaryFramebuffer.InternalFormat;
 
-                /*
-                 * Destroy and cleanup former framebuffer
-                 */
-                m_PrimaryFramebuffer?.Destroy();
-                m_PrimaryFramebuffer = null;
-                m_PrimaryObserver.Framebuffer = null;
+                ///*
+                // * Destroy and cleanup former framebuffer
+                // */
+                //m_PrimaryFramebuffer?.Destroy();
+                //m_PrimaryFramebuffer = null;
+                //m_PrimaryObserver.Framebuffer = null;
 
-                /*
-                 * Create new framebuffer
-                 */
-                m_PrimaryFramebuffer = new Framebuffer2D((int)currentTextureSize.X, (int)currentTextureSize.Y, format, internalFormat);
-                m_PrimaryObserver.Framebuffer = m_PrimaryFramebuffer;
+                ///*
+                // * Create new framebuffer
+                // */
+                //m_PrimaryFramebuffer = new Framebuffer2D((int)currentTextureSize.X, (int)currentTextureSize.Y, format, internalFormat);
+                //m_PrimaryObserver.Framebuffer = m_PrimaryFramebuffer;
 
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                //GC.Collect();
+                //GC.WaitForPendingFinalizers();
             }
           
             /*
@@ -153,7 +158,7 @@ namespace Bite.GUI
             if(m_PrimaryObserver != ObserverComponent.PrimalObserver)
             {
                 m_PrimaryObserver = ObserverComponent.PrimalObserver;
-                m_PrimaryFramebuffer = m_PrimaryObserver != null ? m_PrimaryObserver.Framebuffer as Framebuffer2D : null;
+                //m_PrimaryFramebuffer = m_PrimaryObserver != null ? m_PrimaryObserver.Framebuffer as Framebuffer2D : null;
             }
         }
 

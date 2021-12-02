@@ -29,7 +29,7 @@ namespace Game
             /*
              * Create application
              */
-            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture, new List<string>() { rootDirectory + @"\UserGameCode.dll" }, rootDirectory, args,true);
+            Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture, new List<string>() { rootDirectory + @"\UserGameCode.dll" }, rootDirectory, args,true,true);
 
 
             /*

@@ -17,7 +17,7 @@ namespace Vex.Graphics
         public static ObserverComponent PrimalObserver { get; protected set; }
         public ObserverComponent()
         {
-            m_Framebuffer = new Framebuffer2D(512, 512, TextureFormat.Rgba,TextureInternalFormat.Rgba32f);
+           // m_Framebuffer = new Framebuffer2D(512, 512, TextureFormat.Rgba,TextureInternalFormat.Rgba32f);
             m_NearPlane = 0.001f;
             m_FarPlane = 1000.0f;
             m_AspectRatio = 1.0f;

@@ -12,6 +12,22 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Framebuffer2D : Framebuffer
     {
+        /// <summary>
+        /// Intermediate framebuffer
+        /// </summary>
+        public static Framebuffer2D IntermediateFramebuffer
+        {
+            get
+            {
+                return s_IntermediateFramebuffer;
+            }
+            internal set
+            {
+                s_IntermediateFramebuffer = value;
+            }
+        }
+        private static Framebuffer2D s_IntermediateFramebuffer;
+
         public Framebuffer2D(int width,int height,TextureFormat format,TextureInternalFormat internalFormat)
         {
             m_Width = width;
@@ -24,6 +40,25 @@ namespace Vex.Graphics
              * Create texture
              */
             CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, format, internalFormat));
+        }
+
+        /// <summary>
+        /// Internal constructor which creates framebuffer as swapchain framebuffer
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        internal Framebuffer2D(int width,int height)
+        {
+            /*
+             * Set dimensions
+             */
+            m_Width = width;
+            m_Height = height;
+
+            /*
+             * Set as swapchain
+             */
+            FramebufferID = 0;
         }
 
 

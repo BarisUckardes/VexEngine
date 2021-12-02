@@ -11,6 +11,7 @@ using Vex.Profiling;
 using Vex.Framework;
 using Vex.Types;
 using System.IO;
+using Vex.Graphics;
 
 namespace Vex.Application
 {
@@ -19,7 +20,7 @@ namespace Vex.Application
     /// </summary>
     public sealed class Application
     {
-        public Application(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams,CultureInfo targetCultureInfo,List<string> additionalLibraries,string targetDomainRootDirectory,string[] commandLineArguments,bool startWorldImmediately = false)
+        public Application(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams,CultureInfo targetCultureInfo,List<string> additionalLibraries,string targetDomainRootDirectory,string[] commandLineArguments,bool startWorldImmediately = false,bool setIntermediateFramebufferAsSwapchain = true)
         {
             /*
             * Initialize local lists
@@ -54,6 +55,11 @@ namespace Vex.Application
              * Set immediate mode
              */
             m_StartWorldImmediately = startWorldImmediately;
+
+            /*
+             * Set intermediate framebuffer
+             */
+            m_SetIntermediateFramebufferAsSwapchain = setIntermediateFramebufferAsSwapchain;
         }
 
         /// <summary>
@@ -163,12 +169,21 @@ namespace Vex.Application
                     }
                 }
             }
+
+            /*
+             * Set emitted component types
+             */
             EmittedComponentTypes.ComponentTypes = componentTypes;
 
             /*
              * Create session
              */
             m_Session = new ApplicationSession(m_WindowInterface);
+
+            /*
+             * Set default framebuffer
+             */
+            Framebuffer2D.IntermediateFramebuffer = m_SetIntermediateFramebufferAsSwapchain == true ? new Framebuffer2D(m_WindowInterface.LocalWindow.Width,m_WindowInterface.LocalWindow.Height) : new Framebuffer2D(512, 512, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
 
             /*
             * Validate immediate mode
@@ -376,5 +391,6 @@ namespace Vex.Application
         private string m_TargetDomainRootDirectory;
         private string m_ProjectName;
         private bool m_StartWorldImmediately;
+        private bool m_SetIntermediateFramebufferAsSwapchain;
     }
 }
