@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Bite.GUI
 {
+
+    /// <summary>
+    /// Attribute for specifying the target object which a object gui layout targets
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class ObjectLayoutAttribute : Attribute
     {
@@ -13,6 +17,10 @@ namespace Bite.GUI
         {
             TargetObjectType = targetObjectType;
         }
+
+        /// <summary>
+        /// The target object type which this object gui layout targets
+        /// </summary>
         public Type TargetObjectType { get; set; }
     }
 }

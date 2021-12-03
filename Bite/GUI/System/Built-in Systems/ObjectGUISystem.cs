@@ -9,6 +9,9 @@ using Vex.Framework;
 
 namespace Bite.GUI
 {
+    /// <summary>
+    /// A gui system which handles all the observerable objects on bite
+    /// </summary>
     public sealed class ObjectGUISystem : GUISystem
     {
         public override void OnAttach()

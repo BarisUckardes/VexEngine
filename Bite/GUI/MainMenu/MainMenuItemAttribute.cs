@@ -17,6 +17,10 @@ namespace Bite.GUI
         {
             Category = category;
         }
+
+        /// <summary>
+        /// The category path of the main menu item
+        /// </summary>
         public string Category { get; set; }
     }
 }

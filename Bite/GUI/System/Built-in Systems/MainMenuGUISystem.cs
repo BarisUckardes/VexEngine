@@ -8,6 +8,10 @@ using System.Reflection;
 using Fang.Commands;
 namespace Bite.GUI
 {
+
+    /// <summary>
+    /// A gui system which handles main menu on bite
+    /// </summary>
     public sealed class MainMenuGUISystem : GUISystem
     {
         public override void OnAttach()

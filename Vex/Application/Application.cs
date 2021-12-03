@@ -33,8 +33,8 @@ namespace Vex.Application
             /*
              * Create window
              */
-            m_WindowInterface = new WindowInterface(applicationTitle,windowCreateParams, windowUpdateParams,setIntermediateFramebufferAsSwapchain);
-            m_WindowInterface.LocalWindow.SetApplicationEventDelegate(OnPlatformEvent);
+            m_ApplicationWindow = new Window(applicationTitle,windowCreateParams, windowUpdateParams,setIntermediateFramebufferAsSwapchain);
+            m_ApplicationWindow.SetApplicationEventDelegate(OnPlatformEvent);
 
             /*
              * Set target domain directory
@@ -76,11 +76,11 @@ namespace Vex.Application
         /// <summary>
         /// Returns the current application window interface
         /// </summary>
-        public WindowInterface WindowInterface
+        public Window WindowInterface
         {
             get
             {
-                return m_WindowInterface;
+                return m_ApplicationWindow;
             }
         }
 
@@ -160,7 +160,7 @@ namespace Vex.Application
             /*
              * Create session
              */
-            m_Session = new ApplicationSession(m_WindowInterface);
+            m_Session = new ApplicationSession(m_ApplicationWindow);
 
             /*
             * Validate immediate mode
@@ -226,7 +226,7 @@ namespace Vex.Application
                 /*
                 * Valdiate exit request
                 */
-                if (m_WindowInterface.HasWindowExitRequest)
+                if (m_ApplicationWindow.HasWindowCloseRequest)
                 {
                     hasExitRequest = true;
                     exitType = ApplicationExitType.WindowClose;
@@ -245,14 +245,14 @@ namespace Vex.Application
                  * Update window
                  */
                 Profiler.StartProfile("Update window input");
-                m_WindowInterface.UpdateInput();
+                m_ApplicationWindow.UpdateInput();
                 Profiler.EndProfile();
 
                 /*
                  * Stream through events
                  */
                 Profiler.StartProfile("Broadcast events");
-                PlatformEvent[] events = m_WindowInterface.Events;
+                PlatformEvent[] events = m_ApplicationWindow.Events;
                 for (int eventIndex = 0; eventIndex < events.Length; eventIndex++)
                 {
 
@@ -290,7 +290,7 @@ namespace Vex.Application
                  * Swap window buffer
                  */
                 Profiler.StartProfile("Swapbuffers");
-                m_WindowInterface.Swapbuffers();
+                m_ApplicationWindow.SwapBuffers();
                 Profiler.EndProfile();
 
                
@@ -366,7 +366,7 @@ namespace Vex.Application
         private List<EngineModule> m_ActiveModules;
         private List<ReceivePlatformEventDelegate> m_ModuleEventDelegates;
         private ApplicationSession m_Session;
-        private WindowInterface m_WindowInterface;
+        private Window m_ApplicationWindow;
         private CultureInfo m_TargetCultureInfo;
         private string[] m_AdditionalLibraries;
         private string[] m_CommandLineArguments;

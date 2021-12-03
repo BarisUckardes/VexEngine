@@ -9,6 +9,9 @@ using Vex.Types;
 
 namespace Bite.GUI
 {
+    /// <summary>
+    /// A gui system which handles components on entity object
+    /// </summary>
     public sealed class ComponentGUISystem : GUISystem
     {
         public override void OnAttach()

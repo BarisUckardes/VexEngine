@@ -13,8 +13,7 @@ namespace Vex.Application
     /// </summary>d
     public sealed class ApplicationSession
     {
-        
-        public ApplicationSession(WindowInterface applicationWindow)
+        public ApplicationSession(Window applicationWindow)
         {
             /*
              * Initialize local fields
@@ -54,7 +53,7 @@ namespace Vex.Application
             }
         }
 
-        public WindowInterface Window
+        public Window Window
         {
             get
             {
@@ -65,11 +64,11 @@ namespace Vex.Application
         {
             get
             {
-                return m_Window.LocalWindow.WindowTitle;
+                return m_Window.WindowTitle;
             }
             set
             {
-                m_Window.LocalWindow.WindowTitle = value;
+                m_Window.WindowTitle = value;
             }
         }
         public bool HasShutdownRequest
@@ -132,7 +131,7 @@ namespace Vex.Application
         }
 
         private AssetPool m_AssetPool;
-        private WindowInterface m_Window;
+        private Window m_Window;
         private World m_CurrentWorld;
         private bool m_SessionHasShutdownRequest;
         private bool m_PlayActive;

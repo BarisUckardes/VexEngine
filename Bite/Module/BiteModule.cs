@@ -16,6 +16,9 @@ using System.Numerics;
 
 namespace Bite.Module
 {
+    /// <summary>
+    /// Bite's main module
+    /// </summary>
     public sealed class BiteModule : EngineModule
     {
         public BiteModule(in List<CoreCommand> commands,in List<GUISystem> guiSystems)
@@ -46,7 +49,7 @@ namespace Bite.Module
             /*
              * Create renderer
              */
-            m_Renderer = new GUIRenderer(m_Window.LocalWindow.Width,m_Window.LocalWindow.Height);
+            m_Renderer = new GUIRenderer(m_Window.Width,m_Window.Height);
 
             /*
              * Set core command session
@@ -61,7 +64,7 @@ namespace Bite.Module
              */
             foreach (GUISystem system in m_GUISystems)
             {
-                system.Session = m_Session;
+                system.SetEditorSession(m_Session);
             }
 
             /*
@@ -104,7 +107,7 @@ namespace Bite.Module
             for(int moduleIndex = 0;moduleIndex < m_GUISystems.Count;moduleIndex++)
             {
                 m_GUISystems[moduleIndex].OnDetach();
-                m_GUISystems[moduleIndex].Session = null;
+                m_GUISystems[moduleIndex].SetEditorSession(null);
             }
             m_GUISystems.Clear();
             m_GUISystems = null;
@@ -151,7 +154,7 @@ namespace Bite.Module
             /*
             * Start listening render command
             */
-            m_Renderer.Begin(m_Window.LocalWindow, 1.0f / 165.0f,PlatformWindowProperties.Size.GetAsOpenTK());
+            m_Renderer.Begin(m_Window, 1.0f / 165.0f,PlatformWindowProperties.Size.GetAsOpenTK());
 
             /*
              * Create main dockspace window
@@ -193,7 +196,7 @@ namespace Bite.Module
 
         private List<GUISystem> m_GUISystems;
         private List<CoreCommand> m_CoreCommands;
-        private WindowInterface m_Window;
+        private Window m_Window;
         private GUIRenderer m_Renderer;
         private EditorSession m_Session;
     }

@@ -15,6 +15,9 @@ using YamlDotNet.Serialization;
 namespace Bite.GUI
 {
   
+    /// <summary>
+    /// A gui system which handles window on bite
+    /// </summary>
     public sealed class WindowGUISystem : GUISystem
     {
         public WindowGUISystem()
