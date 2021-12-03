@@ -129,7 +129,7 @@ namespace Bite.GUI
              * Create visual studio project
              */
             commandLineProcess.StandardInput.WriteLine("cd " + userGameCodePath);
-            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {platformCommand} --self-contained --output ./PublishFolder"); // builds
+            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {platformCommand} /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --output ./PublishFolder"); // builds
 
             commandLineProcess.StandardInput.Flush();
             commandLineProcess.StandardInput.Close();
