@@ -10,6 +10,7 @@ using OpenTK.Windowing.Desktop;
 using Vex.Input;
 using Vex.Engine;
 using System.ComponentModel;
+using Vex.Graphics;
 
 namespace Vex.Platform
 {
@@ -18,7 +19,7 @@ namespace Vex.Platform
     /// </summary>
     public class Window : GameWindow
     {
-        public Window(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams) : base(
+        public Window(string applicationTitle,WindowCreateParams windowCreateParams,WindowUpdateParams windowUpdateParams,bool intermediateFramebufferAsSwapchain) : base(
             new GameWindowSettings()
             {
                 IsMultiThreaded = windowUpdateParams.IsMultiThreaded,
@@ -44,11 +45,17 @@ namespace Vex.Platform
             m_Events = new List<PlatformEvent>();
             m_Width = windowCreateParams.Width;
             m_Height = windowCreateParams.Height;
+            m_IntermediateFramebufferAsSwapchain = intermediateFramebufferAsSwapchain;
 
             /*
             * Set global size
             */
             PlatformWindowProperties.Size = new System.Numerics.Vector2(windowCreateParams.Width, windowCreateParams.Height);
+
+            /*
+            * Set default framebuffer
+            */
+            Framebuffer2D.IntermediateFramebuffer = intermediateFramebufferAsSwapchain == true ? new Framebuffer2D(windowCreateParams.Width, windowCreateParams.Height) : new Framebuffer2D(1024, 1024, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
         }
 
         /// <summary>
@@ -168,6 +175,14 @@ namespace Vex.Platform
             PlatformWindowProperties.Size = new System.Numerics.Vector2(e.Width, e.Height);
 
             /*
+             * Change framebuffer size only.(Swapchain cant be changed with glTexImage2D in opengl)(This is not a platform agnostic solution!!!!)
+             */
+            if(m_IntermediateFramebufferAsSwapchain)
+            {
+                Framebuffer2D.IntermediateFramebuffer.ResizeForSwapchainInternal((int)ev.Width, (int)ev.Height);
+            }
+
+            /*
              * Inform application
              */
             m_ApplicationEventDelegate(ev);
@@ -265,5 +280,6 @@ namespace Vex.Platform
         private int m_Width;
         private int m_Height;
         private bool m_WindowCloseRequest;
+        private bool m_IntermediateFramebufferAsSwapchain;
     }
 }

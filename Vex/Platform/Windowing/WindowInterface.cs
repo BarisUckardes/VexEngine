@@ -11,9 +11,9 @@ namespace Vex.Platform
     /// </summary>
     public sealed class WindowInterface
     {
-        public WindowInterface(string applicationTitle,WindowCreateParams windowCreateParams, WindowUpdateParams windowUpdateParams)
+        public WindowInterface(string applicationTitle,WindowCreateParams windowCreateParams, WindowUpdateParams windowUpdateParams,bool intermediateFramebufferAsSwapchain)
         {
-            m_Window = new Window(applicationTitle,windowCreateParams,windowUpdateParams);
+            m_Window = new Window(applicationTitle,windowCreateParams,windowUpdateParams, intermediateFramebufferAsSwapchain);
         }
 
         /// <summary>

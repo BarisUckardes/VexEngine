@@ -20,6 +20,7 @@ namespace Vex.Platform
             Height = height;
             StartsFocused = startsFocused;
             StartsFullscreen = startsFullscreen;
+
         }
 
         /// <summary>

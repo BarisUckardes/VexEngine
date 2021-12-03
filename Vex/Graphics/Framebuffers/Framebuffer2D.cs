@@ -146,6 +146,12 @@ namespace Vex.Graphics
             FramebufferID = framebufferID;
         }
 
+        internal void ResizeForSwapchainInternal(int width,int height)
+        {
+            m_Width = width;
+            m_Height = height;
+        }
+
         private int m_Width;
         private int m_Height;
     }

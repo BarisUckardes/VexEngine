@@ -33,7 +33,7 @@ namespace Vex.Application
             /*
              * Create window
              */
-            m_WindowInterface = new WindowInterface(applicationTitle,windowCreateParams, windowUpdateParams);
+            m_WindowInterface = new WindowInterface(applicationTitle,windowCreateParams, windowUpdateParams,setIntermediateFramebufferAsSwapchain);
             m_WindowInterface.LocalWindow.SetApplicationEventDelegate(OnPlatformEvent);
 
             /*
@@ -161,11 +161,6 @@ namespace Vex.Application
              * Create session
              */
             m_Session = new ApplicationSession(m_WindowInterface);
-
-            /*
-             * Set default framebuffer
-             */
-            Framebuffer2D.IntermediateFramebuffer = m_SetIntermediateFramebufferAsSwapchain == true ? new Framebuffer2D(m_WindowInterface.LocalWindow.Width,m_WindowInterface.LocalWindow.Height) : new Framebuffer2D(1024, 1024, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
 
             /*
             * Validate immediate mode
