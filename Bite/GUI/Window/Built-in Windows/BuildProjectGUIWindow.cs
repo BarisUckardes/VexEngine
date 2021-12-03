@@ -130,12 +130,13 @@ namespace Bite.GUI
             /*
              * Create new project build job
              */
-            m_BuildFinishJob = new ProjectBuildJob();
+            m_BuildFinishJob = new ProjectBuildJob(new ProjectBuildSettings(platformCommand, outputFolder, startWorldID, isSelfContained, sourceLauncherFolder));
+            m_BuildFinishJob.SetOnFinishDelegate(OnBuildFinished);
 
             /*
              * Execute job with the given parameters
              */
-            m_BuildFinishJob.ExecuteJob(new ProjectBuildSettings(platformCommand, outputFolder, startWorldID, isSelfContained,sourceLauncherFolder),OnBuildFinished);
+            m_BuildFinishJob.ExecuteJob();
         }
 
         /// <summary>
@@ -143,7 +144,7 @@ namespace Bite.GUI
         /// </summary>
         private void OnBuildFinished()
         {
-            Console.WriteLine("Building project finished");
+            Console.WriteLine("\nBuilding project finished");
             m_BuildFinishJob = null;
         }
 

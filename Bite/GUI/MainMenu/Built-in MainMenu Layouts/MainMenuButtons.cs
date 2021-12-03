@@ -79,6 +79,8 @@ namespace Bite
             commandLineProcess.StandardInput.Flush();
             commandLineProcess.StandardInput.Close();
             commandLineProcess.WaitForExit();
+
+
             EditorCommands.SendEditorShutdownRequest();
         }
 

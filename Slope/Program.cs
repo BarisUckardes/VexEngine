@@ -6,15 +6,7 @@ using Vex.Platform;
 using Vex.Threading;
 namespace Slope
 {
-    public class YoJob : Job
-    {
-        protected override void DoJobCore(object targetObject)
-        {
-            Console.WriteLine("Started: " + (targetObject as string));
-            System.Threading.Thread.Sleep(3000);
-            Console.WriteLine("Finished");
-        }
-    }
+ 
     class Program
     {
         static void Main(string[] args)

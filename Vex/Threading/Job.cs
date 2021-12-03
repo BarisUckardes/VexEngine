@@ -17,7 +17,7 @@ namespace Vex.Threading
     /// </summary>
     public abstract class Job
     {
-        public Job()
+        protected Job(object parameters)
         {
             /*
              * Set finished to false as DEFAULT
@@ -27,54 +27,25 @@ namespace Vex.Threading
             /*
              * Create new mutex object
              */
-            m_Mutex = new Mutex(); 
+            m_Mutex = new Mutex();
+
+            /*
+             * Set parameters
+             */
+            m_Parameters = parameters;
         }
-        public void DoJob(object targetObject)
+        public void SetOnFinishDelegate(OnJobFinishedDelegate targetDelegate)
         {
-            /*
-             * Do job on thread side
-             */
-            DoJobCore(targetObject);
-
-            /*
-             * Lock mutex on thread side
-             */
-            m_Mutex.WaitOne();
-
-            /*
-             * Set this job finished
-             */
-            m_IsFinished = true;
-
-            /*
-             * Release lock
-             */
-            m_Mutex.ReleaseMutex();
-
-            /*
-             * Invoke event
-             */
-            m_OnFinishEvent?.Invoke();
-             
-        }
-        public void ExecuteJob(object parameters)
-        {
-            /*
-            * Create new job object
-            */
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DoJob),parameters);
-        }
-        public void ExecuteJob(object parameters, OnJobFinishedDelegate targetDelegate)
-        {
-            /*
-             * Register on finish delegate
-             */
             m_OnFinishEvent += targetDelegate;
+        }
+        public void ExecuteJob()
+        {
+
 
             /*
             * Create new job object
             */
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DoJob), parameters);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DoJob), m_Parameters);
         }
         public void WaitForFinish()
         {
@@ -106,8 +77,43 @@ namespace Vex.Threading
             m_Mutex.ReleaseMutex();
         }
 
+        private void DoJob(object targetObject)
+        {
+            /*
+             * Do job on thread side
+             */
+            DoJobCore(targetObject);
+
+            /*
+             * Lock mutex on thread side
+             */
+            m_Mutex.WaitOne();
+
+            /*
+             * Set this job finished
+             */
+            m_IsFinished = true;
+
+            /*
+             * Release lock
+             */
+            m_Mutex.ReleaseMutex();
+
+            /*
+             * Invoke event
+             */
+            m_OnFinishEvent?.Invoke();
+
+        }
+
+        /// <summary>
+        /// Job function implementation
+        /// </summary>
+        /// <param name="targetObject"></param>
         protected abstract void DoJobCore(object targetObject);
+
         private event OnJobFinishedDelegate m_OnFinishEvent;
+        private object m_Parameters;
         private bool m_IsFinished;
         private Mutex m_Mutex;
     }

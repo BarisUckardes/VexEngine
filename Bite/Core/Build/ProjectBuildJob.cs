@@ -13,8 +13,12 @@ namespace Bite.Core
     /// <summary>
     /// A job which runs project build sequence
     /// </summary>
-    public sealed class ProjectBuildJob : Job
+    internal sealed class ProjectBuildJob : Job
     {
+        public ProjectBuildJob(in ProjectBuildSettings settings) : base(settings)
+        {
+
+        }
         protected override void DoJobCore(object targetObject)
         {
             /*
