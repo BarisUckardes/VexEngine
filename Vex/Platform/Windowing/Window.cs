@@ -130,7 +130,7 @@ namespace Vex.Platform
         public void UpdateInput()
         {
             /*
-             * PVexcess window events
+             * Process window events
              */
             ProcessEvents();
 
@@ -143,8 +143,6 @@ namespace Vex.Platform
              * Set events
              */
             m_Events = new List<PlatformEvent>(m_EventBuffer);
-            m_EventBuffer.Clear();
-
         }
 
         public void SetApplicationEventDelegate(ReceivePlatformEventDelegate del)

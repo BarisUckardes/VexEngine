@@ -275,7 +275,6 @@ namespace Vex.Application
                 }
                 Profiler.EndProfile();
 
-
                 /*
                  * Run application modules
                  */
@@ -293,8 +292,6 @@ namespace Vex.Application
                 m_ApplicationWindow.SwapBuffers();
                 Profiler.EndProfile();
 
-               
-
                 Profiler.EndProfileSession();
             }
 
@@ -311,7 +308,6 @@ namespace Vex.Application
              */
             m_Session.Shutdown();
             m_Session = null;
-
 
             /*
              * Display shutdown message
