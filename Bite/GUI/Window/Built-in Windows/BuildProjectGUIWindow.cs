@@ -5,13 +5,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bite.Core;
 using Fang.Commands;
 using ImGuiNET;
 using Vex.Asset;
 using Vex.Platform;
+using Vex.Threading;
 
 namespace Bite.GUI
 {
+    /// <summary>
+    /// A gui window which handles the build settings and actions
+    /// </summary>
     [WindowLayout("Build Project")]
     public sealed class BuildProjectGUIWindow : WindowGUILayout
     {
@@ -99,7 +104,11 @@ namespace Bite.GUI
              */
             if(GUIRenderCommands.CreateButton("Build","buld"))
             {
-                TryBuild(PlatformToBuildCommand(m_SupportedPlatforms[m_SelectedPlatformIndex]),outputFolder,m_AllWorldAssets[m_SelectedWorldIndex].AssetID);
+                TryBuild(PlatformToBuildCommand(
+                    m_SupportedPlatforms[m_SelectedPlatformIndex]),
+                    outputFolder,
+                    PlatformToLauncherFolder(m_SupportedPlatforms[m_SelectedPlatformIndex]),
+                    m_AllWorldAssets[m_SelectedWorldIndex].AssetID);
             }
         }
 
@@ -107,61 +116,42 @@ namespace Bite.GUI
         {
 
         }
-        private void TryBuild(string platformCommand,string outputFolder,Guid startWorldID,bool isSelfContained = true)
+
+        /// <summary>
+        /// Tries to build the project
+        /// </summary>
+        /// <param name="platformCommand"></param>
+        /// <param name="outputFolder"></param>
+        /// <param name="sourceLauncherFolder"></param>
+        /// <param name="startWorldID"></param>
+        /// <param name="isSelfContained"></param>
+        private void TryBuild(string platformCommand,string outputFolder,string sourceLauncherFolder,Guid startWorldID,bool isSelfContained = true)
         {
             /*
-             * Get user project path
+             * Create new project build job
              */
-            string userGameCodePath = PlatformPaths.DomainRootDirectoy + @"\CodeBase\UserGameCode";
+            m_BuildFinishJob = new ProjectBuildJob();
 
             /*
-             * Create process
+             * Execute job with the given parameters
              */
-            Process commandLineProcess = new Process();
-            commandLineProcess.StartInfo.FileName = "cmd.exe";
-            commandLineProcess.StartInfo.RedirectStandardInput = true;
-            commandLineProcess.StartInfo.RedirectStandardOutput = false;
-            commandLineProcess.StartInfo.CreateNoWindow = false;
-            commandLineProcess.StartInfo.UseShellExecute = false;
-            commandLineProcess.Start();
-
-            /*
-             * Create visual studio project
-             */
-            commandLineProcess.StandardInput.WriteLine("cd " + userGameCodePath);
-            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {platformCommand} /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --output ./PublishFolder"); // builds
-
-            commandLineProcess.StandardInput.Flush();
-            commandLineProcess.StandardInput.Close();
-            commandLineProcess.WaitForExit();
-
-            /*
-             * Copy buid files
-             */
-            PlatformFile.CopyDirectory(userGameCodePath + @"\PublishFolder\",outputFolder);
-
-            /*
-             * Create domain folder
-             */
-            Directory.CreateDirectory(outputFolder + @"\Domain");
-
-            /*
-             * Copy domain files
-             */
-            PlatformFile.CopyDirectory(PlatformPaths.DomainDirectory, outputFolder + @"\Domain");
-
-            /*
-             * Copy game executable
-            */
-            PlatformFile.CopyDirectory(PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\PlatformLaunchers\" + PlatformToLauncherFolder(m_SupportedPlatforms[m_SelectedPlatformIndex]), outputFolder);
-
-            /*
-             * Create immediate world id file
-             */
-            File.WriteAllText(outputFolder + @"\ImmediateWorld.vsettings", startWorldID.ToString());
-         
+            m_BuildFinishJob.ExecuteJob(new ProjectBuildSettings(platformCommand, outputFolder, startWorldID, isSelfContained,sourceLauncherFolder),OnBuildFinished);
         }
 
+        /// <summary>
+        /// Called when build job on the other thread is finished
+        /// </summary>
+        private void OnBuildFinished()
+        {
+            Console.WriteLine("Building project finished");
+            m_BuildFinishJob = null;
+        }
+
+        /// <summary>
+        /// Converts platform to dotnet cli build command mime
+        /// </summary>
+        /// <param name="platform"></param>
+        /// <returns></returns>
         private string PlatformToBuildCommand(string platform)
         {
             switch (platform)
@@ -176,6 +166,12 @@ namespace Bite.GUI
 	        }
             return "";
         }
+
+        /// <summary>
+        /// Converts platform to source platform launcher game
+        /// </summary>
+        /// <param name="platform"></param>
+        /// <returns></returns>
         private string PlatformToLauncherFolder(string platform)
         {
             switch (platform)
@@ -190,11 +186,13 @@ namespace Bite.GUI
 	        }
             return "";
         }
+
+        private List<Asset> m_AllWorldAssets;
+        private Job m_BuildFinishJob;
+        private string[] m_SupportedPlatforms = new string[] { "Windows", "Linux", "Mac", "PS5", "Android", "IOS" };
+        private string[] m_SupportedArchitectures = new string[] { "x86", "x64" };
         private int m_SelectedPlatformIndex = 0;
         private int m_SelectedArchitectureIndex = 0;
         private int m_SelectedWorldIndex = 0;
-        private string[] m_SupportedPlatforms = new string[] { "Windows", "Linux","Mac","PS5","Android","IOS" };
-        private string[] m_SupportedArchitectures = new string[] { "x86", "x64" };
-        private List<Asset> m_AllWorldAssets;
     }
 }

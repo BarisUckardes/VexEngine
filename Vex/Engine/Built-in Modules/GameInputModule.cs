@@ -52,7 +52,7 @@ namespace Vex.Engine
                 /*
                  * Get key code
                  */
-                Keys keyCode = ((PlatformKeyPressedEvent)eventData).KeyCode;,
+                Keys keyCode = ((PlatformKeyPressedEvent)eventData).KeyCode;
 
                 /*
                  * Register it to the pressed keys
