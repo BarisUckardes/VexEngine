@@ -45,7 +45,7 @@ namespace Vex.Platform
             m_Width = windowCreateParams.Width;
             m_Height = windowCreateParams.Height;
             m_IntermediateFramebufferAsSwapchain = intermediateFramebufferAsSwapchain;
-
+            
             /*
             * Set global size
             */

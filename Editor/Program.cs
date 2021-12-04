@@ -90,10 +90,12 @@ namespace Game
              * Create bite commands
              */
             List<CoreCommand> coreCommands = new List<CoreCommand>();
+            coreCommands.Add(new LastWindowPosSizeLoader());
             coreCommands.Add(new DomainCoreCommand());
             coreCommands.Add(new ProjectLoaderCommand());
             coreCommands.Add(new EditorResourcesLoaderCommand());
             coreCommands.Add(new LastWorldLoaderCommand());
+
             
 
             /*

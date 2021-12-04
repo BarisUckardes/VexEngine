@@ -87,6 +87,69 @@ namespace Bite.Core
         }
 
         /// <summary>
+        /// Returns the window width
+        /// </summary>
+        public int WindowWidth
+        {
+            get
+            {
+                return m_ApplicationSession.Window.Width;
+            }
+        }
+
+        /// <summary>
+        /// Returns the window height
+        /// </summary>
+        public int WindowHeight
+        {
+            get
+            {
+                return m_ApplicationSession.Window.Height;
+            }
+        }
+
+        /// <summary>
+        /// Returns the offset x
+        /// </summary>
+        public int WindowOffsetX
+        {
+            get
+            {
+                return m_ApplicationSession.Window.Location.X;
+            }
+        }
+
+        /// <summary>
+        /// Returns the offset y
+        /// </summary>
+        public int WindowOffsetY
+        {
+            get
+            {
+                return m_ApplicationSession.Window.Location.Y;
+            }
+        }
+
+        /// <summary>
+        /// Sets the current window size
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public void SetWindowSize(int width,int height)
+        {
+            m_ApplicationSession.Window.Size = new OpenTK.Mathematics.Vector2i(width, height);
+        }
+
+        /// <summary>
+        /// Sets the current window offset
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void SetWindowOffset(int x,int y)
+        {
+            m_ApplicationSession.Window.Location = new OpenTK.Mathematics.Vector2i(x, y);
+        }
+        /// <summary>
         /// Setups a world for editor
         /// </summary>
         /// <param name="id"></param>
