@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Bite.Core;
 using Bite.GUI;
 using Vex.Platform;
+using Vex.Threading;
 
 namespace Bite
 {
@@ -57,30 +58,31 @@ namespace Bite
             string userEditorCodePath = PlatformPaths.DomainRootDirectoy + @"\CodeBase\UserEditorCode";
 
             /*
-            * Create code base files
-            */
-            Console.Write($"Compile started...");
-            Process commandLineProcess = new Process();
-            commandLineProcess.StartInfo.FileName = "cmd.exe";
-            commandLineProcess.StartInfo.RedirectStandardInput = true;
-            commandLineProcess.StartInfo.RedirectStandardOutput = false;
-            commandLineProcess.StartInfo.CreateNoWindow = false;
-            commandLineProcess.StartInfo.UseShellExecute = false;
-            commandLineProcess.Start();
+             * Create job list for job batching
+             */
+            List<Job> compileJobs = new List<Job>();
 
             /*
-             * Create visual studio project
+             * Create compile job for UserGameCode
              */
-            commandLineProcess.StandardInput.WriteLine("cd " + userGameCodePath);
-            commandLineProcess.StandardInput.WriteLine($"dotnet build UserGameCode.csproj"); // builds
-            commandLineProcess.StandardInput.WriteLine("cd " + userEditorCodePath);
-            commandLineProcess.StandardInput.WriteLine($"dotnet build UserEditorCode.csproj"); // builds
+            ProjectCompileJob userGameCodeJob = new ProjectCompileJob(new ProjectCompileSettings(userGameCodePath, userGameCodePath + @"\EditorBuild\", "UserGameCode", CompileConfiguration.Debug, CompileArchitecture.x64));
+            compileJobs.Add(userGameCodeJob);
 
-            commandLineProcess.StandardInput.Flush();
-            commandLineProcess.StandardInput.Close();
-            commandLineProcess.WaitForExit();
+            /*
+             * Create compile job for UserEditorCode
+             */
+            ProjectCompileJob userEditorCodeJob = new ProjectCompileJob(new ProjectCompileSettings(userEditorCodePath, userEditorCodePath + @"\EditorBuild\", "UserEditorCode", CompileConfiguration.Debug, CompileArchitecture.x64));
+            compileJobs.Add(userEditorCodeJob);
 
+            /*
+             * Create job batch
+             */
+            JobBatch compileBatch = new JobBatch(compileJobs, OnProjectEditorCompilationFinished);
+            compileBatch.ExecuteAll();
 
+        }
+        private static void OnProjectEditorCompilationFinished()
+        {
             EditorCommands.SendEditorShutdownRequest();
         }
 

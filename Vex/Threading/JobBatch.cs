@@ -18,6 +18,26 @@ namespace Vex.Threading
              */
             m_Jobs = new List<Job>(jobs);
         }
+        public JobBatch(List<Job> jobs,OnJobFinishedDelegate onJobBatchFinishedDelegate)
+        {
+            /*
+             * Get new list copy
+             */
+            m_Jobs = new List<Job>(jobs);
+
+            /*
+             * Set internal job finished delegate
+             */
+            foreach(Job job in m_Jobs)
+            {
+                job.SetOnFinishDelegate(OnSingleJobFinished);
+            }
+
+            /*
+             * Set delegate
+             */
+            m_OnBatchFinsihedEvent += onJobBatchFinishedDelegate;
+        }
 
         /// <summary>
         /// Stars the execution of all the jobs
@@ -44,8 +64,33 @@ namespace Vex.Threading
                 m_Jobs[0].WaitForFinish();
                 m_Jobs.RemoveAt(0);
             }
+
+            /*
+             * Invoke batch finished evetn
+             */
+            m_OnBatchFinsihedEvent?.Invoke();
         }
 
+
+        private void OnSingleJobFinished()
+        {
+            /*
+             * Increment finished job count
+             */
+            m_TotalNumberOfJobsFinished++;
+
+            /*
+             * Validate finish
+             */
+            if(m_TotalNumberOfJobsFinished >= m_Jobs.Count)
+            {
+                m_Jobs.Clear();
+                m_OnBatchFinsihedEvent.Invoke();
+            }
+
+        }
         private List<Job> m_Jobs;
+        private int m_TotalNumberOfJobsFinished;
+        private event OnJobFinishedDelegate m_OnBatchFinsihedEvent;
     }
 }

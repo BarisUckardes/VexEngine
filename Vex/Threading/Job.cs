@@ -34,19 +34,47 @@ namespace Vex.Threading
              */
             m_Parameters = parameters;
         }
-        public void SetOnFinishDelegate(OnJobFinishedDelegate targetDelegate)
+
+        /// <summary>
+        /// Returns whether the job is finished
+        /// </summary>
+        public bool IsJobFinished
         {
-            m_OnFinishEvent += targetDelegate;
+            get
+            {
+                /*
+                 * Lock mutex
+                 */
+                m_Mutex.WaitOne();
+
+                /*
+                 * Collect state
+                 */
+                bool state = m_IsFinished;
+
+                /*
+                 * Release mutex
+                 */
+                m_Mutex.ReleaseMutex();
+
+                return state;
+            }
         }
+
+        /// <summary>
+        /// Starts the execution of the job
+        /// </summary>
         public void ExecuteJob()
         {
-
-
             /*
             * Create new job object
             */
             ThreadPool.QueueUserWorkItem(new WaitCallback(DoJob), m_Parameters);
         }
+
+        /// <summary>
+        /// Waits until the job finished(Freezes the thread which this function is called)
+        /// </summary>
         public void WaitForFinish()
         {
             /*
@@ -77,6 +105,19 @@ namespace Vex.Threading
             m_Mutex.ReleaseMutex();
         }
 
+        /// <summary>
+        /// Sets on finsihed delegate
+        /// </summary>
+        /// <param name="targetDelegate"></param>
+        public void SetOnFinishDelegate(OnJobFinishedDelegate targetDelegate)
+        {
+            m_OnFinishEvent += targetDelegate;
+        }
+
+        /// <summary>
+        /// Main do job method
+        /// </summary>
+        /// <param name="targetObject"></param>
         private void DoJob(object targetObject)
         {
             /*
