@@ -14,4 +14,23 @@ namespace Bite.Core
         x32 = 0,
         x64 = 1
     }
+
+    public static class CompileArchitectureExtensions
+    {
+        public static string ToRuntimeString(this CompileArchitecture architecture)
+        {
+            switch (architecture)
+            {
+                case CompileArchitecture.x32:
+                    return "x32";
+                    break;
+                case CompileArchitecture.x64:
+                    return "x64";
+                    break;
+                default:
+                    break;
+            }
+            return "none";
+        }
+    }
 }

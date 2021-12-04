@@ -11,38 +11,19 @@ namespace Bite.Core
     /// </summary>
     internal readonly struct ProjectBuildSettings
     {
-        public ProjectBuildSettings(string platformCommand, string outputFolder, Guid startWorldID, bool isSelfContained, string platformLauncherFolder)
-        {
-            PlatformCommand = platformCommand;
-            OutputFolder = outputFolder;
-            StartWorldID = startWorldID;
-            IsSelfContained = isSelfContained;
-            PlatformLauncherFolder = platformLauncherFolder;
-        }
-
-        /// <summary>
-        /// Which platform build will target
-        /// </summary>
-        public readonly string PlatformCommand;
-
-        /// <summary>
-        /// Target output folder which build will be exported
-        /// </summary>
         public readonly string OutputFolder;
-
-        /// <summary>
-        /// Primary start world of the build
-        /// </summary>
+        public readonly CompileOSType OsType;
+        public readonly CompileConfiguration Configuration;
+        public readonly CompileArchitecture Architecture;
         public readonly Guid StartWorldID;
 
-        /// <summary>
-        /// Is build will include .net core runtime libraries with it
-        /// </summary>
-        public readonly bool IsSelfContained;
-
-        /// <summary>
-        /// Which folder will be targeted as game launcher
-        /// </summary>
-        public readonly string PlatformLauncherFolder;
+        public ProjectBuildSettings(string outputFolder, CompileOSType osType, CompileConfiguration configuration, CompileArchitecture architecture, Guid startWorldID)
+        {
+            OutputFolder = outputFolder;
+            OsType = osType;
+            Configuration = configuration;
+            Architecture = architecture;
+            StartWorldID = startWorldID;
+        }
     }
 }

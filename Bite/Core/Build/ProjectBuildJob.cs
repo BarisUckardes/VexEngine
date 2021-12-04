@@ -43,10 +43,10 @@ namespace Bite.Core
             commandLineProcess.Start();
 
             /*
-             * Create visual studio project
+             * Publish user game code
              */
             commandLineProcess.StandardInput.WriteLine("cd " + userGameCodePath);
-            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {buildSettings.PlatformCommand} /p:IncludeNativeLibrariesForSelfExtract=true --self-contained {buildSettings.IsSelfContained.ToString()} --output ./PublishFolder"); // builds
+            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {buildSettings.OsType.OSTypeToRuntime() + "-" + buildSettings.Architecture.ToRuntimeString()} /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --output ./PublishFolder PublishReadyToRun"); // builds
 
             commandLineProcess.StandardInput.Flush();
             commandLineProcess.StandardInput.Close();
@@ -70,7 +70,7 @@ namespace Bite.Core
             /*
              * Copy game executable
             */
-            PlatformFile.CopyDirectory(PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\PlatformLaunchers\" + buildSettings.PlatformLauncherFolder, buildSettings.OutputFolder);
+            PlatformFile.CopyDirectory(PlatformPaths.ProgramfilesDirectory + @"\Vex\Vex\PlatformLaunchers\" + buildSettings.OsType.ToString(), buildSettings.OutputFolder);
 
             /*
              * Create immediate world id file

@@ -37,7 +37,7 @@ namespace Bite.Core
              * Build target project
              */
             commandLineProcess.StandardInput.WriteLine("cd " + settings.ProjectFolder);
-            commandLineProcess.StandardInput.WriteLine($"dotnet build {settings.ProjectName}.csproj"); // builds
+            commandLineProcess.StandardInput.WriteLine($"dotnet build {settings.ProjectName}.csproj --configuration {settings.Configuration.ToString()} --arch {settings.Architecture.ToString()} --output {settings.OutputFolder}"); // builds
 
             commandLineProcess.StandardInput.Flush();
             commandLineProcess.StandardInput.Close();

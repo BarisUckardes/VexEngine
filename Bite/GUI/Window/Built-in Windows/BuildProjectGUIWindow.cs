@@ -89,26 +89,31 @@ namespace Bite.GUI
                 }
                 GUIRenderCommands.FinalizeCombo();
             }
-            /*
-             * Render output folder
-             */
-            string outputFolder = PlatformPaths.DomainRootDirectoy + @"\TestBuild";
-
-            /*
-             * Create output folder
-             */
-            Directory.CreateDirectory(outputFolder);
-            
+          
             /*
              * Render build button
              */
             if(GUIRenderCommands.CreateButton("Build","buld"))
             {
-                TryBuild(PlatformToBuildCommand(
-                    m_SupportedPlatforms[m_SelectedPlatformIndex]),
-                    outputFolder,
-                    PlatformToLauncherFolder(m_SupportedPlatforms[m_SelectedPlatformIndex]),
-                    m_AllWorldAssets[m_SelectedWorldIndex].AssetID);
+               
+                string outputFolder = PlatformPaths.DomainRootDirectoy + @"\TestBuild";
+                CompileOSType osType = (CompileOSType)m_SelectedPlatformIndex;
+                CompileConfiguration configuration = CompileConfiguration.Release;
+                CompileArchitecture architecture = (CompileArchitecture)m_SelectedArchitectureIndex;
+                Guid startWorldID = m_AllWorldAssets[m_SelectedWorldIndex].AssetID;
+
+                ProjectBuildSettings settings = new ProjectBuildSettings(outputFolder, osType, configuration, architecture, startWorldID);
+
+                /*
+                 * Create new project build job
+                 */
+                m_BuildFinishJob = new ProjectBuildJob(settings);
+                m_BuildFinishJob.SetOnFinishDelegate(OnBuildFinished);
+
+                /*
+                 * Execute job with the given parameters
+                 */
+                m_BuildFinishJob.ExecuteJob();
             }
         }
 
@@ -118,33 +123,11 @@ namespace Bite.GUI
         }
 
         /// <summary>
-        /// Tries to build the project
-        /// </summary>
-        /// <param name="platformCommand"></param>
-        /// <param name="outputFolder"></param>
-        /// <param name="sourceLauncherFolder"></param>
-        /// <param name="startWorldID"></param>
-        /// <param name="isSelfContained"></param>
-        private void TryBuild(string platformCommand,string outputFolder,string sourceLauncherFolder,Guid startWorldID,bool isSelfContained = true)
-        {
-            /*
-             * Create new project build job
-             */
-            m_BuildFinishJob = new ProjectBuildJob(new ProjectBuildSettings(platformCommand, outputFolder, startWorldID, isSelfContained, sourceLauncherFolder));
-            m_BuildFinishJob.SetOnFinishDelegate(OnBuildFinished);
-
-            /*
-             * Execute job with the given parameters
-             */
-            m_BuildFinishJob.ExecuteJob();
-        }
-
-        /// <summary>
         /// Called when build job on the other thread is finished
         /// </summary>
         private void OnBuildFinished()
         {
-            Console.WriteLine("\nBuilding project finished");
+            Console.WriteLine($"\nBuilding project finished.{((CompileOSType)m_SelectedPlatformIndex).OSTypeToRuntime() + "-" + ((CompileArchitecture)m_SelectedArchitectureIndex).ToRuntimeString() }");
             m_BuildFinishJob = null;
         }
 
@@ -190,7 +173,7 @@ namespace Bite.GUI
 
         private List<Asset> m_AllWorldAssets;
         private Job m_BuildFinishJob;
-        private string[] m_SupportedPlatforms = new string[] { "Windows", "Linux", "Mac", "PS5", "Android", "IOS" };
+        private string[] m_SupportedPlatforms = new string[] { "Windows"};
         private string[] m_SupportedArchitectures = new string[] { "x86", "x64" };
         private int m_SelectedPlatformIndex = 0;
         private int m_SelectedArchitectureIndex = 0;
