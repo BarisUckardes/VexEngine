@@ -179,6 +179,7 @@ namespace Vex.Framework
                      * Create model matrix
                      */
                     Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
+                    position.X *= -1;
                     Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
                     Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
                     

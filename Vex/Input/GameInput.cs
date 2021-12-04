@@ -29,7 +29,6 @@ namespace Vex.Input
             s_KeyPressedEvents = pressedKeys;
             s_KeyReleasedEvents = releasedKeys;
             s_DownKeyEvents = downKeys;
-            Console.WriteLine(s_DownKeyEvents.Count + " number of down events!");
 
         }
 

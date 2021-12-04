@@ -33,7 +33,7 @@ namespace Game
             /*
              * Create additonal library paths
              */
-            List<string> additonalLibraries = new List<string>() { targetProjectDirectory + @"\CodeBase\UserGameCode\bin\debug\net6.0\UserGameCode.dll", targetProjectDirectory + @"\CodeBase\UserEditorCode\bin\debug\net6.0\UserEditorCode.dll" };
+            List<string> additonalLibraries = new List<string>() { targetProjectDirectory + @"\CodeBase\UserGameCode\EditorBuild\UserGameCode.dll", targetProjectDirectory + @"\CodeBase\UserEditorCode\EditorBuild\UserEditorCode.dll" };
 
             /*
              * Create unique temp session

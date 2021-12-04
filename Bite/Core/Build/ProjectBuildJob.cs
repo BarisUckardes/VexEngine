@@ -46,7 +46,7 @@ namespace Bite.Core
              * Publish user game code
              */
             commandLineProcess.StandardInput.WriteLine("cd " + userGameCodePath);
-            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {buildSettings.OsType.OSTypeToRuntime() + "-" + buildSettings.Architecture.ToRuntimeString()} /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --output ./PublishFolder PublishReadyToRun"); // builds
+            commandLineProcess.StandardInput.WriteLine($"dotnet publish -c Release -r {buildSettings.OsType.OSTypeToRuntime() + "-" + buildSettings.Architecture.ToRuntimeString()} /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --output ./PublishFolder"); // builds
 
             commandLineProcess.StandardInput.Flush();
             commandLineProcess.StandardInput.Close();
