@@ -34,7 +34,6 @@ namespace Vex.Platform
                 Size = new OpenTK.Mathematics.Vector2i(windowCreateParams.Width, windowCreateParams.Height),
                 StartFocused = windowCreateParams.StartsFocused,
                 Title = applicationTitle,
-                IsFullscreen = windowCreateParams.StartsFullscreen
             }
             )
         {
@@ -55,7 +54,7 @@ namespace Vex.Platform
             /*
             * Set default framebuffer
             */
-            Framebuffer2D.IntermediateFramebuffer = intermediateFramebufferAsSwapchain == true ? new Framebuffer2D(windowCreateParams.Width, windowCreateParams.Height) : new Framebuffer2D(1024, 1024, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
+            Framebuffer2D.IntermediateFramebuffer = intermediateFramebufferAsSwapchain == true ? new Framebuffer2D(Size.X, Size.Y) : new Framebuffer2D(1024, 1024, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
         }
 
         /// <summary>

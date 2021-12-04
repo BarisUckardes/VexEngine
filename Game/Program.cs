@@ -20,7 +20,7 @@ namespace Game
             /*
             * Initialize application create parameters
             */
-            WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Normal, "Vex Engine", 100, 100, 1280, 720, true,true);
+            WindowCreateParams windowCreateParams = new WindowCreateParams(WindowState.Fullscreen, "Vex Engine", 100, 100, 1280, 720, true,true);
             WindowUpdateParams windowUpdateParams = new WindowUpdateParams(1.0f / 60.0f, 1.0f / 60.0f, false);
 
             /*
@@ -28,7 +28,7 @@ namespace Game
              */
             Application application = new Application("Vex", windowCreateParams, windowUpdateParams, CultureInfo.InvariantCulture, new List<string>() { rootDirectory + @"\UserGameCode.dll" }, rootDirectory, args,true,true);
 
-
+            
             /*
              * Create required modules
              */
