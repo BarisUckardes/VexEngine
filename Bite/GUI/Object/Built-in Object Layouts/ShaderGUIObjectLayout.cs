@@ -68,10 +68,21 @@ namespace Bite.GUI
             GUIRenderCommands.CreateMultilineTextInput(" ", "mmm", ref m_ShaderSourceEditText, new System.Numerics.Vector2(512, 512));
             if(GUIRenderCommands.CreateButton("Apply&Compile","apply-But"))
             {
+                /*
+                 * Compile shader with target source text
+                 */
                 m_TargetShader.Compile(m_ShaderSourceEditText);
+
+                /*
+                 * Update unsaved domain content
+                 */
+                Session.UpdateDomainAsset(m_TargetShader.ID, m_TargetShader);
+                //Session.RegisterSaveRequiredAssets(m_TargetShader.ID, m_TargetShader);
+
+                /*
+                 * Terminate current popup
+                 */
                 GUIRenderCommands.TerminateCurrentPopup();
-                Session.UpdateDomainAsset(m_TargetShader.ID,m_TargetShader);
-                
             }
 
         }

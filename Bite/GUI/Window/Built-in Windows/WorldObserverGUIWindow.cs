@@ -101,14 +101,6 @@ namespace Bite.GUI
             }
 
             /*
-             * Render save button
-             */
-            if(GUIRenderCommands.CreateButton("Save","save_world_btn"))
-            {
-                Session.UpdateDomainAsset(m_TargetWorld.ID, m_TargetWorld);
-            }
-
-            /*
              * Create world create menu popup
              */
             if (GUIEventCommands.IsWindowHovered() && !GUIEventCommands.IsAnyItemHavored() && GUIEventCommands.IsMouseRightButtonClicked())

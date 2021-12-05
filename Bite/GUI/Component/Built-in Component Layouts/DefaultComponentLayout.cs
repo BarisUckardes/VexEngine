@@ -74,6 +74,14 @@ namespace Bite.GUI
                     VexObject value = (VexObject)info.GetValue(TargetComponent);
                     info.SetValue(TargetComponent, GUIRenderCommands.CreateObjectField(value, value == null ? "nll_obj_" + info.GetHashCode().ToString() : value.ID.ToString()));
                 }
+                else if(info.FieldType == typeof(string))
+                {
+                    GUIRenderCommands.CreateText(info.FieldType.Name, "");
+                    GUILayoutCommands.StayOnSameLine();
+                    string value = info.GetValue(TargetComponent) as string;
+                    GUIRenderCommands.CreateTextInput("", "txtt", ref value);
+                    info.SetValue(TargetComponent, value);
+                }
             }
 
             /*

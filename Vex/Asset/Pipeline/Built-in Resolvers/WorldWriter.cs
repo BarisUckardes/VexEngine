@@ -277,7 +277,6 @@ namespace Vex.Asset
                      */
                     Component component = components[componentIndex];
 
-
                     /*
                      * Emit begin component
                      */
@@ -350,7 +349,11 @@ namespace Vex.Asset
                                 /*
                                  * Emit
                                  */
-                                emitter.Emit(new Scalar(null, "Raw" + " " + field.Name + " " + targetRawValue.ToString()));
+                                string rawValueString = (targetRawValue == null ? "null" : targetRawValue.ToString());
+
+                                string entryString = "Raw" + " " + field.Name + " " + rawValueString;
+                                emitter.Emit(new Scalar(null, entryString));
+                                
                             }
                         }
 

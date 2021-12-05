@@ -207,6 +207,7 @@ namespace Vex.Asset
                      * Get parser value
                      */
                     string parserValue = GetParserValue(parser);
+                    Console.WriteLine("Parser value: " + parserValue);
 
                     /*
                      * Calculate indexes

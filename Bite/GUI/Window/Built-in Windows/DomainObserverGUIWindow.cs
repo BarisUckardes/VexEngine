@@ -379,7 +379,25 @@ namespace Bite.GUI
                      * Try open if its a world
                      */
                     if (file.AssetType == AssetType.World)
-                        Session.SetupEditorWorld(file.AssetID);
+                    {
+                        if(!Session.GamePlayState)
+                        {
+                            /*
+                            * First try save the current world
+                            */
+                            Session.UpdateDomainAsset(Session.EditorRootWorldID, Session.CurrentWorld);
+
+                            /*
+                             * Setup the target world for editor and vex
+                             */
+                            Session.SetupEditorWorld(file.AssetID);
+                        }
+                        else
+                        {
+                            Console.WriteLine("You cannot save world in the play mode");
+                        }
+                        
+                    }
 
                     isClickedEmpty = false;
                 }

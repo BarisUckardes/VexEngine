@@ -296,6 +296,11 @@ namespace Vex.Framework
                 }
             }
 
+            /*
+             * Set properties
+             */
+            world.ID = ID;
+            world.Name = Name;
             return world;
         }
         public override void Destroy()

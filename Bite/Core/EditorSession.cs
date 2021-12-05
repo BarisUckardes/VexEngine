@@ -131,6 +131,28 @@ namespace Bite.Core
         }
 
         /// <summary>
+        /// Returns whether there are unsaved assets in the current session
+        /// </summary>
+        public bool HasUnsavedAssets
+        {
+            get
+            {
+                return m_SaveRequiredAssets.Count > 0;
+            }
+        }
+
+        /// <summary>
+        /// Returns save required assets
+        /// </summary>
+        public Dictionary<Guid, VexObject> SaveRequiredAssets
+        {
+            get
+            {
+                return new Dictionary<Guid, VexObject>(m_SaveRequiredAssets);
+            }
+        }
+
+        /// <summary>
         /// Sets the current window size
         /// </summary>
         /// <param name="width"></param>
@@ -239,7 +261,7 @@ namespace Bite.Core
         /// </summary>
         /// <param name="id"></param>
         /// <param name="asset"></param>
-        public void UpdateDomainAsset(in Guid id,VexObject asset)
+        public bool UpdateDomainAsset(in Guid id,VexObject asset)
         {
             /*
              * Validate found result
@@ -251,8 +273,9 @@ namespace Bite.Core
                 * Update asset path
                  */
                 foundAsset.UpdateAssetContentOnPath(asset, m_ApplicationSession.AssetPool);
-                return;
+                return true;
             }
+            return false;
         }
 
       
@@ -484,6 +507,37 @@ namespace Bite.Core
             return null;
         }
 
+        public void RegisterSaveRequiredAssets(in Guid id,VexObject targetObject)
+        {
+            /*
+             * Directly register it
+             */
+            if(!m_SaveRequiredAssets.ContainsKey(id))
+                m_SaveRequiredAssets.Add(id, targetObject);
+        }
+        public void SaveAllSaveRequiredAssets()
+        {
+            /*
+             * Iterate each save required asset and save them
+             */
+            for(int assetIndex = 0;assetIndex < m_SaveRequiredAssets.Count;assetIndex++)
+            {
+                /*
+                 * Get record
+                 */
+                KeyValuePair<Guid, VexObject> record = m_SaveRequiredAssets.ElementAt(assetIndex);
+
+                /*
+                 * Save it
+                 */
+                if (!UpdateDomainAsset(record.Key, record.Value))
+                {
+                    Console.WriteLine($"Asset [{record.Key.ToString()}-{record.Value.Name}] Couldnt be saved");
+                }
+            }
+        }
+
+      
         /// <summary>
         /// Sets all the loaded editor resources
         /// </summary>
@@ -511,6 +565,7 @@ namespace Bite.Core
         }
 
 
+        private Dictionary<Guid, VexObject> m_SaveRequiredAssets;
         private List<EditorResource> m_Resources;
         private List<WindowLayoutSettings> m_CurrentWindowSettings;
         private ApplicationSession m_ApplicationSession;

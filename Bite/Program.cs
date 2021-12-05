@@ -2,7 +2,7 @@
 
 namespace Bite
 {
-    class PVexgram
+    class Program
     {
         static void Main(string[] args)
         {

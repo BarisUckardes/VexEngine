@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Vex.Framework;
+
 namespace Bite.Core
 {
     /// <summary>
@@ -34,7 +36,8 @@ namespace Bite.Core
                 return m_RootFolder;
             }
         }
-
+    
+        
         /// <summary>
         /// Returns the domain folders
         /// </summary>
@@ -72,7 +75,7 @@ namespace Bite.Core
 
         }
 
-        DomainFolderView m_RootFolder;
+        private DomainFolderView m_RootFolder;
         private string m_DomainPath;
     }
 }

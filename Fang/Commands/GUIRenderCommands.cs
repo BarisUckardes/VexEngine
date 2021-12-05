@@ -193,8 +193,13 @@ namespace Fang.Commands
         }
         public static bool CreateTextInput(string name,string code,ref string value,uint length = 20)
         {
+            string nullVal = "null";
             ImGui.PushID(code);
-            bool state = ImGui.InputText(name, ref value,length);
+            bool state = false;
+            if (value == null)
+                ImGui.InputText(name, ref nullVal, length);
+            else
+                ImGui.InputText(name, ref value, length);
             ImGui.PopID();
             return state;
         }

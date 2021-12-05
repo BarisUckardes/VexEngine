@@ -58,13 +58,31 @@ namespace Vex.Framework
              * Create world out of world content
              */
             World newWorld = worldContent.CreateFromThis(Session);
-            newWorld.ID = worldContent.ID;
-            newWorld.Name = worldContent.Name;
 
             /*
              * Register world 
              */
             newWorld.Register();
+        }
+
+        public static void LoadAndSwitch(string name)
+        {
+            /*
+             * Try laod static world asset content
+             */
+            StaticWorldContent worldContent = Session.AssetPool.GetOrLoadAsset(name) as StaticWorldContent;
+
+            /*
+             * Destroy the current world
+             */
+            Session.CurrentWorld?.Destroy();
+
+            /*
+             * Create new world out of the world content
+             */
+            World newWorld = worldContent.CreateFromThis(Session);
+            newWorld.Register();
+
         }
 
         /// <summary>
