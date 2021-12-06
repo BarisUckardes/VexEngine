@@ -85,7 +85,7 @@ namespace Vex.Framework
         internal virtual void OnDetach()
         {
             if(ShouldTick)
-                OwnerEntity.World.GetView<WorldLogicView>().OnRegisterComponent(this);
+                OwnerEntity.World.GetView<WorldLogicView>()?.OnRegisterComponent(this);
         }
 
         public abstract bool ShouldTick { get; }

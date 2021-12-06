@@ -26,11 +26,6 @@ namespace Vex.Framework
                 World defaultWorld = new World(null);
 
                 /*
-                 * Adds a world view
-                 */
-                defaultWorld.AddView(typeof(WorldLogicView));
-
-                /*
                  * Create a default entity
                  */
                 Entity entity = new Entity("Default entity", defaultWorld);
@@ -123,6 +118,7 @@ namespace Vex.Framework
         public World(ApplicationSession session)
         {
             m_Views = new List<WorldView>();
+            m_Entities = new List<Entity>(100);
             m_Session = session;
         }
 
@@ -133,7 +129,15 @@ namespace Vex.Framework
         {
             get
             {
-                return m_Views;
+                return new List<WorldView>(m_Views);
+            }
+        }
+
+        public List<Entity> Entities
+        {
+            get
+            {
+                return new List<Entity>(m_Entities);
             }
         }
 
@@ -183,7 +187,7 @@ namespace Vex.Framework
         /// Adds a world view with the specified type
         /// </summary>
         /// <typeparam name="TView"></typeparam>
-        public void AddView(Type viewType)
+        public void AddView(Type viewType,bool bInitialize)
         {
             /*
              * Create the view
@@ -191,8 +195,10 @@ namespace Vex.Framework
             WorldView view = Activator.CreateInstance(viewType) as WorldView;
 
             /*
-             * Initialize with world settings
+             * Try populate view
              */
+            if(bInitialize)
+                view.Initialize(GetAllWorldComponents());
 
             /*
              * Register the view
@@ -200,22 +206,50 @@ namespace Vex.Framework
             m_Views.Add(view);
         }
 
+        public void RegisterEntity(Entity entity)
+        {
+            m_Entities.Add(entity);
+        }
+        public void RemoveEntity(Entity entity)
+        {
+            m_Entities.Remove(entity);
+        }
         public override void Destroy()
         {
             /*
-             * Get all the entities
-             */
-            Entity[] entities = GetView<WorldLogicView>().Entities;
-
-            /*
              * Iterate and destory all
              */
-            foreach (Entity entity in entities)
-                entity.Destroy();
-
+            for(int entityIndex = 0; entityIndex<m_Entities.Count; entityIndex++)
+            {
+                m_Entities[entityIndex].Destroy();
+                entityIndex--;
+            }
+                
+            /*
+             * Clear entity list
+             */
+            m_Entities.Clear();
         }
 
+        private List<Component> GetAllWorldComponents()
+        {
+            /*
+             * Pre-cache
+             */
+            List<Component> components = new List<Component>(m_Entities.Count*5);
+
+            /*
+             * Iterate entityes and add components
+             */
+            foreach(Entity entity in m_Entities)
+            {
+                components.AddRange(entity.Components);
+            }
+
+            return components;
+        }
         private List<WorldView> m_Views;
+        private List<Entity> m_Entities;
         private ApplicationSession m_Session;
     }
 }

@@ -20,6 +20,14 @@ namespace Vex.Framework
             m_Renderables = new List<RenderableComponent>();
         }
 
+        public override Type ExpectedBaseComponentType
+        {
+            get
+            {
+                return typeof(Component);
+            }
+        }
+
         /// <summary>
         /// Registers an observer to the resolvers
         /// </summary>
@@ -184,8 +192,26 @@ namespace Vex.Framework
             }
         }
 
+        internal override void Initialize(List<Component> components)
+        {
+            /*
+             * Iterate component and register
+             */
+            foreach(Component component in components)
+            {
+                Console.WriteLine("Graphics view received: " + component.GetType().Name);
 
-      
+                if (component.GetType().IsAssignableTo(typeof(ObserverComponent)))
+                {
+                    m_Observers.Add(component as ObserverComponent);
+                }
+                else if (component.GetType().IsAssignableTo(typeof(RenderableComponent)))
+                {
+                    m_Renderables.Add(component as RenderableComponent);
+                }
+            }
+        }
+
         private List<ObserverComponent> m_Observers;
         private List<RenderableComponent> m_Renderables;
         private List<GraphicsResolver> m_Resolvers;

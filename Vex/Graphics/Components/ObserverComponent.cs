@@ -116,13 +116,13 @@ namespace Vex.Graphics
         internal sealed override void OnAttach()
         {
             base.OnAttach();
-            OwnerEntity.World.GetView<WorldGraphicsView>().RegisterObserver(this);
+            OwnerEntity.World.GetView<WorldGraphicsView>()?.RegisterObserver(this);
         }
 
         internal sealed override void OnDetach()
         {
             base.OnDetach();
-            OwnerEntity.World.GetView<WorldGraphicsView>().RemoveObserver(this);
+            OwnerEntity.World.GetView<WorldGraphicsView>()?.RemoveObserver(this);
             PrimalObserver = null;
         }
 

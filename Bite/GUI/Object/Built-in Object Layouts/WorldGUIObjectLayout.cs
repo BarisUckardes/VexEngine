@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Vex.Framework;
 using Fang.Commands;
 using System.Reflection;
+using ImGuiNET;
+using Vex.Types;
 namespace Bite.GUI
 {
     [ObjectLayout(typeof(World))]
@@ -22,6 +24,16 @@ namespace Bite.GUI
              * Get views
              */
             m_Views = m_TargetWorld.Views;
+
+            /*
+             * Collect view types
+             */
+            m_ViewTypes = EmittedWorldViewTypes.Types;
+
+            /*
+             * Collect resolver types
+             */
+            m_ResolverTypes = EmittedWorldViewResolverTypes.Types;
         }
 
         public override void OnDetach()
@@ -39,64 +51,97 @@ namespace Bite.GUI
             GUIRenderCommands.CreateEmptySpace();
 
             /*
+             * Get view types
+             */
+
+            /*
              * Render world views
              */
             if (GUIRenderCommands.CreateTreeNode("Views","worldViews"))
             {
-                foreach (WorldView view in m_Views)
+                foreach(Type viewType in m_ViewTypes)
                 {
-                    if(GUIRenderCommands.CreateCollapsingHeader(view.GetType().Name,"vw" + view.GetType().Name))
+                    /*
+                     * Try get view
+                     */
+                    WorldView foundView = GetView(viewType);
+
+                    /*
+                     * Validate found view
+                     */
+                    if(foundView != null)
                     {
-                        /*
-                         * Iterate brute resolvers
-                         */
-                        List<Type> resolverType = new List<Type>();
-                        foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                        if (GUIRenderCommands.CreateCollapsingHeader(viewType.Name, "vw" + viewType.Name))
                         {
-                            foreach(Type type in assembly.GetTypes())
+                            /*
+                             * ICollect resolvers
+                             */
+                            List<Type> resolverTypes = new List<Type>();
+                            foreach (Type type in m_ResolverTypes)
                             {
-                                if(type.IsAssignableTo(typeof(IWorldResolver)))
+                                TargetViewAttribute viewAttribute = type.GetCustomAttribute<TargetViewAttribute>();
+                                if (viewAttribute != null && viewAttribute.TargetViewType == foundView.GetType())
                                 {
-                                    /*
-                                     * Try get target view
-                                     */
-                                    TargetViewAttribute viewAttribute = type.GetCustomAttribute<TargetViewAttribute>();
-                                    if (viewAttribute !=null && viewAttribute.TargetViewType == view.GetType())
+                                    resolverTypes.Add(type);
+                                }
+                            }
+
+                            /*
+                             * Display resolver types
+                             */
+                            foreach (Type type in resolverTypes)
+                            {
+                                GUIRenderCommands.CreateText(type.Name, "");
+                                GUILayoutCommands.StayOnSameLine();
+
+                                /*
+                                 * Validate game session and render resolvers
+                                 */
+                                if (!Session.GamePlayState)
+                                {
+                                    if (IsViewContains(foundView, type))
                                     {
-                                        resolverType.Add(type);
+                                        if (GUIRenderCommands.CreateButton("Unregister", type.Name + "bbtn"))
+                                        {
+                                            foundView.RemoveResolver(type);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (GUIRenderCommands.CreateButton("Register", type.Name + "bbtn"))
+                                        {
+                                            foundView.RegisterResolver(type);
+                                        }
                                     }
                                 }
                             }
                         }
-
-                        /*
-                         * Display resolver types
-                         */
-                        foreach(Type type in resolverType)
+                    }
+                    else
+                    {
+                        GUIRenderCommands.CreateText(viewType.Name , "");
+                        GUILayoutCommands.StayOnSameLine();
+                        if(GUIRenderCommands.CreateButton("Register","btn_" + viewType.Name))
                         {
-                            GUIRenderCommands.CreateText(type.Name, "");
-                            GUILayoutCommands.StayOnSameLine();
-
-                            if(IsViewContains(view,type))
-                            {
-                                if (GUIRenderCommands.CreateButton("-", type.Name + "bbtn"))
-                                {
-                                    view.RemoveResolver(type);
-                                }
-                            }
-                            else
-                            {
-                                if (GUIRenderCommands.CreateButton("+", type.Name + "bbtn"))
-                                {
-                                    view.RegisterResolver(type);
-                                }
-                            }
+                            /*
+                             * Create new view
+                             */
+                            m_TargetWorld.AddView(viewType, true);
+                            Refresh();
                         }
                     }
+                   
                     GUIRenderCommands.CreateEmptySpace();
                 }
                 GUIRenderCommands.FinalizeTreeNode();
             }
+
+            /*
+             * Render view menu
+             */
+            GUIRenderCommands.CreateEmptySpace();
+            GUIRenderCommands.CreateSeperatorLine();
+            GUIRenderCommands.CreateEmptySpace();
            
         }
         private bool IsViewContains(WorldView view,Type type)
@@ -106,8 +151,21 @@ namespace Bite.GUI
                     return true;
             return false;
         }
+        private WorldView GetView(Type type)
+        {
+            foreach (WorldView view in m_Views)
+                if (view.GetType() == type)
+                    return view;
+            return null;
+        }
+        private void Refresh()
+        {
+            m_Views = m_TargetWorld.Views;
+        }     
+
         private List<WorldView> m_Views;
-        private List<List<Type>> m_ViewResolvers;
+        private List<Type> m_ViewTypes;
+        private List<Type> m_ResolverTypes;
         private World m_TargetWorld;
     }
 }

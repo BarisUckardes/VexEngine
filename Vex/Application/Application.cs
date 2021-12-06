@@ -163,7 +163,7 @@ namespace Vex.Application
                     /*
                      * Validate if its a component type
                      */
-                    if (type.IsAssignableTo(typeof(WorldView)))
+                    if (type != typeof(WorldView) && type.IsAssignableTo(typeof(WorldView)))
                     {
                         worldViewTypes.Add(type);
                     }
@@ -181,7 +181,7 @@ namespace Vex.Application
                     /*
                      * Validate if its a component type
                      */
-                    if (type.IsAssignableTo(typeof(IWorldResolver)))
+                    if (type != typeof(IWorldResolver) && type.IsAssignableTo(typeof(IWorldResolver)))
                     {
                         resolverTypes.Add(type);
                     }

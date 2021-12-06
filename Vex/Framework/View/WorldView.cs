@@ -12,7 +12,6 @@ namespace Vex.Framework
     /// </summary>
     public abstract class WorldView : VexObject
     {
-
         /// <summary>
         /// Returns the world of this view
         /// </summary>
@@ -34,6 +33,11 @@ namespace Vex.Framework
         public abstract List<IWorldResolver> Resolvers { get; }
 
         /// <summary>
+        /// Retunrs the expected base component type
+        /// </summary>
+        public abstract Type ExpectedBaseComponentType { get; }
+
+        /// <summary>
         /// Register new resolver with type
         /// </summary>
         /// <param name="resolverType"></param>
@@ -45,6 +49,11 @@ namespace Vex.Framework
         /// <param name="resolverType"></param>
         public abstract void RemoveResolver(Type resolverType);
 
+        /// <summary>
+        /// Initializes world view internally
+        /// </summary>
+        /// <param name="components"></param>
+        internal abstract void Initialize(List<Component> components);
         
         private World m_World;
     }

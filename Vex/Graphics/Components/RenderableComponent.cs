@@ -31,13 +31,13 @@ namespace Vex.Graphics
         internal sealed override void OnAttach()
         {
             base.OnAttach();
-            OwnerEntity.World.GetView<WorldGraphicsView>().RegisterRenderable(this);
+            OwnerEntity.World.GetView<WorldGraphicsView>()?.RegisterRenderable(this);
         }
 
         internal sealed override void OnDetach()
         {
             base.OnAttach();
-            OwnerEntity.World.GetView<WorldGraphicsView>().RemoveRenderable(this);
+            OwnerEntity.World.GetView<WorldGraphicsView>()?.RemoveRenderable(this);
         }
 
         [ExposeThis]

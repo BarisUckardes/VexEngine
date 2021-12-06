@@ -42,6 +42,12 @@ namespace Vex.Engine
             WorldGraphicsView graphicsView = currentWorld.GetView<WorldGraphicsView>();
 
             /*
+             * Validate graphics view
+             */
+            if (graphicsView == null)
+                return;
+
+            /*
              * Get resolvers
              */
             List<IWorldResolver> graphicsResolvers = graphicsView.Resolvers;

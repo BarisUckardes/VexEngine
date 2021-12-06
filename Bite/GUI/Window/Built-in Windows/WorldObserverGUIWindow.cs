@@ -58,7 +58,7 @@ namespace Bite.GUI
             /*
              * Get entities
              */
-            Entity[] entities = world.GetView<WorldLogicView>().Entities;
+            List<Entity> entities = world.Entities;
 
             /*
              * Display each entity
@@ -73,7 +73,7 @@ namespace Bite.GUI
                     GUIObject.SignalNewObject(world);
                 }
 
-                for (int entityIndex = 0; entityIndex < entities.Length; entityIndex++)
+                for (int entityIndex = 0; entityIndex < entities.Count; entityIndex++)
                 {
                     /*
                      * Get entity

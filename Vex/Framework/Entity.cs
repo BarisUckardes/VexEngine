@@ -32,7 +32,7 @@ namespace Vex.Framework
             /*
              * Register this entity to world logic view
              */
-            world.GetView<WorldLogicView>().OnEntityRegister(this);
+            world.RegisterEntity(this);
         }
        
         /// <summary>
@@ -206,7 +206,7 @@ namespace Vex.Framework
             /*
              * DestVexy this
              */
-            m_OwnerWorld.GetView<WorldLogicView>().OnEntityRemove(this);
+            m_OwnerWorld.RemoveEntity(this);
 
             /*
              * Set this destroyed

@@ -50,6 +50,12 @@ namespace Vex.Engine
                 WorldLogicView logicView = currentWorld.GetView<WorldLogicView>();
 
                 /*
+                 * Validate view
+                 */
+                if (logicView == null)
+                    return;
+
+                /*
                  * Get logic resolvers
                  */
                 List<IWorldResolver> logicResolvers = logicView.Resolvers;

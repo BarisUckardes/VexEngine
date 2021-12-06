@@ -198,7 +198,7 @@ namespace Vex.Framework
                 /*
                  * Create new view
                  */
-                world.AddView(data.View);
+                world.AddView(data.View,false);
                 WorldView view = world.GetView(data.View);
 
                 /*

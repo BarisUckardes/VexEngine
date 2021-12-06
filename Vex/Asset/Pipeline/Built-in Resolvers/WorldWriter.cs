@@ -34,20 +34,9 @@ namespace Vex.Asset
             World world = targetObject as World;
 
             /*
-             * Try get logic view
-             */
-            WorldLogicView logicView = world.GetView<WorldLogicView>();
-
-            /*
-             * Validate logic view
-             */
-            if (logicView == null)
-                return;
-
-            /*
              * Get entities and components
              */
-            Entity[] totalEntities = logicView.Entities;
+            List<Entity> totalEntities = world.Entities;
 
             /*
              * Emit start mapping
@@ -59,7 +48,7 @@ namespace Vex.Asset
              */
             emitter.Emit(new Scalar(null, "Entities"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
+            for (int entityIndex = 0; entityIndex < totalEntities.Count; entityIndex++)
             {
                 /*
                  * Get entity
@@ -79,7 +68,7 @@ namespace Vex.Asset
             List<Type> totalTypes = new List<Type>();
             emitter.Emit(new Scalar(null, "Component Types"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
+            for (int entityIndex = 0; entityIndex < totalEntities.Count; entityIndex++)
             {
                 /*
                  * Get entity
@@ -132,7 +121,7 @@ namespace Vex.Asset
             List<Guid> totalAssets = new List<Guid>(100);
             emitter.Emit(new Scalar(null, "Assets"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
+            for (int entityIndex = 0; entityIndex < totalEntities.Count; entityIndex++)
             {
                 /*
                  * Get entity
@@ -210,7 +199,7 @@ namespace Vex.Asset
             List<Component> totalComponents = new List<Component>(1000);
             emitter.Emit(new Scalar(null, "Components"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
+            for (int entityIndex = 0; entityIndex < totalEntities.Count; entityIndex++)
             {
                 /*
                 * Get entity
@@ -250,7 +239,7 @@ namespace Vex.Asset
              */
             emitter.Emit(new Scalar(null, "Begin Components"));
             emitter.Emit(new Scalar(null, ""));
-            for (int entityIndex = 0; entityIndex < totalEntities.Length; entityIndex++)
+            for (int entityIndex = 0; entityIndex < totalEntities.Count; entityIndex++)
             {
                 /*
                  * Get entity
