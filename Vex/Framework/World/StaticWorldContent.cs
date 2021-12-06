@@ -169,6 +169,25 @@ namespace Vex.Framework
             }
         }
 
+        public int ViewCount
+        {
+            get
+            {
+                return m_ViewResolverDatas.Count;
+            }
+        }
+
+        public int ResolverCount
+        {
+            get
+            {
+                int resolverCount = 0;
+                foreach (StaticViewResolverData data in m_ViewResolverDatas)
+                    resolverCount += data.Resolvers.Count;
+                return resolverCount;
+            }
+        }
+
         /// <summary>
         /// Creates a world out of this static content
         /// </summary>

@@ -29,6 +29,8 @@ namespace Bite.GUI
             GUIRenderCommands.CreateText("Total Assets: " + m_WorldContent.AssetCount, " ");
             GUIRenderCommands.CreateText("Total Component Types: " + m_WorldContent.ComponentTypeCount, " ");
             GUIRenderCommands.CreateText("Total Components: " + m_WorldContent.ComponentCount," ");
+            GUIRenderCommands.CreateText("Total Views: " + m_WorldContent.ViewCount, " ");
+            GUIRenderCommands.CreateText("Total Resolvers: " + m_WorldContent.ResolverCount, " ");
         }
 
         private StaticWorldContent m_WorldContent;
