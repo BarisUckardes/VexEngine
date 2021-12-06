@@ -21,7 +21,7 @@ namespace Vex.Framework
         {
 
         }
-        public StaticWorldContent(List<Tuple<string,Guid>> entityPairs,List<string> existingComponentTypes, List<Guid> assetIds,List<Tuple<int,int,string,Guid>> componentEntries,List<StaticComponentMetaData> componentMetaDatas)
+        public StaticWorldContent(List<Tuple<string,Guid>> entityPairs,List<string> existingComponentTypes, List<Guid> assetIds,List<Tuple<int,int,string,Guid>> componentEntries,List<StaticComponentMetaData> componentMetaDatas,List<StaticViewResolverEntry> viewResolverEntries)
         {
 
             /*
@@ -30,6 +30,7 @@ namespace Vex.Framework
             m_ComponentDatas = new List<StaticWorldComponentData>();
             m_ComponentTypeEntries = new List<Type>();
             m_ComponentEntries = new List<StaticComponentEntry>();
+            m_ViewResolverDatas = new List<StaticViewResolverData>();
 
             /*
              * Set entities
@@ -93,6 +94,35 @@ namespace Vex.Framework
                  */
                 m_ComponentDatas.Add(new StaticWorldComponentData(localComponentIndex,targetComponentType,fieldEntries));
             }
+
+            /*
+             * Create view resolver datas
+             */
+            foreach(StaticViewResolverEntry viewResolverEntry in viewResolverEntries)
+            {
+                /*
+                 * Get view type via its name
+                 */
+                Type viewType = EmittedWorldViewTypes.GetViaName(viewResolverEntry.ViewType);
+
+                /*
+                 * Get resolver types
+                 */
+                List<Type> resolverTypes = new List<Type>();
+
+                /*
+                 * Iterate resolver names
+                 */
+                foreach(string resolverName in viewResolverEntry.ResolverTypes)
+                {
+                    resolverTypes.Add(EmittedWorldViewResolverTypes.GetViaName(resolverName));
+                }
+
+                /*
+                 * Register view resolver data
+                 */
+                m_ViewResolverDatas.Add(new StaticViewResolverData(viewType, resolverTypes));
+            }
         }
 
         /// <summary>
@@ -149,9 +179,45 @@ namespace Vex.Framework
             /*
              * Create new world
              */
-            World world = new World(session,new WorldSettings(typeof(DefaultLogicResolver),new List<Type>() {typeof(ForwardGraphicsResolver)}));
-            world.AddView<WorldLogicView>();
-            world.AddView<WorldGraphicsView>();
+            World world = new World(session);
+
+            /*
+             * Add view and resolvers
+             */
+            /*
+             * Create views and resolvers
+             */
+            foreach (StaticViewResolverData data in m_ViewResolverDatas)
+            {
+                /*
+                 * Validate view null
+                 */
+                if (data.View == null)
+                    continue;
+
+                /*
+                 * Create new view
+                 */
+                world.AddView(data.View);
+                WorldView view = world.GetView(data.View);
+
+                /*
+                 * Add resolvers
+                 */
+                foreach (Type resolverType in data.Resolvers)
+                {
+                    /*
+                     * Validate resolver null check
+                     */
+                    if (resolverType == null)
+                        continue;
+
+                    /*
+                     * Register resolver
+                     */
+                    view.RegisterResolver(resolverType);
+                }
+            }
 
             /*
              * Load assets
@@ -296,6 +362,7 @@ namespace Vex.Framework
                 }
             }
 
+            
             /*
              * Set properties
              */
@@ -313,6 +380,7 @@ namespace Vex.Framework
         private List<Guid> m_AssetEntries;
         private List<StaticComponentEntry> m_ComponentEntries;
         private List<StaticWorldComponentData> m_ComponentDatas;
+        private List<StaticViewResolverData> m_ViewResolverDatas;
 
        
     }

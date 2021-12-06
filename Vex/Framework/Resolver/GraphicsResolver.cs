@@ -46,5 +46,13 @@ namespace Vex.Framework
         /// The observer type which this graphics resolver accepts
         /// </summary>
         public abstract Type ExpectedObserverType { get; }
+
+        public Type TargetViewType
+        {
+            get
+            {
+                return typeof(WorldGraphicsView);
+            }
+        }
     }
 }

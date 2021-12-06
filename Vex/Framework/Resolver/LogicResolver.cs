@@ -23,6 +23,14 @@ namespace Vex.Framework
         /// </summary>
         public abstract Type ExpectedComponentType { get; }
 
+        public Type TargetViewType
+        {
+            get
+            {
+                return typeof(WorldLogicView);
+            }
+        }
+
         /// <summary>
         /// Called when registering a component
         /// </summary>

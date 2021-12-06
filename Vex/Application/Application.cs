@@ -145,9 +145,45 @@ namespace Vex.Application
                     /*
                      * Validate if its a component type
                      */
-                    if(type.IsSubclassOf(typeof(Component)))
+                    if(type.IsAssignableTo(typeof(Component)))
                     {
                         componentTypes.Add(type);
+                    }
+                }
+            }
+
+            /*
+             * Get all view types
+             */
+            List<Type> worldViewTypes = new List<Type>(100);
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    /*
+                     * Validate if its a component type
+                     */
+                    if (type.IsAssignableTo(typeof(WorldView)))
+                    {
+                        worldViewTypes.Add(type);
+                    }
+                }
+            }
+
+            /*
+             * Get all resolver types
+             */
+            List<Type> resolverTypes = new List<Type>();
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    /*
+                     * Validate if its a component type
+                     */
+                    if (type.IsAssignableTo(typeof(IWorldResolver)))
+                    {
+                        resolverTypes.Add(type);
                     }
                 }
             }
@@ -156,6 +192,16 @@ namespace Vex.Application
              * Set emitted component types
              */
             EmittedComponentTypes.ComponentTypes = componentTypes;
+
+            /*
+             * Set emitted world view types
+             */
+            EmittedWorldViewTypes.Types = worldViewTypes;
+
+            /*
+             * Set emitted world view resolver types
+             */
+            EmittedWorldViewResolverTypes.Types = resolverTypes;
 
             /*
              * Create session

@@ -16,29 +16,26 @@ namespace Vex.Framework
         public WorldGraphicsView()
         {
             m_Resolvers = new List<GraphicsResolver>();
-        }
-
-
-        /// <summary>
-        /// Returns the graphics resolvers of this view
-        /// </summary>
-        public GraphicsResolver[] Resolvers
-        {
-            get
-            {
-                return m_Resolvers.ToArray();
-            }
+            m_Observers = new List<ObserverComponent>();
+            m_Renderables = new List<RenderableComponent>();
         }
 
         /// <summary>
         /// Registers an observer to the resolvers
         /// </summary>
         /// <param name="observer"></param>
-        public void RegisteVexbserver(ObserverComponent observer)
+        public void RegisterObserver(ObserverComponent observer)
         {
+            /*
+             * Register observer
+             */
+            m_Observers.Add(observer);
+
+            /*
+             * Broadcast to resolvers
+             */
             for(int i=0;i<m_Resolvers.Count;i++)
             {
-                
                 if(observer.GetType() == m_Resolvers[i].ExpectedObserverType)
                 {
                     m_Resolvers[i].OnObserverRegistered(observer);
@@ -52,6 +49,14 @@ namespace Vex.Framework
         /// <param name="observer"></param>
         public void RemoveObserver(ObserverComponent observer)
         {
+            /*
+             * Remove observer
+             */
+            m_Observers.Remove(observer);
+
+            /*
+             * Broadcast to resolvers
+             */
             for (int i = 0; i < m_Resolvers.Count; i++)
             {
                 if (observer.GetType() == m_Resolvers[i].ExpectedObserverType)
@@ -60,9 +65,20 @@ namespace Vex.Framework
                 }
             }
         }
-
+        /// <summary>
+        /// Registers a renderable component to the resolver
+        /// </summary>
+        /// <param name="renderable"></param>
         public void RegisterRenderable(RenderableComponent renderable)
         {
+            /*
+             * Register renderable
+             */
+            m_Renderables.Add(renderable);
+
+            /*
+             * Broadcast to resolvers
+             */
             for (int i = 0; i < m_Resolvers.Count; i++)
             {
                 if (renderable.GetType() == m_Resolvers[i].ExpectedRenderableType)
@@ -71,8 +87,21 @@ namespace Vex.Framework
                 }
             }
         }
+
+        /// <summary>
+        /// Removes a renderable from the resolver
+        /// </summary>
+        /// <param name="renderable"></param>
         public void RemoveRenderable(RenderableComponent renderable)
         {
+            /*
+             * Remove renderable
+             */
+            m_Renderables.Remove(renderable);
+
+            /*
+             * Broadcast to resolvers
+             */
             for (int i = 0; i < m_Resolvers.Count; i++)
             {
                 if (renderable.GetType() == m_Resolvers[i].ExpectedRenderableType)
@@ -82,25 +111,83 @@ namespace Vex.Framework
             }
         }
 
-        /// <summary>
-        /// Registers a graphics resolver to this view
-        /// </summary>
-        /// <typeparam name="TResolver"></typeparam>
-        public void RegisterResolver<TResolver>() where TResolver : GraphicsResolver,new()
+        public override List<IWorldResolver> Resolvers
         {
-            m_Resolvers.Add(new TResolver());
-        }
-
-        public override void InitializeWithWorldSettings(in WorldSettings settings)
-        {
-            /*
-             * Register each resolver via world settings
-             */
-            for(int resolverIndex = 0;resolverIndex < settings.GraphicsResolvers.Count;resolverIndex++)
+            get
             {
-                m_Resolvers.Add(Activator.CreateInstance(settings.GraphicsResolvers[resolverIndex]) as GraphicsResolver);
+                List<IWorldResolver> resolvers = new List<IWorldResolver>();
+                foreach (GraphicsResolver resolver in m_Resolvers)
+                    resolvers.Add(resolver);
+
+                return resolvers;
             }
         }
+
+        public override void RegisterResolver(Type resolverType)
+        {
+            /*
+             * Create resolver with default constructor
+             */
+            GraphicsResolver resolver = Activator.CreateInstance(resolverType) as GraphicsResolver;
+
+            /*
+             * Setup observers
+             */
+            for(int observerIndex = 0;observerIndex< m_Observers.Count;observerIndex++)
+            {
+                /*
+                 * Get observer
+                 */
+                ObserverComponent observer = m_Observers[observerIndex];
+
+                /*
+                 * Broadcast
+                 */
+                if(resolver.ExpectedObserverType == observer.GetType())
+                    resolver.OnObserverRegistered(observer);
+            }
+
+            /*
+             * Setup renderables
+             */
+            for(int renderableIndex = 0;renderableIndex < m_Renderables.Count;renderableIndex++)
+            {
+                /*
+                 * Get renderable
+                 */
+                RenderableComponent renderable = m_Renderables[renderableIndex];
+
+                /*
+                 * Broadcast
+                 */
+                if(resolver.ExpectedRenderableType == renderable.GetType())
+                    resolver.OnRenderableRegistered(renderable);   
+            }
+
+            /*
+             * Register graphics resolver
+             */
+            m_Resolvers.Add(resolver);
+        }
+        public override void RemoveResolver(Type resolverType)
+        {
+            for (int resolverIndex = 0;resolverIndex < m_Resolvers.Count;resolverIndex++)
+            {
+                if(m_Resolvers[resolverIndex].GetType() == resolverType)
+                {
+                    /*
+                     * Remove 
+                     */
+                    m_Resolvers.RemoveAt(resolverIndex);
+                    return;
+                }
+            }
+        }
+
+
+      
+        private List<ObserverComponent> m_Observers;
+        private List<RenderableComponent> m_Renderables;
         private List<GraphicsResolver> m_Resolvers;
     }
 }

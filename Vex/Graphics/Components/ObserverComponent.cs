@@ -116,7 +116,7 @@ namespace Vex.Graphics
         internal sealed override void OnAttach()
         {
             base.OnAttach();
-            OwnerEntity.World.GetView<WorldGraphicsView>().RegisteVexbserver(this);
+            OwnerEntity.World.GetView<WorldGraphicsView>().RegisterObserver(this);
         }
 
         internal sealed override void OnDetach()

@@ -14,6 +14,7 @@ namespace Vex.Framework
     /// <summary>
     /// Customized forward graphics resolver
     /// </summary>
+    [TargetView(typeof(WorldGraphicsView))]
     public sealed class ForwardGraphicsResolver : GraphicsResolver
     {
        

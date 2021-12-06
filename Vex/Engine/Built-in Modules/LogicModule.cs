@@ -52,12 +52,12 @@ namespace Vex.Engine
                 /*
                  * Get logic resolvers
                  */
-                LogicResolver[] logicResolvers = logicView.Resolvers;
+                List<IWorldResolver> logicResolvers = logicView.Resolvers;
 
                 /*
                  * Iterate each resolver
                  */
-                for (int resolverIndex = 0; resolverIndex < logicResolvers.Length; resolverIndex++)
+                for (int resolverIndex = 0; resolverIndex < logicResolvers.Count; resolverIndex++)
                 {
                     logicResolvers[resolverIndex].Resolve();
                 }

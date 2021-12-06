@@ -256,14 +256,56 @@ namespace Vex.Asset
             }
 
             /*
-             * Move to the end
+             * Move to views
              */
             parser.MoveNext();
+            parser.MoveNext();
+            parser.MoveNext();
+            parser.MoveNext();
+
+            /*
+             * Iterate and read views
+             */
+            List<StaticViewResolverEntry> viewResolverEntries = new List<StaticViewResolverEntry>();
+            while(parser.Current.GetType() != typeof(SequenceEnd))
+            {
+                /*
+                 * Get emit view type
+                 */
+                string viewTypeString = GetParserValue(parser);
+
+                /*
+                 * Move to first element of the resolvers
+                 */
+                parser.MoveNext();
+                parser.MoveNext();
+                parser.MoveNext();
+
+                /*
+                 * Iterate and read resolvers
+                 */
+                List<string> resolverStrings = new List<string>();
+                while(parser.Current.GetType() != typeof(SequenceEnd))
+                {
+                    resolverStrings.Add(GetParserValue(parser));
+                    parser.MoveNext();
+                }
+
+                /*
+                 * Register new entry
+                 */
+                viewResolverEntries.Add(new StaticViewResolverEntry(viewTypeString, resolverStrings));
+
+                /*
+                 * Move to next view
+                 */
+                parser.MoveNext();
+            }
 
             /*
              * Create world content
              */
-            worldContent = new StaticWorldContent(entityEntries, compoentTypeEntries, assetEntries, componentEntries, componentMetaDataEntries);
+            worldContent = new StaticWorldContent(entityEntries, compoentTypeEntries, assetEntries, componentEntries, componentMetaDataEntries,viewResolverEntries);
             return worldContent;
         }
 

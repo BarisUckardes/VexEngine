@@ -373,6 +373,40 @@ namespace Vex.Asset
             emitter.Emit(new Scalar(null, "End Components"));
             emitter.Emit(new Scalar(null, ""));
 
+
+            /*
+             * Emit views
+             */
+            List<WorldView> views = world.Views;
+
+            emitter.Emit(new Scalar(null, "Views"));
+            emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+            foreach(WorldView view in views)
+            {
+                /*
+                 * Emit view type
+                 */
+                emitter.Emit(new Scalar(null, view.GetType().Name));
+
+                /*
+                 * Get views
+                 */
+                List<IWorldResolver> resolvers = view.Resolvers;
+
+                /*
+                 * Emit view resolvers
+                 */
+                emitter.Emit(new Scalar(null, "Resolvers"));
+                emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+                foreach (IWorldResolver resolver in resolvers)
+                {
+                    emitter.Emit(new Scalar(null, resolver.GetType().Name));
+                }
+                emitter.Emit(new SequenceEnd());
+
+            }
+            emitter.Emit(new SequenceEnd());
+
             /*
              * End mapping end
              */

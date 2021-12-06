@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Vex.Framework
 {
+    [TargetView(typeof(WorldLogicView))]
     public sealed class DefaultLogicResolver : LogicResolver
     {
         public DefaultLogicResolver()

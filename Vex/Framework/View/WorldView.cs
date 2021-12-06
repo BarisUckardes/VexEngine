@@ -28,7 +28,24 @@ namespace Vex.Framework
             }
         }
 
-        public abstract void InitializeWithWorldSettings(in WorldSettings settings);
+        /// <summary>
+        /// Returns the resolvers this world view has
+        /// </summary>
+        public abstract List<IWorldResolver> Resolvers { get; }
+
+        /// <summary>
+        /// Register new resolver with type
+        /// </summary>
+        /// <param name="resolverType"></param>
+        public abstract void RegisterResolver(Type resolverType);
+
+        /// <summary>
+        /// Remove new resolver with type
+        /// </summary>
+        /// <param name="resolverType"></param>
+        public abstract void RemoveResolver(Type resolverType);
+
+        
         private World m_World;
     }
 }

@@ -16,5 +16,10 @@ namespace Vex.Framework
         /// Resolves the data this world resolver has
         /// </summary>
         public void Resolve();
+
+        /// <summary>
+        /// Returns the view which this resolver targets
+        /// </summary>
+        public Type TargetViewType { get; }
     }
 }

@@ -65,6 +65,14 @@ namespace Bite.GUI
              */
             if(GUIRenderCommands.CreateCollapsingHeader(m_TargetWorld.Name,"world_"+m_TargetWorld.ID.ToString()))
             {
+                /*
+                 * if current item clicked
+                 */
+                if(GUIEventCommands.IsCurrentItemClicked())
+                {
+                    GUIObject.SignalNewObject(world);
+                }
+
                 for (int entityIndex = 0; entityIndex < entities.Length; entityIndex++)
                 {
                     /*
@@ -98,6 +106,14 @@ namespace Bite.GUI
                     }
                   
                 }
+            }
+
+            /*
+            * if current item clicked
+            */
+            if (GUIEventCommands.IsCurrentItemClicked())
+            {
+                GUIObject.SignalNewObject(world);
             }
 
             /*

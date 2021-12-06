@@ -23,12 +23,12 @@ namespace Vex.Framework
                 /*
                  * Creates an empty world
                  */
-                World defaultWorld = new World(null, new WorldSettings(typeof(DefaultLogicResolver), new List<Type>()));
+                World defaultWorld = new World(null);
 
                 /*
                  * Adds a world view
                  */
-                defaultWorld.AddView<WorldLogicView>();
+                defaultWorld.AddView(typeof(WorldLogicView));
 
                 /*
                  * Create a default entity
@@ -120,23 +120,23 @@ namespace Vex.Framework
         /// </summary>
         internal static ApplicationSession Session { get; set; }
 
-        public World(ApplicationSession session,in WorldSettings worldSettings)
+        public World(ApplicationSession session)
         {
             m_Views = new List<WorldView>();
             m_Session = session;
-            m_Settings = worldSettings;
         }
 
         /// <summary>
-        /// Returns the settings of this world
+        /// Returns the views which this world has
         /// </summary>
-        public WorldSettings WorldSettings
+        public List<WorldView> Views
         {
             get
             {
-                return m_Settings;
+                return m_Views;
             }
         }
+
         /// <summary>
         /// Registers this world to the current session
         /// </summary>
@@ -164,21 +164,35 @@ namespace Vex.Framework
             }
             return null;
         }
+
+        public WorldView GetView(Type viewType)
+        {
+            /*
+             * Iterate all views and try find a world with the specified type
+             */
+            for (int i = 0; i < m_Views.Count; i++)
+            {
+                if (m_Views[i].GetType() == viewType)
+                {
+                    return m_Views[i];
+                }
+            }
+            return null;
+        }
         /// <summary>
         /// Adds a world view with the specified type
         /// </summary>
         /// <typeparam name="TView"></typeparam>
-        public void AddView<TView>() where TView:WorldView,new()
+        public void AddView(Type viewType)
         {
             /*
              * Create the view
              */
-            TView view = new TView();
+            WorldView view = Activator.CreateInstance(viewType) as WorldView;
 
             /*
              * Initialize with world settings
              */
-            view.InitializeWithWorldSettings(m_Settings);
 
             /*
              * Register the view
@@ -203,6 +217,5 @@ namespace Vex.Framework
 
         private List<WorldView> m_Views;
         private ApplicationSession m_Session;
-        private WorldSettings m_Settings;
     }
 }

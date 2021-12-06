@@ -44,12 +44,12 @@ namespace Vex.Engine
             /*
              * Get resolvers
              */
-            GraphicsResolver[] graphicsResolvers = graphicsView.Resolvers;
+            List<IWorldResolver> graphicsResolvers = graphicsView.Resolvers;
 
             /*
              * Iterate each resolver
              */
-            for (int resolverIndex = 0; resolverIndex < graphicsResolvers.Length; resolverIndex++)
+            for (int resolverIndex = 0; resolverIndex < graphicsResolvers.Count; resolverIndex++)
             {
                 graphicsResolvers[resolverIndex].Resolve();
             }
