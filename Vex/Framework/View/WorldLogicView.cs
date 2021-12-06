@@ -79,17 +79,18 @@ namespace Vex.Framework
                  */
                 Component component = m_Components[componentIndex];
 
-
                 /*
                  * Register
                  */
                 resolver.OnRegisterComponent(component);
+                Console.WriteLine("Component registered: " + component.GetType().Name);
             }
 
             /*
              * Register resolver
              */
             m_Resolvers.Add(resolver);
+            Console.WriteLine("Registered: " + m_Resolvers.Count);
         }
 
         public override void RemoveResolver(Type resolverType)
@@ -109,7 +110,9 @@ namespace Vex.Framework
                  */
                 if(resolver.GetType() == resolverType)
                 {
+                    
                     m_Resolvers.RemoveAt(resolverIndex);
+                    Console.WriteLine("Removed: " +m_Resolvers.Count);
                     return;
                 }
             }

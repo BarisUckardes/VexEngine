@@ -43,6 +43,13 @@ namespace Bite.GUI
 
         public override void OnLayoutRender()
         {
+            if(Session.CurrentWorld != m_TargetWorld)
+            {
+                m_TargetWorld = Session.CurrentWorld;
+                m_Views.Clear();
+                Refresh();
+            }
+
             /*
              * Render header
              */
