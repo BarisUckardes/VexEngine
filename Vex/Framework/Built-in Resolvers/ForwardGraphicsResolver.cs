@@ -197,6 +197,7 @@ namespace Vex.Framework
 
                     Matrix4 mvp = modelMatrix * viewMatrix* projectionMatrix;
                     commandBuffer.SetUniformMat4x4(renderable.Material.Program, mvp, "v_Mvp");
+                    commandBuffer.SetUniformMat4x4(renderable.Material.Program, modelMatrix, "v_Model");
 
                     /*
                      * Set material parameters

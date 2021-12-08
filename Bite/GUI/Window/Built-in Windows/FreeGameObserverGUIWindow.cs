@@ -51,8 +51,8 @@ namespace Bite.GUI
              */
             Vector2 windowSize = GUILayoutCommands.GetCurrentWindowSize();
             Vector2 windowAnchor = GUILayoutCommands.GetCursor();
-            float textureWidth = windowSize.X * 1.0f;
-            float textureHeight = (windowSize.Y * 1.0f);
+            float textureWidth = windowSize.X;
+            float textureHeight = windowSize.Y-30;
 
             /*
              * Calculate aspect ratio
@@ -124,6 +124,7 @@ namespace Bite.GUI
                 /*
                  * Catch rotation movement
                  */
+                Vector2 currentMousePosition = GUIEventCommands.GetMousePosition();
                 Vector2 mousePositionDelta = GUIEventCommands.GetMousePosition() - m_LastMousePosition;
                 m_Observer.Spatial.Rotation += new Vector3(mousePositionDelta.X,-mousePositionDelta.Y,0)*0.1f;
 
@@ -132,7 +133,43 @@ namespace Bite.GUI
                  */
                 m_Position = m_Observer.Spatial.Position;
                 m_Rotation = m_Observer.Spatial.Rotation;
-                m_LastMousePosition = GUIEventCommands.GetMousePosition();
+                m_LastMousePosition = currentMousePosition;
+
+                /*
+                 * 
+                 */
+                float tiledX = currentMousePosition.X;
+                float tiledY = currentMousePosition.Y;
+                bool swap = false;
+                if(currentMousePosition.X + mousePositionDelta.X >= Session.WindowWidth)
+                {
+                    tiledX = 0;
+                    swap = true;
+                }
+                else if (currentMousePosition.X + mousePositionDelta.X < 0)
+                {
+                    tiledX = Session.WindowWidth;
+                    swap = true;
+                }
+
+                if (currentMousePosition.Y + mousePositionDelta.Y >= Session.WindowHeight)
+                {
+                    tiledY = 0;
+                    swap = true;
+                }
+                if (currentMousePosition.Y + mousePositionDelta.Y < 0)
+                {
+                    tiledY = Session.WindowHeight-5;
+                    swap = true;
+                }
+
+                if (swap)
+                {
+                    Vector2 tiledPosition = new Vector2(tiledX, tiledY);
+                    Session.MousePosition = tiledPosition;
+                    m_LastMousePosition = tiledPosition;
+                }
+                
             }
         }
 
