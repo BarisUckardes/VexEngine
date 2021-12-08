@@ -144,10 +144,19 @@ namespace Vex.Framework
             }
         }
 
+        public Entity GetEntityViaID(in Guid id)
+        {
+            for(int entityIndex = 0;entityIndex < m_Entities.Count;entityIndex++)
+            {
+                if (m_Entities[entityIndex].ID == id)
+                    return m_Entities[entityIndex];
+            }
+            return null;
+        }
         /// <summary>
         /// Registers this world to the current session
         /// </summary>
-        public void Register()
+        internal void Register()
         {
             m_Session.SetCurrentWorld(this);
         }

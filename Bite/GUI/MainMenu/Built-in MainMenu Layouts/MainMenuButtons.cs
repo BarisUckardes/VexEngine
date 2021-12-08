@@ -110,6 +110,12 @@ namespace Bite
             GUIWindow.CreateWindow(typeof(GameObserverGUIWindow));
         }
 
+        [MainMenuItem("Windows/Free Game Observer")]
+        public static void CreateFreeGameObserver()
+        {
+            GUIWindow.CreateWindow(typeof(FreeGameObserverGUIWindow));
+        }
+
         [MainMenuItem("Windows/Performance Observer")]
         public static void CreatePerformanceObserver()
         {

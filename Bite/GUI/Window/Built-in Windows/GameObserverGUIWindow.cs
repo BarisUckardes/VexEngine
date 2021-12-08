@@ -99,12 +99,22 @@ namespace Bite.GUI
              */
             Vector2 currentTextureSize = new Vector2(textureWidth, textureHeight - 40);
 
-          
-
             /*
              * Render framebuffer image
              */
-            GUIRenderCommands.CreateImage(m_PrimaryFramebuffer == null ? null : m_PrimaryFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight-40),uv0,uv1);
+            GUIRenderCommands.CreateImage(m_PrimaryFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight-40),uv0,uv1);
+
+            /*
+             * Catch game input
+             */
+            if (GUIEventCommands.IsWindowFocused())
+            {
+                Session.HandleInputs = false;
+            }
+            else
+            {
+                Session.HandleInputs = true;
+            }
 
             /*
             * Resize framebuffer

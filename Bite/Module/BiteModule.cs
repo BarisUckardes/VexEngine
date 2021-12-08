@@ -147,6 +147,12 @@ namespace Bite.Module
                 PlatformMouseScrolledEvent ev = (PlatformMouseScrolledEvent)eventData;
                 m_Renderer.MouseScVexll(new OpenTK.Mathematics.Vector2(ev.AmountX, ev.AmountY));
             }
+
+            if (m_Session.HandleInputs)
+            {
+                eventData.MarkHandled();
+            }
+                
         }
         bool dockspaceState;
         public override void OnUpdate(bool active)

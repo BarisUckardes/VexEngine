@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using ImGuiNET;
+using Vex.Input;
+
 namespace Fang.Commands
 {
     public static class GUIEventCommands
@@ -24,10 +27,23 @@ namespace Fang.Commands
         {
             return ImGui.IsMouseClicked(ImGuiMouseButton.Left);
         }
+        public static bool IsRightButtonReleased()
+        {
+            return ImGui.IsMouseReleased(ImGuiMouseButton.Right);
+        }
+        public static Vector2 GetMousePosition()
+        {
+            return ImGui.GetMousePos();
+        }
+        public static bool IsKeyDown(Keys key)
+        {
+            return ImGui.IsKeyDown((int)key);
+        }
         public static bool IsCurrentItemHavored()
         {
             return ImGui.IsItemHovered();
         }
+     
         public static bool IsAnyItemHavored()
         {
             return ImGui.IsAnyItemHovered();

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Vex.Application;
 using Vex.Asset;
 using Vex.Framework;
 using Vex.Graphics;
-
+using Vex.Extensions;
 namespace Bite.Core
 {
     /// <summary>
@@ -127,6 +128,55 @@ namespace Bite.Core
             get
             {
                 return m_ApplicationSession.Window.Location.Y;
+            }
+        }
+
+        public bool MouseCursorLocked
+        {
+            get
+            {
+                return m_ApplicationSession.Window.CursorGrabbed;
+            }
+            set
+            {
+                m_ApplicationSession.Window.CursorGrabbed = value;
+            }
+        }
+        public bool MouseCursorVisible
+        {
+            get
+            {
+                return m_ApplicationSession.Window.CursorVisible;
+            }
+            set
+            {
+                m_ApplicationSession.Window.CursorVisible = value;
+            }
+        }
+        public Vector2 MousePosition
+        {
+            get
+            {
+                return m_ApplicationSession.Window.MousePosition.GetAsNumerics();
+            }
+            set
+            {
+                m_ApplicationSession.Window.MousePosition = value.GetAsOpenTK();
+            }
+        }
+
+        /// <summary>
+        /// Handles the broadcasted inputs and block them or not
+        /// </summary>
+        public bool HandleInputs
+        {
+            get
+            {
+                return m_HandleInputs;
+            }
+            set
+            {
+                m_HandleInputs = value;
             }
         }
 
@@ -576,5 +626,6 @@ namespace Bite.Core
         private ApplicationSession m_ApplicationSession;
         private DomainView m_Domain;
         private StaticWorldContent m_RootWorldContent;
+        private bool m_HandleInputs;
     }
 }

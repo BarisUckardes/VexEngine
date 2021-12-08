@@ -65,14 +65,52 @@ namespace Vex.Framework
             }
         }
 
+        /// <summary>
+        /// Returns the forward vector of this spatial based on (X,Y,Z rotations)
+        /// </summary>
         public Vector3 Forward
         {
             get
             {
-                return m_Forward;
+                return new Vector3(
+                    -(float)(Math.Cos(m_Rotation.X * Math.PI / 180) * Math.Cos(m_Rotation.Y * Math.PI / 180)),
+                    (float)Math.Sin(m_Rotation.Y * Math.PI / 180),
+                    (float)(Math.Sin(m_Rotation.X * Math.PI / 180) * Math.Cos(m_Rotation.Y * Math.PI / 180)));
             }
         }
 
+        /// <summary>
+        /// Returns the backwward vector of this spatial based on (X,Y,Z rotations)
+        /// </summary>
+        public Vector3 Backward
+        {
+            get
+            {
+                return -Forward;
+            }
+        }
+
+        /// <summary>
+        /// Returns the right vector of this spatial based on (X,Y,Z rotations)
+        /// </summary>
+        public Vector3 Right
+        {
+            get
+            {
+                return Vector3.Cross(-Vector3.UnitY, Forward);
+            }
+        }
+
+        /// <summary>
+        /// Returns the left vector of this spatial based on (X,Y,Z rotations)
+        /// </summary>
+        public Vector3 Left
+        {
+            get
+            {
+                return -Right;
+            }
+        }
         public override bool ShouldTick
         {
             get

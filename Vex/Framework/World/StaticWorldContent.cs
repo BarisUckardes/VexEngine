@@ -23,7 +23,6 @@ namespace Vex.Framework
         }
         public StaticWorldContent(List<Tuple<string,Guid>> entityPairs,List<string> existingComponentTypes, List<Guid> assetIds,List<Tuple<int,int,string,Guid>> componentEntries,List<StaticComponentMetaData> componentMetaDatas,List<StaticViewResolverEntry> viewResolverEntries)
         {
-
             /*
              * Initialize 
              */

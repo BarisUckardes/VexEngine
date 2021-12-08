@@ -14,7 +14,11 @@ namespace Vex.Graphics
     /// </summary>
     public abstract class ObserverComponent : Component
     {
+        /// <summary>
+        /// The primal observer
+        /// </summary>
         public static ObserverComponent PrimalObserver { get; protected set; }
+
         public ObserverComponent()
         {
            // m_Framebuffer = new Framebuffer2D(512, 512, TextureFormat.Rgba,TextureInternalFormat.Rgba32f);
@@ -22,7 +26,6 @@ namespace Vex.Graphics
             m_FarPlane = 1000.0f;
             m_AspectRatio = 1.0f;
             m_ClearColor = OpenTK.Mathematics.Color4.CornflowerBlue;
-            PrimalObserver = this;
         }
        
 
@@ -101,6 +104,13 @@ namespace Vex.Graphics
             }
         }
 
+        /*
+         * Sets this observer as the primal observer of the world
+         */
+        public void SetThisAsPrimal()
+        {
+            PrimalObserver = this;
+        }
         /// <summary>
         /// Returns the view matrix of this observer component
         /// </summary>
@@ -115,15 +125,48 @@ namespace Vex.Graphics
 
         internal sealed override void OnAttach()
         {
+            /*
+             * Call base component attach
+             */
             base.OnAttach();
+
+            /*
+             * Try register to an world graphics view (if any?)
+             */
             OwnerEntity.World.GetView<WorldGraphicsView>()?.RegisterObserver(this);
+
+            /*
+             * Primat observer setup
+             */
+            if (PrimalObserver == null)
+            {
+                PrimalObserver = this;
+                Console.WriteLine("New primal observer: " + OwnerEntity.Name);
+            }
+                
         }
 
         internal sealed override void OnDetach()
         {
+            /*
+             * Call base component detach
+             */
             base.OnDetach();
+
+            /*
+             * Try remove from the owner world(if any?)
+             */
             OwnerEntity.World.GetView<WorldGraphicsView>()?.RemoveObserver(this);
-            PrimalObserver = null;
+
+            /*
+             * Primal observer setup
+             */
+            if(PrimalObserver == this)
+            {
+                Console.WriteLine("Primal observer removed " + OwnerEntity.Name);
+                PrimalObserver = null;
+            }
+                
         }
 
         private Framebuffer m_Framebuffer;

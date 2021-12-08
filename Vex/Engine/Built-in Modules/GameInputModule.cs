@@ -45,8 +45,7 @@ namespace Vex.Engine
         }
 
         public override void OnEvent(PlatformEvent eventData)
-        {
-            
+        {  
             if(eventData.Type == PlatformEventType.KeyPressed)
             {
                 /*

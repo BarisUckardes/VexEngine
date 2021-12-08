@@ -45,7 +45,8 @@ namespace Vex.Graphics
 
         public override Matrix4 GetViewMatrix()
         {
-            return Matrix4.LookAt(Spatial.Position.GetAsOpenTK(),Spatial.Position.GetAsOpenTK() + Spatial.Forward.GetAsOpenTK(),new Vector3(0,1,0));
+            Vector3 forwardAbsolute = Spatial.Forward.GetAsOpenTK();
+            return Matrix4.LookAt(new System.Numerics.Vector3(-Spatial.Position.X, Spatial.Position.Y, Spatial.Position.Z).GetAsOpenTK(), new System.Numerics.Vector3(-Spatial.Position.X, Spatial.Position.Y, Spatial.Position.Z).GetAsOpenTK() + new Vector3(-forwardAbsolute.X, forwardAbsolute.Y, forwardAbsolute.Z),new Vector3(0,1,0));
         }
 
         public override bool ShouldTick

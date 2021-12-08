@@ -86,6 +86,7 @@ namespace Vex.Framework
             for (int observerIndex = 0;observerIndex < m_Observers.Count; observerIndex++)
             {
                 Profiler.StartProfile("Observer Submit");
+               
                 /*
                  * Get observer and its data
                  */
@@ -180,7 +181,7 @@ namespace Vex.Framework
                      * Create model matrix
                      */
                     Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
-                    position.X *= -1;
+                    //position.X *= -1;
                     Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
                     Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
                     

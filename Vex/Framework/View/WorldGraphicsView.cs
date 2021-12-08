@@ -47,6 +47,7 @@ namespace Vex.Framework
                 if(observer.GetType() == m_Resolvers[i].ExpectedObserverType)
                 {
                     m_Resolvers[i].OnObserverRegistered(observer);
+                    Console.WriteLine("Observer registered: " + observer.OwnerEntity.Name);
                 }
             }
         }

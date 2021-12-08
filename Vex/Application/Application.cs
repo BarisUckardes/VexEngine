@@ -298,27 +298,28 @@ namespace Vex.Application
                  * Stream through events
                  */
                 Profiler.StartProfile("Broadcast events");
-                PlatformEvent[] events = m_ApplicationWindow.Events;
-                for (int eventIndex = 0; eventIndex < events.Length; eventIndex++)
-                {
+                //PlatformEvent[] events = m_ApplicationWindow.Events;
+                //for (int eventIndex = 0; eventIndex < events.Length; eventIndex++)
+                //{
+                //    for (int moduleIndex = m_ActiveModules.Count - 1; moduleIndex >= 0; moduleIndex--)
+                //    {
 
-                    for (int moduleIndex = m_ActiveModules.Count - 1; moduleIndex >= 0; moduleIndex--)
-                    {
-                        /*
-                         * Send this event thVexugh all the module
-                         */
-                        m_ActiveModules[moduleIndex].OnEvent(events[eventIndex]);
+                //        /*
+                //         * Send this event thVexugh all the module
+                //         */
+                //        m_ActiveModules[moduleIndex].OnEvent(events[eventIndex]);
 
-                        /*
-                         * Validate if this event consumed and handled
-                         */
-                        if (events[eventIndex].IsHandled) // handled 
-                        {
-                            break;
-                        }
-                    }
+                //        /*
+                //         * Validate if this event consumed and handled
+                //         */
+                //        if (events[eventIndex].IsHandled) // handled 
+                //        {
+                //            Console.WriteLine($"Module [{m_ActiveModules[moduleIndex].GetType().Name}] is handled the input so no other module will receive it");
+                //            break;
+                //        }
+                //    }
                    
-                }
+                //}
                 Profiler.EndProfile();
 
                 /*
@@ -399,8 +400,19 @@ namespace Vex.Application
             /*
              * Invoke all module on event delegates
              */
-            foreach (ReceivePlatformEventDelegate delegateIt in m_ModuleEventDelegates)
-                delegateIt.Invoke(evData);
+            for(int delegateIndex = m_ModuleEventDelegates.Count - 1;delegateIndex >= 0;delegateIndex--)
+            {
+                /*
+                 * Execute module input delegate
+                 */
+                m_ModuleEventDelegates[delegateIndex].Invoke(evData);
+
+                /*
+                 * Terminate broadcast if current event is handled
+                 */
+                if (evData.IsHandled)
+                    break;
+            }
         }
 
         private List<EngineModule> m_AttachPendingModules;
