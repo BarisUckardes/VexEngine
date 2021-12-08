@@ -76,7 +76,7 @@ namespace Vex.Framework
         internal virtual void OnAttach()
         {
             if(ShouldTick)
-                OwnerEntity.World.GetView<WorldLogicView>().OnRegisterComponent(this);
+                OwnerEntity.World.GetView<WorldLogicView>()?.OnRegisterComponent(this);
         }
 
         /// <summary>

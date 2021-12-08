@@ -30,7 +30,7 @@ namespace Bite.Core
         {
             get
             {
-                return m_RootWorld != null ? m_RootWorld.ID : Guid.Empty;
+                return m_RootWorldContent != null ? m_RootWorldContent.ID : Guid.Empty;
             }
         }
 
@@ -180,12 +180,12 @@ namespace Bite.Core
             /*
              * Try load target world asset
              */
-            m_RootWorld = m_ApplicationSession.AssetPool.GetOrLoadAsset(id, true) as StaticWorldContent;
+            m_RootWorldContent = m_ApplicationSession.AssetPool.GetOrLoadAsset(id, true) as StaticWorldContent;
 
             /*
              * Load world into vex
              */
-            World.LoadAndSwitch(m_RootWorld);
+            World.LoadAndSwitch(m_RootWorldContent);
 
             /*
              * Set play state false 
@@ -206,7 +206,7 @@ namespace Bite.Core
             /*
              * Set current world static world content
              */
-            m_RootWorld = m_ApplicationSession.AssetPool.GetOrLoadAsset(m_ApplicationSession.CurrentWorld.ID,true) as StaticWorldContent;
+            m_RootWorldContent = m_ApplicationSession.AssetPool.GetOrLoadAsset(m_ApplicationSession.CurrentWorld.ID,true) as StaticWorldContent;
 
             /*
              * Start play game session
@@ -225,9 +225,14 @@ namespace Bite.Core
             m_ApplicationSession.CurrentWorld.Destroy();
 
             /*
+             * Set root world
+             */
+            m_RootWorldContent = m_ApplicationSession.AssetPool.GetOrLoadAsset(m_ApplicationSession.CurrentWorld.ID, true) as StaticWorldContent;
+
+            /*
              * Load root world again
              */
-            World.LoadAndSwitch(m_RootWorld.ID);
+            World.LoadAndSwitch(m_RootWorldContent.ID);
 
             /*
              * Set play game session
@@ -570,6 +575,6 @@ namespace Bite.Core
         private List<WindowLayoutSettings> m_CurrentWindowSettings;
         private ApplicationSession m_ApplicationSession;
         private DomainView m_Domain;
-        private StaticWorldContent m_RootWorld;
+        private StaticWorldContent m_RootWorldContent;
     }
 }

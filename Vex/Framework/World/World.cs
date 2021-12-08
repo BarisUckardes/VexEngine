@@ -133,6 +133,9 @@ namespace Vex.Framework
             }
         }
 
+        /// <summary>
+        /// Returns all the world entities
+        /// </summary>
         public List<Entity> Entities
         {
             get
@@ -169,6 +172,11 @@ namespace Vex.Framework
             return null;
         }
 
+        /// <summary>
+        /// Returns a world view via type
+        /// </summary>
+        /// <param name="viewType"></param>
+        /// <returns></returns>
         public WorldView GetView(Type viewType)
         {
             /*
@@ -193,6 +201,11 @@ namespace Vex.Framework
              * Create the view
              */
             WorldView view = Activator.CreateInstance(viewType) as WorldView;
+
+            /*
+             * Set owner world
+             */
+            view.SetWorld(this);
 
             /*
              * Try populate view
@@ -231,6 +244,10 @@ namespace Vex.Framework
             m_Entities.Clear();
         }
 
+        /// <summary>
+        /// Returns all the components in the world.(Used for view initialization on runtime)
+        /// </summary>
+        /// <returns></returns>
         private List<Component> GetAllWorldComponents()
         {
             /*

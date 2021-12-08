@@ -201,9 +201,6 @@ namespace Vex.Framework
             World world = new World(session);
 
             /*
-             * Add view and resolvers
-             */
-            /*
              * Create views and resolvers
              */
             foreach (StaticViewResolverData data in m_ViewResolverDatas)

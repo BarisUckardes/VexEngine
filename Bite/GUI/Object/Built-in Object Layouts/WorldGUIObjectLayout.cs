@@ -151,6 +151,13 @@ namespace Bite.GUI
             GUIRenderCommands.CreateEmptySpace();
            
         }
+
+        /// <summary>
+        /// Helper method
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private bool IsViewContains(WorldView view,Type type)
         {
             foreach (IWorldResolver resolver in view.Resolvers)
@@ -158,6 +165,12 @@ namespace Bite.GUI
                     return true;
             return false;
         }
+
+        /// <summary>
+        /// Helper method
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private WorldView GetView(Type type)
         {
             foreach (WorldView view in m_Views)
@@ -165,9 +178,14 @@ namespace Bite.GUI
                     return view;
             return null;
         }
+
+        /// <summary>
+        /// Helper method
+        /// </summary>
         private void Refresh()
         {
             m_Views = m_TargetWorld.Views;
+            Console.WriteLine("World changed");
         }     
 
         private List<WorldView> m_Views;

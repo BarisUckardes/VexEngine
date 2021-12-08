@@ -44,10 +44,18 @@ namespace Vex.Framework
         /// <param name="component"></param>
         public void OnRegisterComponent(Component component)
         {
+            /*
+             * Broadcast component to resolvers
+             */
             for(int i=0;i<m_Resolvers.Count;i++)
             {
                 m_Resolvers[i].OnRegisterComponent(component);
             }
+
+            /*
+             * Register internal
+             */
+            m_Components.Add(component);
         }
 
         /// <summary>
@@ -56,10 +64,18 @@ namespace Vex.Framework
         /// <param name="component"></param>
         public void OnRemoveComponent(Component component)
         {
+            /*
+             * Broadcast component to resolvers
+             */
             for(int i=0;i<m_Resolvers.Count;i++)
             {
                 m_Resolvers[i].OnRemoveComponent(component);
             }
+
+            /*
+             * Register internal
+             */
+            m_Components.Remove(component);
         }
 
         public override void RegisterResolver(Type resolverType)
@@ -72,6 +88,7 @@ namespace Vex.Framework
             /*
              * Broadcast components
              */
+            Console.WriteLine($"Broadcasting components[{m_Components.Count}] for logic resolver");
             for(int componentIndex = 0;componentIndex < m_Components.Count;componentIndex++)
             {
                 /*
@@ -90,7 +107,6 @@ namespace Vex.Framework
              * Register resolver
              */
             m_Resolvers.Add(resolver);
-            Console.WriteLine("Registered: " + m_Resolvers.Count);
         }
 
         public override void RemoveResolver(Type resolverType)

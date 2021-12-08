@@ -15,16 +15,21 @@ namespace Vex.Framework
         /// <summary>
         /// Returns the world of this view
         /// </summary>
-        public World World
+        protected World World
         {
             get
             {
                 return m_World;
             }
-            internal set
-            {
-                m_World = value;
-            }
+        }
+
+        /// <summary>
+        /// Sets this view's owner world internally
+        /// </summary>
+        /// <param name="world"></param>
+        internal void SetWorld(World world)
+        {
+            m_World = world;
         }
 
         /// <summary>
