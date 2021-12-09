@@ -73,28 +73,64 @@ namespace Vex.Framework
         /// <summary>
         /// Called when attached to an entity
         /// </summary>
-        internal virtual void OnAttach()
+        internal virtual void OnAttachInternal()
         {
-            if(ShouldTick)
+            /*
+            * Try register component logic
+            */
+            if (ShouldTick)
                 OwnerEntity.World.GetView<WorldLogicView>()?.OnRegisterComponent(this);
+
+            /*
+            * Invoke user defined detach
+            */
+            OnAttach();
         }
 
         /// <summary>
         /// Called when removed from an entity
         /// </summary>
-        internal virtual void OnDetach()
+        internal virtual void OnDetachInternal()
         {
+            /*
+             * Try register component logic
+             */
             if(ShouldTick)
                 OwnerEntity.World.GetView<WorldLogicView>()?.OnRegisterComponent(this);
+
+            /*
+             * Invoke user defined attach
+             */
+            OnDetach();
         }
 
+        /// <summary>
+        /// User implemented attach method
+        /// </summary>
+        protected virtual void OnAttach() { }
+
+        /// <summary>
+        /// User implemented detach method
+        /// </summary>
+        protected virtual void OnDetach() { }
+
+        /// <summary>
+        /// Returns whether this component should tick or not
+        /// </summary>
         public abstract bool ShouldTick { get; }
 
+
+        /// <summary>
+        /// Called every frame
+        /// </summary>
         public virtual void OnLogicUpdate() { }
      
-        public void Destroy()
+        /// <summary>
+        /// Destroys the component
+        /// </summary>
+        internal void Destroy()
         {
-            OnDetach();
+            OnDetachInternal();
             IsDestroyed = true;
         }
         private Entity m_OwnerEntity;

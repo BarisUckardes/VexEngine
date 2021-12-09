@@ -13,7 +13,7 @@ namespace Vex.Threading
     public delegate void OnJobFinishedDelegate();
 
     /// <summary>
-    /// Base class for all jobs to implement
+    /// Base class for single short-lived tasks
     /// </summary>
     public abstract class Job
     {

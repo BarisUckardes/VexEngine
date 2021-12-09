@@ -13,7 +13,7 @@ namespace Bite.Core
     /// <summary>
     /// A job which runs project build sequence
     /// </summary>
-    internal sealed class ProjectBuildJob : Job
+    internal sealed class ProjectBuildJob : LongTermJob
     {
         public ProjectBuildJob(in ProjectBuildSettings settings) : base(settings)
         {

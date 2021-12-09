@@ -1,4 +1,5 @@
-﻿using Fang.Commands;
+﻿using Bite.Core;
+using Fang.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,14 +73,14 @@ namespace Bite.GUI
                 /*
                  * Render frambuffer image
                  */
-                GUIRenderCommands.CreateImage(m_Observer.Framebuffer == null ? null : m_Observer.Framebuffer.BackTexture, new Vector2(textureWidth, textureHeight), uv0, uv1);
+                GUIRenderCommands.CreateImage(m_Observer.Framebuffer.BackTexture, new Vector2(textureWidth, textureHeight), uv0, uv1);
 
                 /*
                  * Enable disable viewport transform
                  */
                 if(GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsMouseRightButtonClicked() && !m_ViewportTransformActive)
                 {
-                    Console.WriteLine("Viewport transform enabled");
+                    //Console.WriteLine("Viewport transform enabled");
                     m_LastMousePosition = GUIEventCommands.GetMousePosition();
                     m_ActivationPosition = GUIEventCommands.GetMousePosition();
                     m_ViewportTransformActive = true;
@@ -88,7 +89,7 @@ namespace Bite.GUI
                 }
                 else if(m_ViewportTransformActive && GUIEventCommands.IsRightButtonReleased())
                 {
-                    Console.WriteLine("Viewport transfor disabled");
+                   // Console.WriteLine("Viewport transfor disabled");
                     m_ViewportTransformActive = false;
                     Session.MouseCursorLocked = false;
                     Session.MouseCursorVisible = true;
@@ -180,6 +181,7 @@ namespace Bite.GUI
 
         private void CreateNewObserver()
         {
+            Console.WriteLine("New free game observer");
             /*
              * Validate and destroy former entity
              */
@@ -189,14 +191,13 @@ namespace Bite.GUI
             }
 
             Entity observerEntity = new Entity("Free game observer", Session.CurrentWorld);
-            m_Observer = observerEntity.AddComponent<ForwardMeshObserver>();
-            m_Observer.Framebuffer = new Framebuffer2D(512, 512, TextureFormat.Rgba, TextureInternalFormat.Rgba32f);
+            m_Observer = observerEntity.AddComponent<FreeGameObserver>();
             m_Observer.Spatial.Position = m_Position;
             m_Observer.Spatial.Rotation = m_Rotation;
             m_EntityID = observerEntity.ID;
         }
 
-        private ForwardMeshObserver m_Observer;
+        private FreeGameObserver m_Observer;
         private Guid m_EntityID;
         private Vector3 m_Position;
         private Vector3 m_Rotation;

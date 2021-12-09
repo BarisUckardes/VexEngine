@@ -21,7 +21,6 @@ namespace Vex.Graphics
 
         public ObserverComponent()
         {
-           // m_Framebuffer = new Framebuffer2D(512, 512, TextureFormat.Rgba,TextureInternalFormat.Rgba32f);
             m_NearPlane = 0.001f;
             m_FarPlane = 1000.0f;
             m_AspectRatio = 1.0f;
@@ -123,17 +122,18 @@ namespace Vex.Graphics
         /// <returns></returns>
         public abstract Matrix4 GetProjectionMatrix();
 
-        internal sealed override void OnAttach()
+        internal sealed override void OnAttachInternal()
         {
             /*
              * Call base component attach
              */
-            base.OnAttach();
+            base.OnAttachInternal();
 
             /*
              * Try register to an world graphics view (if any?)
              */
             OwnerEntity.World.GetView<WorldGraphicsView>()?.RegisterObserver(this);
+            Console.WriteLine("Observer Register: " + this.GetType().Name);
 
             /*
              * Primat observer setup
@@ -146,12 +146,12 @@ namespace Vex.Graphics
                 
         }
 
-        internal sealed override void OnDetach()
+        internal sealed override void OnDetachInternal()
         {
             /*
              * Call base component detach
              */
-            base.OnDetach();
+            base.OnDetachInternal();
 
             /*
              * Try remove from the owner world(if any?)

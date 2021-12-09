@@ -6,31 +6,28 @@ using System.Threading.Tasks;
 
 namespace Vex.Threading
 {
-    /// <summary>
-    /// Represents a batch of jobs
-    /// </summary>
-    public sealed class JobBatch
+    public sealed class LongTermJobBatch
     {
-        public JobBatch(List<Job> jobs)
+        public LongTermJobBatch(List<LongTermJob> jobs)
         {
             /*
              * Get new list copy
              */
-            m_Jobs = new List<Job>(jobs);
+            m_Jobs = new List<LongTermJob>(jobs);
         }
-        public JobBatch(List<Job> jobs,OnJobFinishedDelegate onJobBatchFinishedDelegate)
+        public LongTermJobBatch(List<LongTermJob> jobs, OnJobFinishedDelegate onJobBatchFinishedDelegate)
         {
             /*
              * Get new list copy
              */
-            m_Jobs = new List<Job>(jobs);
+            m_Jobs = new List<LongTermJob>(jobs);
 
             /*
              * Set internal job finished delegate
              */
-            foreach(Job job in m_Jobs)
+            foreach (LongTermJob job in m_Jobs)
             {
-                job.SetOnFinishDelegate(OnSingleJobFinished);
+                job.SetOnFinishedDelegate(OnSingleJobFinished);
             }
 
             /*
@@ -59,7 +56,7 @@ namespace Vex.Threading
             /*
              * Wait each one of them to finish
              */
-            while(m_Jobs.Count !=0)
+            while (m_Jobs.Count != 0)
             {
                 m_Jobs[0].WaitForFinish();
                 m_Jobs.RemoveAt(0);
@@ -85,14 +82,14 @@ namespace Vex.Threading
             /*
              * Validate finish
              */
-            if(m_TotalNumberOfJobsFinished >= m_Jobs.Count)
+            if (m_TotalNumberOfJobsFinished >= m_Jobs.Count)
             {
                 m_Jobs.Clear();
                 m_OnBatchFinsihedEvent.Invoke();
             }
 
         }
-        private List<Job> m_Jobs;
+        private List<LongTermJob> m_Jobs;
         private int m_TotalNumberOfJobsFinished;
         private event OnJobFinishedDelegate m_OnBatchFinsihedEvent;
     }

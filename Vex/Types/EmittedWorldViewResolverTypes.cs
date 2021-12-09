@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace Vex.Types
 {
+
+    /// <summary>
+    /// A static class which collects the emitted world view resolver types types
+    /// </summary>
     public static class EmittedWorldViewResolverTypes
     {
+        /// <summary>
+        /// Returns the view resolver types
+        /// </summary>
         public static List<Type> Types
         {
             get
@@ -19,6 +26,12 @@ namespace Vex.Types
                 s_Types = value;
             }
         }
+
+        /// <summary>
+        /// Get type via its name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static Type GetViaName(string name)
         {
             foreach (Type type in s_Types)

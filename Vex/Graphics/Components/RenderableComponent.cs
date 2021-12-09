@@ -28,15 +28,16 @@ namespace Vex.Graphics
                 m_Material = value;
             }
         }
-        internal sealed override void OnAttach()
+        internal sealed override void OnAttachInternal()
         {
-            base.OnAttach();
+            base.OnAttachInternal();
             OwnerEntity.World.GetView<WorldGraphicsView>()?.RegisterRenderable(this);
+
         }
 
-        internal sealed override void OnDetach()
+        internal sealed override void OnDetachInternal()
         {
-            base.OnAttach();
+            base.OnDetachInternal();
             OwnerEntity.World.GetView<WorldGraphicsView>()?.RemoveRenderable(this);
         }
 

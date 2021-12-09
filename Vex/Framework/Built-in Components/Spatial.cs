@@ -118,15 +118,7 @@ namespace Vex.Framework
                 return false;
             }
         }
-        internal override void OnAttach()
-        {
-
-        }
-
-        internal override void OnDetach()
-        {
-
-        }
+     
 
         [ExposeThis]
         Vector3 m_Position;

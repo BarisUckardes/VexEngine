@@ -108,7 +108,7 @@ namespace Bite.GUI
                  * Create new project build job
                  */
                 m_BuildFinishJob = new ProjectBuildJob(settings);
-                m_BuildFinishJob.SetOnFinishDelegate(OnBuildFinished);
+                m_BuildFinishJob.SetOnFinishedDelegate(OnBuildFinished);
 
                 /*
                  * Execute job with the given parameters
@@ -172,7 +172,7 @@ namespace Bite.GUI
         }
 
         private List<Asset> m_AllWorldAssets;
-        private Job m_BuildFinishJob;
+        private LongTermJob m_BuildFinishJob;
         private string[] m_SupportedPlatforms = new string[] { "Windows"};
         private string[] m_SupportedArchitectures = new string[] { "x86", "x64" };
         private int m_SelectedPlatformIndex = 0;

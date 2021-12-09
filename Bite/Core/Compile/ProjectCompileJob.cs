@@ -8,7 +8,7 @@ using Vex.Threading;
 
 namespace Bite.Core
 {
-    public sealed class ProjectCompileJob : Job
+    public sealed class ProjectCompileJob : LongTermJob
     {
         public ProjectCompileJob(in ProjectCompileSettings settings) : base(settings)
         {

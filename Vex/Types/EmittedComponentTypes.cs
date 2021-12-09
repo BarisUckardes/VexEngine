@@ -11,6 +11,9 @@ namespace Vex.Types
     /// </summary>
     public static class EmittedComponentTypes
     {
+        /// <summary>
+        /// Returns the component types
+        /// </summary>
         public static List<Type> ComponentTypes
         {
             get

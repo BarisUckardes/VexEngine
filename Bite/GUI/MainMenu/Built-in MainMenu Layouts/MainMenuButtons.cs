@@ -60,7 +60,7 @@ namespace Bite
             /*
              * Create job list for job batching
              */
-            List<Job> compileJobs = new List<Job>();
+            List<LongTermJob> compileJobs = new List<LongTermJob>();
 
             /*
              * Create compile job for UserGameCode
@@ -77,7 +77,7 @@ namespace Bite
             /*
              * Create job batch
              */
-            JobBatch compileBatch = new JobBatch(compileJobs, OnProjectEditorCompilationFinished);
+            LongTermJobBatch compileBatch = new LongTermJobBatch(compileJobs, OnProjectEditorCompilationFinished);
             compileBatch.ExecuteAll();
 
         }

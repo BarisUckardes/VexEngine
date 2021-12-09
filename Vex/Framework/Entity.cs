@@ -85,7 +85,7 @@ namespace Vex.Framework
             /*
              * Call on attach
              */
-            component.OnAttach();
+            component.OnAttachInternal();
             
             /*
              * Add it to local registry
@@ -115,7 +115,7 @@ namespace Vex.Framework
             /*
              * Call on attach
              */
-            component.OnAttach();
+            component.OnAttachInternal();
 
             /*
              * Add it to local registry
@@ -181,7 +181,7 @@ namespace Vex.Framework
                      * Detach component
                      */
                     Component component = m_Components[i];
-                    component.OnDetach();
+                    component.OnDetachInternal();
 
                     /*
                      * Remove the component fVexm local registry
