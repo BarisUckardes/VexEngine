@@ -56,6 +56,12 @@ namespace Vex.Asset
                 Entity entity = totalEntities[entityIndex];
 
                 /*
+                 * Validate if this entity is a debug entity
+                 */
+                if (entity.IsDebugOnly)
+                    continue;
+
+                /*
                  * Emit local index and and id
                  */
                 emitter.Emit(new Scalar(null, $"[{entity.Name}] " + entity.ID.ToString()));
@@ -74,6 +80,12 @@ namespace Vex.Asset
                  * Get entity
                  */
                 Entity entity = totalEntities[entityIndex];
+
+                /*
+                * Validate if this entity is a debug entity
+                */
+                if (entity.IsDebugOnly)
+                    continue;
 
                 /*
                  * Get components
@@ -127,6 +139,12 @@ namespace Vex.Asset
                  * Get entity
                  */
                 Entity entity = totalEntities[entityIndex];
+
+                /*
+                * Validate if this entity is a debug entity
+                */
+                if (entity.IsDebugOnly)
+                    continue;
 
                 /*
                  * Get components
@@ -207,6 +225,12 @@ namespace Vex.Asset
                 Entity entity = totalEntities[entityIndex];
 
                 /*
+                * Validate if this entity is a debug entity
+                */
+                if (entity.IsDebugOnly)
+                    continue;
+
+                /*
                  * Get components
                  */
                 List<Component> components = entity.Components;
@@ -245,6 +269,12 @@ namespace Vex.Asset
                  * Get entity
                  */
                 Entity entity = totalEntities[entityIndex];
+
+                /*
+                * Validate if this entity is a debug entity
+                */
+                if (entity.IsDebugOnly)
+                    continue;
 
                 /*
                  * Get local index

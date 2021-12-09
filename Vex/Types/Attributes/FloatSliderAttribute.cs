@@ -6,25 +6,6 @@ using System.Threading.Tasks;
 
 namespace Vex.Types
 {
-
-    /// <summary>
-    /// Prevents vex from seeing this property||field
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-    public class DontExposeThis : Attribute
-    {
-
-    }
-
-    /// <summary>
-    /// Forces vex to see this property||field
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-    public class ExposeThis : Attribute
-    {
-
-    }
-
     /// <summary>
     /// Supports a slider metadata for a float
     /// </summary>

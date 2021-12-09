@@ -20,6 +20,7 @@ namespace Vex.Framework
             Name = name;
             m_OwnerWorld = world;
             m_Components = new List<Component>();
+            m_Debug = false;
 
             /*
              * Create new spatial
@@ -57,11 +58,29 @@ namespace Vex.Framework
             }
         }
 
+        /// <summary>
+        /// Returns the total list of components of this entity
+        /// </summary>
         public List<Component> Components
         {
             get
             {
                 return m_Components;
+            }
+        }
+
+        /// <summary>
+        /// Get set debug state of this entity
+        /// </summary>
+        public bool IsDebugOnly
+        {
+            get
+            {
+                return m_Debug;
+            }
+            set
+            {
+                m_Debug = value;
             }
         }
 
@@ -217,6 +236,7 @@ namespace Vex.Framework
         private List<Component> m_Components;
         private World m_OwnerWorld;
         private Spatial m_Spatial;
+        private bool m_Debug;
        
     }
 }

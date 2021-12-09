@@ -182,15 +182,17 @@ namespace Bite.GUI
         private void CreateNewObserver()
         {
             Console.WriteLine("New free game observer");
+
             /*
              * Validate and destroy former entity
              */
             if(m_Observer != null)
             {
-                Session.CurrentWorld.GetEntityViaID(m_EntityID).Destroy();
+                Session.CurrentWorld.GetEntityViaID(m_EntityID)?.Destroy();
             }
 
             Entity observerEntity = new Entity("Free game observer", Session.CurrentWorld);
+            observerEntity.IsDebugOnly = true;
             m_Observer = observerEntity.AddComponent<FreeGameObserver>();
             m_Observer.Spatial.Position = m_Position;
             m_Observer.Spatial.Rotation = m_Rotation;

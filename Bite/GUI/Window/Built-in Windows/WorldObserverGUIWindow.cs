@@ -90,7 +90,7 @@ namespace Bite.GUI
                      * Render selectable
                      */
                     GUILayoutCommands.SetCursorPos(anchorPosition + new Vector2(20, 0));
-                    if (GUIRenderCommands.CreateSelectableItem(entity.Name, entity.ID.ToString()))
+                    if (GUIRenderCommands.CreateSelectableItem(entity.Name + (entity.IsDebugOnly ? "[DEBUG]" : ""), entity.ID.ToString()))
                     {
                         m_SelectEntity = entity;
                         GUIObject.SignalNewObject(entity);
