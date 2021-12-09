@@ -9,6 +9,9 @@ using Vex.Framework;
 using Vex.Graphics;
 namespace Bite.Core
 {
+    /// <summary>
+    /// Special type of observer for free game observering
+    /// </summary>
     public sealed class FreeGameObserver : ObserverComponent
     {
         public override bool ShouldTick

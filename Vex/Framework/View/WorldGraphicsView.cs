@@ -44,11 +44,7 @@ namespace Vex.Framework
              */
             for(int i=0;i<m_Resolvers.Count;i++)
             {
-                if(observer.GetType() == m_Resolvers[i].ExpectedObserverType)
-                {
-                    m_Resolvers[i].OnObserverRegistered(observer);
-                    Console.WriteLine("Observer registered: " + observer.OwnerEntity.Name);
-                }
+                m_Resolvers[i].OnObserverRegistered(observer);
             }
         }
 
@@ -68,10 +64,7 @@ namespace Vex.Framework
              */
             for (int i = 0; i < m_Resolvers.Count; i++)
             {
-                if (observer.GetType() == m_Resolvers[i].ExpectedObserverType)
-                {
-                    m_Resolvers[i].OnObserverRemoved(observer);
-                }
+                m_Resolvers[i].OnObserverRemoved(observer);
             }
         }
         /// <summary>
@@ -152,8 +145,7 @@ namespace Vex.Framework
                 /*
                  * Broadcast
                  */
-                if(resolver.ExpectedObserverType == observer.GetType())
-                    resolver.OnObserverRegistered(observer);
+                resolver.OnObserverRegistered(observer);
             }
 
             /*

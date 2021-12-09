@@ -15,6 +15,9 @@ namespace Bite.Core
         x64 = 1
     }
 
+    /// <summary>
+    /// Helper extension class for compile architecture
+    /// </summary>
     public static class CompileArchitectureExtensions
     {
         public static string ToRuntimeString(this CompileArchitecture architecture)

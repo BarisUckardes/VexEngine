@@ -42,11 +42,6 @@ namespace Vex.Framework
         /// </summary>
         public abstract Type ExpectedRenderableType { get; }
 
-        /// <summary>
-        /// The observer type which this graphics resolver accepts
-        /// </summary>
-        public abstract Type ExpectedObserverType { get; }
-
         public Type TargetViewType
         {
             get

@@ -21,7 +21,7 @@ namespace Vex.Framework
         public ForwardGraphicsResolver()
         {
             m_Renderables = new List<ForwardMeshRenderable>();
-            m_Observers = new List<ForwardMeshObserver>();
+            m_Observers = new List<ObserverComponent>();
            
         }
         public override Type ExpectedRenderableType
@@ -32,22 +32,14 @@ namespace Vex.Framework
             }
         }
 
-        public override Type ExpectedObserverType
-        {
-            get
-            {
-                return typeof(ForwardMeshObserver);
-            }
-        }
-
         public override void OnObserverRegistered(ObserverComponent observer)
         {
-            m_Observers.Add(observer as ForwardMeshObserver);
+            m_Observers.Add(observer);
         }
 
         public override void OnObserverRemoved(ObserverComponent observer)
         {
-            m_Observers.Remove(observer as ForwardMeshObserver);
+            m_Observers.Remove(observer);
         }
 
         public override void OnRenderableRegistered(RenderableComponent renderable)
@@ -86,11 +78,11 @@ namespace Vex.Framework
             for (int observerIndex = 0;observerIndex < m_Observers.Count; observerIndex++)
             {
                 Profiler.StartProfile("Observer Submit");
-               
+
                 /*
                  * Get observer and its data
                  */
-                ForwardMeshObserver observer = m_Observers[observerIndex];
+                ObserverComponent observer = m_Observers[observerIndex];
 
                 /*
                  * Get observer clear color
@@ -249,7 +241,7 @@ namespace Vex.Framework
             Profiling.Profiler.EndProfile();
         }
 
-        private List<ForwardMeshObserver> m_Observers;
+        private List<ObserverComponent> m_Observers;
         private List<ForwardMeshRenderable> m_Renderables;
     }
 }
