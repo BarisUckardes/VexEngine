@@ -25,9 +25,32 @@ namespace Vex.Graphics
             m_FarPlane = 1000.0f;
             m_AspectRatio = 1.0f;
             m_ClearColor = OpenTK.Mathematics.Color4.CornflowerBlue;
+            m_RenderPasses = new List<RenderPass>();
+            m_Framebuffer2DResources = new List<Framebuffer2D>();
         }
        
 
+        /// <summary>
+        /// Returns the list of framebuffer2D resources
+        /// </summary>
+        public List<Framebuffer2D> Framebuffer2DResources
+        {
+            get
+            {
+                return new List<Framebuffer2D>(m_Framebuffer2DResources);
+            }
+        }
+
+        /// <summary>
+        /// Returns renderpasses this observer has
+        /// </summary>
+        public List<RenderPass> RenderPasses
+        {
+            get
+            {
+                return new List<RenderPass>(m_RenderPasses);
+            }
+        }
         /// <summary>
         /// The framebuffer which this observer renders into
         /// </summary>
@@ -104,24 +127,34 @@ namespace Vex.Graphics
         }
 
         /*
-         * Sets this observer as the primal observer of the world
+         * Returns whether this observer is the primal observer
          */
-        public void SetThisAsPrimal()
+        public bool IsPrimal
+        {
+            get
+            {
+                return this == PrimalObserver;
+            }
+        }
+
+        /*
+        * Sets this observer as the primal observer of the world
+        */
+        public void SetAsPrimal()
         {
             PrimalObserver = this;
         }
-        /// <summary>
-        /// Returns the view matrix of this observer component
-        /// </summary>
-        /// <returns></returns>
-        public abstract Matrix4 GetViewMatrix();
 
-        /// <summary>
-        /// Returns the pVexjection matrix of this observer component
-        /// </summary>
-        /// <returns></returns>
-        public abstract Matrix4 GetProjectionMatrix();
-
+        public void CreateFramebuffer2DResource(int width,int height,TextureFormat format,TextureInternalFormat internalFormat)
+        {
+            m_Framebuffer2DResources.Add(new Framebuffer2D(width, height, format, internalFormat));
+        }
+        public void CreateRenderPass(string passName)
+        {
+            RenderPass pass = new RenderPass();
+            pass.PassName = passName;
+            m_RenderPasses.Add(pass);
+        }
         internal sealed override void OnAttachInternal()
         {
             /*
@@ -133,7 +166,6 @@ namespace Vex.Graphics
              * Try register to an world graphics view (if any?)
              */
             OwnerEntity.World.GetView<WorldGraphicsView>()?.RegisterObserver(this);
-            Console.WriteLine("Observer Register: " + this.GetType().Name);
 
             /*
              * Primat observer setup
@@ -141,7 +173,6 @@ namespace Vex.Graphics
             if (PrimalObserver == null)
             {
                 PrimalObserver = this;
-                Console.WriteLine("New primal observer: " + OwnerEntity.Name);
             }
                 
         }
@@ -169,6 +200,21 @@ namespace Vex.Graphics
                 
         }
 
+
+        /// <summary>
+        /// Returns the view matrix of this observer component
+        /// </summary>
+        /// <returns></returns>
+        public abstract Matrix4 GetViewMatrix();
+
+        /// <summary>
+        /// Returns the pVexjection matrix of this observer component
+        /// </summary>
+        /// <returns></returns>
+        public abstract Matrix4 GetProjectionMatrix();
+
+        private List<Framebuffer2D> m_Framebuffer2DResources;
+        private List<RenderPass> m_RenderPasses;
         private Framebuffer m_Framebuffer;
         private Color4 m_ClearColor;
         [ExposeThis]
@@ -177,5 +223,6 @@ namespace Vex.Graphics
         private float m_FarPlane;
         [ExposeThis]
         private float m_AspectRatio;
+
     }
 }

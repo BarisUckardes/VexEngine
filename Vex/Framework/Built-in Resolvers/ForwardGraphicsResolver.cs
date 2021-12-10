@@ -54,191 +54,392 @@ namespace Vex.Framework
 
         public override void Resolve()
         {
-            Profiling.Profiler.StartProfile();
 
-            /*
+            {
+                /*
              * Create new command buffer
              */
-            CommandBuffer commandBuffer = new CommandBuffer();
-
-            /*
-             * Start recording
-             */
-            commandBuffer.StartRecoding();
-
-            /*
-             * Set state
-             */
-            PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.FrontAndBack,PolygonFillMethod.Fill),new CullingMode(TriangleFrontFace.CCW,CullFace.Back));
-            commandBuffer.SetPipelineState(state);
-
-            /*
-             * Iterate each observer
-             */
-            for (int observerIndex = 0;observerIndex < m_Observers.Count; observerIndex++)
-            {
-                Profiler.StartProfile("Observer Submit");
+                CommandBuffer commandBuffer = new CommandBuffer();
 
                 /*
-                 * Get observer and its data
+                 * Start recording
+                 */
+                commandBuffer.StartRecoding();
+
+                /*
+                 * Set state
+                 */
+                PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.FrontAndBack, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+                commandBuffer.SetPipelineState(state);
+
+                /*
+                 * Iterate each observer
+                 */
+                for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+                {
+                    Profiler.StartProfile("Observer Submit");
+
+                    /*
+                     * Get observer and its data
+                     */
+                    ObserverComponent observer = m_Observers[observerIndex];
+
+                    /*
+                     * Get observer clear color
+                     */
+                    Color4 clearColor = observer.ClearColor;
+
+                    /*
+                     * Get observer framebuffer
+                     */
+                    Framebuffer framebuffer = observer.Framebuffer == null ? Framebuffer2D.IntermediateFramebuffer : observer.Framebuffer;
+
+                    /*
+                     * Get observer view matrix
+                     */
+                    Matrix4 viewMatrix = observer.GetViewMatrix();
+
+                    /*
+                     * Get observer pVexjection matrix
+                     */
+                    Matrix4 projectionMatrix = observer.GetProjectionMatrix();
+
+                    /*
+                     * Set observer framebuffer
+                     */
+                    commandBuffer.SetFramebuffer(framebuffer);
+
+                    /*s
+                     * Set framebuffer viewport
+                     */
+                    Framebuffer2D framebufferAs2D = (Framebuffer2D)framebuffer;
+                    commandBuffer.SetViewport(Vector2.Zero, new Vector2(framebufferAs2D.Width, framebufferAs2D.Height));
+
+                    /*
+                     * Clear color the framebuffer
+                     */
+                    commandBuffer.ClearColor(clearColor);
+
+                    /*
+                     * Render each sprite renderable
+                     */
+                    for (int renderableIndex = 0; renderableIndex < m_Renderables.Count; renderableIndex++)
+                    {
+                        Profiler.StartProfile("Submit draw call");
+
+                        /*
+                         * Set sprite renderable
+                         */
+                        ForwardMeshRenderable renderable = m_Renderables[renderableIndex];
+
+                        /*
+                         * Validate renderable
+                         */
+                        if (renderable == null)
+                            continue;
+
+                        /*
+                         * Validate mesh
+                         */
+                        if (renderable.Mesh == null)
+                            continue;
+
+                        /*
+                         * Validate material
+                         */
+                        if (renderable.Material == null)
+                            continue;
+
+                        VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
+                        IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
+                        uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;
+
+                        /*
+                         * Set vertex buffer command
+                         */
+                        commandBuffer.SetVertexbuffer(vertexBuffer);
+
+                        /*
+                         * Set index buffer command
+                         */
+                        commandBuffer.SetIndexBuffer(indexBuffer);
+
+                        /*
+                         * Set shader pVexgram
+                         */
+                        commandBuffer.SetShaderProgram(renderable.Material != null ? renderable.Material.Program : null);
+
+                        /*
+                         * Create model matrix
+                         */
+                        Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
+                        //position.X *= -1;
+                        Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
+                        Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
+
+                        /*
+                         * Create mvp matrix
+                         */
+                        Matrix4 modelMatrix =
+                            Matrix4.CreateScale(scale) *
+                            Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.X)) *
+                            Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Y)) *
+                            Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z)) *
+                            Matrix4.CreateTranslation(position);
+
+                        Matrix4 mvp = modelMatrix * viewMatrix * projectionMatrix;
+                        commandBuffer.SetUniformMat4x4(renderable.Material.Program, mvp, "v_Mvp");
+                        commandBuffer.SetUniformMat4x4(renderable.Material.Program, modelMatrix, "v_Model");
+
+                        /*
+                         * Set material parameters
+                         */
+                        MaterialStageParameters[] stageParameters = renderable.Material.StageParameters;
+                        for (int stageIndex = 0; stageIndex < stageParameters.Length; stageIndex++)
+                        {
+                            /*
+                             * Set float parameters
+                             */
+                            MaterialParameterField<float>[] floatParamaters = stageParameters[stageIndex].FloatParameters;
+                            for (int parameterIndex = 0; parameterIndex < floatParamaters.Length; parameterIndex++)
+                            {
+                                commandBuffer.SetUniformFloat(renderable.Material.Program, floatParamaters[parameterIndex].Data, floatParamaters[parameterIndex].Name);
+                            }
+
+                            /*
+                             * Set texture2d parameters
+                             */
+                            MaterialParameterField<Texture2D>[] texture2DParameters = stageParameters[stageIndex].Texture2DParameters;
+                            for (int parameterIndex = 0; parameterIndex < texture2DParameters.Length; parameterIndex++)
+                            {
+                                commandBuffer.SetTexture2D(texture2DParameters[parameterIndex].Data, texture2DParameters[parameterIndex].Name, renderable.Material.Program);
+                            }
+                        }
+
+                        /*
+                         * Draw
+                         */
+                        commandBuffer.DrawIndexed((int)triangleCount);
+                        Profiler.EndProfile();
+                    }
+
+                    Profiler.EndProfile();
+                }
+
+                /*
+                 * End recording
+                 */
+                commandBuffer.EndRecording();
+
+                /*
+                 * Execute command buffer
+                 */
+                commandBuffer.Execute();
+            }
+
+            /*
+             * Render additonal passes
+             */
+            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+            {
+                /*
+                 * Get observer
                  */
                 ObserverComponent observer = m_Observers[observerIndex];
 
                 /*
-                 * Get observer clear color
+                 * Try render passes
                  */
-                Color4 clearColor = observer.ClearColor;
-
-                /*
-                 * Get observer framebuffer
-                 */
-                Framebuffer framebuffer = observer.Framebuffer == null ? Framebuffer2D.IntermediateFramebuffer : observer.Framebuffer;
-
-                /*
-                 * Get observer view matrix
-                 */
-                Matrix4 viewMatrix = observer.GetViewMatrix();
-
-                /*
-                 * Get observer pVexjection matrix
-                 */
-                Matrix4 projectionMatrix = observer.GetProjectionMatrix();
-
-                /*
-                 * Set observer framebuffer
-                 */
-                commandBuffer.SetFramebuffer(framebuffer);
-
-                /*s
-                 * Set framebuffer viewport
-                 */
-                Framebuffer2D framebufferAs2D = (Framebuffer2D)framebuffer;
-                commandBuffer.SetViewport(Vector2.Zero, new Vector2(framebufferAs2D.Width, framebufferAs2D.Height));
-
-                /*
-                 * Clear color the framebuffer
-                 */
-                commandBuffer.ClearColor(clearColor);
-
-                /*
-                 * Render each sprite renderable
-                 */
-                for (int renderableIndex = 0; renderableIndex< m_Renderables.Count; renderableIndex++)
+                List<RenderPass> passes = observer.RenderPasses;
+                for (int passIndex = 0; passIndex < passes.Count; passIndex++)
                 {
-                    Profiler.StartProfile("Submit draw call");
+                    /*
+                     * Get render pass
+                     */
+                    RenderPass pass = passes[passIndex];
 
                     /*
-                     * Set sprite renderable
+                     * Get Pairs
                      */
-                    ForwardMeshRenderable renderable = m_Renderables[renderableIndex];
-
-                    /*
-                     * Validate renderable
-                     */
-                    if (renderable == null)
-                        continue;
-
-                    /*
-                     * Validate mesh
-                     */
-                    if (renderable.Mesh == null)
-                        continue;
-
-                    /*
-                     * Validate material
-                     */
-                    if (renderable.Material == null)
-                        continue;
-
-                    VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
-                    IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
-                    uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;
-
-                    /*
-                     * Set vertex buffer command
-                     */
-                    commandBuffer.SetVertexbuffer(vertexBuffer);
-
-                    /*
-                     * Set index buffer command
-                     */
-                    commandBuffer.SetIndexBuffer(indexBuffer);
-
-                    /*
-                     * Set shader pVexgram
-                     */
-                    commandBuffer.SetShaderProgram(renderable.Material != null ? renderable.Material.Program : null);
-
-                    /*
-                     * Create model matrix
-                     */
-                    Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
-                    //position.X *= -1;
-                    Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
-                    Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
-                    
-                    /*
-                     * Create mvp matrix
-                     */
-                    Matrix4 modelMatrix =
-                        Matrix4.CreateScale(scale) *
-                        Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.X)) *
-                        Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Y)) *
-                        Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z))*
-                        Matrix4.CreateTranslation(position);
-
-                    Matrix4 mvp = modelMatrix * viewMatrix* projectionMatrix;
-                    commandBuffer.SetUniformMat4x4(renderable.Material.Program, mvp, "v_Mvp");
-                    commandBuffer.SetUniformMat4x4(renderable.Material.Program, modelMatrix, "v_Model");
-
-                    /*
-                     * Set material parameters
-                     */
-                    MaterialStageParameters[] stageParameters = renderable.Material.StageParameters;
-                    for(int stageIndex = 0;stageIndex < stageParameters.Length;stageIndex++)
+                    Material targetMaterial = null;
+                    List<RenderPassResolverMaterialPair> pairs = pass.ResolverMaterialPairs;
+                    foreach (RenderPassResolverMaterialPair pair in pairs)
                     {
-                        /*
-                         * Set float parameters
-                         */
-                        MaterialParameterField<float>[] floatParamaters =  stageParameters[stageIndex].FloatParameters;
-                        for(int parameterIndex = 0;parameterIndex< floatParamaters.Length;parameterIndex++)
+                        if (pair.TargetResolver == typeof(ForwardGraphicsResolver))
                         {
-                            commandBuffer.SetUniformFloat(renderable.Material.Program, floatParamaters[parameterIndex].Data, floatParamaters[parameterIndex].Name);
-                        }
-
-                        /*
-                         * Set texture2d parameters
-                         */
-                        MaterialParameterField<Texture2D>[] texture2DParameters = stageParameters[stageIndex].Texture2DParameters;
-                        for(int parameterIndex = 0;parameterIndex < texture2DParameters.Length;parameterIndex++)
-                        {
-                            commandBuffer.SetTexture2D(texture2DParameters[parameterIndex].Data, texture2DParameters[parameterIndex].Name, renderable.Material.Program);
+                            targetMaterial = pair.TargetMaterial;
                         }
                     }
 
                     /*
-                     * Draw
+                     * Validate material
                      */
-                    commandBuffer.DrawIndexed((int)triangleCount);
-                    Profiler.EndProfile();
+                    if (targetMaterial == null || pass.TargetFramebuffer == null)
+                        continue;
+
+                    Console.WriteLine("Render additonal pass: " + pass.PassName);
+
+                    /*
+                     * Render pass
+                     */
+                    CommandBuffer buffer = new CommandBuffer();
+                    PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.FrontAndBack, PolygonFillMethod.Point), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+                    buffer.SetPipelineState(state);
+
+                    /*
+                     * Start recording
+                     */
+                    buffer.StartRecoding();
+
+                    /*
+                     * Get observer clear color
+                     */
+                    Color4 clearColor = observer.ClearColor;
+
+                    /*
+                     * Get observer framebuffer
+                     */
+                    Framebuffer framebuffer = pass.TargetFramebuffer;
+
+                    /*
+                     * Get observer view matrix
+                     */
+                    Matrix4 viewMatrix = observer.GetViewMatrix();
+
+                    /*
+                     * Get observer pVexjection matrix
+                     */
+                    Matrix4 projectionMatrix = observer.GetProjectionMatrix();
+
+                    /*
+                     * Set observer framebuffer
+                     */
+                    buffer.SetFramebuffer(framebuffer);
+
+                    /*s
+                     * Set framebuffer viewport
+                     */
+                    Framebuffer2D framebufferAs2D = (Framebuffer2D)framebuffer;
+                    buffer.SetViewport(Vector2.Zero, new Vector2(framebufferAs2D.Width, framebufferAs2D.Height));
+
+                    /*
+                     * Clear color the framebuffer
+                     */
+                    buffer.ClearColor(new Color4(1,0,0,1));
+
+                    /*
+                     * Render each sprite renderable
+                     */
+                    for (int renderableIndex = 0; renderableIndex < m_Renderables.Count; renderableIndex++)
+                    {
+
+                        /*
+                         * Set sprite renderable
+                         */
+                        ForwardMeshRenderable renderable = m_Renderables[renderableIndex];
+
+                        /*
+                         * Validate renderable
+                         */
+                        if (renderable == null)
+                            continue;
+
+                        /*
+                         * Validate mesh
+                         */
+                        if (renderable.Mesh == null)
+                            continue;
+
+                        /*
+                         * Validate material
+                         */
+                        if (renderable.Material == null)
+                            continue;
+
+                        VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
+                        IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
+                        uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;
+
+                        /*
+                         * Set vertex buffer command
+                         */
+                        buffer.SetVertexbuffer(vertexBuffer);
+
+                        /*
+                         * Set index buffer command
+                         */
+                        buffer.SetIndexBuffer(indexBuffer);
+
+                        /*
+                         * Set shader pVexgram
+                         */
+                        buffer.SetShaderProgram(targetMaterial != null ? targetMaterial.Program : null);
+
+                        /*
+                         * Create model matrix
+                         */
+                        Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
+                        //position.X *= -1;
+                        Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
+                        Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
+
+                        /*
+                         * Create mvp matrix
+                         */
+                        Matrix4 modelMatrix =
+                            Matrix4.CreateScale(scale) *
+                            Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.X)) *
+                            Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Y)) *
+                            Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z)) *
+                            Matrix4.CreateTranslation(position);
+
+                        Matrix4 mvp = modelMatrix * viewMatrix * projectionMatrix;
+                        buffer.SetUniformMat4x4(renderable.Material.Program, mvp, "v_Mvp");
+                        buffer.SetUniformMat4x4(renderable.Material.Program, modelMatrix, "v_Model");
+
+                        /*
+                         * Set material parameters
+                         */
+                        MaterialStageParameters[] stageParameters = targetMaterial.StageParameters;
+                        for (int stageIndex = 0; stageIndex < stageParameters.Length; stageIndex++)
+                        {
+                            /*
+                             * Set float parameters
+                             */
+                            MaterialParameterField<float>[] floatParamaters = stageParameters[stageIndex].FloatParameters;
+                            for (int parameterIndex = 0; parameterIndex < floatParamaters.Length; parameterIndex++)
+                            {
+                                buffer.SetUniformFloat(targetMaterial.Program, floatParamaters[parameterIndex].Data, floatParamaters[parameterIndex].Name);
+                            }
+
+                            /*
+                             * Set texture2d parameters
+                             */
+                            MaterialParameterField<Texture2D>[] texture2DParameters = stageParameters[stageIndex].Texture2DParameters;
+                            for (int parameterIndex = 0; parameterIndex < texture2DParameters.Length; parameterIndex++)
+                            {
+                                buffer.SetTexture2D(texture2DParameters[parameterIndex].Data, texture2DParameters[parameterIndex].Name, targetMaterial.Program);
+                            }
+                        }
+
+                        /*
+                         * Draw
+                         */
+                        buffer.DrawIndexed((int)triangleCount);
+                    }
+
+                    /*
+                     * End recording
+                     */
+                    buffer.EndRecording();
+
+                    /*
+                     * Render
+                     */
+                    buffer.Execute();
                 }
 
-                Profiler.EndProfile();
             }
-
-            /*
-             * End recording
-             */
-            commandBuffer.EndRecording();
-
-            /*
-             * Execute command buffer
-             */
-            Profiler.StartProfile("Render");
-            commandBuffer.Execute();
-            Profiler.EndProfile();
-
-            Profiling.Profiler.EndProfile();
         }
 
         private List<ObserverComponent> m_Observers;

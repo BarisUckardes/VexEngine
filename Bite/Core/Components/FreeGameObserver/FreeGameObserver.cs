@@ -37,6 +37,7 @@ namespace Bite.Core
         protected override void OnAttach()
         {
             Framebuffer = new Framebuffer2D(512, 512, TextureFormat.Rgba, TextureInternalFormat.Rgba32f);
+            Framebuffer.Name = "Default Color";
         }
         protected override void OnDetach()
         {

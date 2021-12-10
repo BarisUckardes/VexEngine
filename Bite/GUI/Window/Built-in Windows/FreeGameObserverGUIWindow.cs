@@ -42,6 +42,22 @@ namespace Bite.GUI
             }
 
             /*
+             * Render select pass
+             */
+            List<Framebuffer2D> visibleFramebuffers = m_Observer.Framebuffer2DResources;
+            visibleFramebuffers.Add(m_Observer.Framebuffer as Framebuffer2D);
+            if(GUIRenderCommands.CreateCombo("Framebuffers",m_TargetFramebuffer.Name,"icom"))
+            {
+                foreach(Framebuffer2D framebuffer in visibleFramebuffers)
+                {
+                    if(GUIRenderCommands.CreateButton(framebuffer.Name,framebuffer.ID.ToString()))
+                    {
+                        m_TargetFramebuffer = framebuffer;
+                    }
+                }
+                GUIRenderCommands.FinalizeCombo();
+            }
+            /*
             * Create flipped uvs
             */
             Vector2 uv0 = new Vector2(0, 1);
@@ -73,7 +89,7 @@ namespace Bite.GUI
                 /*
                  * Render frambuffer image
                  */
-                GUIRenderCommands.CreateImage(m_Observer.Framebuffer.BackTexture, new Vector2(textureWidth, textureHeight), uv0, uv1);
+                GUIRenderCommands.CreateImage(m_TargetFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight), uv0, uv1);
 
                 /*
                  * Enable disable viewport transform
@@ -197,9 +213,11 @@ namespace Bite.GUI
             m_Observer.Spatial.Position = m_Position;
             m_Observer.Spatial.Rotation = m_Rotation;
             m_EntityID = observerEntity.ID;
+            m_TargetFramebuffer = m_Observer.Framebuffer as Framebuffer2D;
         }
 
         private FreeGameObserver m_Observer;
+        private Framebuffer2D m_TargetFramebuffer;
         private Guid m_EntityID;
         private Vector3 m_Position;
         private Vector3 m_Rotation;
