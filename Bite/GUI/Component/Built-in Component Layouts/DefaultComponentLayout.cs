@@ -40,8 +40,9 @@ namespace Bite.GUI
                 if(info.FieldType == typeof(System.Numerics.Vector3))
                 {
                     System.Numerics.Vector3 value = (System.Numerics.Vector3)info.GetValue(TargetComponent);
-                    GUIRenderCommands.CreateVector3Slider(info.Name, "", ref value);
+                    GUIRenderCommands.CreateVector3Slider(info.Name, this.GetHashCode().ToString() + info.Name, ref value);
                     info.SetValue(TargetComponent, value);
+                    GUIRenderCommands.CreateEmptySpace();
                 }
                 else if(info.FieldType == typeof(float))
                 {
@@ -67,12 +68,14 @@ namespace Bite.GUI
                      * Set value
                      */
                     info.SetValue(TargetComponent, value);
+                    GUIRenderCommands.CreateEmptySpace();
                 }
                 else if(info.FieldType.IsSubclassOf(typeof(VexObject)))
                 {
                     GUIRenderCommands.CreateText(info.FieldType.Name, "");
                     VexObject value = (VexObject)info.GetValue(TargetComponent);
                     info.SetValue(TargetComponent, GUIRenderCommands.CreateObjectField(value, value == null ? "nll_obj_" + info.GetHashCode().ToString() : value.ID.ToString()));
+                    GUIRenderCommands.CreateEmptySpace();
                 }
                 else if(info.FieldType == typeof(string))
                 {
@@ -81,6 +84,7 @@ namespace Bite.GUI
                     string value = info.GetValue(TargetComponent) as string;
                     GUIRenderCommands.CreateTextInput("", "txtt", ref value);
                     info.SetValue(TargetComponent, value);
+                    GUIRenderCommands.CreateEmptySpace();
                 }
             }
 
@@ -94,7 +98,8 @@ namespace Bite.GUI
                     Vector3 value = (Vector3)info.GetValue(TargetComponent);
                     GUIRenderCommands.CreateVector3Slider(info.Name, "", ref value,0,360);
                     info.SetValue(TargetComponent,value,null);
-                    
+                    GUIRenderCommands.CreateEmptySpace();
+
                 }
                 else if(info.PropertyType == typeof(float)) // set as float
                 {
@@ -120,12 +125,14 @@ namespace Bite.GUI
                      * Set value
                      */
                     info.SetValue(TargetComponent, value, null);
+                    GUIRenderCommands.CreateEmptySpace();
                 }
                 else if(info.PropertyType.IsSubclassOf(typeof(VexObject))) // set as vexobject variant
                 {
                     GUIRenderCommands.CreateText(info.PropertyType.Name, "");
                     VexObject value = (VexObject)info.GetValue(TargetComponent);
                     info.SetValue(TargetComponent, GUIRenderCommands.CreateObjectField(value, value == null ? "nll_obj_" + info.GetHashCode().ToString() : value.ID.ToString()));
+                    GUIRenderCommands.CreateEmptySpace();
                 }
             }
         }

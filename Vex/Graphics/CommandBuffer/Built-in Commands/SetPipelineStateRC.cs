@@ -22,12 +22,12 @@ namespace Vex.Graphics
              * Set polygon mode
              */
             GL.PointSize(15.0f);
-            GL.LineWidth(5.0f);
+            GL.LineWidth(1.0f);
             GL.PolygonMode(
                 PolygonFillfaceUtils.GetNative(m_State.PolygonMode.FillFace),
                 PolygonFillMethodUtils.GetNative(m_State.PolygonMode.FillMethod)
                 );
- 
+
             /*
              * Set blend mode
              */

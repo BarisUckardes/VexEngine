@@ -82,11 +82,6 @@ namespace Bite.Module
             {
                 m_GUISystems[moduleIndex].OnAttach();
             }
-
-            /*
-             * Set default play state
-             */
-           // m_Session.StopGamePlaySession();
         }
 
         public override void OnDetach()

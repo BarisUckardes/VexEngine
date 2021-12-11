@@ -10,6 +10,7 @@ using Vex.Graphics;
 using Vex.Extensions;
 using System.Runtime.InteropServices;
 using Vex.Framework;
+using Vex.Platform;
 
 namespace Fang.Commands
 {
@@ -144,9 +145,8 @@ namespace Fang.Commands
         public static bool CreateVector3Slider(string name, string code, ref Vector3 vector, float min = 0.00f, float max = 5.0f)
         {
             System.Numerics.Vector3 intermediateVec = new System.Numerics.Vector3(vector.X, vector.Y,vector.Z);
-            ImGui.Text(name);
             ImGui.PushID(code);
-            bool state = ImGui.SliderFloat3(name + "##" + code,ref intermediateVec, min, max);
+            bool state = ImGui.SliderFloat3(name,ref intermediateVec, min, max);
             ImGui.PopID();
             vector.X = intermediateVec.X;
             vector.Y = intermediateVec.Y;
@@ -292,25 +292,26 @@ namespace Fang.Commands
         }
        
         private static VexObject s_LastVexObjectObjectField;
+       
         public static VexObject CreateObjectField(VexObject targetObject, string code)
         {
             /*
              * Render a selectable
             */
-            GUIRenderCommands.EnableStyleColor(ImGuiCol.Text, new Vector4(1.0f, 1.0f, 102.0f/255.0f, 1.0f));
-            GUIRenderCommands.CreateSelectableItem(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})", code);
+            GUIRenderCommands.EnableStyleColor(ImGuiCol.Text, new Vector4(1.0f, 1.0f, 102.0f / 255.0f, 1.0f));
+            GUIRenderCommands.CreateSelectableItem("[+]", code,ImGui.CalcTextSize("[+]"));
             GUIRenderCommands.DisableStyleColor();
+            GUILayoutCommands.StayOnSameLine();
 
             /*
-             * Start drag drop source
-             */
+            * Start drag drop source
+            */
             if (ImGui.BeginDragDropSource()) // dragged from here
             {
                 s_LastVexObjectObjectField = targetObject;
                 ImGui.SetDragDropPayload("Object Field", IntPtr.Zero, 0);
                 ImGui.EndDragDropSource();
             }
-
 
             /*
              * Draw drag drop
@@ -327,16 +328,22 @@ namespace Fang.Commands
                  */
                 ImGui.EndDragDropTarget();
             }
-            
+
             /*
-             * Receive drag drop 
-             */
+            * Receive drag drop 
+            */
             if (ImGui.BeginDragDropTarget() && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem) && ImGui.IsMouseReleased(ImGuiMouseButton.Left)) // dropped here
             {
                 /*
                  * Get payload ptr
                  */
                 ImGuiPayloadPtr ptr = ImGui.AcceptDragDropPayload("Object Field");
+
+
+                /*
+                 * Render text
+                 */
+                GUIRenderCommands.CreateText(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})", "");
 
                 /*
                  * Validate object
@@ -345,6 +352,7 @@ namespace Fang.Commands
 
                 return s_LastVexObjectObjectField;
             }
+            GUIRenderCommands.CreateText(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})","");
 
             return targetObject;
         }

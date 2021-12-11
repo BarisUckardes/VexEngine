@@ -46,17 +46,19 @@ namespace Bite.GUI
              */
             List<Framebuffer2D> visibleFramebuffers = m_Observer.Framebuffer2DResources;
             visibleFramebuffers.Add(m_Observer.Framebuffer as Framebuffer2D);
-            if(GUIRenderCommands.CreateCombo("Framebuffers",m_TargetFramebuffer.Name,"icom"))
+            ImGuiNET.ImGui.SetNextItemWidth(ImGuiNET.ImGui.CalcTextSize("Default Color").X*2);
+            if(GUIRenderCommands.CreateCombo("",m_TargetFramebuffer.Name,"icom"))
             {
                 foreach(Framebuffer2D framebuffer in visibleFramebuffers)
                 {
-                    if(GUIRenderCommands.CreateButton(framebuffer.Name,framebuffer.ID.ToString()))
+                    if(GUIRenderCommands.CreateSelectableItem(framebuffer.Name,framebuffer.ID.ToString()))
                     {
                         m_TargetFramebuffer = framebuffer;
                     }
                 }
                 GUIRenderCommands.FinalizeCombo();
             }
+
             /*
             * Create flipped uvs
             */
@@ -66,10 +68,10 @@ namespace Bite.GUI
             /*
              * Draw game viewport
              */
-            Vector2 windowSize = GUILayoutCommands.GetCurrentWindowSize();
+            Vector2 availSpaceSize = GUILayoutCommands.GetAvailableSpace();
             Vector2 windowAnchor = GUILayoutCommands.GetCursor();
-            float textureWidth = windowSize.X;
-            float textureHeight = windowSize.Y-30;
+            float textureWidth = availSpaceSize.X;
+            float textureHeight = availSpaceSize.Y;
 
             /*
              * Calculate aspect ratio

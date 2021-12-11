@@ -277,20 +277,18 @@ namespace Vex.Framework
                     if (targetMaterial == null || pass.TargetFramebuffer == null)
                         continue;
 
-                    Console.WriteLine("Render additonal pass: " + pass.PassName);
-
                     /*
                      * Render pass
                      */
                     CommandBuffer buffer = new CommandBuffer();
-                    PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.FrontAndBack, PolygonFillMethod.Point), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
-                    buffer.SetPipelineState(state);
+                    PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.FrontAndBack, PolygonFillMethod.Line), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+                    
 
                     /*
                      * Start recording
                      */
                     buffer.StartRecoding();
-
+                    buffer.SetPipelineState(state);
                     /*
                      * Get observer clear color
                      */
@@ -332,7 +330,6 @@ namespace Vex.Framework
                      */
                     for (int renderableIndex = 0; renderableIndex < m_Renderables.Count; renderableIndex++)
                     {
-
                         /*
                          * Set sprite renderable
                          */

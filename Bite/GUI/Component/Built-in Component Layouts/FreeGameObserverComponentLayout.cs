@@ -44,11 +44,14 @@ namespace Bite.GUI
 
         public override void OnLayoutRender()
         {
+            GUIRenderCommands.CreateEmptySpace();
+            GUIRenderCommands.CreateEmptySpace();
             /*
              * Create framebuffer resources header
              */
             GUIRenderCommands.CreateText("Framebuffer2D Resources","");
             GUIRenderCommands.CreateSeperatorLine();
+            GUIRenderCommands.CreateEmptySpace();
             GUIRenderCommands.CreateEmptySpace();
 
             /*
@@ -62,15 +65,29 @@ namespace Bite.GUI
             foreach(Framebuffer2D framebuffer in framebuffer2DResources)
             {
                 GUIRenderCommands.CreateEmptySpace();
-                string name = framebuffer.Name;
-                GUIRenderCommands.CreateTextInput("", framebuffer.ID.ToString(),ref name);
-                framebuffer.Name = name;
-                GUIRenderCommands.CreateObjectField(framebuffer, "Frm2d");
+                if(GUIRenderCommands.CreateTreeNode("Framebuffer ##" + framebuffer.ID.ToString(),framebuffer.ID.ToString()))
+                {
+                    
+                    string name = framebuffer.Name;
+                    GUIRenderCommands.CreateText("Name:", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    GUIRenderCommands.CreateTextInput("", framebuffer.ID.ToString(), ref name);
+                    framebuffer.Name = name;
+                    GUIRenderCommands.CreateText("Framebuffer:", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    GUIRenderCommands.CreateObjectField(framebuffer, "Frm2d");
+                    GUIRenderCommands.CreateEmptySpace();
+                    GUIRenderCommands.CreateEmptySpace();
+                    GUIRenderCommands.FinalizeTreeNode();
+                }
             }
 
             /*
              * Create framebuffer2D button
              */
+            GUIRenderCommands.CreateEmptySpace();
+            GUIRenderCommands.CreateEmptySpace();
+            GUIRenderCommands.CreateSeperatorLine();
             if(GUIRenderCommands.CreateButton("Create framebuffer2d","ibtn"))
             {
                 m_TargetObserver?.CreateFramebuffer2DResource(512, 512, TextureFormat.Rgba, TextureInternalFormat.Rgba32f);
@@ -91,53 +108,73 @@ namespace Bite.GUI
                 /*
                  * Render selected framebuffer
                  */
-                string name = pass.PassName;
-                GUIRenderCommands.CreateTextInput("", "it",ref name);
-                pass.PassName = name;
-                pass.TargetFramebuffer = GUIRenderCommands.CreateObjectField(pass.TargetFramebuffer, "ipas") as Framebuffer2D;
-
-                /*
-                 * Render pairs
-                 */
-                GUIRenderCommands.CreateText("Resolver pairs", "");
-                GUIRenderCommands.CreateSeperatorLine();
-                GUIRenderCommands.CreateEmptySpace();
-                List<RenderPassResolverMaterialPair> pairs = pass.ResolverMaterialPairs;
-                foreach(RenderPassResolverMaterialPair pair in pairs)
+                if(GUIRenderCommands.CreateTreeNode(pass.PassName,pass.PassName))
                 {
-                    /*
-                     * Set target material
-                     */
-                    pair.TargetMaterial = GUIRenderCommands.CreateObjectField(pair.TargetMaterial, "materialType") as Material;
+                    string name = pass.PassName;
+                    GUIRenderCommands.CreateText("Pass name", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    GUIRenderCommands.CreateTextInput("", "it", ref name);
+                    pass.PassName = name;
+                    GUIRenderCommands.CreateText("Target framebuffer", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    pass.TargetFramebuffer = GUIRenderCommands.CreateObjectField(pass.TargetFramebuffer, "ipas") as Framebuffer2D;
 
                     /*
-                     * Set resolver type
+                     * Render pairs
                      */
-                    if(GUIRenderCommands.CreateCombo("","","resolverType"))
+                    List<RenderPassResolverMaterialPair> pairs = pass.ResolverMaterialPairs;
+                    if(GUIRenderCommands.CreateTreeNode("Resolver-Material Pairs","r-m pairs"))
                     {
-                        foreach (Type type in m_GraphicsResolverTypes)
-                            if (GUIRenderCommands.CreateButton("Select " + type.Name,"typeSelectButton"))
-                                pair.TargetResolver = type;
+                        foreach (RenderPassResolverMaterialPair pair in pairs)
+                        {
+                            if(GUIRenderCommands.CreateTreeNode("Pair",pair.GetHashCode().ToString()))
+                            {
+                                /*
+                                 * Set target material
+                                 */
+                                GUIRenderCommands.CreateText("Material:", "");
+                                GUILayoutCommands.StayOnSameLine();
+                                pair.TargetMaterial = GUIRenderCommands.CreateObjectField(pair.TargetMaterial, "materialType") as Material;
 
-                        GUIRenderCommands.FinalizeCombo();
+                                /*
+                                 * Set resolver type
+                                 */
+                                GUIRenderCommands.CreateText("Target resolver", "");
+                                GUILayoutCommands.StayOnSameLine();
+                                if (GUIRenderCommands.CreateCombo("", "", "resolverType"))
+                                {
+                                    foreach (Type type in m_GraphicsResolverTypes)
+                                        if (GUIRenderCommands.CreateButton("Select " + type.Name, "typeSelectButton"))
+                                            pair.TargetResolver = type;
+
+                                    GUIRenderCommands.FinalizeCombo();
+                                }
+                                GUIRenderCommands.FinalizeTreeNode();
+                            }
+                            GUIRenderCommands.CreateEmptySpace();
+                            GUIRenderCommands.CreateEmptySpace();
+                        }
+
+                        
+                        GUIRenderCommands.FinalizeTreeNode();
                     }
 
+                    /*
+                     * Render pair create button
+                     */
+                    GUIRenderCommands.CreateEmptySpace();
+                    if (GUIRenderCommands.CreateButton("Create resolver pair", "createRenderPassPairButton"))
+                    {
+                        pass.RegisterPair(new RenderPassResolverMaterialPair());
+                    }
 
-                    GUIRenderCommands.CreateSeperatorLine();
+                    GUIRenderCommands.CreateEmptySpace();
                     GUIRenderCommands.CreateEmptySpace();
                 }
 
-                /*
-                * Render pair create button
-                */
-                GUIRenderCommands.CreateEmptySpace();
-                if (GUIRenderCommands.CreateButton("Create resolver pair", "createRenderPassPairButton"))
-                {
-                    pass.RegisterPair(new RenderPassResolverMaterialPair());
-                }
+               
 
                 GUIRenderCommands.CreateEmptySpace();
-                GUIRenderCommands.CreateSeperatorLine();
                 GUIRenderCommands.CreateEmptySpace();
             }
 

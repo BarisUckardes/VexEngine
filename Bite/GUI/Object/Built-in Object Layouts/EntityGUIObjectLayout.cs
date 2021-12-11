@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Fang.Commands;
 using Vex.Types;
 using ImGuiNET;
+using Vex.Graphics;
+
 namespace Bite.GUI
 {
     [ObjectLayout(typeof(Entity))]
@@ -16,6 +18,7 @@ namespace Bite.GUI
         {
             m_TargetEntity = Object as Entity;
             m_Layouts = new List<ComponentLayout>();
+            m_ComponentIcon = Session.GetEditorResource("ComponentIcon", Vex.Asset.AssetType.Texture2D) as Texture2D;
 
             /*
              * Get all commponents
@@ -90,13 +93,16 @@ namespace Bite.GUI
             for(int i=0;i<m_Layouts.Count;i++)
             {
                 GUIRenderCommands.EnableStyle(ImGuiStyleVar.FrameRounding, 5);
+                GUIRenderCommands.CreateSeperatorLine();
+                GUILayoutCommands.SetNextItemWidth(GUILayoutCommands.GetTextSize(m_Layouts[i].TargetComponent.GetType().Name).X);
                 if(GUIRenderCommands.CreateCollapsingHeader(m_Layouts[i].TargetComponent.GetType().Name,m_Layouts[i].TargetComponent.ID.ToString()))
                 {
                     GUIRenderCommands.DisableStyle();
                     m_Layouts[i].OnLayoutRender();
+                    GUIRenderCommands.FinalizeTreeNode();
                 }
-                
             }
+            GUIRenderCommands.CreateSeperatorLine();
 
         }
 
@@ -144,6 +150,8 @@ namespace Bite.GUI
                 /*
                  * Render selectable
                  */
+                GUIRenderCommands.CreateImage(m_ComponentIcon, new System.Numerics.Vector2(16, 16));
+                GUILayoutCommands.StayOnSameLine();
                 if(GUIRenderCommands.CreateSelectableItem(m_AllComponentTypes[componentIndex].Name, "cmp_list_" + componentIndex))
                 {
                     m_TargetEntity.AddComponent(m_AllComponentTypes[componentIndex]);
@@ -157,5 +165,6 @@ namespace Bite.GUI
         private List<ComponentLayout> m_Layouts;
         private List<Type> m_AllComponentTypes;
         private Entity m_TargetEntity;
+        private Texture m_ComponentIcon;
     }
 }

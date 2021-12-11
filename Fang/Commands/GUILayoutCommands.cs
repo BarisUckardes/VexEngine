@@ -39,6 +39,18 @@ namespace Fang.Commands
         {
             return ImGui.GetWindowSize();
         }
+        public static Vector2 GetAvailableSpace()
+        {
+            return ImGui.GetContentRegionAvail();
+        }
+        public static void SetNextItemWidth(float width)
+        {
+            ImGui.SetNextItemWidth(width);
+        }
+        public static Vector2 GetTextSize(string text)
+        {
+            return ImGui.CalcTextSize(text);
+        }
        
     }
 }

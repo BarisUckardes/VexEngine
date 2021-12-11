@@ -34,6 +34,36 @@ namespace Fang.Renderer
             io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
             io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
 
+            /*
+             * Set theme
+             */
+            RangeAccessor<System.Numerics.Vector4> themeColors = ImGui.GetStyle().Colors;
+            themeColors[(int)ImGuiCol.WindowBg] = new System.Numerics.Vector4(0.1f, 0.105f, 0.11f, 1.0f);
+
+            themeColors[(int)ImGuiCol.Header] = new System.Numerics.Vector4(0.2f, 0.205f, 0.21f, 1.0f);
+            themeColors[(int)ImGuiCol.HeaderHovered] = new System.Numerics.Vector4(0.3f, 0.305f, 0.31f, 1.0f);
+            themeColors[(int)ImGuiCol.HeaderActive] = new System.Numerics.Vector4(0.15f, 0.1505f, 0.151f, 1.0f);
+
+            themeColors[(int)ImGuiCol.Button] = new System.Numerics.Vector4(0.2f, 0.205f, 0.21f, 1.0f);
+            themeColors[(int)ImGuiCol.ButtonHovered] = new System.Numerics.Vector4(0.3f, 0.305f, 0.31f, 1.0f);
+            themeColors[(int)ImGuiCol.ButtonActive] = new System.Numerics.Vector4(0.15f, 0.1505f, 0.151f, 1.0f);
+
+            themeColors[(int)ImGuiCol.FrameBg] = new System.Numerics.Vector4(0.2f, 0.205f, 0.21f, 1.0f);
+            themeColors[(int)ImGuiCol.FrameBgHovered] = new System.Numerics.Vector4(0.3f, 0.305f, 0.31f, 1.0f);
+            themeColors[(int)ImGuiCol.FrameBgActive] = new System.Numerics.Vector4(0.15f, 0.1505f, 0.151f, 1.0f);
+
+            themeColors[(int)ImGuiCol.Tab] = new System.Numerics.Vector4(0.15f, 0.1505f, 0.151f, 1.0f);
+            themeColors[(int)ImGuiCol.TabHovered] = new System.Numerics.Vector4(0.38f, 0.3805f, 0.381f, 1.0f);
+            themeColors[(int)ImGuiCol.TabActive] = new System.Numerics.Vector4(0.28f, 0.2805f, 0.281f, 1.0f);
+            themeColors[(int)ImGuiCol.TabUnfocused] = new System.Numerics.Vector4(0.15f, 0.1505f, 0.151f, 1.0f);
+            themeColors[(int)ImGuiCol.TabUnfocusedActive] = new System.Numerics.Vector4(0.2f, 0.205f, 0.21f, 1.0f);
+
+            themeColors[(int)ImGuiCol.TitleBg] = new System.Numerics.Vector4(0.15f, 0.1505f, 0.151f, 1.0f);
+            themeColors[(int)ImGuiCol.TitleBgActive] = new System.Numerics.Vector4(0.15f, 0.1505f, 0.151f, 1.0f);
+            themeColors[(int)ImGuiCol.TitleBgCollapsed] = new System.Numerics.Vector4(0.95f, 0.1505f, 0.95f, 1.0f);
+
+
+
             CreateDeviceResources();
             SetKeyMappings();
 
@@ -307,6 +337,7 @@ void main()
             GL.Enable(EnableCap.ScissorTest);
             GL.BlendEquation(BlendEquationMode.FuncAdd);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             GL.Disable(EnableCap.CullFace);
             GL.Disable(EnableCap.DepthTest);
 
