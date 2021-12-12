@@ -92,6 +92,26 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// Submit a clear depth value
+        /// </summary>
+        /// <param name="depthValue"></param>
+        public void ClearDepth(float depthValue)
+        {
+            /*
+            * Validate recording
+            */
+            if (!IsRecording)
+            {
+                return;
+            }
+
+            /*
+             * Submit command
+             */
+            m_Commands.Add(new ClearDepthRC(depthValue));
+        }
+
+        /// <summary>
         /// Submit a set framebuffer command
         /// </summary>
         /// <param name="framebuffer"></param>

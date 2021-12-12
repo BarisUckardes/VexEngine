@@ -60,9 +60,9 @@ namespace Bite.GUI
                      * Render slider
                      */
                     if (sliderAttribute != null)
-                        GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value, sliderAttribute.Min, sliderAttribute.Max);
+                        value = GUIRenderCommands.CreateFloatSlider(info.Name, "",value, sliderAttribute.Min, sliderAttribute.Max);
                     else
-                        GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value, 0, 360);
+                        value = GUIRenderCommands.CreateFloatSlider(info.Name, "",value, 0, 360);
 
                     /*
                      * Set value
@@ -117,9 +117,9 @@ namespace Bite.GUI
                      * Render slider
                      */
                     if(sliderAttribute != null)
-                        GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value, sliderAttribute.Min, sliderAttribute.Max);
+                        value = GUIRenderCommands.CreateFloatSlider(info.Name, "",value, sliderAttribute.Min, sliderAttribute.Max);
                     else
-                        GUIRenderCommands.CreateFloatSlider(info.Name, "", ref value, 0, 360);
+                        value = GUIRenderCommands.CreateFloatSlider(info.Name, "",value, 0, 360);
 
                     /*
                      * Set value

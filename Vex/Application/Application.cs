@@ -295,34 +295,6 @@ namespace Vex.Application
                 Profiler.EndProfile();
 
                 /*
-                 * Stream through events
-                 */
-                Profiler.StartProfile("Broadcast events");
-                //PlatformEvent[] events = m_ApplicationWindow.Events;
-                //for (int eventIndex = 0; eventIndex < events.Length; eventIndex++)
-                //{
-                //    for (int moduleIndex = m_ActiveModules.Count - 1; moduleIndex >= 0; moduleIndex--)
-                //    {
-
-                //        /*
-                //         * Send this event thVexugh all the module
-                //         */
-                //        m_ActiveModules[moduleIndex].OnEvent(events[eventIndex]);
-
-                //        /*
-                //         * Validate if this event consumed and handled
-                //         */
-                //        if (events[eventIndex].IsHandled) // handled 
-                //        {
-                //            Console.WriteLine($"Module [{m_ActiveModules[moduleIndex].GetType().Name}] is handled the input so no other module will receive it");
-                //            break;
-                //        }
-                //    }
-                   
-                //}
-                Profiler.EndProfile();
-
-                /*
                  * Run application modules
                  */
                 Profiler.StartProfile("Application Modules");

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -111,6 +112,28 @@ namespace Vex.Graphics
                 m_DepthFunction = value;
             }
         }
+        public Vector4 ClearColor
+        {
+            get
+            {
+                return m_ClearColor;
+            }
+            set
+            {
+                m_ClearColor = value;
+            }
+        }
+        public float ClearDepthValue
+        {
+            get
+            {
+                return m_ClearDepthValue;
+            }
+            set
+            {
+                m_ClearDepthValue = value;
+            }
+        }
         public bool UseDepthTest
         {
             get
@@ -120,6 +143,28 @@ namespace Vex.Graphics
             set
             {
                 m_DepthTest = value;
+            }
+        }
+        public bool UseClearColor
+        {
+            get
+            {
+                return m_UseClearColor;
+            }
+            set
+            {
+                m_UseClearColor = value;
+            }
+        }
+        public bool UseClearDepth
+        {
+            get
+            {
+                return m_UseClearDepth;
+            }
+            set
+            {
+                m_UseClearDepth = value;
             }
         }
 
@@ -141,7 +186,11 @@ namespace Vex.Graphics
         private TriangleFrontFace m_FrontFace;
         private CullFace m_CullFace;
         private DepthFunction m_DepthFunction;
+        private Vector4 m_ClearColor;
+        private float m_ClearDepthValue;
         private bool m_DepthTest;
+        private bool m_UseClearColor;
+        private bool m_UseClearDepth;
         private string m_PassName;
     }
 }

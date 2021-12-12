@@ -13,6 +13,6 @@ namespace Vex.Graphics
     {
         Front = 0,
         Back = 1,
-        FVexntAndBack = 2
+        FrontAndBack = 2
     }
 }

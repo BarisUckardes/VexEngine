@@ -119,6 +119,7 @@ namespace Vex.Framework
                      * Clear color the framebuffer
                      */
                     commandBuffer.ClearColor(clearColor);
+                    commandBuffer.ClearDepth(1.0f);
 
                     /*
                      * Render each sprite renderable
@@ -281,22 +282,17 @@ namespace Vex.Framework
                      * Render pass
                      */
                     CommandBuffer buffer = new CommandBuffer();
-                    PipelineState state = new PipelineState(new Graphics.PolygonMode(pass.FillFace, pass.FillMethod), new CullingMode(pass.FrontFace, pass.CullFace)) ;
+                    PipelineState state = new PipelineState(new Graphics.PolygonMode(pass.FillFace, pass.FillMethod), new CullingMode(pass.FrontFace, pass.CullFace));
                     state.DepthFunction = pass.DepthFunction;
                     state.DepthTest = pass.UseDepthTest;
                     state.PolygonMode = new Graphics.PolygonMode(pass.FillFace, pass.FillMethod);
-                    
 
                     /*
                      * Start recording
                      */
                     buffer.StartRecoding();
                     buffer.SetPipelineState(state);
-                    /*
-                     * Get observer clear color
-                     */
-                    Color4 clearColor = observer.ClearColor;
-
+                   
                     /*
                      * Get observer framebuffer
                      */
@@ -326,7 +322,14 @@ namespace Vex.Framework
                     /*
                      * Clear color the framebuffer
                      */
-                    buffer.ClearColor(new Color4(1,0,0,1));
+                    if(pass.UseClearColor)
+                        buffer.ClearColor(new Color4(pass.ClearColor.X, pass.ClearColor.Y, pass.ClearColor.Z, pass.ClearColor.W));
+
+                    /*
+                     * Clear depth of the framebuffer
+                     */
+                    if (pass.UseClearDepth)
+                        buffer.ClearDepth(pass.ClearDepthValue);
 
                     /*
                      * Render each sprite renderable

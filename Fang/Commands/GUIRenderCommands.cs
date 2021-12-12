@@ -178,12 +178,12 @@ namespace Fang.Commands
             vector.W = intermediateVec.W;
             return state;
         }
-        public static bool CreateFloatSlider(string name,string code,ref float value,float min = 0.00f,float max = 5.0f)
+        public static float CreateFloatSlider(string name,string code,float value,float min = 0.00f,float max = 1.0f)
         {
             ImGui.PushID(code);
-            bool state = ImGui.SliderFloat(name,ref value, min, max);
+            ImGui.SliderFloat(name,ref value, min, max);
             ImGui.PopID();
-            return state;
+            return value;
         }
         public static bool CreateIntInput(string name,string code,ref int value)
         {
@@ -472,9 +472,11 @@ namespace Fang.Commands
             handle.CloseHandle();
         }
 
-        public static bool CreateColorPicker(string code,ref Vector4 color)
+        public static Vector4 CreateColorPicker(string code,Vector4 color)
         {
-            return ImGui.ColorPicker4("##" + code,ref color);
+            //ImGui.ColorPicker4("##" + code,ref color,ImGuiColorEditFlags.NoSmallPreview);
+            ImGui.ColorEdit4("##" + code, ref color);
+            return color;
         }
 
 

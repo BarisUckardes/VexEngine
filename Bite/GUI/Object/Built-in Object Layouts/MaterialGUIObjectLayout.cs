@@ -78,7 +78,7 @@ namespace Bite.GUI
                         float value = floatParameters[parameterIndex].Data;
                         GUIRenderCommands.CreateText(floatParameters[parameterIndex].Name, " ");
                         GUILayoutCommands.StayOnSameLine();
-                        GUIRenderCommands.CreateFloatSlider(floatParameters[parameterIndex].Name," ", ref value);
+                        value = GUIRenderCommands.CreateFloatSlider(floatParameters[parameterIndex].Name," ",value);
                         stage.SetFloatParameter(floatParameters[parameterIndex].Name, value);
                         
                     }

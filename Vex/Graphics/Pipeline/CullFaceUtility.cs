@@ -27,7 +27,7 @@ namespace Vex.Graphics
                 case CullFace.Back:
                     return CullFaceMode.Back;
                     break;
-                case CullFace.FVexntAndBack:
+                case CullFace.FrontAndBack:
                     return CullFaceMode.FrontAndBack;
                     break;
                 default:

@@ -97,7 +97,7 @@ namespace Bite.GUI
             GUIRenderCommands.CreateSeperatorLine();
             if(GUIRenderCommands.CreateButton("Create framebuffer2d","ibtn"))
             {
-                m_TargetObserver?.CreateFramebuffer2DResource(512, 512, TextureFormat.Rgba, TextureInternalFormat.Rgba32f);
+                m_TargetObserver?.CreateFramebuffer2DResource(512, 512, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
             }
 
             /*
@@ -150,6 +150,26 @@ namespace Bite.GUI
                     GUIRenderCommands.CreateText("Enable Depth Testing:", "");
                     GUILayoutCommands.StayOnSameLine();
                     pass.UseDepthTest = GUIRenderCommands.CreateCheckbox("", "",pass.UseDepthTest);
+
+                    GUIRenderCommands.CreateText("Use Clear Color:", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    pass.UseClearColor = GUIRenderCommands.CreateCheckbox("", "useClearColor", pass.UseClearColor);
+                    if(pass.UseClearColor)
+                    {
+                        GUIRenderCommands.CreateText("Clear Color:", "");
+                        GUILayoutCommands.StayOnSameLine();
+                        pass.ClearColor = GUIRenderCommands.CreateColorPicker("clearColor", pass.ClearColor);
+                    }
+
+                    GUIRenderCommands.CreateText("Use Clear Depth:", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    pass.UseClearDepth = GUIRenderCommands.CreateCheckbox("", "useClearDepth", pass.UseClearDepth);
+                    if (pass.UseClearDepth)
+                    {
+                        GUIRenderCommands.CreateText("Clear Depth:", "");
+                        GUILayoutCommands.StayOnSameLine();
+                        pass.ClearDepthValue = GUIRenderCommands.CreateFloatSlider("","clearColor", pass.ClearDepthValue,0,1);
+                    }
 
                     GUIRenderCommands.CreateText("Front Face:","");
                     GUILayoutCommands.StayOnSameLine();
