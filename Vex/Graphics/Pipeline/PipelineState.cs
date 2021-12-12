@@ -9,7 +9,7 @@ namespace Vex.Graphics
     /// <summary>
     /// Represents the whole pipeline state
     /// </summary>
-    public readonly struct PipelineState
+    public struct PipelineState
     {
         public PipelineState(PolygonMode polygonMode , CullingMode cullingMode,
             BlendFunction sourceBlendFunction = BlendFunction.Zero, BlendFunction destinationBlendFunction = BlendFunction.Zero, BlendEquation blendEquation = BlendEquation.FuncAdd,
@@ -29,38 +29,38 @@ namespace Vex.Graphics
         /// <summary>
         /// How the polygons will be drawed
         /// </summary>
-        public readonly PolygonMode PolygonMode;
+        public PolygonMode PolygonMode;
         /// <summary>
         /// Which faces are rendered and culled
         /// </summary>
-        public readonly CullingMode CullingMode;
+        public CullingMode CullingMode;
         /// <summary>
         /// Source texture blend factor
         /// </summary>
-        public readonly BlendFunction SourceBlendFunction;
+        public BlendFunction SourceBlendFunction;
         /// <summary>
         /// Destination texture blend factor
         /// </summary>
-        public readonly BlendFunction DestinationBlendFunction;
+        public BlendFunction DestinationBlendFunction;
         /// <summary>
         /// Blend eq
         /// </summary>
-        public readonly BlendEquation BlendEquation;
+        public BlendEquation BlendEquation;
         /// <summary>
         /// How the depth will be queried
         /// </summary>
-        public readonly DepthFunction DepthFunction;
+        public DepthFunction DepthFunction;
         /// <summary>
         /// Is this pipeline uses depth test ?
         /// </summary>
-        public readonly bool DepthTest;
+        public bool DepthTest;
         /// <summary>
         /// Is this pipeline uses blending ?
         /// </summary>
-        public readonly bool Blending;
+        public bool Blending;
         /// <summary>
         /// Is this pipeline uses face culling
         /// </summary>
-        public readonly bool FaceCulling;
+        public bool FaceCulling;
     }
 }

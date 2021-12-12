@@ -60,14 +60,21 @@ namespace Bite.GUI
             List<Framebuffer2D> framebuffer2DResources = m_TargetObserver.Framebuffer2DResources;
 
             /*
-             * Draw list
+             * Render framebuffer list
              */
             foreach(Framebuffer2D framebuffer in framebuffer2DResources)
             {
                 GUIRenderCommands.CreateEmptySpace();
-                if(GUIRenderCommands.CreateTreeNode("Framebuffer ##" + framebuffer.ID.ToString(),framebuffer.ID.ToString()))
+                Vector2 treeCursorPos = GUILayoutCommands.GetCursorScreenPos();
+                if (GUIRenderCommands.CreateTreeNode("Framebuffer ##" + framebuffer.ID.ToString(),framebuffer.ID.ToString()))
                 {
-                    
+                    /*
+                     * Render back rect filled
+                     */
+                    Vector2 cursorPos = GUILayoutCommands.GetCursorScreenPos();
+                    GUIRenderCommands.DrawRectangleFilled(cursorPos+ new Vector2(-5,-2), cursorPos + new Vector2(GUILayoutCommands.GetAvailableSpace().X,50), new Vector4(0.15f, 0.1505f, 0.151f, 1.0f),0);
+                    GUIRenderCommands.DrawRectangle(cursorPos + new Vector2(-5, -2), cursorPos + new Vector2(GUILayoutCommands.GetAvailableSpace().X, 50), new Vector4(0.45f, 0.4505f, 0.451f, 1.0f), 0,ImGuiNET.ImDrawCornerFlags.Left,1.0f);
+
                     string name = framebuffer.Name;
                     GUIRenderCommands.CreateText("Name:", "");
                     GUILayoutCommands.StayOnSameLine();
@@ -108,27 +115,77 @@ namespace Bite.GUI
                 /*
                  * Render selected framebuffer
                  */
-                if(GUIRenderCommands.CreateTreeNode(pass.PassName,pass.PassName))
+                if(GUIRenderCommands.CreateTreeNode(pass.PassName,pass.GetHashCode().ToString()))
                 {
+                    /*
+                     * Get resolver pairs
+                     */
+                    List<RenderPassResolverMaterialPair> pairs = pass.ResolverMaterialPairs;
+
+                    /*
+                     * Draw rects
+                     */
+                    Vector2 cursorPos = GUILayoutCommands.GetCursorScreenPos();
+                  
+
+                    /*
+                     * Draw pass name
+                     */
                     string name = pass.PassName;
                     GUIRenderCommands.CreateText("Pass name", "");
                     GUILayoutCommands.StayOnSameLine();
                     GUIRenderCommands.CreateTextInput("", "it", ref name);
                     pass.PassName = name;
+
+                    /*
+                     * Draw framebuffer
+                     */
                     GUIRenderCommands.CreateText("Target framebuffer", "");
                     GUILayoutCommands.StayOnSameLine();
                     pass.TargetFramebuffer = GUIRenderCommands.CreateObjectField(pass.TargetFramebuffer, "ipas") as Framebuffer2D;
 
                     /*
+                     * Render pipeline state
+                     */
+                    GUIRenderCommands.CreateText("Enable Depth Testing:", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    pass.UseDepthTest = GUIRenderCommands.CreateCheckbox("", "",pass.UseDepthTest);
+
+                    GUIRenderCommands.CreateText("Front Face:","");
+                    GUILayoutCommands.StayOnSameLine();
+                    pass.FrontFace = (TriangleFrontFace)GUIRenderCommands.CreateEnumBox("", "frontFaceCombo", pass.FrontFace);
+
+                    GUIRenderCommands.CreateText("Cull Face:", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    pass.CullFace = (CullFace)GUIRenderCommands.CreateEnumBox("", "cullFaceEnum", pass.CullFace);
+
+                    GUIRenderCommands.CreateText("Polygon Fill Method:", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    pass.FillMethod = (PolygonFillMethod)GUIRenderCommands.CreateEnumBox("", "fillMethodEnum", pass.FillMethod);
+
+                    GUIRenderCommands.CreateText("Fill Face Method:", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    pass.FillFace = (PolygonFillFace)GUIRenderCommands.CreateEnumBox("", "fillFaceMethod", pass.FillFace);
+
+                    GUIRenderCommands.CreateText("Depth Function:", "");
+                    GUILayoutCommands.StayOnSameLine();
+                    pass.DepthFunction = (DepthFunction)GUIRenderCommands.CreateEnumBox("", "depthFunctionEnum", pass.DepthFunction);
+
+                    /*
                      * Render pairs
                      */
-                    List<RenderPassResolverMaterialPair> pairs = pass.ResolverMaterialPairs;
                     if(GUIRenderCommands.CreateTreeNode("Resolver-Material Pairs","r-m pairs"))
                     {
                         foreach (RenderPassResolverMaterialPair pair in pairs)
                         {
                             if(GUIRenderCommands.CreateTreeNode("Pair",pair.GetHashCode().ToString()))
                             {
+                                /*
+                                 * Draw rect
+                                 */
+                                GUIRenderCommands.DrawRectangleFilled(GUILayoutCommands.GetCursorScreenPos() + new Vector2(-5, -2), GUILayoutCommands.GetCursorScreenPos() + new Vector2(GUILayoutCommands.GetAvailableSpace().X, 45), new Vector4(0.15f, 0.1505f, 0.151f, 1.0f), 0);
+                                GUIRenderCommands.DrawRectangle(GUILayoutCommands.GetCursorScreenPos() + new Vector2(-5, -2), GUILayoutCommands.GetCursorScreenPos() + new Vector2(GUILayoutCommands.GetAvailableSpace().X, 45), new Vector4(0.45f, 0.4505f, 0.451f, 1.0f), 0, ImGuiNET.ImDrawCornerFlags.All, 1.0f);
+
                                 /*
                                  * Set target material
                                  */
@@ -168,8 +225,12 @@ namespace Bite.GUI
                         pass.RegisterPair(new RenderPassResolverMaterialPair());
                     }
 
+                   // GUIRenderCommands.DrawRectangleFilled(cursorPos + new Vector2(-5, -2), GUILayoutCommands.GetCursorScreenPos() + new Vector2(GUILayoutCommands.GetAvailableSpace().X, 0), new Vector4(0.15f, 0.1505f, 0.151f, 1.0f), 0);
+                    GUIRenderCommands.DrawRectangle(cursorPos + new Vector2(-5, -2), GUILayoutCommands.GetCursorScreenPos() + new Vector2(GUILayoutCommands.GetAvailableSpace().X, 0), new Vector4(0.45f, 0.4505f, 0.451f, 1.0f), 0, ImGuiNET.ImDrawCornerFlags.All, 1.0f);
+
                     GUIRenderCommands.CreateEmptySpace();
                     GUIRenderCommands.CreateEmptySpace();
+                    GUIRenderCommands.FinalizeTreeNode();
                 }
 
                

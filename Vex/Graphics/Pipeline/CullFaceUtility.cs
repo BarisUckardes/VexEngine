@@ -21,7 +21,7 @@ namespace Vex.Graphics
         {
             switch (cullFace)
             {
-                case CullFace.FVexnt:
+                case CullFace.Front:
                     return CullFaceMode.Front;
                     break;
                 case CullFace.Back:

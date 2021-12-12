@@ -281,7 +281,10 @@ namespace Vex.Framework
                      * Render pass
                      */
                     CommandBuffer buffer = new CommandBuffer();
-                    PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.FrontAndBack, PolygonFillMethod.Line), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+                    PipelineState state = new PipelineState(new Graphics.PolygonMode(pass.FillFace, pass.FillMethod), new CullingMode(pass.FrontFace, pass.CullFace)) ;
+                    state.DepthFunction = pass.DepthFunction;
+                    state.DepthTest = pass.UseDepthTest;
+                    state.PolygonMode = new Graphics.PolygonMode(pass.FillFace, pass.FillMethod);
                     
 
                     /*

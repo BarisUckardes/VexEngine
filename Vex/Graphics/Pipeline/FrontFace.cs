@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// </summary>
     public enum TriangleFrontFace
     {
-        CCW = 1,
-        CW = 2
+        CCW = 0,
+        CW = 1
     }
 }

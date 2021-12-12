@@ -11,7 +11,7 @@ namespace Vex.Graphics
     /// </summary>
     public enum CullFace
     {
-        FVexnt = 0,
+        Front = 0,
         Back = 1,
         FVexntAndBack = 2
     }

@@ -16,6 +16,7 @@ namespace Fang.Commands
 {
     public static class GUIRenderCommands
     {
+        
         public static void CreateDemoWindow()
         {
             ImGui.ShowDemoWindow();
@@ -82,7 +83,7 @@ namespace Fang.Commands
         public static bool CreateTreeNode(string name,string code)
         {
             ImGui.PushID(code);
-            bool state = ImGui.TreeNode(name);
+            bool state = ImGui.TreeNode(name + "##" + code);
             ImGui.PopID();
             return state;
         }
@@ -211,13 +212,46 @@ namespace Fang.Commands
             ImGui.PopID();
             return state;
         }
-        public static bool CreateCheckbox(string name,string code,ref bool value)
+        public static bool CreateCheckbox(string name,string code,bool value)
         {
             ImGui.PushID(code);
             bool state = ImGui.Checkbox(name, ref value);
             ImGui.PopID();
-            return state;
+            return value;
         }
+        public static object CreateEnumBox(string name,string code,Enum enumObject)
+        {
+            /*
+             * Get enum names
+             */
+            string[] names = Enum.GetNames(enumObject.GetType());
+
+            /*
+             * Get preview enum
+             */
+            string preview = Enum.GetName(enumObject.GetType(),enumObject);
+
+            /*
+             * Render combo
+             */
+            if (ImGui.BeginCombo(name + "##" + code,preview))
+            {
+                foreach(string enumName in names)
+                {
+                    /*
+                     * Create enum selectables
+                     */
+                    if(GUIRenderCommands.CreateSelectableItem(enumName, ""))
+                    {
+                        return Enum.Parse(enumObject.GetType(), enumName);
+                    }
+                }
+                ImGui.EndCombo();
+            }
+
+            return Enum.Parse(enumObject.GetType(), enumObject.ToString());
+        }
+            
 
         public static void CreateImage(Texture2D texture,string code, in Vector2 size)
         {
@@ -302,7 +336,7 @@ namespace Fang.Commands
             GUIRenderCommands.CreateSelectableItem("[+]", code,ImGui.CalcTextSize("[+]"));
             GUIRenderCommands.DisableStyleColor();
             GUILayoutCommands.StayOnSameLine();
-
+            
             /*
             * Start drag drop source
             */
@@ -323,6 +357,7 @@ namespace Fang.Commands
                  */
                 ImGuiPayloadPtr ptr = ImGui.AcceptDragDropPayload("Object Field");
 
+                
                 /*
                  * Validate object
                  */
@@ -340,11 +375,14 @@ namespace Fang.Commands
                 ImGuiPayloadPtr ptr = ImGui.AcceptDragDropPayload("Object Field");
 
 
-                /*
-                 * Render text
-                 */
-                GUIRenderCommands.CreateText(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})", "");
-
+                ///*
+                // * Render text
+                // */
+                //Vector2 screenPos = GUILayoutCommands.GetCursorScreenPos();
+                //ImGuiNET.ImGui.GetWindowDrawList().AddRectFilled(screenPos, screenPos + new Vector2(150, GUILayoutCommands.GetTextSize("A").Y), ImGuiNET.ImGui.ColorConvertFloat4ToU32(new Vector4(0.2f, 0.205f, 0.21f, 1.0f)));
+                //ImGuiNET.ImGui.GetWindowDrawList().AddRect(screenPos, screenPos + new Vector2(150, GUILayoutCommands.GetTextSize("A").Y), ImGuiNET.ImGui.ColorConvertFloat4ToU32(new Vector4(0.15f, 0.1505f, 0.151f, 1.0f)),0,ImDrawCornerFlags.All,5);
+                //GUIRenderCommands.CreateText(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})", "");
+                
                 /*
                  * Validate object
                  */
@@ -352,7 +390,20 @@ namespace Fang.Commands
 
                 return s_LastVexObjectObjectField;
             }
+
+            /*
+             * Draw rects
+             */
+            string text = targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})";
+            Vector2 screenPos2 = GUILayoutCommands.GetCursorScreenPos();
+            ImGuiNET.ImGui.GetWindowDrawList().AddRectFilled(screenPos2, screenPos2 + new Vector2(ImGui.CalcTextSize(text).X*1.5f, 18), ImGuiNET.ImGui.ColorConvertFloat4ToU32(new Vector4(0.2f, 0.205f, 0.21f, 1.0f)),5);
+            ImGuiNET.ImGui.GetWindowDrawList().AddRect(screenPos2, screenPos2 + new Vector2(ImGui.CalcTextSize(text).X*1.5f, 18), ImGuiNET.ImGui.ColorConvertFloat4ToU32(new Vector4(0.15f, 0.1505f, 0.151f, 1.0f)), 5, ImDrawCornerFlags.All, 2);
+
+            /*
+             * Draw text
+             */
             GUIRenderCommands.CreateText(targetObject == null ? "Empty Object" : $"{targetObject.Name}({targetObject.GetType().Name})","");
+            
 
             return targetObject;
         }
@@ -426,6 +477,15 @@ namespace Fang.Commands
             return ImGui.ColorPicker4("##" + code,ref color);
         }
 
+
+        public static void DrawRectangleFilled(in Vector2 min,in Vector2 max,in Vector4 color,float rounding)
+        {
+            ImGui.GetWindowDrawList().AddRectFilled(min,max,ImGui.ColorConvertFloat4ToU32(color),rounding);
+        }
+        public static void DrawRectangle(in Vector2 min, in Vector2 max, in Vector4 color,float rounding,ImDrawCornerFlags cornerFlags,float thickness)
+        {
+            ImGui.GetWindowDrawList().AddRect(min, max, ImGui.ColorConvertFloat4ToU32(color),rounding, cornerFlags,thickness);
+        }
 
     }
 }

@@ -55,7 +55,75 @@ namespace Vex.Graphics
             }
         }
 
-      
+        public PolygonFillFace FillFace
+        {
+            get
+            {
+                return m_FillFace;
+            }
+            set
+            {
+                m_FillFace = value;
+            }
+        }
+
+        public PolygonFillMethod FillMethod
+        {
+            get
+            {
+                return m_FillMethod;
+            }
+            set
+            {
+                m_FillMethod = value;
+            }
+        }
+        public TriangleFrontFace FrontFace
+        {
+            get
+            {
+                return m_FrontFace;
+            }
+            set
+            {
+                m_FrontFace = value;
+            }
+        }
+        public CullFace CullFace
+        {
+            get
+            {
+                return m_CullFace;
+            }
+            set
+            {
+                m_CullFace = value;
+            }
+        }
+        public DepthFunction DepthFunction
+        {
+            get
+            {
+                return m_DepthFunction;
+            }
+            set
+            {
+                m_DepthFunction = value;
+            }
+        }
+        public bool UseDepthTest
+        {
+            get
+            {
+                return m_DepthTest;
+            }
+            set
+            {
+                m_DepthTest = value;
+            }
+        }
+
+
 
         /// <summary>
         /// Register new pass pair
@@ -68,6 +136,12 @@ namespace Vex.Graphics
 
         private List<RenderPassResolverMaterialPair> m_ResolverMaterialPairs;
         private Framebuffer m_TargetFramebuffer;
+        private PolygonFillFace m_FillFace;
+        private PolygonFillMethod m_FillMethod;
+        private TriangleFrontFace m_FrontFace;
+        private CullFace m_CullFace;
+        private DepthFunction m_DepthFunction;
+        private bool m_DepthTest;
         private string m_PassName;
     }
 }
