@@ -99,7 +99,6 @@ namespace Bite.GUI
                 {
                     GUIRenderCommands.DisableStyle();
                     m_Layouts[i].OnLayoutRender();
-                    GUIRenderCommands.FinalizeTreeNode();
                 }
             }
             GUIRenderCommands.CreateSeperatorLine();

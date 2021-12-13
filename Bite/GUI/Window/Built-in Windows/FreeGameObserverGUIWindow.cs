@@ -215,11 +215,15 @@ namespace Bite.GUI
                     Vector2 max = min + new Vector2(textureWidth, textureHeight);
                     if(mousePosition.X >= min.X && mousePosition.X <= max.X && mousePosition.Y >= min.Y && mousePosition.Y <= max.Y)
                     {
-                        int x = (int)((textureWidth * ((float)(mousePosition.X - min.X) / (float)(max.X - min.X))) / 2.0f);
-                        int y = (int)((textureHeight * ((float)(mousePosition.Y - min.Y) / (float)(max.Y - min.Y))) / 2.0f);
+                        int x = (int)((framebuffer2D.Width * (float)(mousePosition.X - min.X) / (float)(max.X - min.X)));
+                        int y = (int)((framebuffer2D.Height * (float)(mousePosition.Y - min.Y) / (float)(max.Y - min.Y)));
                         if(GUIEventCommands.IsMouseLeftButtonClicked())
                         {
-                            Console.WriteLine(framebuffer2D.GetPixelColor(x, y).ToString());
+                            List<Entity> entities = Session.CurrentWorld.Entities;
+                            int index = (int)(framebuffer2D.GetPixelColor(x, y).X*entities.Count);
+                            Console.WriteLine("Selected entity: " + entities[index].Name);
+                            GUIObject.SignalNewObject(entities[index]);
+                            entities[index].GetComponent<ForwardMeshRenderable>()?.Material.GetStageParameters(ShaderStage.Fragment).SetFloatParameter("f_Highlight", 1.0f);
                         }
                     }
                 }

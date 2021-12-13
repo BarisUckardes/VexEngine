@@ -94,7 +94,7 @@ namespace Fang.Commands
         public static bool CreateCollapsingHeader(string name,string code)
         {
             ImGui.PushID(code);
-            bool state =  ImGui.CollapsingHeader(name);
+            bool state =  ImGui.CollapsingHeader(name + "##" + code);
             ImGui.PopID();
             return state;
         }

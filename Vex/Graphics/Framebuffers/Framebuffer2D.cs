@@ -97,11 +97,25 @@ namespace Vex.Graphics
 
         public Vector4 GetPixelColor(int x,int y)
         {
+            /*
+             * Set framebuffer read color attachment 0
+             */
             GL.ReadBuffer(ReadBufferMode.ColorAttachment0);
+
+            /*
+             * Create return value
+             */
             Vector4 colorValue = new Vector4(1, 1, 1, 1);
-            int pixelX = m_Width - x;
+
+            /*
+             * Mirror Y-Axis on openg
+             */
+            int pixelX = x;
             int pixelY = m_Height - y;
-            Console.WriteLine($"Pixels: [{pixelX},{pixelY}]");
+
+            /*
+             * Try read
+             */
             GL.ReadPixels(pixelX,pixelY, 1, 1, (PixelFormat)Format, PixelType.Float, ref colorValue);
             return colorValue;
         }

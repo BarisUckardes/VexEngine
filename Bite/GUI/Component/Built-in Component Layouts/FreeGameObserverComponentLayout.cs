@@ -293,9 +293,9 @@ namespace Bite.GUI
 
         private FreeGameObserver m_TargetObserver;
         private List<Type> m_GraphicsResolverTypes;
-        private TextureFormat m_FramebufferTextureFormat;
-        private TextureInternalFormat m_FramebufferInternalTextureFormat;
-        private int m_FramebufferWidth;
-        private int m_FramebufferHeight;
+        private TextureFormat m_FramebufferTextureFormat = TextureFormat.Rgba;
+        private TextureInternalFormat m_FramebufferInternalTextureFormat = TextureInternalFormat.Rgba32f;
+        private int m_FramebufferWidth = 512;
+        private int m_FramebufferHeight = 512;
     }
 }
