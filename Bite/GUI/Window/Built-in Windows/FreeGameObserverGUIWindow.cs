@@ -77,7 +77,7 @@ namespace Bite.GUI
              * Calculate aspect ratio
              */
             float aspectRatio = textureWidth / textureHeight;
-           
+            Vector2 imageStartScreenPosition = GUILayoutCommands.GetCursorScreenPos();
             /*
              * Render framebuffer image
              */
@@ -189,6 +189,41 @@ namespace Bite.GUI
                     m_LastMousePosition = tiledPosition;
                 }
                 
+            }
+            else
+            {
+                /*
+                 * Try get framebuffer via pass
+                 */
+                Framebuffer framebuffer = m_Observer.GetRenderPassViaName("Picker")?.TargetFramebuffer;
+
+                /*
+                 * Validate framebuffer
+                 */
+                if(framebuffer!= null)
+                {
+                    /*
+                     * Get framebuffer
+                     */
+                    Framebuffer2D framebuffer2D = framebuffer as Framebuffer2D;
+
+                    /*
+                     * Calculate mouse position on framebuffer
+                     */
+                    Vector2 mousePosition = GUILayoutCommands.GetMousePos();
+                    Vector2 min = imageStartScreenPosition;
+                    Vector2 max = min + new Vector2(textureWidth, textureHeight);
+                    if(mousePosition.X >= min.X && mousePosition.X <= max.X && mousePosition.Y >= min.Y && mousePosition.Y <= max.Y)
+                    {
+                        int x = (int)((textureWidth * ((float)(mousePosition.X - min.X) / (float)(max.X - min.X))) / 2.0f);
+                        int y = (int)((textureHeight * ((float)(mousePosition.Y - min.Y) / (float)(max.Y - min.Y))) / 2.0f);
+                        if(GUIEventCommands.IsMouseLeftButtonClicked())
+                        {
+                            Console.WriteLine(framebuffer2D.GetPixelColor(x, y).ToString());
+                        }
+                    }
+                }
+
             }
         }
 

@@ -145,15 +145,42 @@ namespace Vex.Graphics
             PrimalObserver = this;
         }
 
+        /// <summary>
+        /// Creates new framebuffer2d resource for this observer
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="format"></param>
+        /// <param name="internalFormat"></param>
         public void CreateFramebuffer2DResource(int width,int height,TextureFormat format,TextureInternalFormat internalFormat)
         {
             m_Framebuffer2DResources.Add(new Framebuffer2D(width, height, format, internalFormat));
         }
+
+        /// <summary>
+        /// Creates an empty render pass
+        /// </summary>
+        /// <param name="passName"></param>
         public void CreateRenderPass(string passName)
         {
             RenderPass pass = new RenderPass();
             pass.PassName = passName;
             m_RenderPasses.Add(pass);
+        }
+
+        /// <summary>
+        /// Returns a render pass via its name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public RenderPass GetRenderPassViaName(string name)
+        {
+            foreach(RenderPass pass in m_RenderPasses)
+            {
+                if (pass.PassName == name)
+                    return pass;
+            }
+            return null;
         }
         internal sealed override void OnAttachInternal()
         {

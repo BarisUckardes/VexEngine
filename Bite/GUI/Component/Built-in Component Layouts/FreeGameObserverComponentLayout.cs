@@ -97,9 +97,14 @@ namespace Bite.GUI
             GUIRenderCommands.CreateSeperatorLine();
             if(GUIRenderCommands.CreateButton("Create framebuffer2d","ibtn"))
             {
-                m_TargetObserver?.CreateFramebuffer2DResource(512, 512, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
+                GUIRenderCommands.SignalPopupCreate("Create_Framebuffer_Popup");
+                //m_TargetObserver?.CreateFramebuffer2DResource(512, 512, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
             }
-
+            if(GUIRenderCommands.CreatePopup("Create_Framebuffer_Popup"))
+            {
+                RenderCreateFramebufferPopup();
+                GUIRenderCommands.FinalizePopup();
+            }
             /*
              * Render passes
              */
@@ -115,7 +120,7 @@ namespace Bite.GUI
                 /*
                  * Render selected framebuffer
                  */
-                if(GUIRenderCommands.CreateTreeNode(pass.PassName,pass.GetHashCode().ToString()))
+                if(GUIRenderCommands.CreateTreeNode("Render Pass",pass.GetHashCode().ToString()))
                 {
                     /*
                      * Get resolver pairs
@@ -263,10 +268,34 @@ namespace Bite.GUI
             {
                 m_TargetObserver.CreateRenderPass("Helloo pass");
             }
+        }
+        private void RenderCreateFramebufferPopup()
+        {
+            GUIRenderCommands.CreateText("Create framebuffer 2d","");
+            GUIRenderCommands.CreateSeperatorLine();
+            GUIRenderCommands.CreateEmptySpace();
+            GUIRenderCommands.CreateText("Width:", "");
+            m_FramebufferWidth = GUIRenderCommands.CreateIntInput("","width_input",m_FramebufferWidth);
+            GUIRenderCommands.CreateText("Height:", "");
+            m_FramebufferHeight = GUIRenderCommands.CreateIntInput("", "height_input", m_FramebufferHeight);
+            GUIRenderCommands.CreateEmptySpace();
+            GUIRenderCommands.CreateText("Texture Format:", "");
+            m_FramebufferTextureFormat = (TextureFormat)GUIRenderCommands.CreateEnumBox("", "framebuffer_texture_format", m_FramebufferTextureFormat);
+            GUIRenderCommands.CreateText("Texture Internal Format:", "");
+            m_FramebufferInternalTextureFormat = (TextureInternalFormat)GUIRenderCommands.CreateEnumBox("", "framebuffer_texture_internal_format",m_FramebufferInternalTextureFormat);
+            if(GUIRenderCommands.CreateButton("Create","create"))
+            {
+                m_TargetObserver.CreateFramebuffer2DResource(m_FramebufferWidth, m_FramebufferHeight, m_FramebufferTextureFormat, m_FramebufferInternalTextureFormat);
+                GUIRenderCommands.TerminateCurrentPopup();
+            }
 
         }
 
         private FreeGameObserver m_TargetObserver;
         private List<Type> m_GraphicsResolverTypes;
+        private TextureFormat m_FramebufferTextureFormat;
+        private TextureInternalFormat m_FramebufferInternalTextureFormat;
+        private int m_FramebufferWidth;
+        private int m_FramebufferHeight;
     }
 }

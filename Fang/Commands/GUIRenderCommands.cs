@@ -185,12 +185,12 @@ namespace Fang.Commands
             ImGui.PopID();
             return value;
         }
-        public static bool CreateIntInput(string name,string code,ref int value)
+        public static int CreateIntInput(string name,string code,int value)
         {
             ImGui.PushID(code);
             bool state =ImGui.InputInt(name, ref value);
             ImGui.PopID();
-            return state;
+            return value;
         }
         public static bool CreateTextInput(string name,string code,ref string value,uint length = 20)
         {

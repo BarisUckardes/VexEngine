@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -91,6 +93,17 @@ namespace Vex.Graphics
             DepthTexture?.Destroy();
             GL.DeleteFramebuffer(FramebufferID);
             CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, Format, InternalFormat));
+        }
+
+        public Vector4 GetPixelColor(int x,int y)
+        {
+            GL.ReadBuffer(ReadBufferMode.ColorAttachment0);
+            Vector4 colorValue = new Vector4(1, 1, 1, 1);
+            int pixelX = m_Width - x;
+            int pixelY = m_Height - y;
+            Console.WriteLine($"Pixels: [{pixelX},{pixelY}]");
+            GL.ReadPixels(pixelX,pixelY, 1, 1, (PixelFormat)Format, PixelType.Float, ref colorValue);
+            return colorValue;
         }
         protected override void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams)
         {
