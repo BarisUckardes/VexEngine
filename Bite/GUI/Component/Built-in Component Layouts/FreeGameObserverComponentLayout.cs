@@ -274,18 +274,26 @@ namespace Bite.GUI
             GUIRenderCommands.CreateText("Create framebuffer 2d","");
             GUIRenderCommands.CreateSeperatorLine();
             GUIRenderCommands.CreateEmptySpace();
+
             GUIRenderCommands.CreateText("Width:", "");
             m_FramebufferWidth = GUIRenderCommands.CreateIntInput("","width_input",m_FramebufferWidth);
+
             GUIRenderCommands.CreateText("Height:", "");
             m_FramebufferHeight = GUIRenderCommands.CreateIntInput("", "height_input", m_FramebufferHeight);
+
             GUIRenderCommands.CreateEmptySpace();
             GUIRenderCommands.CreateText("Texture Format:", "");
             m_FramebufferTextureFormat = (TextureFormat)GUIRenderCommands.CreateEnumBox("", "framebuffer_texture_format", m_FramebufferTextureFormat);
+
             GUIRenderCommands.CreateText("Texture Internal Format:", "");
             m_FramebufferInternalTextureFormat = (TextureInternalFormat)GUIRenderCommands.CreateEnumBox("", "framebuffer_texture_internal_format",m_FramebufferInternalTextureFormat);
-            if(GUIRenderCommands.CreateButton("Create","create"))
+
+            GUIRenderCommands.CreateText("Texture Internal Format:", "");
+            m_FramebufferDataType = (TextureDataType)GUIRenderCommands.CreateEnumBox("", "framebuffer_texture_data_type", m_FramebufferDataType);
+
+            if (GUIRenderCommands.CreateButton("Create","create"))
             {
-                m_TargetObserver.CreateFramebuffer2DResource(m_FramebufferWidth, m_FramebufferHeight, m_FramebufferTextureFormat, m_FramebufferInternalTextureFormat);
+                m_TargetObserver.CreateFramebuffer2DResource(m_FramebufferWidth, m_FramebufferHeight, m_FramebufferTextureFormat, m_FramebufferInternalTextureFormat,m_FramebufferDataType);
                 GUIRenderCommands.TerminateCurrentPopup();
             }
 
@@ -293,8 +301,9 @@ namespace Bite.GUI
 
         private FreeGameObserver m_TargetObserver;
         private List<Type> m_GraphicsResolverTypes;
-        private TextureFormat m_FramebufferTextureFormat = TextureFormat.Rgba;
-        private TextureInternalFormat m_FramebufferInternalTextureFormat = TextureInternalFormat.Rgba32f;
+        private TextureFormat m_FramebufferTextureFormat = TextureFormat.RedInteger;
+        private TextureInternalFormat m_FramebufferInternalTextureFormat = TextureInternalFormat.R32ui;
+        private TextureDataType m_FramebufferDataType = TextureDataType.UnsignedInt;
         private int m_FramebufferWidth = 512;
         private int m_FramebufferHeight = 512;
     }

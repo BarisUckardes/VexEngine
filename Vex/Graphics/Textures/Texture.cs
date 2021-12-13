@@ -60,6 +60,21 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// The data type of the one pixel
+        /// </summary>
+        public TextureDataType DataType
+        {
+            get
+            {
+                return m_DataType;
+            }
+            protected set
+            {
+                m_DataType = value;
+            }
+        }
+
+        /// <summary>
         /// Returns the graphics api handle
         /// </summary>
         public uint Handle
@@ -92,6 +107,7 @@ namespace Vex.Graphics
         private byte[] m_CpuData;
         private TextureFormat m_Format;
         private TextureInternalFormat m_InternalFormat;
+        private TextureDataType m_DataType;
         private uint m_Handle;
     }
 }

@@ -19,6 +19,7 @@ namespace Vex.Graphics
         Color = 4,
         Matrix3x3 = 5,
         Matrix4x4 = 6,
-        Texture2D = 7
+        Texture2D = 7,
+        Int = 8
     }
 }

@@ -12,13 +12,13 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class Framebuffer3D : Framebuffer
     {
-        public Framebuffer3D(int width,int height,int depth,TextureFormat format,TextureInternalFormat internalFormat)
+        public Framebuffer3D(int width,int height,int depth,TextureFormat format,TextureInternalFormat internalFormat,TextureDataType dataType)
         {
             m_Width = width;
             m_Height = height;
             m_Depth = depth;
             Format = format;
-            CreateFramebuffer(new FramebufferAttachmentParams(width, height, depth, format, internalFormat));
+            CreateFramebuffer(new FramebufferAttachmentParams(width, height, depth, format, internalFormat,dataType));
         }
 
 

@@ -30,17 +30,18 @@ namespace Vex.Graphics
         }
         private static Framebuffer2D s_IntermediateFramebuffer;
 
-        public Framebuffer2D(int width,int height,TextureFormat format,TextureInternalFormat internalFormat)
+        public Framebuffer2D(int width,int height,TextureFormat format,TextureInternalFormat internalFormat,TextureDataType dataType)
         {
             m_Width = width;
             m_Height = height;
             Format = format;
             InternalFormat = internalFormat;
+            DataType = dataType;
 
             /*
              * Create texture
              */
-            CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, format, internalFormat));
+            CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, format, internalFormat, dataType));
         }
 
         /// <summary>
@@ -88,14 +89,14 @@ namespace Vex.Graphics
 
         public void Resize(int width,int height)
         {
-            BackTexture?.Destroy();
-            BackTexture = null;
-            DepthTexture?.Destroy();
-            GL.DeleteFramebuffer(FramebufferID);
-            CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, Format, InternalFormat));
+            //BackTexture?.Destroy();
+            //BackTexture = null;
+            //DepthTexture?.Destroy();
+            //GL.DeleteFramebuffer(FramebufferID);
+            //CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, Format, InternalFormat));
         }
 
-        public Vector4 GetPixelColor(int x,int y)
+        public TValue GetPixelColor<TValue>(int x,int y) where TValue : struct
         {
             /*
              * Set framebuffer read color attachment 0
@@ -105,7 +106,7 @@ namespace Vex.Graphics
             /*
              * Create return value
              */
-            Vector4 colorValue = new Vector4(1, 1, 1, 1);
+            TValue value = new TValue();
 
             /*
              * Mirror Y-Axis on openg
@@ -116,9 +117,35 @@ namespace Vex.Graphics
             /*
              * Try read
              */
-            GL.ReadPixels(pixelX,pixelY, 1, 1, (PixelFormat)Format, PixelType.Float, ref colorValue);
-            return colorValue;
+            Console.WriteLine("Tried to read: " + Format.ToString() + "   " + DataType.ToString());
+            GL.ReadPixels(pixelX,pixelY, 1, 1, (PixelFormat)Format,(PixelType)BackTexture.DataType, ref value);
+            return value;
         }
+        public Vector4 GetPixelColor(int x,int y)
+        {
+            /*
+            * Set framebuffer read color attachment 0
+            */
+            GL.ReadBuffer(ReadBufferMode.ColorAttachment0);
+
+            /*
+             * Create return value
+             */
+            Vector4 value = new Vector4(1,1,1,1);
+
+            /*
+             * Mirror Y-Axis on openg
+             */
+            int pixelX = x;
+            int pixelY = m_Height - y;
+
+            /*
+             * Try read
+             */
+            GL.ReadPixels(pixelX, pixelY, 1, 1, PixelFormat.Rgba, PixelType.UnsignedByte, ref value);
+            return value;
+        }
+
         protected override void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams)
         {
             /*
@@ -135,7 +162,7 @@ namespace Vex.Graphics
             /*
              * Create texture
              */
-            Texture2D backTexture = new Texture2D(attachmentParams.Width, attachmentParams.Height, attachmentParams.Format, attachmentParams.InternalFormat);
+            Texture2D backTexture = new Texture2D(attachmentParams.Width, attachmentParams.Height, attachmentParams.Format, attachmentParams.InternalFormat,attachmentParams.DataType);
 
             /*
              * Set attachment

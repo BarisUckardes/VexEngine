@@ -223,8 +223,7 @@ namespace Bite.Core
                         /*
                          * Set entity id
                          */
-                        float entityID = (float)renderableIndex / (float)m_Renderables.Count;
-                        targetMaterial.GetStageParameters(ShaderStage.Fragment).SetFloatParameter("f_EntityColor", entityID);
+                        //targetMaterial.GetStageParameters(ShaderStage.Fragment).SetFloatParameter("f_ID", renderableIndex);
 
                         /*
                          * Set material parameters
@@ -239,6 +238,15 @@ namespace Bite.Core
                             for (int parameterIndex = 0; parameterIndex < floatParamaters.Length; parameterIndex++)
                             {
                                 buffer.SetUniformFloat(targetMaterial.Program, floatParamaters[parameterIndex].Data, floatParamaters[parameterIndex].Name);
+                            }
+
+                            /*
+                             * Set int parameters
+                             */
+                            MaterialParameterField<int>[] intParameters = stageParameters[stageIndex].IntParameters;
+                            for (int parameterIndex = 0; parameterIndex < intParameters.Length; parameterIndex++)
+                            {
+                                buffer.SetUniformInteger(targetMaterial.Program, intParameters[parameterIndex].Data, intParameters[parameterIndex].Name);
                             }
 
                             /*

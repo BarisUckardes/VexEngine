@@ -67,6 +67,15 @@ namespace Vex.Asset
             string internalFormatYaml = GetParserValue(parser);
 
             /*
+             * Move to data type
+             */
+
+            /*
+             * Get data type
+             */
+            string dataTypeYaml = GetParserValue(parser);
+
+            /*
              * Move to data
              */
             parser.MoveNext();
@@ -80,7 +89,7 @@ namespace Vex.Asset
             /*
              * Create texture
              */
-            Texture2D texture = new Texture2D(Convert.ToInt32(widthYaml), Convert.ToInt32(heightYaml), (TextureFormat)(Convert.ToInt32(formatYaml)),(TextureInternalFormat)(Convert.ToInt32(internalFormatYaml)));
+            Texture2D texture = new Texture2D(Convert.ToInt32(widthYaml), Convert.ToInt32(heightYaml), (TextureFormat)(Convert.ToInt32(formatYaml)),(TextureInternalFormat)(Convert.ToInt32(internalFormatYaml)),(TextureDataType)(Convert.ToInt32(dataTypeYaml)));
 
             /*
              * Set texture data
@@ -123,6 +132,12 @@ namespace Vex.Asset
              */
             emitter.Emit(new Scalar(null, "Internal Format"));
             emitter.Emit(new Scalar(null, ((int)texture.InternalFormat).ToString()));
+
+            /*
+             * Emit data type
+             */
+            emitter.Emit(new Scalar(null, "Data Type"));
+            emitter.Emit(new Scalar(null, ((int)texture.DataType).ToString()));
 
             /*
             * Emit Data

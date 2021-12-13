@@ -91,6 +91,21 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// The data type of the one pixel in the framebuffer
+        /// </summary>
+        public TextureDataType DataType
+        {
+            get
+            {
+                return m_DataType;
+            }
+            protected set
+            {
+                m_DataType = value;
+            }
+        }
+
+        /// <summary>
         /// Returns the back texture
         /// </summary>
         public Texture BackTexture
@@ -166,6 +181,7 @@ namespace Vex.Graphics
         private Texture m_DetphTexture;
         private TextureFormat m_Format;
         private TextureInternalFormat m_InternalFormat;
+        private TextureDataType m_DataType;
         private uint m_FramebufferID;
         private uint m_RenderbufferID;
     }

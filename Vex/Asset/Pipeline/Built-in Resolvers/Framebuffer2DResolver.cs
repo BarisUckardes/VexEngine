@@ -44,7 +44,7 @@ namespace Vex.Asset
             int height = Convert.ToInt32(GetParserValue(parser));
 
             /*
-             * Move to formta
+             * Move to format
              */
             parser.MoveNext();
             parser.MoveNext();
@@ -54,10 +54,12 @@ namespace Vex.Asset
              */
             TextureFormat format = (TextureFormat)(Convert.ToInt32(GetParserValue(parser)));
 
+        
+
             /*
              * Create framebuffer
              */
-            Framebuffer2D framebuffer = new Framebuffer2D(width, height, format,TextureInternalFormat.Rgb8);
+            Framebuffer2D framebuffer = new Framebuffer2D(width, height, format,TextureInternalFormat.Rgb8,TextureDataType.Byte);
             return framebuffer;
         }
 

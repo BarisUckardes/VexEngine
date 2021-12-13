@@ -29,7 +29,7 @@ namespace Vex.Graphics
             m_Vector4Parameters = new List<MaterialParameterField<Vector4>>();
             m_Matrix4x4Parameters = new List<MaterialParameterField<Matrix4>>();
             m_Texture2DParameters = new List<MaterialParameterField<Texture2D>>();
-            
+            m_IntParameters = new List<MaterialParameterField<int>>();
 
             /*
              * Get parameters
@@ -38,6 +38,7 @@ namespace Vex.Graphics
             {
                 switch (stageParameters.Parameters[i].Type)
                 {
+                    
                     case ShaderParameterType.Float:
                         m_FloatParameters.Add(new MaterialParameterField<float>(stageParameters.Parameters[i].Name, 0.0f));
                         break;
@@ -59,6 +60,9 @@ namespace Vex.Graphics
                         break;
                     case ShaderParameterType.Texture2D:
                         m_Texture2DParameters.Add(new MaterialParameterField<Texture2D>(stageParameters.Parameters[i].Name, null));
+                        break;
+                    case ShaderParameterType.Int:
+                        m_IntParameters.Add(new MaterialParameterField<int>(stageParameters.Parameters[i].Name, 0));
                         break;
                 }
             }
@@ -175,6 +179,20 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// Sets a int parameter
+        /// </summary>
+        /// <param name="parameterName"></param>
+        /// <param name="value"></param>
+        public void SetIntParameter(string parameterName,int value)
+        {
+            for(int i=0; i<m_IntParameters.Count;i++)
+            {
+                if (m_IntParameters[i].Name == parameterName)
+                    m_IntParameters[i].Data = value;
+            }
+        }
+
+        /// <summary>
         /// Returns all float parameter
         /// </summary>
         public MaterialParameterField<float>[] FloatParameters
@@ -240,6 +258,17 @@ namespace Vex.Graphics
             }
         }
 
+        /// <summary>
+        /// Returns all int parameters
+        /// </summary>
+        public MaterialParameterField<int>[] IntParameters
+        {
+            get
+            {
+                return m_IntParameters.ToArray();
+            }
+        }
+
        
 
 
@@ -249,6 +278,7 @@ namespace Vex.Graphics
         private List<MaterialParameterField<Vector4>> m_Vector4Parameters;
         private List<MaterialParameterField<Matrix4>> m_Matrix4x4Parameters;
         private List<MaterialParameterField<Texture2D>> m_Texture2DParameters;
+        private List<MaterialParameterField<int>> m_IntParameters;
         private ShaderStage m_Stage;
     }
 }

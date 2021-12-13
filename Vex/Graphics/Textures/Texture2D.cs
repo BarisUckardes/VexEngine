@@ -56,7 +56,7 @@ namespace Vex.Graphics
              */
             Texture2D texture = new Texture2D(image.Width, image.Height,
                 format.DefaultMimeType.GetAsTextureFormat(image.PixelType.AlphaRepresentation == null),
-                format.DefaultMimeType.GetAsTextureInternalFormat(image.PixelType.BitsPerPixel, image.PixelType.AlphaRepresentation == PixelAlphaRepresentation.Associated));
+                format.DefaultMimeType.GetAsTextureInternalFormat(image.PixelType.BitsPerPixel, image.PixelType.AlphaRepresentation == PixelAlphaRepresentation.Associated),TextureDataType.UnsignedByte);
 
             texture.SetData(pixels.ToArray(),true);
 
@@ -68,7 +68,7 @@ namespace Vex.Graphics
             return texture;
         }
 
-        public Texture2D(int width, int height, TextureFormat format, TextureInternalFormat internalFormat)
+        public Texture2D(int width, int height, TextureFormat format, TextureInternalFormat internalFormat,TextureDataType dataType)
         {
             /*
              * Create texture
@@ -84,7 +84,7 @@ namespace Vex.Graphics
             /*
              * Set empty data
              */
-            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)internalFormat, width, height, 0, (PixelFormat)format, PixelType.UnsignedByte, IntPtr.Zero);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)internalFormat, width, height, 0, (PixelFormat)format, (PixelType)dataType, IntPtr.Zero);
 
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);

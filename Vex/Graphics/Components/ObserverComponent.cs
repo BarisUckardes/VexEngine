@@ -152,9 +152,9 @@ namespace Vex.Graphics
         /// <param name="height"></param>
         /// <param name="format"></param>
         /// <param name="internalFormat"></param>
-        public void CreateFramebuffer2DResource(int width,int height,TextureFormat format,TextureInternalFormat internalFormat)
+        public void CreateFramebuffer2DResource(int width,int height,TextureFormat format,TextureInternalFormat internalFormat,TextureDataType dataType)
         {
-            m_Framebuffer2DResources.Add(new Framebuffer2D(width, height, format, internalFormat));
+            m_Framebuffer2DResources.Add(new Framebuffer2D(width, height, format, internalFormat,dataType));
         }
 
         /// <summary>

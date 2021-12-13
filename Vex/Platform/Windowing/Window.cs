@@ -54,7 +54,7 @@ namespace Vex.Platform
             /*
             * Set default framebuffer
             */
-            Framebuffer2D.IntermediateFramebuffer = intermediateFramebufferAsSwapchain == true ? new Framebuffer2D(Size.X, Size.Y) : new Framebuffer2D(1024, 1024, TextureFormat.Rgb, TextureInternalFormat.Rgb8);
+            Framebuffer2D.IntermediateFramebuffer = intermediateFramebufferAsSwapchain == true ? new Framebuffer2D(Size.X, Size.Y) : new Framebuffer2D(1024, 1024, TextureFormat.Rgb, TextureInternalFormat.Rgb,TextureDataType.UnsignedByte);
         }
 
         /// <summary>

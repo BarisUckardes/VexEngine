@@ -441,7 +441,6 @@ namespace Vex.Framework
                      * Render
                      */
                     buffer.Execute();
-                    Console.WriteLine("Color: " + framebuffer.GetPixelColor(0, 0).ToString());
                 }
                 
             }
