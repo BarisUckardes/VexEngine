@@ -69,7 +69,8 @@ namespace Vex.Framework
                 /*
                  * Set state
                  */
-                PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.FrontAndBack, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+                PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+                
                 commandBuffer.SetPipelineState(state);
 
                 /*

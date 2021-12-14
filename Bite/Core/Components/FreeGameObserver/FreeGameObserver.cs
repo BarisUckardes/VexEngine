@@ -40,6 +40,7 @@ namespace Bite.Core
             Framebuffer.Name = "Default Color";
             Framebuffer.BackTexture.Name = "Final Color";
             Framebuffer.DepthTexture.Name = "Depth";
+            CreateFramebuffer2DResource
         }
         protected override void OnDetach()
         {

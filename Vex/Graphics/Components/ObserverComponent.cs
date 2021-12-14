@@ -157,6 +157,11 @@ namespace Vex.Graphics
             m_Framebuffer2DResources.Add(new Framebuffer2D(width, height, format, internalFormat,dataType));
         }
 
+        public void RegisterFramebuffer2DResource(Framebuffer2D framebuffer)
+        {
+            m_Framebuffer2DResources.Add(framebuffer);
+        }
+
         /// <summary>
         /// Creates an empty render pass
         /// </summary>
