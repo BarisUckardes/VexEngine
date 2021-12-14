@@ -38,6 +38,8 @@ namespace Bite.Core
         {
             Framebuffer = new Framebuffer2D(512, 512, TextureFormat.Rgba, TextureInternalFormat.Rgba32f,TextureDataType.UnsignedByte);
             Framebuffer.Name = "Default Color";
+            Framebuffer.BackTexture.Name = "Final Color";
+            Framebuffer.DepthTexture.Name = "Depth";
         }
         protected override void OnDetach()
         {

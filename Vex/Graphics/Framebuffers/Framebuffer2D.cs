@@ -163,20 +163,13 @@ namespace Vex.Graphics
              * Create texture
              */
             Texture2D backTexture = new Texture2D(attachmentParams.Width, attachmentParams.Height, attachmentParams.Format, attachmentParams.InternalFormat,attachmentParams.DataType);
+            Texture2D depthTexture = new Texture2D(attachmentParams.Width, attachmentParams.Height, TextureFormat.DepthComponent, TextureInternalFormat.DepthComponent, TextureDataType.Float);
 
             /*
              * Set attachment
              */
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, backTexture.Handle, 0);
-
-            /*
-             * Set depth render buffer
-             */
-            int renderBufferID;
-            GL.GenRenderbuffers(1, out renderBufferID);
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderBufferID);
-            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, attachmentParams.Width, attachmentParams.Height);
-            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, renderBufferID);
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, depthTexture.Handle, 0);
 
             /*
              * Unbind framebuffer
@@ -184,15 +177,10 @@ namespace Vex.Graphics
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
             /*
-             * Unbind texture
-             */
-            GL.BindTexture(TextureTarget.Texture2D, 0);
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
-
-            /*
              * Set attachment
              */
             BackTexture = backTexture;
+            DepthTexture = depthTexture;
 
             /*
              * Set framebuffer id

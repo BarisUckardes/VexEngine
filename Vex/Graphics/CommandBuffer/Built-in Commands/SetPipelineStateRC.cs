@@ -59,7 +59,6 @@ namespace Vex.Graphics
                 GL.DepthFunc(DepthFunctionUtils.GetNative(m_State.DepthFunction));
             }
 
-           
             /*
              * Set culling mode
              */
