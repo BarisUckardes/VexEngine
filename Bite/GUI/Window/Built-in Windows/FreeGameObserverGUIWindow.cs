@@ -220,12 +220,10 @@ namespace Bite.GUI
                         if(GUIEventCommands.IsMouseLeftButtonClicked())
                         {
                             List<Entity> entities = Session.CurrentWorld.Entities;
-                            //Vector4 index = framebuffer2D.GetPixelColor<Vector4>(x, y);
-                            Vector4 index = framebuffer2D.GetPixelColor(x, y);
-                            Console.WriteLine("Index: " + index);
-                            //Console.WriteLine("Selected entity: " + entities[index].Name);
-                            //GUIObject.SignalNewObject(entities[index]);
-                            //entities[index].GetComponent<ForwardMeshRenderable>()?.Material.GetStageParameters(ShaderStage.Fragment).SetFloatParameter("f_Highlight", 1.0f);
+                            uint index = framebuffer2D.GetPixelColor<uint>(x, y,TextureDataType.UnsignedInt);
+
+                            if(index != 0)
+                                GUIObject.SignalNewObject(entities[(int)index-1]);
                         }
                     }
                 }

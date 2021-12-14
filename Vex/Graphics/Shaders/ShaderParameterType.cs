@@ -20,6 +20,8 @@ namespace Vex.Graphics
         Matrix3x3 = 5,
         Matrix4x4 = 6,
         Texture2D = 7,
-        Int = 8
+        Int = 8,
+        UInt = 9
+            
     }
 }

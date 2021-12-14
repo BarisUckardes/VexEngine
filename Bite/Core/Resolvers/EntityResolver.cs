@@ -223,7 +223,8 @@ namespace Bite.Core
                         /*
                          * Set entity id
                          */
-                        //targetMaterial.GetStageParameters(ShaderStage.Fragment).SetFloatParameter("f_ID", renderableIndex);
+                        uint entityIndex = (uint)renderableIndex +1;
+                        buffer.SetUniformUnsignedInteger(targetMaterial.Program,entityIndex,"f_EntityID");
 
                         /*
                          * Set material parameters

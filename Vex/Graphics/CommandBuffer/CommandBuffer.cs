@@ -258,14 +258,27 @@ namespace Vex.Graphics
         public void SetUniformInteger(in ShaderProgram program,int value,string name)
         {
             /*
-          * Validate recording
-          */
+           * Validate recording
+           */
             if (!IsRecording)
             {
                 return;
             }
 
             m_Commands.Add(new SetUniformFloat(program.Handle, name, value));
+        }
+
+        public void SetUniformUnsignedInteger(in ShaderProgram program, uint value, string name)
+        {
+            /*
+           * Validate recording
+           */
+            if (!IsRecording)
+            {
+                return;
+            }
+
+            m_Commands.Add(new SetUniformUnsignedIntegerRC(program.Handle, value, name));
         }
 
         /// <summary>

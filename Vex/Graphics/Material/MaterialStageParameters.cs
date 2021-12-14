@@ -30,6 +30,7 @@ namespace Vex.Graphics
             m_Matrix4x4Parameters = new List<MaterialParameterField<Matrix4>>();
             m_Texture2DParameters = new List<MaterialParameterField<Texture2D>>();
             m_IntParameters = new List<MaterialParameterField<int>>();
+            m_UIntParameters = new List<MaterialParameterField<uint>>();
 
             /*
              * Get parameters
@@ -63,6 +64,9 @@ namespace Vex.Graphics
                         break;
                     case ShaderParameterType.Int:
                         m_IntParameters.Add(new MaterialParameterField<int>(stageParameters.Parameters[i].Name, 0));
+                        break;
+                    case ShaderParameterType.UInt:
+                        m_UIntParameters.Add(new MaterialParameterField<uint>(stageParameters.Parameters[i].Name, 0));
                         break;
                 }
             }
@@ -193,6 +197,20 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// Sets a uint parameter
+        /// </summary>
+        /// <param name="parameterName"></param>
+        /// <param name="value"></param>
+        public void SetUIntParameter(string parameterName, uint value)
+        {
+            for (int i = 0; i < m_UIntParameters.Count; i++)
+            {
+                if (m_UIntParameters[i].Name == parameterName)
+                    m_UIntParameters[i].Data = value;
+            }
+        }
+
+        /// <summary>
         /// Returns all float parameter
         /// </summary>
         public MaterialParameterField<float>[] FloatParameters
@@ -269,6 +287,17 @@ namespace Vex.Graphics
             }
         }
 
+        /// <summary>
+        /// Returns all uint parameters
+        /// </summary>
+        public MaterialParameterField<uint>[] UIntParameters
+        {
+            get
+            {
+                return m_UIntParameters.ToArray();
+            }
+        }
+
        
 
 
@@ -279,6 +308,7 @@ namespace Vex.Graphics
         private List<MaterialParameterField<Matrix4>> m_Matrix4x4Parameters;
         private List<MaterialParameterField<Texture2D>> m_Texture2DParameters;
         private List<MaterialParameterField<int>> m_IntParameters;
+        private List<MaterialParameterField<uint>> m_UIntParameters;
         private ShaderStage m_Stage;
     }
 }

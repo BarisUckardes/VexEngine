@@ -96,7 +96,7 @@ namespace Vex.Graphics
             //CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, Format, InternalFormat));
         }
 
-        public TValue GetPixelColor<TValue>(int x,int y) where TValue : struct
+        public TValue GetPixelColor<TValue>(int x,int y,TextureDataType dataType) where TValue : struct
         {
             /*
              * Set framebuffer read color attachment 0
@@ -117,11 +117,11 @@ namespace Vex.Graphics
             /*
              * Try read
              */
-            Console.WriteLine("Tried to read: " + Format.ToString() + "   " + DataType.ToString());
-            GL.ReadPixels(pixelX,pixelY, 1, 1, (PixelFormat)Format,(PixelType)BackTexture.DataType, ref value);
+            GL.ReadPixels(pixelX,pixelY, 1, 1, (PixelFormat)Format,(PixelType)dataType, ref value);
+            Console.WriteLine("Request pixel with : " + ((PixelFormat)Format).ToString() + "  " + ((PixelType)dataType).ToString());
             return value;
         }
-        public Vector4 GetPixelColor(int x,int y)
+        public Vector4 GetPixelColor(int x,int y,TextureDataType dataType)
         {
             /*
             * Set framebuffer read color attachment 0
@@ -138,11 +138,11 @@ namespace Vex.Graphics
              */
             int pixelX = x;
             int pixelY = m_Height - y;
-
+            
             /*
              * Try read
              */
-            GL.ReadPixels(pixelX, pixelY, 1, 1, PixelFormat.Rgba, PixelType.UnsignedByte, ref value);
+            GL.ReadPixels(pixelX, pixelY, 1, 1, PixelFormat.Rgba, (PixelType)dataType, ref value);
             return value;
         }
 

@@ -86,7 +86,6 @@ namespace Vex.Graphics
              */
             GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)internalFormat, width, height, 0, (PixelFormat)format, (PixelType)dataType, IntPtr.Zero);
 
-
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
@@ -106,6 +105,7 @@ namespace Vex.Graphics
             m_Height = height;
             Format = format;
             InternalFormat =internalFormat;
+            DataType = dataType;
         }
 
         /// <summary>
