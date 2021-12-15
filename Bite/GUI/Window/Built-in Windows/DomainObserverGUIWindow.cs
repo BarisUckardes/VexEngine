@@ -199,6 +199,23 @@ namespace Bite.GUI
                     GUIRenderCommands.SignalPopupCreate("Domain_File_Rename");
                     
                 }
+                if (ImGui.IsKeyPressed((int)Vex.Input.Keys.Delete) && m_SelectedObject.GetType() == typeof(DomainFileView) && GUIEventCommands.IsWindowHovered())
+                {
+                    /*
+                     * Get as file view
+                     */
+                    DomainFileView fileView = m_SelectedObject as DomainFileView;
+
+                    /*
+                     * Delete file
+                     */
+                    m_CurrentFolder.DeleteFile(fileView.AssetID,Session);
+
+                    /*
+                     * Set null
+                     */
+                    m_SelectedObject = null;
+                }
             }
 
             /*
@@ -218,6 +235,8 @@ namespace Bite.GUI
                 CreateFileRenamePopup(m_SelectedObject as DomainFileView);
                 GUIRenderCommands.FinalizePopup();
             }
+
+           
 
             /*
              * Draw sub folders

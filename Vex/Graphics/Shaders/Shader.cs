@@ -8,6 +8,7 @@ using Vex.Framework;
 
 namespace Vex.Graphics
 {
+    public delegate void OnShaderCompiled();
     /// <summary>
     /// Shader class for all shader operations
     /// </summary>
@@ -78,11 +79,40 @@ namespace Vex.Graphics
             }
         }
 
+        /// <summary>
+        /// Compiles shader with the given string source
+        /// </summary>
+        /// <param name="source"></param>
         public void Compile(in string source)
         {
+            /*
+             * Compile
+             */
             CompileAs(m_Type, source);
+
+            /*
+             * Broadcast
+             */
+            m_OnShaderCompiledEvent?.Invoke();
         }
 
+        /// <summary>
+        /// Registers a delegate to the on shader compiled event
+        /// </summary>
+        /// <param name="targetDelegate"></param>
+        public void RegisterOnShaderCompileDelegate(OnShaderCompiled targetDelegate)
+        {
+            m_OnShaderCompiledEvent += targetDelegate;
+        }
+
+        /// <summary>
+        /// Removes a delegates from the on shader compiled event
+        /// </summary>
+        /// <param name="targetDelegate"></param>
+        public void RemoveOnShaderCompileDelegate(OnShaderCompiled targetDelegate)
+        {
+            m_OnShaderCompiledEvent -= targetDelegate;
+        }
         /// <summary>
         /// Creates a new shader
         /// </summary>
@@ -90,6 +120,7 @@ namespace Vex.Graphics
         /// <param name="source"></param>
         private void CompileAs(ShaderStage type,string source)
         {
+            bool isSucess = false;
             switch (type)
             {
                 case ShaderStage.Vertex:
@@ -271,9 +302,11 @@ namespace Vex.Graphics
 
         public override void Destroy()
         {
-            throw new NotImplementedException();
+            m_Compiled = false;
+            GL.DeleteShader(m_Handle);
         }
 
+        private event OnShaderCompiled m_OnShaderCompiledEvent;
         private ShaderStage m_Type;
         private string m_Source;
         private string m_LastErrorMessage;

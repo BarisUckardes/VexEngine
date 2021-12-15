@@ -92,7 +92,7 @@ namespace Vex.Graphics
 
         public void Destroy()
         {
-            throw new NotImplementedException();
+            GL.DeleteBuffer(m_IndexBufferID);
         }
 
         private uint m_IndexBufferID;

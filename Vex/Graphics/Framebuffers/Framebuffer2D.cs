@@ -41,7 +41,7 @@ namespace Vex.Graphics
             /*
              * Create texture
              */
-            CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, format, internalFormat, dataType));
+            Invalidate();
         }
 
         /// <summary>
@@ -89,11 +89,16 @@ namespace Vex.Graphics
 
         public void Resize(int width,int height)
         {
-            //BackTexture?.Destroy();
-            //BackTexture = null;
-            //DepthTexture?.Destroy();
-            //GL.DeleteFramebuffer(FramebufferID);
-            //CreateFramebuffer(new FramebufferAttachmentParams(width, height, 0, Format, InternalFormat));
+            /*
+             * Set new dimensions
+             */
+            m_Width = width;
+            m_Height = height;
+
+            /*
+             * Invalidate
+             */
+            Invalidate();
         }
 
         public TValue GetPixelColor<TValue>(int x,int y,TextureDataType dataType) where TValue : struct
@@ -118,7 +123,6 @@ namespace Vex.Graphics
              * Try read
              */
             GL.ReadPixels(pixelX,pixelY, 1, 1, (PixelFormat)Format,(PixelType)dataType, ref value);
-            Console.WriteLine("Request pixel with : " + ((PixelFormat)Format).ToString() + "  " + ((PixelType)dataType).ToString());
             return value;
         }
         public Vector4 GetPixelColor(int x,int y,TextureDataType dataType)
@@ -146,8 +150,22 @@ namespace Vex.Graphics
             return value;
         }
 
-        protected override void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams)
+        private void Invalidate()
         {
+            /*
+             * Validate former framebuffer and back textures
+             */
+            if (BackTexture != null)
+                BackTexture.Destroy();
+            BackTexture = null;
+
+            if (DepthTexture != null)
+                DepthTexture.Destroy();
+            DepthTexture = null;
+
+            if(FramebufferID != 0)
+                GL.DeleteFramebuffer(FramebufferID);
+
             /*
              * Creat framebuffer
              */
@@ -162,8 +180,8 @@ namespace Vex.Graphics
             /*
              * Create texture
              */
-            Texture2D backTexture = new Texture2D(attachmentParams.Width, attachmentParams.Height, attachmentParams.Format, attachmentParams.InternalFormat,attachmentParams.DataType);
-            Texture2D depthTexture = new Texture2D(attachmentParams.Width, attachmentParams.Height, TextureFormat.DepthComponent, TextureInternalFormat.DepthComponent, TextureDataType.Float);
+            Texture2D backTexture = new Texture2D(m_Width, m_Height, Format, InternalFormat, DataType);
+            Texture2D depthTexture = new Texture2D(m_Width, m_Height, TextureFormat.DepthComponent, TextureInternalFormat.DepthComponent, TextureDataType.Float);
 
             /*
              * Set attachment
@@ -186,12 +204,6 @@ namespace Vex.Graphics
              * Set framebuffer id
              */
             FramebufferID = framebufferID;
-        }
-
-        internal void ResizeForSwapchainInternal(int width,int height)
-        {
-            m_Width = width;
-            m_Height = height;
         }
 
         private int m_Width;

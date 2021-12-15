@@ -23,7 +23,7 @@ namespace Vex.Graphics
             /*
              * Create framebuffer
              */
-            CreateFramebuffer(new FramebufferAttachmentParams(width, 0, 0, format,internalFormat,dataType));
+         //   CreateFramebuffer(new FramebufferAttachmentParams(width, 0, 0, format,internalFormat,dataType));
         }
 
         /// <summary>
@@ -37,38 +37,38 @@ namespace Vex.Graphics
             }
         }
 
-        protected override void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams)
-        {
-            /*
-             * bind framebuffer
-             */
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferID);
+        //protected override void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams)
+        //{
+        //    /*
+        //     * bind framebuffer
+        //     */
+        //    GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferID);
 
-            /*
-             * Create texture
-             */
-            Texture1D backTexture = new Texture1D(attachmentParams.Width, attachmentParams.Format, attachmentParams.InternalFormat);
+        //    /*
+        //     * Create texture
+        //     */
+        //    Texture1D backTexture = new Texture1D(attachmentParams.Width, attachmentParams.Format, attachmentParams.InternalFormat);
 
-            /*
-             * Set attachment
-             */
-            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, backTexture.Handle, 0);
+        //    /*
+        //     * Set attachment
+        //     */
+        //    GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, backTexture.Handle, 0);
 
-            /*
-             * Unbind framebuffer
-             */
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        //    /*
+        //     * Unbind framebuffer
+        //     */
+        //    GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
-            /*
-             * Unbind texture
-             */
-            GL.BindTexture(TextureTarget.Texture1D, 0);
+        //    /*
+        //     * Unbind texture
+        //     */
+        //    GL.BindTexture(TextureTarget.Texture1D, 0);
 
-            /*
-             * Set attachment
-             */
-            BackTexture = backTexture;
-        }
+        //    /*
+        //     * Set attachment
+        //     */
+        //    BackTexture = backTexture;
+        //}
         private int m_Width;
     }
 }

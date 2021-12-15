@@ -219,6 +219,34 @@ namespace Bite.Core
             m_Files.Add(new DomainFileView(definition,parentFolder, DomainFileState.Valid, definitionAbsolutePath, assetAbsolutePath));
         }
 
+        public void DeleteFile(in Guid id,EditorSession session)
+        {
+            /*
+             * Try find file
+             */
+            for(int fileIndex = 0;fileIndex <m_Files.Count;fileIndex++)
+            {
+                /*
+                 * Get file view
+                 */
+                DomainFileView fileView = m_Files[fileIndex];
+
+                /*
+                 * Validate match
+                 */
+                if(fileView.AssetID == id) // found a match
+                {
+                    /*
+                     * Remove from
+                     */
+                    m_Files.RemoveAt(fileIndex);
+                    session.DeleteAsset(id);
+                    return;
+                }
+                
+            }
+        }
+
         /// <summary>
         /// Renames the folder files recursively.(Sub folder and files are included)
         /// </summary>

@@ -152,6 +152,12 @@ namespace Vex.Framework
                         if (renderable.Material == null)
                             continue;
 
+                        /*
+                         * Validate vertex and index buffer
+                        */
+                        if (renderable.Mesh.VertexBuffer == null || renderable.Mesh.IndexBuffer == null)
+                            continue;
+
                         VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
                         IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
                         uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;

@@ -151,6 +151,14 @@ namespace Bite.Core
             session.RenameAsset(m_AssetID,newName);
         }
 
+        public void Delete(EditorSession session)
+        {
+            /*
+             * Try delete
+             */
+            m_ParentFolder.DeleteFile(AssetID,session);
+        }
+
         /// <summary>
         /// An ınternal function
         /// </summary>
@@ -171,6 +179,7 @@ namespace Bite.Core
             session.RenameAssetPaths(m_AssetID,oldRoot,newRoot);
         }
 
+        
         private VexObject m_LoadedObject;
         private DomainFolderView m_ParentFolder;
         private DomainFileState m_FileState;

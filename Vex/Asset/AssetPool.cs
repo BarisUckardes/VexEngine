@@ -200,6 +200,11 @@ namespace Vex.Asset
 
         }
 
+        /// <summary>
+        /// Renames a single asset
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
         public void RenameAsset(in Guid id, string name)
         {
             Asset asset = null;
@@ -208,6 +213,13 @@ namespace Vex.Asset
                 asset.Rename(name);
             }
         }
+
+        /// <summary>
+        /// Renames and replaces asset paths
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="oldRoot"></param>
+        /// <param name="newRoot"></param>
         public void RenameAssetPaths(in Guid id,string oldRoot,string newRoot)
         {
             Asset asset = null;
@@ -216,6 +228,44 @@ namespace Vex.Asset
                 asset.RenamePaths(oldRoot, newRoot);
             }
         }
+
+        /// <summary>
+        /// Deletes an asset from the pool
+        /// </summary>
+        /// <param name="id"></param>
+        public void DeleteAsset(in Guid id)
+        {
+            /*
+             * Try find asset with the entry
+             */
+            for(int assetIndex = 0;assetIndex < m_Assets.Count;assetIndex++)
+            {
+                /*
+                 * Get asset
+                 */
+                Asset asset = m_Assets[assetIndex];
+
+                /*
+                 * Validate match
+                 */
+                if(asset.AssetID == id) // found
+                {
+                    /*
+                     * Unload from the asset pool
+                     */
+                    asset.Unload();
+
+                    /*
+                     * Removes the physical files
+                     */
+                    asset.DeletePhysicalFiles();
+
+                    m_Assets.RemoveAt(assetIndex);
+                    return;
+                }
+            }
+        }
+
         /// <summary>
         /// Gathers all the asset records recursively
         /// </summary>

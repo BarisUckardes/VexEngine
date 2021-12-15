@@ -24,6 +24,10 @@ namespace Vex.Graphics
             {
                 return m_VertexBuffer;
             }
+            protected set
+            {
+                m_VertexBuffer = value;
+            }
         }
 
         /// <summary>
@@ -35,8 +39,13 @@ namespace Vex.Graphics
             {
                 return m_IndexBuffer;
             }
+            protected set
+            {
+                m_IndexBuffer = value;
+            }
         }
 
+       
         /// <summary>
         /// Sets the vertex buffer data
         /// </summary>
@@ -106,6 +115,8 @@ namespace Vex.Graphics
                 m_IndexBuffer = null;
             }
         }
+
+
 
         private VertexBuffer m_VertexBuffer;
         private IndexBuffer m_IndexBuffer;

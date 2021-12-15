@@ -498,6 +498,11 @@ namespace Bite.Core
             folder.CreateNewFile(folder,fileName, definitionPath, assetPath, definition);
         }
 
+
+        public void DeleteAsset(Guid id)
+        {
+            m_ApplicationSession.AssetPool.DeleteAsset(id);
+        }
         /// <summary>
         /// Requests a load or get a specific asset via its id
         /// </summary>

@@ -47,21 +47,15 @@ namespace Bite.GUI
             List<Framebuffer2D> visibleFramebuffers = m_Observer.Framebuffer2DResources;
             visibleFramebuffers.Add(m_Observer.Framebuffer as Framebuffer2D);
             ImGuiNET.ImGui.SetNextItemWidth(ImGuiNET.ImGui.CalcTextSize("Default Color").X*2);
-            if(GUIRenderCommands.CreateCombo("", m_TargetTexture.Name,"icom"))
+            if(GUIRenderCommands.CreateCombo("", m_TargetFramebuffer.Name,"icom"))
             {
                 foreach(Framebuffer2D framebuffer in visibleFramebuffers)
                 {
-                    if(GUIRenderCommands.CreateSelectableItem(framebuffer.BackTexture.Name,framebuffer.ID.ToString()))
+                    if(GUIRenderCommands.CreateSelectableItem(framebuffer.Name,framebuffer.ID.ToString()))
                     {
-                        m_TargetTexture = framebuffer.BackTexture as Texture2D;
+                        m_TargetFramebuffer = framebuffer;
                     }
-                    if(framebuffer.DepthTexture != null)
-                    {
-                        if (GUIRenderCommands.CreateSelectableItem(framebuffer.BackTexture.Name + "[DEPTH]", framebuffer.ID.ToString() + "DEPTH"))
-                        {
-                            m_TargetTexture = framebuffer.DepthTexture as Texture2D;
-                        }
-                    }
+                    
 
                 }
                 GUIRenderCommands.FinalizeCombo();
@@ -82,6 +76,19 @@ namespace Bite.GUI
             float textureHeight = availSpaceSize.Y;
 
             /*
+             * Validate resize
+             */
+            if(m_CurrentTextureSpace.X != textureWidth || m_CurrentTextureSpace.Y !=textureHeight)
+            {
+                m_TargetFramebuffer.Resize((int)textureWidth, (int)textureHeight);
+            }
+
+            /*
+             * Set new current texture space
+             */
+            m_CurrentTextureSpace = new Vector2(textureWidth, textureHeight);
+
+            /*
              * Calculate aspect ratio
              */
             float aspectRatio = textureWidth / textureHeight;
@@ -99,7 +106,7 @@ namespace Bite.GUI
                 /*
                  * Render frambuffer image
                  */
-                GUIRenderCommands.CreateImage(m_TargetTexture, new Vector2(textureWidth, textureHeight), uv0, uv1);
+                GUIRenderCommands.CreateImage(m_TargetFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight), uv0, uv1);
 
                 /*
                  * Enable disable viewport transform
@@ -262,16 +269,17 @@ namespace Bite.GUI
             m_Observer.Spatial.Position = m_Position;
             m_Observer.Spatial.Rotation = m_Rotation;
             m_EntityID = observerEntity.ID;
-            m_TargetTexture = m_Observer.Framebuffer.BackTexture as Texture2D;
+            m_TargetFramebuffer = m_Observer.Framebuffer as Framebuffer2D;
         }
 
         private FreeGameObserver m_Observer;
-        private Texture2D m_TargetTexture;
+        private Framebuffer2D m_TargetFramebuffer;
         private Guid m_EntityID;
         private Vector3 m_Position;
         private Vector3 m_Rotation;
         private Vector2 m_LastMousePosition;
         private Vector2 m_ActivationPosition;
+        private Vector2 m_CurrentTextureSpace;
         private bool m_ViewportTransformActive;
     }
 }

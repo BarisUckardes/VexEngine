@@ -35,21 +35,6 @@ namespace Vex.Graphics
         }
 
         /// <summary>
-        /// Native depth buffer render buffer
-        /// </summary>
-        public uint RenderbufferID
-        {
-            get
-            {
-                return m_RenderbufferID;
-            }
-            protected set
-            {
-                m_RenderbufferID = value;
-            }
-        }
-
-        /// <summary>
         /// Is this framebuffer the swapchain's backbuffer?
         /// </summary>
         public bool IsSwapchain
@@ -120,6 +105,9 @@ namespace Vex.Graphics
             }
         }
 
+        /// <summary>
+        /// The depth texture of this framebuffer
+        /// </summary>
         public Texture DepthTexture
         {
             get
@@ -132,26 +120,24 @@ namespace Vex.Graphics
             }
         }
 
-
+        /// <summary>
+        /// Whether this framebuffer has depth texture or not
+        /// </summary>
+        public bool HasDepthTexture
+        {
+            get
+            {
+                return m_HasDepthTexture;
+            }
+            protected set
+            {
+                m_HasDepthTexture = true;
+            }
+        }
 
         public bool IsDestroyed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        /// <summary>
-        /// Creates a framebuffer and allocates space on gpu
-        /// </summary>
-        /// <param name="attachmentParams"></param>
-        protected void CreateFramebuffer(in FramebufferAttachmentParams attachmentParams)
-        {
-            CreateFramebufferImpl(attachmentParams);
-        }
-
-        /// <summary>
-        /// Framebuffer create implementation
-        /// </summary>
-        /// <param name="attachmentParams"></param>
-        protected abstract void CreateFramebufferImpl(FramebufferAttachmentParams attachmentParams);
-
-      
+        
         public override void Destroy()
         {
             /*
@@ -167,11 +153,6 @@ namespace Vex.Graphics
             m_DetphTexture = null;
 
             /*
-             * Delete renderbuffer
-             */
-            GL.DeleteRenderbuffer(m_RenderbufferID);
-
-            /*
              * Delete framebuffer
              */
             GL.DeleteFramebuffer(m_FramebufferID);
@@ -183,6 +164,6 @@ namespace Vex.Graphics
         private TextureInternalFormat m_InternalFormat;
         private TextureDataType m_DataType;
         private uint m_FramebufferID;
-        private uint m_RenderbufferID;
+        private bool m_HasDepthTexture;
     }
 }

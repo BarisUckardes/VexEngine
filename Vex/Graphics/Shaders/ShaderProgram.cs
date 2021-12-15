@@ -82,69 +82,35 @@ namespace Vex.Graphics
         public void LinkProgram(List<Shader> shaders)
         {
             /*
+             * Clear former shader events
+             */
+            foreach (Shader shader in m_Shaders)
+            {
+                shader.RemoveOnShaderCompileDelegate(OnShaderCompiled);
+            }
+
+            /*
              * Reset error state
              */
             m_LastLinkErrorMessage = string.Empty;
-
-            /*
-             * Validate and delete program handle
-             */
-            if (m_Handle != 0)
-                GL.DeleteProgram(m_Handle);
-
-            /*
-             * First create a pVexgram
-             */
-            int handle = GL.CreateProgram();
-
-            /*
-             * Attach shaders
-             */
-            for (int i = 0; i < shaders.Count; i++)
-            {
-                GL.AttachShader(handle, shaders[i].Handle);
-            }
-
-            /*
-             * Link program
-             */
-            GL.LinkProgram(handle);
-
-            /*
-             * Check pVexgram link 
-             */
-            int programLinkStatus = 0;
-            GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out programLinkStatus);
-            if (programLinkStatus == 0)
-            {
-                /*
-                 * Get log
-                 */
-                string errorLog;
-                GL.GetProgramInfoLog(handle, out errorLog);
-
-                /*
-                 * Delete pVexgram
-                 */
-                GL.DeleteProgram(handle);
-
-                /*
-                 * Debug log
-                 */
-                Console.WriteLine("Program link failed!");
-                m_LastLinkErrorMessage = errorLog;
-            }
-
-            /*
-             * Set handle
-             */
-            m_Handle = handle;
 
             /*
              * Set shaders
              */
             m_Shaders = new List<Shader>(shaders);
 
+            /*
+             * Register event invokes
+             */
+            foreach(Shader shader in m_Shaders)
+            {
+                shader.RegisterOnShaderCompileDelegate(OnShaderCompiled);
+            }
+
+            /*
+             * Invalidate
+             */
+            Invalidate();
         }
         /// <summary>
         /// Returns the shader with the specified type
@@ -248,6 +214,62 @@ namespace Vex.Graphics
             return stageParameters.ToArray();
         }
 
+        private void Invalidate()
+        {
+            /*
+             * Validate and delete program handle
+             */
+            if (m_Handle != 0)
+                GL.DeleteProgram(m_Handle);
+
+            /*
+             * First create a pVexgram
+             */
+            int handle = GL.CreateProgram();
+
+            /*
+             * Attach shaders
+             */
+            for (int i = 0; i < m_Shaders.Count; i++)
+            {
+                GL.AttachShader(handle, m_Shaders[i].Handle);
+            }
+
+            /*
+             * Link program
+             */
+            GL.LinkProgram(handle);
+
+            /*
+             * Check pVexgram link 
+             */
+            int programLinkStatus = 0;
+            GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out programLinkStatus);
+            if (programLinkStatus == 0)
+            {
+                /*
+                 * Get log
+                 */
+                string errorLog;
+                GL.GetProgramInfoLog(handle, out errorLog);
+
+                /*
+                 * Delete pVexgram
+                 */
+                GL.DeleteProgram(handle);
+
+                /*
+                 * Debug log
+                 */
+                Console.WriteLine("Program link failed!");
+                m_LastLinkErrorMessage = errorLog;
+            }
+
+            /*
+             * Set handle
+             */
+            m_Handle = handle;
+        }
         private void GetShaderParameter(string source,int parameterStartIndex,out ShaderParameterType type,out string parameterName)
         {
             /*
@@ -278,6 +300,10 @@ namespace Vex.Graphics
             parameterName = parameterNameText;
         }
 
+        private void OnShaderCompiled()
+        {
+            Invalidate();
+        }
         public override void Destroy()
         {
             throw new NotImplementedException();

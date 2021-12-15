@@ -286,7 +286,12 @@ namespace Vex.Graphics
 
         public override void Destroy()
         {
-            throw new NotImplementedException();
+            VertexBuffer.Destroy();
+            IndexBuffer.Destroy();
+            VertexBuffer = null;
+            IndexBuffer = null;
+            m_CpuTriangles = null;
+            m_CpuVertexes = null;
         }
 
         private int[] m_CpuTriangles;

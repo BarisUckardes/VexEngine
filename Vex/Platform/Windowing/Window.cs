@@ -176,7 +176,7 @@ namespace Vex.Platform
              */
             if(m_IntermediateFramebufferAsSwapchain)
             {
-                Framebuffer2D.IntermediateFramebuffer.ResizeForSwapchainInternal((int)ev.Width, (int)ev.Height);
+                Framebuffer2D.IntermediateFramebuffer.Resize((int)ev.Width, (int)ev.Height);
             }
 
             /*

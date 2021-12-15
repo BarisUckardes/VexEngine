@@ -178,7 +178,9 @@ namespace Vex.Graphics
 
         public void Destroy()
         {
-            throw new NotImplementedException();
+            GL.DeleteBuffer(m_Handle.VertexBufferID);
+            GL.DeleteVertexArray(m_Handle.VertexArrayID);
+            m_VertexCount = 0;
         }
 
         private VertexBufferHandle m_Handle;
