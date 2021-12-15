@@ -249,13 +249,11 @@ namespace Bite.Core
 
         public void Delete(EditorSession session)
         {
-            Console.WriteLine("Gonna delete folder: " + Name);
             /*
              * Delete all folders
              */
             for(int folderIndex = 0;folderIndex < m_SubFolders.Count;folderIndex++)
             {
-                Console.WriteLine("Delete folder: " + m_SubFolders[folderIndex].Name);
                 m_SubFolders[folderIndex].Delete(session);
                 folderIndex--;
             }
@@ -266,7 +264,6 @@ namespace Bite.Core
              */
             for(int fileIndex = 0;fileIndex < m_Files.Count;fileIndex++)
             {
-                Console.WriteLine("Delete file: " + m_Files[fileIndex].AssetName);
                 m_Files[fileIndex].Delete(session);
                 fileIndex--;
             } 
@@ -276,6 +273,11 @@ namespace Bite.Core
              * Signal if there is a parent folder
              */
             m_ParentFolder?.SignalFolderDeleted(this);
+
+            /*
+             * Physically delete the folder
+             */
+            Directory.Delete(m_Path);
         }
 
         /// <summary>

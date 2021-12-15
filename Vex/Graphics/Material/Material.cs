@@ -89,7 +89,21 @@ namespace Vex.Graphics
 
         public override void Destroy()
         {
-            throw new NotImplementedException();
+            /*
+             * Clear parameters
+             */
+            m_StageParameters.Clear();
+            m_StageParameters = null;
+
+            /*
+             * Clear event delegates if any
+             */
+            m_Program?.RemoveProgramLinkedDelegate(OnShaderProgramLinked);
+
+            /*
+             * Remove shader program reference
+             */
+            m_Program = null;
         }
 
 
@@ -142,10 +156,14 @@ namespace Vex.Graphics
             return stageParams;
         }
 
+        /// <summary>
+        /// Called when target shader program is linked.
+        /// </summary>
         private void OnShaderProgramLinked()
         {
             Invalidate();
         }
+
         private ShaderProgram m_Program;
         private List<MaterialStageParameters> m_StageParameters;
     }
