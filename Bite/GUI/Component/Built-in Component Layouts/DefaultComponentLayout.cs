@@ -40,7 +40,7 @@ namespace Bite.GUI
                 if(info.FieldType == typeof(System.Numerics.Vector3))
                 {
                     System.Numerics.Vector3 value = (System.Numerics.Vector3)info.GetValue(TargetComponent);
-                    GUIRenderCommands.CreateVector3Slider(info.Name, this.GetHashCode().ToString() + info.Name,value);
+                    value = GUIRenderCommands.CreateVector3Slider(info.Name, this.GetHashCode().ToString() + info.Name,value);
                     info.SetValue(TargetComponent, value);
                     GUIRenderCommands.CreateEmptySpace();
                 }
@@ -96,7 +96,7 @@ namespace Bite.GUI
                 if (info.PropertyType == typeof(Vector3)) // set as vector3
                 {
                     Vector3 value = (Vector3)info.GetValue(TargetComponent);
-                    GUIRenderCommands.CreateVector3Slider(info.Name, "",value,0,360);
+                    value = GUIRenderCommands.CreateVector3Slider(info.Name, "",value,0,360);
                     info.SetValue(TargetComponent,value,null);
                     GUIRenderCommands.CreateEmptySpace();
 

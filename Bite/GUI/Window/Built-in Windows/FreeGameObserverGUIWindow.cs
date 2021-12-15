@@ -34,6 +34,18 @@ namespace Bite.GUI
         public override void OnRenderLayout()
         {
             /*
+             * Validate world
+             */
+            if (Session.CurrentWorld == null)
+                return;
+
+            /*
+             * Validate observer
+             */
+            if (m_Observer == null)
+                CreateNewObserver();
+
+            /*
              * Test observer
              */
             if(Session.CurrentWorld != m_Observer.OwnerEntity.World)
@@ -254,6 +266,12 @@ namespace Bite.GUI
         private void CreateNewObserver()
         {
             Console.WriteLine("New free game observer");
+
+            /*
+             * Validate world
+             */
+            if (Session.CurrentWorld == null)
+                return;
 
             /*
              * Validate and destroy former entity

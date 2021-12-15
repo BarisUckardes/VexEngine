@@ -217,6 +217,7 @@ namespace Vex.Asset
             List<Component> totalComponents = new List<Component>(1000);
             emitter.Emit(new Scalar(null, "Components"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+            int entityEntry = 0;
             for (int entityIndex = 0; entityIndex < totalEntities.Count; entityIndex++)
             {
                 /*
@@ -228,7 +229,10 @@ namespace Vex.Asset
                 * Validate if this entity is a debug entity
                 */
                 if (entity.IsDebugOnly)
+                {
                     continue;
+                }
+                    
 
                 /*
                  * Get components
@@ -253,8 +257,13 @@ namespace Vex.Asset
                     /*
                      * Register component id and its local entity id
                      */
-                    emitter.Emit(new Scalar(null, entityIndex + " " + totalTypes.IndexOf(component.GetType()) + " [" + component.Name + "] " + component.ID.ToString()));
+                    emitter.Emit(new Scalar(null, entityEntry + " " + totalTypes.IndexOf(component.GetType()) + " [" + component.Name + "] " + component.ID.ToString()));
                 }
+
+                /*
+                 * Increment entity entry
+                 */
+                entityEntry++;
             }
             emitter.Emit(new SequenceEnd());
 
