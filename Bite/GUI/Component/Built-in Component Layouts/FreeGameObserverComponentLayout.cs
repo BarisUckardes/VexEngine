@@ -199,40 +199,37 @@ namespace Bite.GUI
                     /*
                      * Render pairs
                      */
-                    if(GUIRenderCommands.CreateTreeNode("Resolver-Material Pairs","r-m pairs"))
+                    if(GUIRenderCommands.CreateTreeNode("Resolvers","r-m pairs"))
                     {
                         foreach (RenderPassResolverMaterialPair pair in pairs)
                         {
-                            if(GUIRenderCommands.CreateTreeNode("Pair",pair.GetHashCode().ToString()))
+                            /*
+                             * Draw rect
+                             */
+                            GUIRenderCommands.DrawRectangleFilled(GUILayoutCommands.GetCursorScreenPos() + new Vector2(-5, -2), GUILayoutCommands.GetCursorScreenPos() + new Vector2(GUILayoutCommands.GetAvailableSpace().X, 45), new Vector4(0.15f, 0.1505f, 0.151f, 1.0f), 0);
+                            GUIRenderCommands.DrawRectangle(GUILayoutCommands.GetCursorScreenPos() + new Vector2(-5, -2), GUILayoutCommands.GetCursorScreenPos() + new Vector2(GUILayoutCommands.GetAvailableSpace().X, 45), new Vector4(0.45f, 0.4505f, 0.451f, 1.0f), 0, ImGuiNET.ImDrawCornerFlags.All, 1.0f);
+
+                            /*
+                             * Set target material
+                             */
+                            GUIRenderCommands.CreateText("Material:", "");
+                            GUILayoutCommands.StayOnSameLine();
+                            pair.TargetMaterial = GUIRenderCommands.CreateObjectField(pair.TargetMaterial, "materialType") as Material;
+
+                            /*
+                             * Set resolver type
+                             */
+                            GUIRenderCommands.CreateText("Target resolver", "");
+                            GUILayoutCommands.StayOnSameLine();
+                            if (GUIRenderCommands.CreateCombo("", pair.TargetResolver == null ? "No Resolver" : pair.TargetResolver.Name, "resolverType + " + pair.GetHashCode()))
                             {
-                                /*
-                                 * Draw rect
-                                 */
-                                GUIRenderCommands.DrawRectangleFilled(GUILayoutCommands.GetCursorScreenPos() + new Vector2(-5, -2), GUILayoutCommands.GetCursorScreenPos() + new Vector2(GUILayoutCommands.GetAvailableSpace().X, 45), new Vector4(0.15f, 0.1505f, 0.151f, 1.0f), 0);
-                                GUIRenderCommands.DrawRectangle(GUILayoutCommands.GetCursorScreenPos() + new Vector2(-5, -2), GUILayoutCommands.GetCursorScreenPos() + new Vector2(GUILayoutCommands.GetAvailableSpace().X, 45), new Vector4(0.45f, 0.4505f, 0.451f, 1.0f), 0, ImGuiNET.ImDrawCornerFlags.All, 1.0f);
+                                foreach (Type type in m_GraphicsResolverTypes)
+                                    if (GUIRenderCommands.CreateButton("Select " + type.Name, "typeSelectButton"))
+                                        pair.TargetResolver = type;
 
-                                /*
-                                 * Set target material
-                                 */
-                                GUIRenderCommands.CreateText("Material:", "");
-                                GUILayoutCommands.StayOnSameLine();
-                                pair.TargetMaterial = GUIRenderCommands.CreateObjectField(pair.TargetMaterial, "materialType") as Material;
-
-                                /*
-                                 * Set resolver type
-                                 */
-                                GUIRenderCommands.CreateText("Target resolver", "");
-                                GUILayoutCommands.StayOnSameLine();
-                                if (GUIRenderCommands.CreateCombo("", "", "resolverType"))
-                                {
-                                    foreach (Type type in m_GraphicsResolverTypes)
-                                        if (GUIRenderCommands.CreateButton("Select " + type.Name, "typeSelectButton"))
-                                            pair.TargetResolver = type;
-
-                                    GUIRenderCommands.FinalizeCombo();
-                                }
-                                GUIRenderCommands.FinalizeTreeNode();
+                                GUIRenderCommands.FinalizeCombo();
                             }
+
                             GUIRenderCommands.CreateEmptySpace();
                             GUIRenderCommands.CreateEmptySpace();
                         }

@@ -287,7 +287,7 @@ namespace Fang.Commands
         {
             bool state = false;
             ImGui.PushID(code);
-            state = ImGui.BeginCombo(name, preview);
+            state = ImGui.BeginCombo(name + "##" + code, preview);
             ImGui.PopID();
             return state;
         }

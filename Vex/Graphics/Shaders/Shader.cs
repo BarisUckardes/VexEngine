@@ -85,10 +85,18 @@ namespace Vex.Graphics
         /// <param name="source"></param>
         public void Compile(in string source)
         {
+
+            /*
+             * Set source
+             */
+            m_Source = source;
+            m_Compiled = false;
+            m_LastErrorMessage = "";
+
             /*
              * Compile
              */
-            CompileAs(m_Type, source);
+            Invalidate();
 
             /*
              * Broadcast
@@ -113,145 +121,8 @@ namespace Vex.Graphics
         {
             m_OnShaderCompiledEvent -= targetDelegate;
         }
-        /// <summary>
-        /// Creates a new shader
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="source"></param>
-        private void CompileAs(ShaderStage type,string source)
-        {
-            bool isSucess = false;
-            switch (type)
-            {
-                case ShaderStage.Vertex:
-                    CreateAsVertexShader(source);
-                    break;
-                case ShaderStage.Fragment:
-                    CreateAsFragmentShader(source);
-                    break;
-                case ShaderStage.Geometry:
-                    CreateAsGeometryShader(source);
-                    break;
-            }
 
-            /*
-             * Set source
-             */
-            m_Source = source;
-            m_Type = type;
-        }
-
-        /// <summary>
-        /// Creates this shader as vertex shader
-        /// </summary>
-        /// <param name="source"></param>
-        private void CreateAsVertexShader(string source)
-        {
-            /*
-             * Create shader
-             */
-            int vertexShaderHandle = GL.CreateShader(OpenTK.Graphics.OpenGL4.ShaderType.VertexShader);
-
-            /*
-             * Set shader source
-             */
-            GL.ShaderSource(vertexShaderHandle, source);
-
-            /*
-             * Compile shader
-             */
-            GL.CompileShader(vertexShaderHandle);
-
-            /*
-             * Check compile status
-             */
-            bool isCompileSuccessful = CompilationCheck(vertexShaderHandle);
-
-            if(!isCompileSuccessful)
-            {
-                m_Handle = 0;
-                m_Compiled = false;
-                return;
-            }
-
-            m_Handle = vertexShaderHandle;
-            m_Compiled = true;
-        }
-
-        /// <summary>
-        /// Creates this shader as vertex shader
-        /// </summary>
-        /// <param name="source"></param>
-        private void CreateAsGeometryShader(string source)
-        {
-            /*
-             * Create shader
-             */
-            int vertexShaderHandle = GL.CreateShader(OpenTK.Graphics.OpenGL4.ShaderType.GeometryShader);
-
-            /*
-             * Set shader source
-             */
-            GL.ShaderSource(vertexShaderHandle, source);
-
-            /*
-             * Compile shader
-             */
-            GL.CompileShader(vertexShaderHandle);
-
-            /*
-             * Check compile status
-             */
-            bool isCompileSuccessful = CompilationCheck(vertexShaderHandle);
-
-            if (!isCompileSuccessful)
-            {
-                m_Handle = 0;
-                m_Compiled = false;
-                return;
-            }
-
-            m_Handle = vertexShaderHandle;
-            m_Compiled = true;
-        }
-
-        /// <summary>
-        /// Creates this shader as fragment shader
-        /// </summary>
-        /// <param name="source"></param>
-        private void CreateAsFragmentShader(string source)
-        {
-            /*
-            * Create shader
-            */
-            int vertexShaderHandle = GL.CreateShader(OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader);
-
-            /*
-             * Set shader source
-             */
-            GL.ShaderSource(vertexShaderHandle, source);
-
-            /*
-             * Compile shader
-             */
-            GL.CompileShader(vertexShaderHandle);
-
-            /*
-             * Check compile status
-             */
-            bool isCompileSuccessful = CompilationCheck(vertexShaderHandle);
-
-            if (!isCompileSuccessful)
-            {
-                m_Handle = 0;
-                m_Compiled = false;
-                return;
-            }
-
-            m_Handle = vertexShaderHandle;
-            m_Compiled = true;
-        }
-
+        
         /// <summary>
         /// Checks shader compile status
         /// </summary>
@@ -287,24 +158,49 @@ namespace Vex.Graphics
             m_LastErrorMessage = string.Empty;
             return true;
         }
-
-        /// <summary>
-        /// Validates and deletes the gpu handles
-        /// </summary>
-        private void ValidateAndDeleteHandles()
+        private void Invalidate()
         {
-            if(m_Handle != 0)
-            {
-                GL.DeleteShader(m_Handle);
-                m_Handle = 0;
-            }
-        }
+            /*
+             * Delete former shader
+             */
+            GL.DeleteShader(m_Handle);
 
+            /*
+             * Create shader
+             */
+            int vertexShaderHandle = GL.CreateShader((OpenTK.Graphics.OpenGL4.ShaderType)m_Type);
+
+            /*
+             * Set shader source
+             */
+            GL.ShaderSource(vertexShaderHandle, m_Source);
+
+            /*
+             * Compile shader
+             */
+            GL.CompileShader(vertexShaderHandle);
+
+            /*
+             * Check compile status
+             */
+            bool isCompileSuccessful = CompilationCheck(vertexShaderHandle);
+
+            if (!isCompileSuccessful)
+            {
+                m_Handle = 0;
+                m_Compiled = false;
+                return;
+            }
+
+            m_Handle = vertexShaderHandle;
+            m_Compiled = true;
+        }
         public override void Destroy()
         {
             m_Compiled = false;
             GL.DeleteShader(m_Handle);
         }
+
 
         private event OnShaderCompiled m_OnShaderCompiledEvent;
         private ShaderStage m_Type;
