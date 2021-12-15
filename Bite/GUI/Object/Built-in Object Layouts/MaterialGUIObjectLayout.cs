@@ -78,8 +78,7 @@ namespace Bite.GUI
                         float value = floatParameters[parameterIndex].Data;
                         GUIRenderCommands.CreateText(floatParameters[parameterIndex].Name, " ");
                         GUILayoutCommands.StayOnSameLine();
-                        value = GUIRenderCommands.CreateFloatSlider(floatParameters[parameterIndex].Name," ",value);
-                        stage.SetFloatParameter(floatParameters[parameterIndex].Name, value);
+                        stage.SetFloatParameter(floatParameters[parameterIndex].Name, GUIRenderCommands.CreateFloatSlider(floatParameters[parameterIndex].Name, " ", value));
                         
                     }
 
@@ -92,7 +91,7 @@ namespace Bite.GUI
                         System.Numerics.Vector2 value = vector2Parameters[parameterIndex].Data.GetAsNumerics();
                         GUIRenderCommands.CreateText(vector2Parameters[parameterIndex].Name, " ");
                         GUILayoutCommands.StayOnSameLine();
-                        GUIRenderCommands.CreateVector2Slider(floatParameters[parameterIndex].Name," ", ref value);
+                        GUIRenderCommands.CreateVector2Slider(floatParameters[parameterIndex].Name," ",value);
                     }
 
                     /*
@@ -104,7 +103,7 @@ namespace Bite.GUI
                         System.Numerics.Vector3 value = vector3Parameters[parameterIndex].Data.GetAsNumerics();
                         GUIRenderCommands.CreateText(vector3Parameters[parameterIndex].Name, " ");
                         GUILayoutCommands.StayOnSameLine();
-                        GUIRenderCommands.CreateVector3Slider(vector3Parameters[parameterIndex].Name," ",ref value);
+                        GUIRenderCommands.CreateVector3Slider(vector3Parameters[parameterIndex].Name," ",value);
                     }
 
                     /*
@@ -116,7 +115,7 @@ namespace Bite.GUI
                         System.Numerics.Vector4 value = vector4Parameters[parameterIndex].Data.GetAsNumerics();
                         GUIRenderCommands.CreateText(vector4Parameters[parameterIndex].Name, " ");
                         GUILayoutCommands.StayOnSameLine();
-                        GUIRenderCommands.CreateVector4Slider(vector4Parameters[parameterIndex].Name," ",ref value);
+                        stage.SetVector4Parameter(vector4Parameters[parameterIndex].Name, GUIRenderCommands.CreateVector4Slider(vector4Parameters[parameterIndex].Name, " ", value).GetAsOpenTK());
                     }
 
                     /*

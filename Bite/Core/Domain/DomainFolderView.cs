@@ -247,6 +247,37 @@ namespace Bite.Core
             }
         }
 
+        public void Delete(EditorSession session)
+        {
+            Console.WriteLine("Gonna delete folder: " + Name);
+            /*
+             * Delete all folders
+             */
+            for(int folderIndex = 0;folderIndex < m_SubFolders.Count;folderIndex++)
+            {
+                Console.WriteLine("Delete folder: " + m_SubFolders[folderIndex].Name);
+                m_SubFolders[folderIndex].Delete(session);
+                folderIndex--;
+            }
+            m_SubFolders.Clear();
+
+            /*
+             * Delete all files
+             */
+            for(int fileIndex = 0;fileIndex < m_Files.Count;fileIndex++)
+            {
+                Console.WriteLine("Delete file: " + m_Files[fileIndex].AssetName);
+                m_Files[fileIndex].Delete(session);
+                fileIndex--;
+            } 
+            m_Files.Clear();
+
+            /*
+             * Signal if there is a parent folder
+             */
+            m_ParentFolder?.SignalFolderDeleted(this);
+        }
+
         /// <summary>
         /// Renames the folder files recursively.(Sub folder and files are included)
         /// </summary>
@@ -279,6 +310,20 @@ namespace Bite.Core
             for(int fileIndex =0;fileIndex < m_Files.Count;fileIndex++)
             {
                 m_Files[fileIndex].RenamePaths(oldRoot, newRoot,session);
+            }
+        }
+        private void SignalFolderDeleted(DomainFolderView folderView)
+        {
+            /*
+             * Search folder
+             */
+            for(int folderIndex = 0;folderIndex < m_SubFolders.Count;folderIndex++)
+            {
+                if (m_SubFolders[folderIndex] == folderView)
+                {
+                    m_SubFolders.RemoveAt(folderIndex);
+                    return;
+                }
             }
         }
       

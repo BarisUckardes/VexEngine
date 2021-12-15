@@ -22,16 +22,15 @@ namespace Vex.Graphics
             m_StageParameters = new List<MaterialStageParameters>();
 
             /*
-             * Create parameters
-             */
-            if(program != null)
-                CreateParametersFromProgram(program);
-
-            /*
              * Set program
              */
             m_Program = program;
             Name = "Material";
+
+            /*
+             * Invalidate this material
+             */
+            Invalidate();
         }
 
         /// <summary>
@@ -46,20 +45,19 @@ namespace Vex.Graphics
             set
             {
                 /*
-                 * Clear former parameters
+                 * Remove delegate
                  */
-                m_StageParameters.Clear();
-
-                /*
-                 * Create parameters
-                 */
-                if (value != null)
-                    CreateParametersFromProgram(value);
+                m_Program?.RemoveProgramLinkedDelegate(OnShaderProgramLinked);
 
                 /*
                  * Set program
                  */
                 m_Program = value;
+
+                /*
+                 * Invalidate
+                 */
+                Invalidate();
             }
         }
 
@@ -88,17 +86,41 @@ namespace Vex.Graphics
 
             return null;
         }
-      
+
+        public override void Destroy()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        private void Invalidate()
+        {
+            /*
+             * Clear former delegate
+             */
+            m_Program?.RegisterProgramLinkedDelegate(OnShaderProgramLinked);
+
+            /*
+             * Clear former parameters
+             */
+            m_StageParameters.Clear();
+
+            /*
+             * Create parameters
+             */
+            if (m_Program != null)
+                CreateParametersFromProgram(m_Program);
+        }
         /// <summary>
         /// Creates the shader stage parameters via shader pVexgram
         /// </summary>
         /// <param name="pVexgram"></param>
-        private void CreateParametersFromProgram(ShaderProgram pVexgram)
+        private void CreateParametersFromProgram(ShaderProgram program)
         {
             ///*
             // * Parameter meta datas
             // */
-            ShaderStageParameters[] parameters = pVexgram.GetPVexgramParameters();
+            ShaderStageParameters[] parameters = program.GetProgramParameters();
 
             m_StageParameters = GetStageParameters(parameters);
         }
@@ -120,11 +142,10 @@ namespace Vex.Graphics
             return stageParams;
         }
 
-        public override void Destroy()
+        private void OnShaderProgramLinked()
         {
-            throw new NotImplementedException();
+            Invalidate();
         }
-
         private ShaderProgram m_Program;
         private List<MaterialStageParameters> m_StageParameters;
     }

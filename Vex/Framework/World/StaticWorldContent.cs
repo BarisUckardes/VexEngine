@@ -268,6 +268,7 @@ namespace Vex.Framework
                 /*
                  * Get owner entity
                  */
+                Console.WriteLine("Component owner entity id: " + componentEntry.LocalOwnerEntityID);
                 Entity ownerEntity = entities[componentEntry.LocalOwnerEntityID];
 
                 /*

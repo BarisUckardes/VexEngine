@@ -9,6 +9,8 @@ using Vex.Framework;
 
 namespace Vex.Graphics
 {
+
+    public delegate void OnShaderProgramLinked();
     /// <summary>
     /// Shader pVexgram class
     /// </summary>
@@ -133,7 +135,7 @@ namespace Vex.Graphics
         /// Returns the uniform parameter meta datas
         /// </summary>
         /// <returns></returns>
-        public ShaderStageParameters[] GetPVexgramParameters()
+        public ShaderStageParameters[] GetProgramParameters()
         {
             List<ShaderStageParameters> stageParameters = new List<ShaderStageParameters>();
 
@@ -213,6 +215,14 @@ namespace Vex.Graphics
             }
             return stageParameters.ToArray();
         }
+        public void RegisterProgramLinkedDelegate(OnShaderProgramLinked targetDelegate)
+        {
+            m_ProgramLinkedEvent += targetDelegate;
+        }
+        public void RemoveProgramLinkedDelegate(OnShaderProgramLinked targetDelegate)
+        {
+            m_ProgramLinkedEvent -= targetDelegate;
+        }
 
         private void Invalidate()
         {
@@ -263,12 +273,18 @@ namespace Vex.Graphics
                  */
                 Console.WriteLine("Program link failed!");
                 m_LastLinkErrorMessage = errorLog;
+                return;
             }
 
             /*
              * Set handle
              */
             m_Handle = handle;
+
+            /*
+             * Invoke on linked event
+             */
+            m_ProgramLinkedEvent?.Invoke();
         }
         private void GetShaderParameter(string source,int parameterStartIndex,out ShaderParameterType type,out string parameterName)
         {
@@ -310,6 +326,7 @@ namespace Vex.Graphics
         }
 
         private List<Shader> m_Shaders;
+        private event OnShaderProgramLinked m_ProgramLinkedEvent;
         private int m_Handle;
         private string m_Category;
         private string m_CategoryName;

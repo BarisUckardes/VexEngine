@@ -216,6 +216,23 @@ namespace Bite.GUI
                      */
                     m_SelectedObject = null;
                 }
+                if (ImGui.IsKeyPressed((int)Vex.Input.Keys.Delete) && m_SelectedObject.GetType() == typeof(DomainFolderView) && GUIEventCommands.IsWindowHovered())
+                {
+                    /*
+                     * Get as file view
+                     */
+                    DomainFolderView folderView = m_SelectedObject as DomainFolderView;
+
+                    /*
+                     * Delete file
+                     */
+                    folderView.Delete(Session);
+
+                    /*
+                     * Set null
+                     */
+                    m_SelectedObject = null;
+                }
             }
 
             /*

@@ -69,6 +69,8 @@ namespace Vex.Asset
             /*
              * Move to data type
              */
+            parser.MoveNext();
+            parser.MoveNext();
 
             /*
              * Get data type
