@@ -34,6 +34,21 @@ namespace Vex.Graphics
         }
 
         [ExposeThis]
+        public Texture2D ColorTexture
+        {
+            get
+            {
+                return m_ColorTexture;
+            }
+            set
+            {
+                m_ColorTexture = value;
+            }
+        }
+
+        [ExposeThis]
+        private Texture2D m_ColorTexture;
+        [ExposeThis]
         private StaticMesh m_Mesh;
     }
 }

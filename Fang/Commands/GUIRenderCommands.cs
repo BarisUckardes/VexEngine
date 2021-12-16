@@ -128,7 +128,7 @@ namespace Fang.Commands
         {
             bool s = false;
             ImGui.PushID(code);
-            bool state = ImGui.Selectable(name, ref s, ImGuiSelectableFlags.DontClosePopups,size);
+            bool state = ImGui.Selectable(name, ref s, ImGuiSelectableFlags.DontClosePopups | ImGuiSelectableFlags.AllowItemOverlap,size);
             ImGui.PopID();
             return state;
         }

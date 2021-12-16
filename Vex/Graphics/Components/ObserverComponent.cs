@@ -25,7 +25,6 @@ namespace Vex.Graphics
             m_FarPlane = 1000.0f;
             m_AspectRatio = 1.0f;
             m_ClearColor = OpenTK.Mathematics.Color4.CornflowerBlue;
-            m_RenderPasses = new List<RenderPass>();
             m_Framebuffer2DResources = new List<Framebuffer2D>();
         }
        
@@ -41,16 +40,6 @@ namespace Vex.Graphics
             }
         }
 
-        /// <summary>
-        /// Returns renderpasses this observer has
-        /// </summary>
-        public List<RenderPass> RenderPasses
-        {
-            get
-            {
-                return new List<RenderPass>(m_RenderPasses);
-            }
-        }
         /// <summary>
         /// The framebuffer which this observer renders into
         /// </summary>
@@ -146,47 +135,27 @@ namespace Vex.Graphics
         }
 
         /// <summary>
-        /// Creates new framebuffer2d resource for this observer
+        /// Registers an framebuffer2d resource
         /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="format"></param>
-        /// <param name="internalFormat"></param>
-        public void CreateFramebuffer2DResource(int width,int height,TextureFormat format,TextureInternalFormat internalFormat,TextureDataType dataType)
-        {
-            m_Framebuffer2DResources.Add(new Framebuffer2D(width, height, format, internalFormat,dataType));
-        }
-
+        /// <param name="framebuffer"></param>
         public void RegisterFramebuffer2DResource(Framebuffer2D framebuffer)
         {
             m_Framebuffer2DResources.Add(framebuffer);
         }
 
         /// <summary>
-        /// Creates an empty render pass
-        /// </summary>
-        /// <param name="passName"></param>
-        public void CreateRenderPass(string passName)
-        {
-            RenderPass pass = new RenderPass();
-            pass.PassName = passName;
-            m_RenderPasses.Add(pass);
-        }
-
-        /// <summary>
-        /// Returns a render pass via its name
+        /// Returns a framebuffer with the specified name.Returns null if there is no match
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public RenderPass GetRenderPassViaName(string name)
+        public Framebuffer2D GetFramebuffer2DResourceViaName(string name)
         {
-            foreach(RenderPass pass in m_RenderPasses)
-            {
-                if (pass.PassName == name)
-                    return pass;
-            }
+            foreach (Framebuffer2D framebuffer in m_Framebuffer2DResources)
+                if (framebuffer.Name == name)
+                    return framebuffer;
             return null;
         }
+
         internal sealed override void OnAttachInternal()
         {
             /*
@@ -246,7 +215,6 @@ namespace Vex.Graphics
         public abstract Matrix4 GetProjectionMatrix();
 
         private List<Framebuffer2D> m_Framebuffer2DResources;
-        private List<RenderPass> m_RenderPasses;
         private Framebuffer m_Framebuffer;
         private Color4 m_ClearColor;
         [ExposeThis]

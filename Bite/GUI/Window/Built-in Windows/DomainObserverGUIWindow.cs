@@ -400,7 +400,7 @@ namespace Bite.GUI
                  */
                 if (m_SelectedObject == file)
                 {
-                    ImGui.Selectable("##" + file.AssetAbsolutePath, true, ImGuiSelectableFlags.None, new Vector2(128, 128));
+                    //ImGui.Selectable("##" + file.AssetAbsolutePath, true, ImGuiSelectableFlags.None, new Vector2(128, 128));
                 }
 
                 /*
@@ -413,6 +413,7 @@ namespace Bite.GUI
                  */
                 if (GUIEventCommands.IsCurrentItemHavored() && GUIEventCommands.IsCurrentItemDoubleClicked())
                 {
+                    Console.WriteLine("DOUBLE clicked");
                     /*
                      * Validate loaded
                      */

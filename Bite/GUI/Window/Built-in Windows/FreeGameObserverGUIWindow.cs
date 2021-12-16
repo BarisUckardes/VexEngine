@@ -222,7 +222,7 @@ namespace Bite.GUI
                 /*
                  * Try get framebuffer via pass
                  */
-                Framebuffer framebuffer = m_Observer.GetRenderPassViaName("Picker")?.TargetFramebuffer;
+                Framebuffer2D framebuffer = m_Observer.GetFramebuffer2DResourceViaName("Picker");
 
                 /*
                  * Validate framebuffer
@@ -232,7 +232,7 @@ namespace Bite.GUI
                     /*
                      * Get framebuffer
                      */
-                    Framebuffer2D framebuffer2D = framebuffer as Framebuffer2D;
+                    Framebuffer2D framebuffer2D = framebuffer;
 
                     /*
                      * Calculate mouse position on framebuffer
