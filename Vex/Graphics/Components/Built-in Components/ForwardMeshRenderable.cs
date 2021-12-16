@@ -24,7 +24,6 @@ namespace Vex.Graphics
             }
         }
        
-
         public override bool ShouldTick
         {
             get

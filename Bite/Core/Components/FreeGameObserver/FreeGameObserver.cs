@@ -36,11 +36,11 @@ namespace Bite.Core
 
         protected override void OnAttach()
         {
-            Framebuffer = new Framebuffer2D(128, 128, TextureFormat.Rgba, TextureInternalFormat.Rgba32f,TextureDataType.UnsignedByte);
-            Framebuffer.Name = "Default Color";
-            Framebuffer.BackTexture.Name = "Final Color";
-            Framebuffer.DepthTexture.Name = "Depth";
-            RegisterFramebuffer2DResource(Framebuffer as Framebuffer2D);
+            //Framebuffer = new Framebuffer2D(128, 128, TextureFormat.Rgba, TextureInternalFormat.Rgba32f,TextureDataType.UnsignedByte);
+            //Framebuffer.Name = "Default Color";
+            //Framebuffer.BackTexture.Name = "Final Color";
+            //Framebuffer.DepthTexture.Name = "Depth";
+            //RegisterFramebuffer2DResource(Framebuffer as Framebuffer2D);
         }
         protected override void OnDetach()
         {

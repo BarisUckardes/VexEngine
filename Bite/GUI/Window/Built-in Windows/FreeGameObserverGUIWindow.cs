@@ -57,7 +57,6 @@ namespace Bite.GUI
              * Render select pass
              */
             List<Framebuffer2D> visibleFramebuffers = m_Observer.Framebuffer2DResources;
-            visibleFramebuffers.Add(m_Observer.Framebuffer as Framebuffer2D);
             ImGuiNET.ImGui.SetNextItemWidth(ImGuiNET.ImGui.CalcTextSize("Default Color").X*2);
             if(GUIRenderCommands.CreateCombo("", m_TargetFramebuffer.Name,"icom"))
             {
@@ -67,8 +66,6 @@ namespace Bite.GUI
                     {
                         m_TargetFramebuffer = framebuffer;
                     }
-                    
-
                 }
                 GUIRenderCommands.FinalizeCombo();
             }
@@ -287,7 +284,7 @@ namespace Bite.GUI
             m_Observer.Spatial.Position = m_Position;
             m_Observer.Spatial.Rotation = m_Rotation;
             m_EntityID = observerEntity.ID;
-            m_TargetFramebuffer = m_Observer.Framebuffer as Framebuffer2D;
+            m_TargetFramebuffer = m_Observer.Framebuffer2DResources[0];
         }
 
         private FreeGameObserver m_Observer;

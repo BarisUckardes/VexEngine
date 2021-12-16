@@ -307,7 +307,7 @@ namespace Vex.Graphics
         /// <param name="texture"></param>
         /// <param name="name"></param>
         /// <param name="pVexgram"></param>
-        public void SetTexture2D(Texture2D texture,string name,ShaderProgram program)
+        public void SetTexture2D(ShaderProgram program,Texture2D texture,string name)
         {
             /*
            * Validate recording

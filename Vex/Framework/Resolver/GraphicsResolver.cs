@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 namespace Vex.Framework
 {
     /// <summary>
+    /// The graphics object register delegate
+    /// </summary>
+    /// <param name="component"></param>
+    public delegate void OnGraphicsComponentRegister(Component component);
+
+    /// <summary>
     /// A resolver which specialized in graphics
     /// </summary>
     public abstract class GraphicsResolver : IWorldResolver
@@ -26,21 +32,11 @@ namespace Vex.Framework
         public abstract void OnObserverRemoved(ObserverComponent observer);
 
         /// <summary>
-        /// Registers a renderable component to this graphics resolver
+        /// Returns the graphics object register informations of this resovler
         /// </summary>
-        /// <param name="renderable"></param>
-        public abstract void OnRenderableRegistered(RenderableComponent renderable);
+        /// <returns></returns>
+        public abstract List<GraphicsObjectRegisterInfo> GetGraphicsComponentRegisterInformations();
 
-        /// <summary>
-        /// Removes a renderable component fVexm this graphics resolver
-        /// </summary>
-        /// <param name="renderable"></param>
-        public abstract void OnRenderableRemoved(RenderableComponent renderable);
-
-        /// <summary>
-        /// The renderable type which this graphics resolver accepts
-        /// </summary>
-        public abstract Type ExpectedRenderableType { get; }
 
         public Type TargetViewType
         {

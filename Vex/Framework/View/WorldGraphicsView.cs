@@ -17,7 +17,8 @@ namespace Vex.Framework
         {
             m_Resolvers = new List<GraphicsResolver>();
             m_Observers = new List<ObserverComponent>();
-            m_Renderables = new List<RenderableComponent>();
+            m_GraphicComponents = new List<Component>();
+            m_RegisterInformations = new List<List<GraphicsObjectRegisterInfo>>();
         }
 
         public override Type ExpectedBaseComponentType
@@ -71,21 +72,38 @@ namespace Vex.Framework
         /// Registers a renderable component to the resolver
         /// </summary>
         /// <param name="renderable"></param>
-        public void RegisterRenderable(RenderableComponent renderable)
+        public void RegisterGraphicsObject(RenderableComponent renderable)
         {
             /*
              * Register renderable
              */
-            m_Renderables.Add(renderable);
+            m_GraphicComponents.Add(renderable);
 
             /*
              * Broadcast to resolvers
              */
-            for (int i = 0; i < m_Resolvers.Count; i++)
+            for (int resolverIndex = 0; resolverIndex < m_Resolvers.Count; resolverIndex++)
             {
-                if (renderable.GetType() == m_Resolvers[i].ExpectedRenderableType)
+                /*
+                 * Get resolver register informations
+                 */
+                List<GraphicsObjectRegisterInfo> registerInformations = m_RegisterInformations[resolverIndex];
+                
+                /*
+                 * Iterate validate and register
+                 */
+                for(int registerInformationIndex = 0;registerInformationIndex<registerInformations.Count;registerInformationIndex++)
                 {
-                    m_Resolvers[i].OnRenderableRegistered(renderable);
+                    /*
+                     * Get register information
+                     */
+                    GraphicsObjectRegisterInfo registerInformation = registerInformations[registerInformationIndex];
+
+                    /*
+                     * Validate and register
+                     */
+                    if (registerInformation.ObjectType == renderable.GetType())
+                        registerInformation.Register(renderable);
                 }
             }
         }
@@ -94,22 +112,40 @@ namespace Vex.Framework
         /// Removes a renderable from the resolver
         /// </summary>
         /// <param name="renderable"></param>
-        public void RemoveRenderable(RenderableComponent renderable)
+        public void RemoveGraphicsObject(RenderableComponent renderable)
         {
             /*
              * Remove renderable
              */
-            m_Renderables.Remove(renderable);
+            m_GraphicComponents.Remove(renderable);
 
             /*
              * Broadcast to resolvers
              */
-            for (int i = 0; i < m_Resolvers.Count; i++)
+            for (int resolverIndex = 0; resolverIndex < m_Resolvers.Count; resolverIndex++)
             {
-                if (renderable.GetType() == m_Resolvers[i].ExpectedRenderableType)
+                /*
+                 * Get resolver register informations
+                 */
+                List<GraphicsObjectRegisterInfo> registerInformations = m_RegisterInformations[resolverIndex];
+
+                /*
+                 * Iterate validate and register
+                 */
+                for (int registerInformationIndex = 0; registerInformationIndex < registerInformations.Count; registerInformationIndex++)
                 {
-                    m_Resolvers[i].OnRenderableRemoved(renderable);
+                    /*
+                     * Get register information
+                     */
+                    GraphicsObjectRegisterInfo registerInformation = registerInformations[registerInformationIndex];
+
+                    /*
+                     * Validate and register
+                     */
+                    if (registerInformation.ObjectType == renderable.GetType())
+                        registerInformation.Remove(renderable);
                 }
+
             }
         }
 
@@ -133,6 +169,11 @@ namespace Vex.Framework
             GraphicsResolver resolver = Activator.CreateInstance(resolverType) as GraphicsResolver;
 
             /*
+             * Get register information
+             */
+            List<GraphicsObjectRegisterInfo> resolverRegisterInformations = resolver.GetGraphicsComponentRegisterInformations();
+
+            /*
              * Setup observers
              */
             for(int observerIndex = 0;observerIndex< m_Observers.Count;observerIndex++)
@@ -151,24 +192,42 @@ namespace Vex.Framework
             /*
              * Setup renderables
              */
-            for(int renderableIndex = 0;renderableIndex < m_Renderables.Count;renderableIndex++)
+            for(int graphicsObjectIndex = 0; graphicsObjectIndex < m_GraphicComponents.Count; graphicsObjectIndex++)
             {
                 /*
                  * Get renderable
                  */
-                RenderableComponent renderable = m_Renderables[renderableIndex];
+                Component renderable = m_GraphicComponents[graphicsObjectIndex];
 
                 /*
                  * Broadcast
                  */
-                if(resolver.ExpectedRenderableType == renderable.GetType())
-                    resolver.OnRenderableRegistered(renderable);   
+                for(int registerInformationIndex = 0; registerInformationIndex<resolverRegisterInformations.Count; registerInformationIndex++)
+                {
+                    /*
+                     * Get register information
+                     */
+                    GraphicsObjectRegisterInfo registerInformation = resolverRegisterInformations[registerInformationIndex];
+
+                    /*
+                     * Validate and register
+                     */
+                    if(registerInformation.ObjectType == renderable.GetType())
+                    {
+                        registerInformation.Register(renderable);
+                    }
+                }
             }
 
             /*
              * Register graphics resolver
              */
             m_Resolvers.Add(resolver);
+
+            /*
+             * Register register informations
+             */
+            m_RegisterInformations.Add(resolverRegisterInformations);
         }
         public override void RemoveResolver(Type resolverType)
         {
@@ -177,9 +236,17 @@ namespace Vex.Framework
                 if(m_Resolvers[resolverIndex].GetType() == resolverType)
                 {
                     /*
-                     * Remove 
+                     * SHOULD implement a shutdown&dispose routine
+                     */
+                    /*
+                     * Remove resolver
                      */
                     m_Resolvers.RemoveAt(resolverIndex);
+
+                    /*
+                     * Remove register informations
+                     */
+                    m_RegisterInformations.RemoveAt(resolverIndex);
                     return;
                 }
             }
@@ -192,7 +259,6 @@ namespace Vex.Framework
              */
             foreach(Component component in components)
             {
-                Console.WriteLine("Graphics view received: " + component.GetType().Name);
 
                 if (component.GetType().IsAssignableTo(typeof(ObserverComponent)))
                 {
@@ -200,13 +266,14 @@ namespace Vex.Framework
                 }
                 else if (component.GetType().IsAssignableTo(typeof(RenderableComponent)))
                 {
-                    m_Renderables.Add(component as RenderableComponent);
+                    m_GraphicComponents.Add(component);
                 }
             }
         }
 
         private List<ObserverComponent> m_Observers;
-        private List<RenderableComponent> m_Renderables;
+        private List<Component> m_GraphicComponents;
         private List<GraphicsResolver> m_Resolvers;
+        private List<List<GraphicsObjectRegisterInfo>> m_RegisterInformations;
     }
 }

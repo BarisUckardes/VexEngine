@@ -144,6 +144,15 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// Removes the existing framebuffer2d resource
+        /// </summary>
+        /// <param name="framebuffer"></param>
+        public void RemoveFramebuffer2DResource(Framebuffer2D framebuffer)
+        {
+            m_Framebuffer2DResources.Remove(framebuffer);
+        }
+
+        /// <summary>
         /// Returns a framebuffer with the specified name.Returns null if there is no match
         /// </summary>
         /// <param name="name"></param>
