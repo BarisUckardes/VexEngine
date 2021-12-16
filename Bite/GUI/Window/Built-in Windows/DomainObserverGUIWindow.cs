@@ -235,25 +235,13 @@ namespace Bite.GUI
                 }
             }
 
-            /*
-             * Render folder rename popup
-             */
-            if(GUIRenderCommands.CreatePopup("Domain_Folder_Rename"))
-            {
-                CreateFolderRenamePopup(m_SelectedObject as DomainFolderView);
-                GUIRenderCommands.FinalizePopup();
-            }
+
 
             /*
-             * Render file rename popup
+             * Create any item hovered state
              */
-            if (GUIRenderCommands.CreatePopup("Domain_File_Rename"))
-            {
-                CreateFileRenamePopup(m_SelectedObject as DomainFileView);
-                GUIRenderCommands.FinalizePopup();
-            }
-
-           
+            bool folderHovered = false;
+            bool fileHovered = false;
 
             /*
              * Draw sub folders
@@ -290,6 +278,18 @@ namespace Bite.GUI
                 }
 
                 /*
+                 * Validate and set folder havored
+                 */
+                if (folderHovered == false)
+                    folderHovered = GUIEventCommands.IsCurrentItemHavored();
+
+                /*
+                 * Validate and set hovered folder
+                 */
+                if (GUIEventCommands.IsCurrentItemHavored())
+                    m_HoveredFolder = subFolder;
+
+                /*
                  * Set click event on folder
                  */
                 if (GUIEventCommands.IsCurrentItemDoubleClicked() && GUIEventCommands.IsCurrentItemHavored())
@@ -314,6 +314,8 @@ namespace Bite.GUI
                 GUILayoutCommands.SetCursorPos(folderAnchorPos + new Vector2(offset, 128));
                 GUIRenderCommands.CreateText(subFolder.Name, subFolder.ID.ToString());
                 GUILayoutCommands.SetCursorPos(folderAnchorPos + new Vector2(128, 0));
+
+               
             }
 
             /*
@@ -377,6 +379,17 @@ namespace Bite.GUI
                     GUIRenderCommands.CreateImage(m_WorldFileIcon, new Vector2(128, 128));
                 }
 
+                /*
+                 *Set havor state
+                 */
+                if (fileHovered == false)
+                    fileHovered = GUIEventCommands.IsCurrentItemHavored();
+
+                /*
+                 * Validate and set hovered file
+                 */
+                if (GUIEventCommands.IsCurrentItemHavored())
+                    m_HoveredFile = file;
 
                 /*
                  * Set anchor back
@@ -388,7 +401,7 @@ namespace Bite.GUI
                  */
                 if (m_SelectedObject == file)
                 {
-                    //ImGui.Selectable("##" + file.AssetAbsolutePath, true, ImGuiSelectableFlags.None, new Vector2(128, 128));
+                    ImGui.Selectable("##" + file.AssetAbsolutePath, true, ImGuiSelectableFlags.None, new Vector2(128, 128));
                 }
 
                 /*
@@ -459,10 +472,106 @@ namespace Bite.GUI
             /*
              * Valdate if create menu required
              */
-            if (GUIEventCommands.IsMouseRightButtonClicked() && GUIEventCommands.IsWindowHovered())
+            if (GUIEventCommands.IsMouseRightButtonClicked() && GUIEventCommands.IsWindowHovered() && !folderHovered && !fileHovered)
             {
                 GUIRenderCommands.SignalPopupCreate("Domain_Create_Asset");
             }
+
+            /*
+             * Validate if folder quick menu required
+             */
+            if(folderHovered && GUIEventCommands.IsMouseRightButtonClicked())
+            {
+                GUIRenderCommands.SignalPopupCreate("Folder_Quick_Menu");
+            }
+
+            /*
+             * Validate if file quick menu required
+             */
+            if(fileHovered && GUIEventCommands.IsMouseRightButtonClicked())
+            {
+                GUIRenderCommands.SignalPopupCreate("File_Quick_Menu");
+            }
+
+
+            /*
+             * Render folder quick menu
+             */
+            bool isFolderRenameQuick = false;
+            if(GUIRenderCommands.CreatePopup("Folder_Quick_Menu"))
+            {
+                if(GUIRenderCommands.CreateSelectableItem("Delete","delete_folder"))
+                {
+                    /*
+                     * Get as file view
+                     */
+                    DomainFolderView folderView = m_HoveredFolder;
+
+                    /*
+                     * Delete file
+                     */
+                    folderView.Delete(Session);
+
+                    /*
+                     * Set null
+                     */
+                    m_HoveredFolder = null;
+                    GUIRenderCommands.TerminateCurrentPopup();
+                }
+                if (GUIRenderCommands.CreateSelectableItem("Rename", "rename_folder"))
+                {
+                    GUIRenderCommands.SignalPopupCreate("Domain_Folder_Rename");
+                    GUIRenderCommands.TerminateCurrentPopup();
+                    isFolderRenameQuick = true;
+                }
+                GUIRenderCommands.FinalizePopup();
+            }
+
+
+            /*
+             * Render file quick menu
+             */
+            bool isFileRenameQuick = false;
+            if (GUIRenderCommands.CreatePopup("File_Quick_Menu"))
+            {
+                if (GUIRenderCommands.CreateSelectableItem("Delete", "delete_file"))
+                {
+                    /*
+                     * Get as file view
+                     */
+                    DomainFileView fileView = m_HoveredFile;
+
+                    /*
+                     * Delete file
+                     */
+                    fileView.Delete(Session);
+
+                    /*
+                     * Set null
+                     */
+                    m_HoveredFile = null;
+                    GUIRenderCommands.TerminateCurrentPopup();
+                }
+                if (GUIRenderCommands.CreateSelectableItem("Rename", "rename_file"))
+                {
+                    GUIRenderCommands.SignalPopupCreate("Domain_File_Rename");
+                    GUIRenderCommands.TerminateCurrentPopup();
+                    isFolderRenameQuick = true;
+                }
+                GUIRenderCommands.FinalizePopup();
+            }
+
+            /*
+             * Open folder rename popup
+             */
+            if (isFolderRenameQuick)
+                GUIRenderCommands.SignalPopupCreate("Domain_Folder_Rename");
+
+            /*
+            * Open file rename popup
+            */
+            if (isFileRenameQuick)
+                GUIRenderCommands.SignalPopupCreate("Domain_File_Rename");
 
             /*
              * Render create asset popup
@@ -508,8 +617,6 @@ namespace Bite.GUI
             if (isWorldCreate)
                 GUIRenderCommands.SignalPopupCreate("Domain_Create_World");
 
-
-
             /*
              * Render create shader popup
              */
@@ -541,13 +648,31 @@ namespace Bite.GUI
 
 
             /*
-            * Validate clikc to void
+             * Render folder rename popup
+             */
+            if (GUIRenderCommands.CreatePopup("Domain_Folder_Rename"))
+            {
+                Console.WriteLine("Folder:");
+                CreateFolderRenamePopup(isFolderRenameQuick == true ? m_HoveredFolder : m_SelectedObject as DomainFolderView);
+                GUIRenderCommands.FinalizePopup();
+            }
+
+            /*
+             * Render file rename popup
+             */
+            if (GUIRenderCommands.CreatePopup("Domain_File_Rename"))
+            {
+                CreateFileRenamePopup(isFileRenameQuick == true ? m_HoveredFile : m_SelectedObject as DomainFileView);
+                GUIRenderCommands.FinalizePopup();
+            }
+
+            /*
+            * Validate click to void
             */
             if (GUIEventCommands.IsMouseLeftButtonClicked() && isClickedEmpty && GUIEventCommands.IsWindowHovered())
             {
                 m_SelectedObject = false;
             }
-
         }
         private void RenderAssetImportPopup(ref bool texture2DImport,ref bool staticMeshImport)
         {
@@ -747,6 +872,11 @@ namespace Bite.GUI
         /// <param name="folder"></param>
         private void CreateFolderRenamePopup(DomainFolderView folder)
         {
+            if(folder == null)
+            {
+                Console.WriteLine("NULL FOLDER");
+                return;
+            }
             GUIRenderCommands.CreateText("Folder rename", "frnm");
             GUIRenderCommands.CreateSeperatorLine();
             GUIRenderCommands.CreateEmptySpace();
@@ -818,6 +948,9 @@ namespace Bite.GUI
 
         private DomainFolderView m_CurrentFolder;
         private DomainView m_Domain;
+
+        private DomainFolderView m_HoveredFolder;
+        private DomainFileView m_HoveredFile;
 
         private object m_SelectedObject;
 

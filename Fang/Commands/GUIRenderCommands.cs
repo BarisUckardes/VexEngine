@@ -269,7 +269,7 @@ namespace Fang.Commands
 
         public static void SignalPopupCreate(string popupID)
         {
-            ImGui.OpenPopup(popupID);
+            ImGui.OpenPopup(popupID,ImGuiPopupFlags.AnyPopup);
         }
         public static bool CreatePopup(string popupID)
         {

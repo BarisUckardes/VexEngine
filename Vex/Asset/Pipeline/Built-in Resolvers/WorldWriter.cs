@@ -426,10 +426,8 @@ namespace Vex.Asset
                  */
                 emitter.Emit(new Scalar(null, "Resolvers"));
                 emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-               // Console.WriteLine("Written " + view.GetType().Name);
                 foreach (IWorldResolver resolver in resolvers)
                 {
-                  //  Console.WriteLine("     Written " + resolver.GetType().Name);
                     emitter.Emit(new Scalar(null, resolver.GetType().Name));
                 }
                 emitter.Emit(new SequenceEnd());

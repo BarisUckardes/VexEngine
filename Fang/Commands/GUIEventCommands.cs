@@ -48,6 +48,7 @@ namespace Fang.Commands
         {
             return ImGui.IsAnyItemHovered();
         }
+        
         public static bool IsWindowFocused()
         {
             return ImGui.IsWindowFocused();
