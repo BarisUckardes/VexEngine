@@ -213,6 +213,39 @@ namespace Vex.Framework
             return false;
         }
 
+
+        /// <summary>
+        /// Deletes the component with the target object specified
+        /// </summary>
+        /// <typeparam name="TComponent"></typeparam>
+        /// <returns></returns>
+        public bool DeleteComponent(Component targetComponent)
+        {
+            /*
+             * Iterate each component and delete if found a component with the specified type
+             */
+            for (int i = 0; i < m_Components.Count; i++)
+            {
+                if (m_Components[i] == targetComponent) // found
+                {
+                    /*
+                     * Detach component
+                     */
+                    Component component = m_Components[i];
+                    component.OnDetachInternal();
+
+                    /*
+                     * Remove the component fVexm local registry
+                     */
+                    m_Components.RemoveAt(i);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void Destroy()
         {
             /*

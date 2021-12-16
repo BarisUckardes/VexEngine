@@ -28,12 +28,16 @@ namespace Bite.GUI
         {
             m_TargetWorld = Session.CurrentWorld;
             m_EntityIcon = Session.GetEditorResource("EntityIcon", AssetType.Texture2D) as Texture2D;
+            m_EditIcon = Session.GetEditorResource("EditIcon", AssetType.Texture2D) as Texture2D;
+            m_DeleteIcon = Session.GetEditorResource("DeleteIcon", AssetType.Texture2D) as Texture2D;
         }
 
         public override void OnLayoutFinalize()
         {
             m_TargetWorld = null;
-
+            m_EntityIcon = null;
+            m_EditIcon = null;
+            m_DeleteIcon = null;
         }
 
         public override void OnRenderLayout()
@@ -54,7 +58,6 @@ namespace Bite.GUI
 
         private void RenderWorldView(World world)
         {
-            
             /*
              * Get entities
              */
@@ -174,11 +177,15 @@ namespace Bite.GUI
         }
         private void RenderEntityPopup(ref bool isRenameEntity)
         {
+            GUIRenderCommands.CreateImage(m_DeleteIcon, new Vector2(16, 16));
+            GUILayoutCommands.StayOnSameLine();
             if (GUIRenderCommands.CreateMenuItem("Delete", "w_delete_entity"))
             {
                 m_SelectEntity?.Destroy();
             }
-            if(GUIRenderCommands.CreateMenuItem("Rename", "w_delete_entity"))
+            GUIRenderCommands.CreateImage(m_EditIcon, new Vector2(16, 16));
+            GUILayoutCommands.StayOnSameLine();
+            if (GUIRenderCommands.CreateMenuItem("Rename", "w_delete_entity"))
             {
                 isRenameEntity = true;
             }
@@ -208,6 +215,8 @@ namespace Bite.GUI
 
         private Entity m_SelectEntity;
         private Texture2D m_EntityIcon;
+        private Texture2D m_EditIcon;
+        private Texture2D m_DeleteIcon;
         private World m_TargetWorld;
         private string m_EntityRenameInputText = string.Empty;
     }

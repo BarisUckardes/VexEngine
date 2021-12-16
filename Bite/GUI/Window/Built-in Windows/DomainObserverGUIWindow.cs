@@ -50,6 +50,8 @@ namespace Bite.GUI
             m_ComputerPathIcon = Session.GetEditorResource("ComputerPathIcon", AssetType.Texture2D) as Texture2D;
             m_StaticMeshFileIcon = Session.GetEditorResource("MeshFileIcon", AssetType.Texture2D) as Texture2D;
             m_WorldFileIcon = Session.GetEditorResource("WorldFileIcon", AssetType.Texture2D) as Texture2D;
+            m_DeleteIcon = Session.GetEditorResource("DeleteIcon", AssetType.Texture2D) as Texture2D;
+            m_EditIcon = Session.GetEditorResource("EditIcon", AssetType.Texture2D) as Texture2D;
 
 
             /*
@@ -135,7 +137,6 @@ namespace Bite.GUI
              * Render open file dialog for static mesh
              */
             m_StaticMeshOpenFileDialog?.Render();
-
 
             /*
              * Validate texture2d selected
@@ -234,8 +235,6 @@ namespace Bite.GUI
                     m_SelectedObject = null;
                 }
             }
-
-
 
             /*
              * Create any item hovered state
@@ -500,7 +499,9 @@ namespace Bite.GUI
             bool isFolderRenameQuick = false;
             if(GUIRenderCommands.CreatePopup("Folder_Quick_Menu"))
             {
-                if(GUIRenderCommands.CreateSelectableItem("Delete","delete_folder"))
+                GUIRenderCommands.CreateImage(m_DeleteIcon, new Vector2(16, 16));
+                GUILayoutCommands.StayOnSameLine();
+                if (GUIRenderCommands.CreateSelectableItem("Delete","delete_folder"))
                 {
                     /*
                      * Get as file view
@@ -518,6 +519,8 @@ namespace Bite.GUI
                     m_HoveredFolder = null;
                     GUIRenderCommands.TerminateCurrentPopup();
                 }
+                GUIRenderCommands.CreateImage(m_EditIcon, new Vector2(16, 16));
+                GUILayoutCommands.StayOnSameLine();
                 if (GUIRenderCommands.CreateSelectableItem("Rename", "rename_folder"))
                 {
                     GUIRenderCommands.SignalPopupCreate("Domain_Folder_Rename");
@@ -534,6 +537,8 @@ namespace Bite.GUI
             bool isFileRenameQuick = false;
             if (GUIRenderCommands.CreatePopup("File_Quick_Menu"))
             {
+                GUIRenderCommands.CreateImage(m_DeleteIcon, new Vector2(16, 16));
+                GUILayoutCommands.StayOnSameLine();
                 if (GUIRenderCommands.CreateSelectableItem("Delete", "delete_file"))
                 {
                     /*
@@ -552,6 +557,8 @@ namespace Bite.GUI
                     m_HoveredFile = null;
                     GUIRenderCommands.TerminateCurrentPopup();
                 }
+                GUIRenderCommands.CreateImage(m_EditIcon, new Vector2(16, 16));
+                GUILayoutCommands.StayOnSameLine();
                 if (GUIRenderCommands.CreateSelectableItem("Rename", "rename_file"))
                 {
                     GUIRenderCommands.SignalPopupCreate("Domain_File_Rename");
@@ -983,5 +990,7 @@ namespace Bite.GUI
         private Texture2D m_ComputerPathIcon;
         private Texture2D m_StaticMeshFileIcon;
         private Texture2D m_WorldFileIcon;
+        private Texture2D m_EditIcon;
+        private Texture2D m_DeleteIcon;
     }
 }

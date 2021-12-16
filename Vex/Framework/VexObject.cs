@@ -18,7 +18,6 @@ namespace Vex.Framework
             m_Destroyed = false;
         }
 
-       
         /// <summary>
         /// Returns the unique id of this object
         /// </summary>

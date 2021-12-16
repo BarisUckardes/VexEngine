@@ -77,7 +77,7 @@ namespace Bite.Core
                     default:
                         break;
                 }
-
+                Console.WriteLine($"Resource Loaded {name}");
             }
 
             /*
@@ -88,7 +88,7 @@ namespace Bite.Core
                 EditorSession.SendApplicationShutdownRequest($"Editor resource are failed to load");
                 return;
             }
-
+           
             /*
              * Upload editor resources to the editor session
              */
@@ -116,12 +116,16 @@ namespace Bite.Core
             @"Bite\Resources\WorldFileIcon.png",
             @"Bite\Resources\GamePlayButtonIcon.png",
             @"Bite\Resources\GameStopButtonIcon.png",
-            @"Bite\Resources\ComponentIcon.png"
+            @"Bite\Resources\ComponentIcon.png",
+            @"Bite\Resources\DeleteIcon.png",
+            @"Bite\Resources\EditIcon.png"
 
 
         };
         private readonly AssetType[] m_AssetTypes = new AssetType[]
         {
+            AssetType.Texture2D,
+            AssetType.Texture2D,
             AssetType.Texture2D,
             AssetType.Texture2D,
             AssetType.Texture2D,

@@ -19,6 +19,7 @@ namespace Bite.GUI
             m_TargetEntity = Object as Entity;
             m_Layouts = new List<ComponentLayout>();
             m_ComponentIcon = Session.GetEditorResource("ComponentIcon", Vex.Asset.AssetType.Texture2D) as Texture2D;
+            m_DeleteIcon = Session.GetEditorResource("DeleteIcon", Vex.Asset.AssetType.Texture2D) as Texture2D;
 
             /*
              * Get all commponents
@@ -60,6 +61,11 @@ namespace Bite.GUI
         private void RenderEntityLayout()
         {
             /*
+             * Create invalidate state
+             */
+            bool needsInvalidation = false;
+
+            /*
              * Display entity name
              */
             GUIRenderCommands.CreateText(m_TargetEntity.Name, "");
@@ -92,21 +98,89 @@ namespace Bite.GUI
              */
             for(int i=0;i<m_Layouts.Count;i++)
             {
+                /*
+                 * Create hover state
+                 */
+                bool componentHeaderHovered = false;
+
+                /*
+                 * Get layout
+                 */
+                ComponentLayout componentLayout = m_Layouts[i];
+
+                /*
+                 * Render component header
+                 */
                 GUIRenderCommands.EnableStyle(ImGuiStyleVar.FrameRounding, 5);
                 GUIRenderCommands.CreateSeperatorLine();
-                GUILayoutCommands.SetNextItemWidth(GUILayoutCommands.GetTextSize(m_Layouts[i].TargetComponent.GetType().Name).X);
-                if(GUIRenderCommands.CreateCollapsingHeader(m_Layouts[i].TargetComponent.GetType().Name,m_Layouts[i].TargetComponent.ID.ToString()))
+                GUILayoutCommands.SetNextItemWidth(GUILayoutCommands.GetTextSize(componentLayout.TargetComponent.GetType().Name).X);
+                if(GUIRenderCommands.CreateCollapsingHeader(componentLayout.TargetComponent.GetType().Name, componentLayout.TargetComponent.ID.ToString()))
                 {
+                    if (GUIEventCommands.IsCurrentItemHavored())
+                    {
+                        componentHeaderHovered = true;
+                    }
                     GUIRenderCommands.DisableStyle();
-                    m_Layouts[i].OnLayoutRender();
+
+                    /*
+                     * Render component layout
+                     */
+                    componentLayout.OnLayoutRender();
+                }
+                else
+                {
+                    if (GUIEventCommands.IsCurrentItemHavored())
+                    {
+                        componentHeaderHovered = true;
+                    }
+                }
+
+                /*
+                * Validate component quick menu
+                */
+                if (componentHeaderHovered && GUIEventCommands.IsMouseRightButtonClicked())
+                {
+                    m_QuickMenuComponent = componentLayout.TargetComponent;
+                    GUIRenderCommands.SignalPopupCreate("Component_Quick_Popup");
                 }
             }
             GUIRenderCommands.CreateSeperatorLine();
 
+            /*
+             * Render component quick popup
+             */
+            if(GUIRenderCommands.CreatePopup("Component_Quick_Popup"))
+            {
+                GUIRenderCommands.CreateImage(m_DeleteIcon,new System.Numerics.Vector2(16,16));
+                GUILayoutCommands.StayOnSameLine();
+                if(GUIRenderCommands.CreateSelectableItem("Delete","delete_component"))
+                {
+                    /*
+                     * Validate and delete
+                     */
+                    if (m_QuickMenuComponent.OwnerEntity.DeleteComponent(m_QuickMenuComponent))
+                    {
+                        needsInvalidation = true;
+                    }
+                    GUIRenderCommands.TerminateCurrentPopup();
+                }
+                GUIRenderCommands.FinalizePopup();
+            }
+
+            /*
+             * Invalidate if requested
+             */
+            if (needsInvalidation)
+                RecreateComponentLayouts();
         }
 
         private void RecreateComponentLayouts()
         {
+            /*
+             * Reset quick component target
+             */
+            m_QuickMenuComponent = null;
+
             /*
              * Finalize former layouts
              */
@@ -165,5 +239,7 @@ namespace Bite.GUI
         private List<Type> m_AllComponentTypes;
         private Entity m_TargetEntity;
         private Texture m_ComponentIcon;
+        private Texture m_DeleteIcon;
+        private Component m_QuickMenuComponent;
     }
 }

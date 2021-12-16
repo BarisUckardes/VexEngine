@@ -199,7 +199,7 @@ namespace Bite.GUI
                     /*
                      * Render pairs
                      */
-                    if(GUIRenderCommands.CreateTreeNode("Resolvers","r-m pairs"))
+                    if(GUIRenderCommands.CreateTreeNode("Listeners","listeners"))
                     {
                         foreach (RenderPassResolverMaterialPair pair in pairs)
                         {
@@ -219,9 +219,9 @@ namespace Bite.GUI
                             /*
                              * Set resolver type
                              */
-                            GUIRenderCommands.CreateText("Target resolver", "");
+                            GUIRenderCommands.CreateText("Listener", "");
                             GUILayoutCommands.StayOnSameLine();
-                            if (GUIRenderCommands.CreateCombo("", pair.TargetResolver == null ? "No Resolver" : pair.TargetResolver.Name, "resolverType + " + pair.GetHashCode()))
+                            if (GUIRenderCommands.CreateCombo("", pair.TargetResolver == null ? "No Listener" : pair.TargetResolver.Name, "listenerType + " + pair.GetHashCode()))
                             {
                                 foreach (Type type in m_GraphicsResolverTypes)
                                     if (GUIRenderCommands.CreateButton("Select " + type.Name, "typeSelectButton"))
