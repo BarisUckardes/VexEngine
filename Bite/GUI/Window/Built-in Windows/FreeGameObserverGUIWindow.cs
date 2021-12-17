@@ -65,7 +65,8 @@ namespace Bite.GUI
                     /*
                      * Render framebuffer name
                      */
-                    GUIRenderCommands.CreateText("Framebuffer: " + framebuffer.Name, "");
+                    GUIRenderCommands.CreateText(framebuffer.Name, "");
+                    GUIRenderCommands.CreateSeperatorLine();
 
                     /*
                      * Iterate and render attachments
@@ -87,7 +88,7 @@ namespace Bite.GUI
                             m_TargetFramebufferAttachmentIndex = attachtmentIndex;
                         }
                     }
-                    
+                    GUIRenderCommands.CreateEmptySpace();
                 }
                 GUIRenderCommands.FinalizeCombo();
             }

@@ -48,7 +48,7 @@ namespace Vex.Framework
 
                 f_Uv = v_Uv;
                 f_Normal = (v_NormalMatrix*vec4(v_Normal,1)).xyz;
-                f_Position = (v_ModelMatrix * vec4(v_Position, 0)).xyz;
+                f_Position = (v_ModelMatrix * vec4(v_Position, 1)).xyz;
             }
             ";
 
@@ -63,8 +63,9 @@ namespace Vex.Framework
               in vec2 f_Uv;
               in vec3 f_Normal;
               in vec3 f_Position;
-              uniform sampler2D f_DeferredColorTexture;
 
+              uniform sampler2D f_DeferredColorTexture;
+              uniform vec4 f_ViewPosition;
               void main()
               {
                   ColorOut = texture(f_DeferredColorTexture,f_Uv);
@@ -170,7 +171,7 @@ namespace Vex.Framework
                 {
                     new FramebufferAttachmentCreateParams("Color",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
                     new FramebufferAttachmentCreateParams("Normal",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
-                    new FramebufferAttachmentCreateParams("Position",TextureFormat.Rgb,TextureInternalFormat.Rgb32f,TextureDataType.UnsignedByte)
+                    new FramebufferAttachmentCreateParams("Position",TextureFormat.Rgb,TextureInternalFormat.Rgb32f,TextureDataType.UnsignedByte),
                 },
                 true
                 );;
@@ -422,7 +423,7 @@ namespace Vex.Framework
                     gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, mvp, "v_MvpMatrix");
                     gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, modelMatrix, "v_ModelMatrix");
                     gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, normalMatrix, "v_NormalMatrix");
-
+                    gBufferCommandBuffer.SetUniformVector4(m_GBufferMaterial.Program, new Vector4(observer.Spatial.Position.X, observer.Spatial.Position.Y, observer.Spatial.Position.Z, 1), "f_ViewPosition");
                     /*
                      * Set color texture
                      */
