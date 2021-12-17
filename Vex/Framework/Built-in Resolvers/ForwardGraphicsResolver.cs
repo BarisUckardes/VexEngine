@@ -39,15 +39,16 @@ namespace Vex.Framework
             out vec2 f_Uv;
             out vec3 f_Normal;
             out vec3 f_Position;
-            uniform mat4 v_Mvp;
-            uniform mat4 v_Model;
+            uniform mat4 v_MvpMatrix;
+            uniform mat4 v_ModelMatrix;
+            uniform mat4 v_NormalMatrix;
             void main()
             {
-                vec4 objectWorldPosition = v_Model * vec4(v_Position, 1);
-                gl_Position = v_Mvp * vec4(v_Position, 1);
+                gl_Position = v_MvpMatrix * vec4(v_Position, 1);
+
                 f_Uv = v_Uv;
-                f_Normal = (v_Model*vec4(v_Normal,1)).xyz;
-                f_Position = objectWorldPosition.xyz;
+                f_Normal = (v_NormalMatrix*vec4(v_Normal,1)).xyz;
+                f_Position = (v_ModelMatrix * vec4(v_Position, 0)).xyz;
             }
             ";
 
@@ -56,7 +57,7 @@ namespace Vex.Framework
 
 
               out vec4 ColorOut;
-              out vec4 NormalOut;
+              out vec3 NormalOut;
               out vec3 PositionOut;
 
               in vec2 f_Uv;
@@ -67,9 +68,8 @@ namespace Vex.Framework
               void main()
               {
                   ColorOut = texture(f_DeferredColorTexture,f_Uv);
-                  NormalOut = vec4(f_Normal,1);
+                  NormalOut = normalize(f_Normal);
                   PositionOut = f_Position;
-
               }";
             Shader gBufferVertexShader = new Shader(ShaderStage.Vertex);
             gBufferVertexShader.Compile(gBufferVertexShaderText);
@@ -114,12 +114,12 @@ namespace Vex.Framework
               uniform sampler2D f_ColorTexture;
               uniform sampler2D f_PositionTexture;
               uniform sampler2D f_NormalTexture;
-
+              uniform vec4 f_ViewPosition;
               void main()
               {
                     vec3 worldPosition = texture(f_PositionTexture,f_Uv).rgb;
                     vec3 worldNormal = texture(f_NormalTexture,f_Uv).rgb;
-                    float lightDot = max(dot(worldNormal,vec3(0,1,0)),0.0f);
+                    float lightDot = max(dot(-vec3(1,0,0),normalize(worldNormal)),0.0f);
                     ExposureOut = lightDot;
               }";
 
@@ -395,7 +395,7 @@ namespace Vex.Framework
                     Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
 
                     /*
-                     * Create mvp matrix
+                     * Create model matrix matrix
                      */
                     Matrix4 modelMatrix =
                         Matrix4.CreateScale(scale) *
@@ -404,9 +404,24 @@ namespace Vex.Framework
                         Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z)) *
                         Matrix4.CreateTranslation(position);
 
+                    /*
+                     * Create model-view-projection matrix
+                     */
                     Matrix4 mvp = modelMatrix * viewMatrix * projectionMatrix;
-                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, mvp, "v_Mvp");
-                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, modelMatrix, "v_Model");
+
+                    /*
+                     * Create normal matrix
+                     */
+                    Matrix4 normalMatrix = modelMatrix;
+                    normalMatrix.Invert();
+                    normalMatrix.Transpose();
+
+                    /*
+                     * Set uniforms that are required from the gbuffer's vertex shader stage
+                     */
+                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, mvp, "v_MvpMatrix");
+                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, modelMatrix, "v_ModelMatrix");
+                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, normalMatrix, "v_NormalMatrix");
 
                     /*
                      * Set color texture
@@ -438,6 +453,11 @@ namespace Vex.Framework
             lightExposureCommandBuffer.SetPipelineState(lightExposurePipelineState);
             for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
             {
+                /*
+                 * Get observer
+                 */
+                ObserverComponent observer = m_Observers[observerIndex];
+
                 /*
                  * Get observer clear color
                  */
@@ -500,7 +520,7 @@ namespace Vex.Framework
                 lightExposureCommandBuffer.SetTexture2D(m_LightExposureMaterial.Program, m_GBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
                 lightExposureCommandBuffer.SetTexture2D(m_LightExposureMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
                 lightExposureCommandBuffer.SetTexture2D(m_LightExposureMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
-                
+                lightExposureCommandBuffer.SetUniformVector4(m_LightExposureMaterial.Program, new Vector4(observer.Spatial.Position.X, observer.Spatial.Position.Y, observer.Spatial.Position.Z, 1), "f_ViewPosition");
 
                 /*
                  * Draw color buffer
