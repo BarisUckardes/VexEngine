@@ -58,14 +58,36 @@ namespace Bite.GUI
              */
             List<Framebuffer2D> visibleFramebuffers = m_Observer.Framebuffer2DResources;
             ImGuiNET.ImGui.SetNextItemWidth(ImGuiNET.ImGui.CalcTextSize("Default Color").X*2);
-            if(GUIRenderCommands.CreateCombo("", m_TargetFramebuffer.Name,"icom"))
+            if(GUIRenderCommands.CreateCombo("", m_TargetFramebuffer.Attachments[m_TargetFramebufferAttachmentIndex].Texture.Name,"icom"))
             {
                 foreach(Framebuffer2D framebuffer in visibleFramebuffers)
                 {
-                    if(GUIRenderCommands.CreateSelectableItem(framebuffer.Name,framebuffer.ID.ToString()))
+                    /*
+                     * Render framebuffer name
+                     */
+                    GUIRenderCommands.CreateText("Framebuffer: " + framebuffer.Name, "");
+
+                    /*
+                     * Iterate and render attachments
+                     */
+                    List<FramebufferAttachment> attachments = framebuffer.Attachments;
+                    for(int attachtmentIndex = 0;attachtmentIndex< attachments.Count;attachtmentIndex++)
                     {
-                        m_TargetFramebuffer = framebuffer;
+                        /*
+                         * Get attachment
+                         */
+                        FramebufferAttachment attachment = attachments[attachtmentIndex];
+
+                        /*
+                         * Render selectable
+                         */
+                        if (GUIRenderCommands.CreateSelectableItem(attachment.Texture.Name, attachment.Texture.ID.ToString()))
+                        {
+                            m_TargetFramebuffer = framebuffer;
+                            m_TargetFramebufferAttachmentIndex = attachtmentIndex;
+                        }
                     }
+                    
                 }
                 GUIRenderCommands.FinalizeCombo();
             }
@@ -115,7 +137,7 @@ namespace Bite.GUI
                 /*
                  * Render frambuffer image
                  */
-                GUIRenderCommands.CreateImage(m_TargetFramebuffer.BackTexture, new Vector2(textureWidth, textureHeight), uv0, uv1);
+                GUIRenderCommands.CreateImage(m_TargetFramebuffer.Attachments[m_TargetFramebufferAttachmentIndex].Texture, new Vector2(textureWidth, textureHeight), uv0, uv1);
 
                 /*
                  * Enable disable viewport transform
@@ -226,30 +248,30 @@ namespace Bite.GUI
                  */
                 if(framebuffer!= null)
                 {
-                    /*
-                     * Get framebuffer
-                     */
-                    Framebuffer2D framebuffer2D = framebuffer;
+                    ///*
+                    // * Get framebuffer
+                    // */
+                    //Framebuffer2D framebuffer2D = framebuffer;
 
-                    /*
-                     * Calculate mouse position on framebuffer
-                     */
-                    Vector2 mousePosition = GUILayoutCommands.GetMousePos();
-                    Vector2 min = imageStartScreenPosition;
-                    Vector2 max = min + new Vector2(textureWidth, textureHeight);
-                    if(mousePosition.X >= min.X && mousePosition.X <= max.X && mousePosition.Y >= min.Y && mousePosition.Y <= max.Y)
-                    {
-                        int x = (int)((framebuffer2D.Width * (float)(mousePosition.X - min.X) / (float)(max.X - min.X)));
-                        int y = (int)((framebuffer2D.Height * (float)(mousePosition.Y - min.Y) / (float)(max.Y - min.Y)));
-                        if(GUIEventCommands.IsMouseLeftButtonClicked())
-                        {
-                            List<Entity> entities = Session.CurrentWorld.Entities;
-                            uint index = framebuffer2D.GetPixelColor<uint>(x, y,TextureDataType.UnsignedInt);
+                    ///*
+                    // * Calculate mouse position on framebuffer
+                    // */
+                    //Vector2 mousePosition = GUILayoutCommands.GetMousePos();
+                    //Vector2 min = imageStartScreenPosition;
+                    //Vector2 max = min + new Vector2(textureWidth, textureHeight);
+                    //if(mousePosition.X >= min.X && mousePosition.X <= max.X && mousePosition.Y >= min.Y && mousePosition.Y <= max.Y)
+                    //{
+                    //    int x = (int)((framebuffer2D.Width * (float)(mousePosition.X - min.X) / (float)(max.X - min.X)));
+                    //    int y = (int)((framebuffer2D.Height * (float)(mousePosition.Y - min.Y) / (float)(max.Y - min.Y)));
+                    //    if(GUIEventCommands.IsMouseLeftButtonClicked())
+                    //    {
+                    //        List<Entity> entities = Session.CurrentWorld.Entities;
+                    //        uint index = framebuffer2D.GetPixelColor<uint>(x, y,TextureDataType.UnsignedInt);
 
-                            if(index != 0)
-                                GUIObject.SignalNewObject(entities[(int)index-1]);
-                        }
-                    }
+                    //        if(index != 0)
+                    //            GUIObject.SignalNewObject(entities[(int)index-1]);
+                    //    }
+                    //}
                 }
 
             }
@@ -285,10 +307,12 @@ namespace Bite.GUI
             m_Observer.Spatial.Rotation = m_Rotation;
             m_EntityID = observerEntity.ID;
             m_TargetFramebuffer = m_Observer.Framebuffer2DResources[0];
+            m_TargetFramebufferAttachmentIndex = 0;
         }
 
         private FreeGameObserver m_Observer;
         private Framebuffer2D m_TargetFramebuffer;
+        private int m_TargetFramebufferAttachmentIndex;
         private Guid m_EntityID;
         private Vector3 m_Position;
         private Vector3 m_Rotation;

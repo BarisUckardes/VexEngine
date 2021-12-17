@@ -9,33 +9,20 @@ namespace Vex.Graphics
     /// <summary>
     /// A sturct used for creating framebuffer attachments
     /// </summary>
-    public readonly struct FramebufferAttachmentParams
+    public readonly struct FramebufferAttachmentCreateParams
     {
-        public FramebufferAttachmentParams(int width, int height, int depth, TextureFormat format,TextureInternalFormat internalFormat,TextureDataType dataType)
+        public FramebufferAttachmentCreateParams(string name,TextureFormat format,TextureInternalFormat internalFormat,TextureDataType dataType)
         {
-            Width = width;
-            Height = height;
-            Depth = depth;
+            Name = name;
             Format = format;
             InternalFormat = internalFormat;
             DataType = dataType;
         }
 
         /// <summary>
-        /// Target width
+        /// Name of the texture
         /// </summary>
-        public readonly int Width;
-
-        /// <summary>
-        /// Target height
-        /// </summary>
-        public readonly int Height;
-
-        /// <summary>
-        /// Target depth
-        /// </summary>
-        public readonly int Depth;
-
+        public readonly string Name;
         /// <summary>
         /// Target texture format
         /// </summary>

@@ -85,12 +85,10 @@ namespace Bite.GUI
                 
             }
 
-            
-
             /*
              * Render framebuffer image
              */
-            GUIRenderCommands.CreateImage(m_PrimaryFramebuffer.BackTexture, availableSpace, uv0,uv1);
+            GUIRenderCommands.CreateImage(Framebuffer2D.IntermediateFramebuffer.Attachments[0].Texture, availableSpace, uv0,uv1);
 
             /*
              * Catch game input

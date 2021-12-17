@@ -17,8 +17,6 @@ namespace Vex.Graphics
             m_Width = width;
             m_Height = height;
             m_Depth = depth;
-            Format = format;
-           // CreateFramebuffer(new FramebufferAttachmentParams(width, height, depth, format, internalFormat,dataType));
         }
 
 

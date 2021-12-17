@@ -59,8 +59,8 @@ namespace Vex.Asset
             /*
              * Create framebuffer
              */
-            Framebuffer2D framebuffer = new Framebuffer2D(width, height, format,TextureInternalFormat.Rgb8,TextureDataType.Byte);
-            return framebuffer;
+            //Framebuffer2D framebuffer = new Framebuffer2D(width, height, format,TextureInternalFormat.Rgb8,TextureDataType.Byte);
+            return null;
         }
 
         protected override void WriteAsset(IEmitter emitter, object engineObject)
@@ -87,11 +87,11 @@ namespace Vex.Asset
             emitter.Emit(new Scalar(null, "Height"));
             emitter.Emit(new Scalar(null, framebuffer.Height.ToString()));
 
-            /*
-             * Emit format
-             */
-            emitter.Emit(new Scalar(null, "Format"));
-            emitter.Emit(new Scalar(null,((int)framebuffer.Format).ToString()));
+            ///*
+            // * Emit format
+            // */
+            //emitter.Emit(new Scalar(null, "Format"));
+            //emitter.Emit(new Scalar(null,((int)framebuffer.Format).ToString()));
 
             /*
              * Emit mapping end

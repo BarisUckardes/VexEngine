@@ -30,13 +30,16 @@ namespace Vex.Graphics
         }
         private static Framebuffer2D s_IntermediateFramebuffer;
 
-        public Framebuffer2D(int width,int height,TextureFormat format,TextureInternalFormat internalFormat,TextureDataType dataType)
+        public Framebuffer2D(int width,int height,in List<FramebufferAttachmentCreateParams> attachmentParams,bool hasDepthTexture)
         {
             m_Width = width;
             m_Height = height;
-            Format = format;
-            InternalFormat = internalFormat;
-            DataType = dataType;
+            HasDepthTexture = true;
+
+            /*
+             * Set attachment create parameters
+             */
+            AttachmentCreateParameters = attachmentParams;
 
             /*
              * Create texture
@@ -101,12 +104,12 @@ namespace Vex.Graphics
             Invalidate();
         }
 
-        public TValue GetPixelColor<TValue>(int x,int y,TextureDataType dataType) where TValue : struct
+        public TValue GetPixelColor<TValue>(int attachmentIndex,int x,int y,TextureDataType dataType) where TValue : struct
         {
             /*
              * Set framebuffer read color attachment 0
              */
-            GL.ReadBuffer(ReadBufferMode.ColorAttachment0);
+            GL.ReadBuffer(ReadBufferMode.ColorAttachment0 + attachmentIndex);
 
             /*
              * Create return value
@@ -122,42 +125,16 @@ namespace Vex.Graphics
             /*
              * Try read
              */
-            GL.ReadPixels(pixelX,pixelY, 1, 1, (PixelFormat)Format,(PixelType)dataType, ref value);
+            GL.ReadPixels(pixelX,pixelY, 1, 1, (PixelFormat)Attachments[0].Format,(PixelType)Attachments[0].DataType, ref value);
             return value;
         }
-        public Vector4 GetPixelColor(int x,int y,TextureDataType dataType)
-        {
-            /*
-            * Set framebuffer read color attachment 0
-            */
-            GL.ReadBuffer(ReadBufferMode.ColorAttachment0);
-
-            /*
-             * Create return value
-             */
-            Vector4 value = new Vector4(1,1,1,1);
-
-            /*
-             * Mirror Y-Axis on openg
-             */
-            int pixelX = x;
-            int pixelY = m_Height - y;
-            
-            /*
-             * Try read
-             */
-            GL.ReadPixels(pixelX, pixelY, 1, 1, PixelFormat.Rgba, (PixelType)dataType, ref value);
-            return value;
-        }
-
+       
         private void Invalidate()
         {
             /*
              * Validate former framebuffer and back textures
              */
-            if (BackTexture != null)
-                BackTexture.Destroy();
-            BackTexture = null;
+            DestroyAttachments();
 
             if (DepthTexture != null)
                 DepthTexture.Destroy();
@@ -178,16 +155,73 @@ namespace Vex.Graphics
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebufferID);
 
             /*
-             * Create texture
+             * Create attachments
              */
-            Texture2D backTexture = new Texture2D(m_Width, m_Height, Format, InternalFormat, DataType);
-            Texture2D depthTexture = new Texture2D(m_Width, m_Height, TextureFormat.DepthComponent, TextureInternalFormat.DepthComponent, TextureDataType.Float);
+            List<FramebufferAttachment> attachments = new List<FramebufferAttachment>();
+            foreach(FramebufferAttachmentCreateParams attachmentParameters in AttachmentCreateParameters)
+            {
+                /*
+                 * Create texture
+                 */
+                Texture2D colorAttachment = new Texture2D(Width, Height, attachmentParameters.Format, attachmentParameters.InternalFormat, attachmentParameters.DataType);
+                colorAttachment.Name = attachmentParameters.Name;
+
+                /*
+                 * Create attachment
+                 */
+                FramebufferAttachment attachment = new FramebufferAttachment(colorAttachment,attachmentParameters.Format, attachmentParameters.InternalFormat, attachmentParameters.DataType, Width, Height,0);
+                attachments.Add(attachment);
+            }
 
             /*
              * Set attachment
              */
-            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, backTexture.Handle, 0);
-            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, depthTexture.Handle, 0);
+            List<DrawBuffersEnum> attachmentSlots = new List<DrawBuffersEnum>();
+            for(int attachmentIndex = 0;attachmentIndex < attachments.Count; attachmentIndex++)
+            {
+                /*
+                 * Get attachment
+                 */
+                FramebufferAttachment attachment = attachments[attachmentIndex];
+
+                /*
+                 * Get attachment slot
+                 */
+                OpenTK.Graphics.OpenGL4.FramebufferAttachment attachmentSlot = OpenTK.Graphics.OpenGL4.FramebufferAttachment.ColorAttachment0 + attachmentIndex;
+
+                /*
+                 * Register attachment slot
+                 */
+                attachmentSlots.Add(DrawBuffersEnum.ColorAttachment0 + attachmentIndex);
+
+                /*
+                 * Setup attachment
+                 */
+                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, attachmentSlot, TextureTarget.Texture2D, attachment.Texture.Handle, 0);
+            }
+
+            /*
+             * Specify buffers for drawing
+             */
+            GL.DrawBuffers(attachmentSlots.Count, attachmentSlots.ToArray());
+
+            if(HasDepthTexture)
+            {
+                /*
+                * Create depth texture
+                */
+                Texture2D depthTexture = new Texture2D(m_Width, m_Height, TextureFormat.DepthComponent, TextureInternalFormat.DepthComponent, TextureDataType.Float);
+
+                /*
+                 * Set depth buffer
+                 */
+                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, OpenTK.Graphics.OpenGL4.FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, depthTexture.Handle, 0);
+
+                /*
+                 * Set depth attachment
+                */
+                DepthTexture = depthTexture;
+            }
 
             /*
              * Unbind framebuffer
@@ -195,15 +229,14 @@ namespace Vex.Graphics
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
             /*
-             * Set attachment
-             */
-            BackTexture = backTexture;
-            DepthTexture = depthTexture;
-
-            /*
              * Set framebuffer id
              */
             FramebufferID = framebufferID;
+
+            /*
+             * Set attachments
+             */
+            Attachments = attachments;
         }
 
         private int m_Width;

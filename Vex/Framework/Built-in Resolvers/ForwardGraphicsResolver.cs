@@ -25,106 +25,129 @@ namespace Vex.Framework
              */
             m_Renderables = new List<ForwardMeshRenderable>();
             m_Observers = new List<ObserverComponent>();
-            m_ColorFramebuffers = new List<Framebuffer2D>();
-            m_NormalFramebuffers = new List<Framebuffer2D>();
+            m_GBuffers = new List<Framebuffer2D>();
+            m_LightExposureBuffers = new List<Framebuffer2D>();
 
             /*
-             * Create color write material
+             * Create gbuffer material
              */
-            string colorVertexShaderText = @"#version 450
+            string gBufferVertexShaderText = @"#version 450
             layout(location = 0) in vec3 v_Position;
             layout(location = 1) in vec3 v_Normal;
             layout(location = 2) in vec2 v_Uv;
 
+            out vec2 f_Uv;
+            out vec3 f_Normal;
+            out vec3 f_Position;
+            uniform mat4 v_Mvp;
+            uniform mat4 v_Model;
+            void main()
+            {
+                vec4 objectWorldPosition = v_Model * vec4(v_Position, 1);
+                gl_Position = v_Mvp * vec4(v_Position, 1);
+                f_Uv = v_Uv;
+                f_Normal = (v_Model*vec4(v_Normal,1)).xyz;
+                f_Position = objectWorldPosition.xyz;
+            }
+            ";
+
+             string gBufferFragmentShaderText = @"
+             #version 450
 
 
+              out vec4 ColorOut;
+              out vec4 NormalOut;
+              out vec3 PositionOut;
+
+              in vec2 f_Uv;
+              in vec3 f_Normal;
+              in vec3 f_Position;
+              uniform sampler2D f_DeferredColorTexture;
+
+              void main()
+              {
+                  ColorOut = texture(f_DeferredColorTexture,f_Uv);
+                  NormalOut = vec4(f_Normal,1);
+                  PositionOut = f_Position;
+
+              }";
+            Shader gBufferVertexShader = new Shader(ShaderStage.Vertex);
+            gBufferVertexShader.Compile(gBufferVertexShaderText);
+
+            Shader gBufferFragmentShader = new Shader(ShaderStage.Fragment);
+            gBufferFragmentShader.Compile(gBufferFragmentShaderText);
+
+            ShaderProgram gBufferShaderProgram = new ShaderProgram("Deferred", "GBuffer");
+            gBufferShaderProgram.LinkProgram(new List<Shader>() { gBufferVertexShader, gBufferFragmentShader });
+
+            Material gBufferMaterial = new Material(gBufferShaderProgram);
+            m_GBufferMaterial = gBufferMaterial;
+
+            /*
+             * Create light exposure material
+             */
+
+            /*
+             * Create gbuffer material
+             */
+            string lightExposureVertexShaderText = @"#version 450
+            layout(location = 0) in vec3 v_Position;
+            layout(location = 1) in vec3 v_Normal;
+            layout(location = 2) in vec2 v_Uv;
 
             out vec2 f_Uv;
-
-
-            uniform mat4 v_Mvp;
-
+            
             void main()
-
             {
-                gl_Position = v_Mvp * vec4(v_Position, 1);
+                gl_Position = vec4(v_Position, 1);
                 f_Uv = v_Uv;
             }
             ";
 
-            string colorFragmentShaderText = @"
- #version 450
+             string lightExposureFragmentShaderText = @"
+             #version 450
 
 
-  out vec4 ColorOut;
+              out float ExposureOut;
 
+              in vec2 f_Uv;
+              uniform sampler2D f_ColorTexture;
+              uniform sampler2D f_PositionTexture;
+              uniform sampler2D f_NormalTexture;
 
-  in vec2 f_Uv;
+              void main()
+              {
+                    vec3 worldPosition = texture(f_PositionTexture,f_Uv).rgb;
+                    vec3 worldNormal = texture(f_NormalTexture,f_Uv).rgb;
+                    float lightDot = max(dot(worldNormal,vec3(0,1,0)),0.0f);
+                    ExposureOut = lightDot;
+              }";
 
-  uniform sampler2D f_DeferredColorTexture;
+            Shader lightExposureVertexShader = new Shader(ShaderStage.Vertex);
+            lightExposureVertexShader.Compile(lightExposureVertexShaderText);
 
-  void main()
+            Shader lightExposureFragmentShader = new Shader(ShaderStage.Fragment);
+            lightExposureFragmentShader.Compile(lightExposureFragmentShaderText);
 
-  {
-      ColorOut = texture(f_DeferredColorTexture,f_Uv);
-  }";
-            Shader colorVertexShader = new Shader(ShaderStage.Vertex);
-            colorVertexShader.Compile(colorVertexShaderText);
+            ShaderProgram lightExposureShaderProgram = new ShaderProgram("Deferred", "Light Exposure");
+            lightExposureShaderProgram.LinkProgram(new List<Shader>() { lightExposureVertexShader, lightExposureFragmentShader });
 
-            Shader colorFragmentShader = new Shader(ShaderStage.Fragment);
-            colorFragmentShader.Compile(colorFragmentShaderText);
-
-            ShaderProgram colorShaderProgram = new ShaderProgram("Deferred", "Color");
-            colorShaderProgram.LinkProgram(new List<Shader>() { colorVertexShader, colorFragmentShader });
-
-            Material colorMaterial = new Material(colorShaderProgram);
-
-            /*
-             * Create normal write material
-             */
-            string normalvertexShaderText = @"
- #version 450
-
-  layout(location = 0) in vec3 v_Position;
-  layout(location = 1) in vec3 v_Normal;
-  layout(location = 2) in vec2 v_Uv;
-
-  out vec3 f_Normal;
-  uniform mat4 v_Mvp;
-
-  void main()
-  {
-      gl_Position = v_Mvp*vec4(v_Position,1);
-      f_Normal = v_Normal;
-  }";
-            string normalFragmentShaderText = @"
- #version 450
-
-
-  out vec4 NormalOut;
-
-  in vec3 f_Normal;
-  void main()
-  {
-      NormalOut = vec4(f_Normal,1);
-  }
-";
-            Shader normalVertexShader = new Shader(ShaderStage.Vertex);
-            normalVertexShader.Compile(normalvertexShaderText);
-
-            Shader normalFragmentShader = new Shader(ShaderStage.Fragment);
-            normalFragmentShader.Compile(normalFragmentShaderText);
-
-            ShaderProgram normalShaderProgram = new ShaderProgram("Deferred", "Normal");
-            normalShaderProgram.LinkProgram(new List<Shader>() { normalVertexShader, normalFragmentShader });
-
-            Material normalMaterial = new Material(normalShaderProgram);
+            Material lightExposureMaterial = new Material(lightExposureShaderProgram);
+            m_LightExposureMaterial = lightExposureMaterial;
 
             /*
-             * Register created materials
+             * Create screen quad
              */
-            m_ColorMaterial = colorMaterial;
-            m_NormalMaterial = normalMaterial;
+            List<StaticMeshVertex> vertexes = new List<StaticMeshVertex>();
+            vertexes.Add(new StaticMeshVertex(new Vector3(-1, -1, 0), new Vector3(0, 0, 0), new Vector2(0, 0)));
+            vertexes.Add(new StaticMeshVertex(new Vector3(1, -1, 0), new Vector3(0, 0, 0), new Vector2(1, 0)));
+            vertexes.Add(new StaticMeshVertex(new Vector3(-1, 1, 0), new Vector3(0, 0, 0), new Vector2(0, 1)));
+            vertexes.Add(new StaticMeshVertex(new Vector3(1, 1, 0), new Vector3(0, 0, 0), new Vector2(1, 1)));
+            List<int> triangles = new List<int>() {0,1,2,1,3,2};
+            StaticMesh mesh = new StaticMesh();
+            mesh.SetVertexData(vertexes.ToArray());
+            mesh.SetTriangleData(triangles.ToArray());
+            m_ScreenQuad = mesh;
         }
 
         public override List<GraphicsObjectRegisterInfo> GetGraphicsComponentRegisterInformations()
@@ -138,33 +161,61 @@ namespace Vex.Framework
         public override void OnObserverRegistered(ObserverComponent observer)
         {
             /*
-             * Create observer specific color framebuffer
+             * Create observer specific gbuffer framebuffer
              */
-            Framebuffer2D colorFramebuffer = new Framebuffer2D(Framebuffer2D.IntermediateFramebuffer.Width, Framebuffer2D.IntermediateFramebuffer.Height, TextureFormat.Rgba, TextureInternalFormat.Rgba32f, TextureDataType.UnsignedByte);
-            colorFramebuffer.Name = "Unlit Color";
+            Framebuffer2D gBufferFramebuffer = new Framebuffer2D(
+                Framebuffer2D.IntermediateFramebuffer.Width,
+                Framebuffer2D.IntermediateFramebuffer.Height,
+                new List<FramebufferAttachmentCreateParams>()
+                {
+                    new FramebufferAttachmentCreateParams("Color",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
+                    new FramebufferAttachmentCreateParams("Normal",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
+                    new FramebufferAttachmentCreateParams("Position",TextureFormat.Rgb,TextureInternalFormat.Rgb32f,TextureDataType.UnsignedByte)
+                },
+                true
+                );;
 
-            /*
-            * Create observer specific normal framebuffer
-            */
-            Framebuffer2D normalFramebuffer = new Framebuffer2D(Framebuffer2D.IntermediateFramebuffer.Width, Framebuffer2D.IntermediateFramebuffer.Height, TextureFormat.Rgba, TextureInternalFormat.Rgba32f, TextureDataType.UnsignedByte);
-            normalFramebuffer.Name = "Object Normals";
+            gBufferFramebuffer.Name = "GBuffer";
 
             /*
              * Register as inspectable framebuffer
              */
-            observer.RegisterFramebuffer2DResource(colorFramebuffer);
-            observer.RegisterFramebuffer2DResource(normalFramebuffer);
+            observer.RegisterFramebuffer2DResource(gBufferFramebuffer);
 
             /*
-             * Register observer
+             * Register gbuffer
              */
+            m_GBuffers.Add(gBufferFramebuffer);
+
+            /*
+             * Create observer light exposure framebuffer
+             */
+            Framebuffer2D lightExposureFramebuffer = new Framebuffer2D(
+                Framebuffer2D.IntermediateFramebuffer.Width,
+                Framebuffer2D.IntermediateFramebuffer.Height,
+                new List<FramebufferAttachmentCreateParams>()
+                {
+                    new FramebufferAttachmentCreateParams("Light Exposure",TextureFormat.Red, TextureInternalFormat.R32f, TextureDataType.UnsignedByte),
+                },
+                true
+                ); ;
+
+            lightExposureFramebuffer.Name = "Light Exposure";
+
+            /*
+             * Register as inspectable framebuffer
+             */
+            observer.RegisterFramebuffer2DResource(lightExposureFramebuffer);
+
+            /*
+             * Register light exposure framebuffer
+             */
+            m_LightExposureBuffers.Add(lightExposureFramebuffer);
+
+            /*
+            * Register observer
+            */
             m_Observers.Add(observer);
-
-            /*
-             * Register color framebuffer
-             */
-            m_ColorFramebuffers.Add(colorFramebuffer);
-            m_NormalFramebuffers.Add(normalFramebuffer);
         }
 
         public override void OnObserverRemoved(ObserverComponent observer)
@@ -173,33 +224,26 @@ namespace Vex.Framework
              * Get observer index
              */
             int observerIndex = m_Observers.IndexOf(observer);
+
             /*
              * Get color framebuffer for this observer
              */
-            Framebuffer2D colorFramebuffer = m_ColorFramebuffers[observerIndex];
-
-            /*
-            * Get normal framebuffer for this observer
-            */
-            Framebuffer2D normalFramebuffer = m_NormalFramebuffers[observerIndex];
+            Framebuffer2D gBuffer = m_GBuffers[observerIndex];
 
             /*
              * Remove frambuffer from the observer
              */
-            observer.RemoveFramebuffer2DResource(colorFramebuffer);
-            observer.RemoveFramebuffer2DResource(normalFramebuffer);
+            observer.RemoveFramebuffer2DResource(gBuffer);
 
             /*
              * Destroy framebuffer
              */
-            colorFramebuffer.Destroy();
-            normalFramebuffer.Destroy();
+            gBuffer.Destroy();
 
             /*
              * Remove framebuffers so they can be garbage collected
              */
-            m_ColorFramebuffers.RemoveAt(observerIndex);
-            m_NormalFramebuffers.RemoveAt(observerIndex);
+            m_GBuffers.RemoveAt(observerIndex);
 
             /*
              * Remove observer
@@ -219,296 +263,273 @@ namespace Vex.Framework
 
         public override void Resolve()
         {
+            /*
+             * Create new command buffer
+             */
+            CommandBuffer gBufferCommandBuffer = new CommandBuffer();
+            CommandBuffer lightExposureCommandBuffer = new CommandBuffer();
 
+            /*
+             * Start recording
+             */
+            gBufferCommandBuffer.StartRecoding();
+            lightExposureCommandBuffer.StartRecoding();
+
+            /*
+             * Set gbuffer pipeline state
+             */
+            PipelineState gBufferPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+            gBufferCommandBuffer.SetPipelineState(gBufferPipelineState);
+
+            /*
+             * Iterate each observer for gbuffer
+             */
+            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
             {
                 /*
-                * Create new command buffer
-               */
-                CommandBuffer colorCommandBuffer = new CommandBuffer();
-                CommandBuffer normalCommandBuffer = new CommandBuffer();
+                 * Get observer and its data
+                 */
+                ObserverComponent observer = m_Observers[observerIndex];
 
                 /*
-                 * Start recording
+                 * Get observer clear color
                  */
-                colorCommandBuffer.StartRecoding();
-                normalCommandBuffer.StartRecoding();
+                Color4 clearColor = Color4.Black;
 
                 /*
-                 * Set state
+                 * Get observer gBuffer
                  */
-                PipelineState state = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
-                colorCommandBuffer.SetPipelineState(state);
-                normalCommandBuffer.SetPipelineState(state);
+                Framebuffer2D gBuffer = m_GBuffers[observerIndex];
 
                 /*
-                 * Iterate each observer
+                 * Get observer view matrix
                  */
-                for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+                Matrix4 viewMatrix = observer.GetViewMatrix();
+
+                /*
+                 * Get observer pVexjection matrix
+                 */
+                Matrix4 projectionMatrix = observer.GetProjectionMatrix();
+
+                /*
+                 * Set color framebuffer
+                 */
+                gBufferCommandBuffer.SetFramebuffer(gBuffer);
+
+                /*
+                 * Set framebuffer viewport
+                 */
+                gBufferCommandBuffer.SetViewport(Vector2.Zero, new Vector2(gBuffer.Width, gBuffer.Height));
+
+                /*
+                 * Clear color the framebuffer
+                 */
+                gBufferCommandBuffer.ClearColor(clearColor);
+                gBufferCommandBuffer.ClearDepth(1.0f);
+
+                /*
+                 * Set color shader program
+                 */
+                gBufferCommandBuffer.SetShaderProgram(m_GBufferMaterial.Program);
+
+                /*
+                 * Render for gbuffer
+                 */
+                for (int renderableIndex = 0; renderableIndex < m_Renderables.Count; renderableIndex++)
                 {
-                    Profiler.StartProfile("Observer Submit");
+                    Profiler.StartProfile("Deferred GBuffer Pass");
 
                     /*
-                     * Get observer and its data
+                     * Get renderable
                      */
-                    ObserverComponent observer = m_Observers[observerIndex];
+                    ForwardMeshRenderable renderable = m_Renderables[renderableIndex];
 
                     /*
-                     * Get observer clear color
+                     * Validate renderable
                      */
-                    Color4 clearColor = observer.ClearColor;
+                    if (renderable == null)
+                        continue;
 
                     /*
-                     * Get observer color framebuffer
+                     * Validate mesh
                      */
-                    Framebuffer2D colorFramebuffer = m_ColorFramebuffers[observerIndex];
-                    Framebuffer2D normalFramebuffer = m_NormalFramebuffers[observerIndex];
+                    if (renderable.Mesh == null)
+                        continue;
 
                     /*
-                     * Get observer view matrix
-                     */
-                    Matrix4 viewMatrix = observer.GetViewMatrix();
-
-                    /*
-                     * Get observer pVexjection matrix
-                     */
-                    Matrix4 projectionMatrix = observer.GetProjectionMatrix();
-
-                    /*
-                     * Set color framebuffer
-                     */
-                    colorCommandBuffer.SetFramebuffer(colorFramebuffer);
-
-                    /*
-                     * Set framebuffer viewport
-                     */
-                    colorCommandBuffer.SetViewport(Vector2.Zero, new Vector2(colorFramebuffer.Width, colorFramebuffer.Height));
-
-                    /*
-                     * Clear color the framebuffer
-                     */
-                    colorCommandBuffer.ClearColor(clearColor);
-                    colorCommandBuffer.ClearDepth(1.0f);
-
-                    /*
-                     * Set color shader program
-                     */
-                    colorCommandBuffer.SetShaderProgram(m_ColorMaterial.Program);
-
-                    /*
-                     * Render each mesh color
-                     */
-                    for (int renderableIndex = 0; renderableIndex < m_Renderables.Count; renderableIndex++)
-                    {
-                        Profiler.StartProfile("Deferred Color Render Pass");
-
-                        /*
-                         * Get renderable
-                         */
-                        ForwardMeshRenderable renderable = m_Renderables[renderableIndex];
-
-                        /*
-                         * Validate renderable
-                         */
-                        if (renderable == null)
-                            continue;
-
-                        /*
-                         * Validate mesh
-                         */
-                        if (renderable.Mesh == null)
-                            continue;
-
-                        /*
-                         * Validate vertex and index buffer
-                        */
-                        if (renderable.Mesh.VertexBuffer == null || renderable.Mesh.IndexBuffer == null)
-                            continue;
-
-                        /*
-                         * Get vertex buffer
-                         */
-                        VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
-
-                        /*
-                         * Get index buffer
-                         */
-                        IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
-
-                        /*
-                         * Get triangle count
-                         */
-                        uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;
-
-                        /*
-                         * Set vertex buffer command
-                         */
-                        colorCommandBuffer.SetVertexbuffer(vertexBuffer);
-
-                        /*
-                         * Set index buffer command
-                         */
-                        colorCommandBuffer.SetIndexBuffer(indexBuffer);
-
-                        /*
-                         * Create model matrix
-                         */
-                        Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
-                        Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
-                        Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
-
-                        /*
-                         * Create mvp matrix
-                         */
-                        Matrix4 modelMatrix =
-                            Matrix4.CreateScale(scale) *
-                            Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.X)) *
-                            Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Y)) *
-                            Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z)) *
-                            Matrix4.CreateTranslation(position);
-
-                        Matrix4 mvp = modelMatrix * viewMatrix * projectionMatrix;
-                        colorCommandBuffer.SetUniformMat4x4(m_ColorMaterial.Program, mvp, "v_Mvp");
-
-                        /*
-                         * Set color texture
-                         */
-                        colorCommandBuffer.SetTexture2D(m_ColorMaterial.Program,renderable.ColorTexture,"f_DeferredColorTexture");
-
-                        /*
-                         * Draw color buffer
-                         */
-                        colorCommandBuffer.DrawIndexed((int)triangleCount);
-
-
-                        Profiler.EndProfile();
-                    }
-
-                    /*
-                     * Set normal framebuffer
-                     */
-                    normalCommandBuffer.SetFramebuffer(normalFramebuffer);
-
-                    /*
-                     * Set framebuffer viewport
-                     */
-                    normalCommandBuffer.SetViewport(Vector2.Zero, new Vector2(normalFramebuffer.Width, normalFramebuffer.Height));
-
-                    /*
-                     * Clear color the framebuffer
-                     */
-                    normalCommandBuffer.ClearColor(clearColor);
-                    normalCommandBuffer.ClearDepth(1.0f);
-
-                    /*
-                    * Set color shader program
+                     * Validate vertex and index buffer
                     */
-                    normalCommandBuffer.SetShaderProgram(m_NormalMaterial.Program);
+                    if (renderable.Mesh.VertexBuffer == null || renderable.Mesh.IndexBuffer == null)
+                        continue;
 
                     /*
-                     * Render each mesh normal
+                     * Get vertex buffer
                      */
-                    for (int renderableIndex = 0; renderableIndex < m_Renderables.Count; renderableIndex++)
-                    {
-                        Profiler.StartProfile("Deferred Normal Render Pass");
+                    VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
 
-                        /*
-                         * Get renderable
-                         */
-                        ForwardMeshRenderable renderable = m_Renderables[renderableIndex];
+                    /*
+                     * Get index buffer
+                     */
+                    IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
 
-                        /*
-                         * Validate renderable
-                         */
-                        if (renderable == null)
-                            continue;
+                    /*
+                     * Get triangle count
+                     */
+                    uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;
 
-                        /*
-                         * Validate mesh
-                         */
-                        if (renderable.Mesh == null)
-                            continue;
+                    /*
+                     * Set vertex buffer command
+                     */
+                    gBufferCommandBuffer.SetVertexbuffer(vertexBuffer);
 
-                        /*
-                         * Validate vertex and index buffer
-                        */
-                        if (renderable.Mesh.VertexBuffer == null || renderable.Mesh.IndexBuffer == null)
-                            continue;
+                    /*
+                     * Set index buffer command
+                     */
+                    gBufferCommandBuffer.SetIndexBuffer(indexBuffer);
 
-                        /*
-                         * Get vertex buffer
-                         */
-                        VertexBuffer vertexBuffer = renderable.Mesh == null ? null : renderable.Mesh.VertexBuffer;
+                    /*
+                     * Create model matrix
+                     */
+                    Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
+                    Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
+                    Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
 
-                        /*
-                         * Get index buffer
-                         */
-                        IndexBuffer indexBuffer = renderable.Mesh == null ? null : renderable.Mesh.IndexBuffer;
+                    /*
+                     * Create mvp matrix
+                     */
+                    Matrix4 modelMatrix =
+                        Matrix4.CreateScale(scale) *
+                        Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.X)) *
+                        Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Y)) *
+                        Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z)) *
+                        Matrix4.CreateTranslation(position);
 
-                        /*
-                         * Get triangle count
-                         */
-                        uint triangleCount = renderable.Mesh == null ? 0 : renderable.Mesh.IndexBuffer.IndexCount;
+                    Matrix4 mvp = modelMatrix * viewMatrix * projectionMatrix;
+                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, mvp, "v_Mvp");
+                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, modelMatrix, "v_Model");
 
-                        /*
-                         * Set vertex buffer command
-                         */
-                        normalCommandBuffer.SetVertexbuffer(vertexBuffer);
+                    /*
+                     * Set color texture
+                     */
+                    gBufferCommandBuffer.SetTexture2D(m_GBufferMaterial.Program, renderable.ColorTexture, "f_DeferredColorTexture");
 
-                        /*
-                         * Set index buffer command
-                         */
-                        normalCommandBuffer.SetIndexBuffer(indexBuffer);
+                    /*
+                     * Draw color buffer
+                     */
+                    gBufferCommandBuffer.DrawIndexed((int)triangleCount);
 
-                        /*
-                         * Create model matrix
-                         */
-                        Vector3 position = renderable.Spatial.Position.GetAsOpenTK();
-                        Vector3 rotation = renderable.Spatial.Rotation.GetAsOpenTK();
-                        Vector3 scale = renderable.Spatial.Scale.GetAsOpenTK();
-
-                        /*
-                         * Create mvp matrix
-                         */
-                        Matrix4 modelMatrix =
-                            Matrix4.CreateScale(scale) *
-                            Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.X)) *
-                            Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Y)) *
-                            Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z)) *
-                            Matrix4.CreateTranslation(position);
-
-                        Matrix4 mvp = modelMatrix * viewMatrix * projectionMatrix;
-                        normalCommandBuffer.SetUniformMat4x4(m_NormalMaterial.Program, mvp, "v_Mvp");
-
-                        /*
-                         * Draw color buffer
-                         */
-                        normalCommandBuffer.DrawIndexed((int)triangleCount);
-
-                        Profiler.EndProfile();
-                    }
 
                     Profiler.EndProfile();
                 }
 
+                
+            }
+
+            /*
+             * End recording
+             */
+            gBufferCommandBuffer.EndRecording();
+
+            /*
+            * Set light exposure pipeline state
+            */
+            PipelineState lightExposurePipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+            lightExposurePipelineState.DepthTest = false;
+            lightExposureCommandBuffer.SetPipelineState(lightExposurePipelineState);
+            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+            {
                 /*
-                 * End recording
+                 * Get observer clear color
                  */
-                colorCommandBuffer.EndRecording();
-                normalCommandBuffer.EndRecording();
+                Color4 clearColor = Color4.Black;
 
                 /*
-                 * Execute command buffer
+                 * Get observer gBuffer
                  */
-                colorCommandBuffer.Execute();
-                normalCommandBuffer.Execute();
+                Framebuffer2D lightExposureBuffer = m_LightExposureBuffers[observerIndex];
+
+                /*
+                 * Set color framebuffer
+                 */
+                lightExposureCommandBuffer.SetFramebuffer(lightExposureBuffer);
+
+                /*
+                 * Set framebuffer viewport
+                 */
+                lightExposureCommandBuffer.SetViewport(Vector2.Zero, new Vector2(lightExposureBuffer.Width, lightExposureBuffer.Height));
+
+                /*
+                 * Clear color the framebuffer
+                 */
+                lightExposureCommandBuffer.ClearColor(clearColor);
+                lightExposureCommandBuffer.ClearDepth(1.0f);
+
+                /*
+                 * Set color shader program
+                 */
+                lightExposureCommandBuffer.SetShaderProgram(m_LightExposureMaterial.Program);
+
+                /*
+                   * Get vertex buffer
+                   */
+                VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
+
+                /*
+                 * Get index buffer
+                 */
+                IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
+
+                /*
+                 * Get triangle count
+                 */
+                uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
+
+                /*
+                 * Set vertex buffer command
+                 */
+                lightExposureCommandBuffer.SetVertexbuffer(vertexBuffer);
+
+                /*
+                 * Set index buffer command
+                 */
+                lightExposureCommandBuffer.SetIndexBuffer(indexBuffer);
+
+                /*
+                 * Set color texture
+                 */
+                lightExposureCommandBuffer.SetTexture2D(m_LightExposureMaterial.Program, m_GBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
+                lightExposureCommandBuffer.SetTexture2D(m_LightExposureMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
+                lightExposureCommandBuffer.SetTexture2D(m_LightExposureMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
+                
+
+                /*
+                 * Draw color buffer
+                 */
+                lightExposureCommandBuffer.DrawIndexed((int)triangleCount);
             }
+
+            /*
+             * End recording
+             */
+            lightExposureCommandBuffer.EndRecording();
+
+            /*
+             * Execute command buffer
+             */
+            gBufferCommandBuffer.Execute();
+
+            /*
+             * Execute command buffer
+             */
+            lightExposureCommandBuffer.Execute();
         }
 
         private List<ObserverComponent> m_Observers;
-        private List<Framebuffer2D> m_ColorFramebuffers;
-        private List<Framebuffer2D> m_NormalFramebuffers;
+        private List<Framebuffer2D> m_GBuffers;
+        private List<Framebuffer2D> m_LightExposureBuffers;
         private List<ForwardMeshRenderable> m_Renderables;
-        private Material m_ColorMaterial;
-        private Material m_NormalMaterial;
+        private Material m_GBufferMaterial;
+        private Material m_LightExposureMaterial;
+        private StaticMesh m_ScreenQuad;
     }
 }

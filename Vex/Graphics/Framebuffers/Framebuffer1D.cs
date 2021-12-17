@@ -18,12 +18,7 @@ namespace Vex.Graphics
              * Set local fields
              */
             m_Width = width;
-            Format = format;
 
-            /*
-             * Create framebuffer
-             */
-         //   CreateFramebuffer(new FramebufferAttachmentParams(width, 0, 0, format,internalFormat,dataType));
         }
 
         /// <summary>

@@ -17,6 +17,7 @@ namespace Vex.Graphics
         public Framebuffer()
         {
             m_FramebufferID = 0;
+            m_Attachments = new List<FramebufferAttachment>();
         }
 
         /// <summary>
@@ -46,62 +47,17 @@ namespace Vex.Graphics
         }
 
         /// <summary>
-        /// Returns the texture format
-        /// </summary>
-        public TextureFormat Format
-        {
-            get
-            {
-                return m_Format;
-            }
-            protected set
-            {
-                m_Format = value;
-            }
-        }
-
-        /// <summary>
-        /// Returns the internal texture format
-        /// </summary>
-        public TextureInternalFormat InternalFormat
-        {
-            get
-            {
-                return m_InternalFormat;
-            }
-            protected set
-            {
-                m_InternalFormat = value;
-            }
-        }
-
-        /// <summary>
-        /// The data type of the one pixel in the framebuffer
-        /// </summary>
-        public TextureDataType DataType
-        {
-            get
-            {
-                return m_DataType;
-            }
-            protected set
-            {
-                m_DataType = value;
-            }
-        }
-
-        /// <summary>
         /// Returns the back texture
         /// </summary>
-        public Texture BackTexture
+        public List<FramebufferAttachment> Attachments
         {
             get
             {
-                return m_BackTexture;
+                return new List<FramebufferAttachment>(m_Attachments);
             }
             protected set
             {
-                m_BackTexture = value;
+                m_Attachments = value;
             }
         }
 
@@ -135,6 +91,18 @@ namespace Vex.Graphics
             }
         }
 
+        protected List<FramebufferAttachmentCreateParams> AttachmentCreateParameters
+        {
+            get
+            {
+                return m_AttachmentCreateParameters;
+            }
+            set
+            {
+                m_AttachmentCreateParameters = value;
+            }
+        }
+
         public bool IsDestroyed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         
@@ -143,8 +111,7 @@ namespace Vex.Graphics
             /*
              * Delete back texture
              */
-            m_BackTexture?.Destroy();
-            m_BackTexture = null;
+            DestroyAttachments();
 
             /*
              * Delete depth texture
@@ -158,11 +125,19 @@ namespace Vex.Graphics
             GL.DeleteFramebuffer(m_FramebufferID);
         }
 
-        private Texture m_BackTexture;
+        /// <summary>
+        /// Destroys and frees all the framebuffer attachments
+        /// </summary>
+        protected void DestroyAttachments()
+        {
+            foreach (FramebufferAttachment attachment in m_Attachments)
+                attachment.DestoryAttachment();
+            m_Attachments.Clear();
+        }
+
+        private List<FramebufferAttachment> m_Attachments;
+        private List<FramebufferAttachmentCreateParams> m_AttachmentCreateParameters;
         private Texture m_DetphTexture;
-        private TextureFormat m_Format;
-        private TextureInternalFormat m_InternalFormat;
-        private TextureDataType m_DataType;
         private uint m_FramebufferID;
         private bool m_HasDepthTexture;
     }
