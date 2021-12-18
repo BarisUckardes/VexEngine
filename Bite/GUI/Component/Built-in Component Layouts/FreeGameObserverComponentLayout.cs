@@ -11,7 +11,7 @@ using Vex.Framework;
 using Vex.Types;
 namespace Bite.GUI
 {
-    [ComponentLayout(typeof(FreeGameObserver))]
+    //[ComponentLayout(typeof(FreeGameObserver))]
     public sealed class FreeGameObserverComponentLayout : ComponentLayout
     {
         public override void OnAttach()

@@ -13,21 +13,21 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class SetUniformVector4 : RenderCommand
     {
-        public SetUniformVector4(int pVexgramID,in string uniformName,in Vector4 value)
+        public SetUniformVector4(int programID,in string uniformName,in Vector4 value)
         {
             m_UniformName = uniformName;
             m_Value = value;
-            m_PVexgramID = pVexgramID;
+            m_ProgramID = programID;
         }
         protected override void ExecuteImpl()
         {
-            int location = GL.GetUniformLocation(m_PVexgramID, m_UniformName);
+            int location = GL.GetUniformLocation(m_ProgramID, m_UniformName);
             GL.Uniform4(location, m_Value.X,m_Value.Y,m_Value.Z,m_Value.W);
         }
 
 
         private string m_UniformName;
         private Vector4 m_Value;
-        private int m_PVexgramID;
+        private int m_ProgramID;
     }
 }

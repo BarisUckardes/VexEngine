@@ -237,9 +237,47 @@ namespace Vex.Graphics
         }
 
         /// <summary>
-        /// Set uniform float parameter command
+        /// Sets uniform vector3 array parameter command
+        /// </summary>
+        /// <param name="program"></param>
+        /// <param name="value"></param>
+        /// <param name="name"></param>
+        public void SetUniformVector3Array(in ShaderProgram program, in Vector3[] value, in string name)
+        {
+            /*
+            * Validate recording
+            */
+            if (!IsRecording)
+            {
+                return;
+            }
+
+            m_Commands.Add(new SetUniformVector3Array(program.Handle, name, value));
+        }
+
+        /// <summary>
+        /// Set uniform vector4 parameter command
         /// </summary>
         /// <param name="pVexgram"></param>
+        /// <param name="value"></param>
+        /// <param name="name"></param>
+        public void SetUniformVector4Array(in ShaderProgram program, in Vector4[] value, in string name)
+        {
+            /*
+            * Validate recording
+            */
+            if (!IsRecording)
+            {
+                return;
+            }
+
+            m_Commands.Add(new SetUniformVector4ArrayRC(program.Handle, name, value));
+        }
+
+        /// <summary>
+        /// Set uniform float parameter command
+        /// </summary>
+        /// <param name="program"></param>
         /// <param name="value"></param>
         /// <param name="name"></param>
         public void SetUniformFloat(in ShaderProgram program, float value,string name)
@@ -253,6 +291,25 @@ namespace Vex.Graphics
             }
 
             m_Commands.Add(new SetUniformFloat(program.Handle, name, value));
+        }
+
+        /// <summary>
+        /// Set uniform float parameter command
+        /// </summary>
+        /// <param name="program"></param>
+        /// <param name="value"></param>
+        /// <param name="name"></param>
+        public void SetUniformFloatArray(in ShaderProgram program, float[] value, string name)
+        {
+            /*
+            * Validate recording
+            */
+            if (!IsRecording)
+            {
+                return;
+            }
+
+            m_Commands.Add(new SetUniformFloatArray(program.Handle, name, value));
         }
 
         public void SetUniformInteger(in ShaderProgram program,int value,string name)

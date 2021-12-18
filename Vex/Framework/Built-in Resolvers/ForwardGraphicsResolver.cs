@@ -26,7 +26,9 @@ namespace Vex.Framework
             m_Renderables = new List<ForwardMeshRenderable>();
             m_Observers = new List<ObserverComponent>();
             m_GBuffers = new List<Framebuffer2D>();
-            m_LightExposureBuffers = new List<Framebuffer2D>();
+            m_AmbientOcclusionBuffers = new List<Framebuffer2D>();
+            m_PointLights = new List<DeferredPointLight>();
+            m_SSAOKernels = new List<Vector3>();
 
             /*
              * Create gbuffer material
@@ -41,6 +43,8 @@ namespace Vex.Framework
             out vec3 f_Position;
             uniform mat4 v_MvpMatrix;
             uniform mat4 v_ModelMatrix;
+            uniform mat4 v_ViewMatrix;
+            uniform mat4 v_ProjectionMatrix;
             uniform mat4 v_NormalMatrix;
             void main()
             {
@@ -48,7 +52,7 @@ namespace Vex.Framework
 
                 f_Uv = v_Uv;
                 f_Normal = (v_NormalMatrix*vec4(v_Normal,1)).xyz;
-                f_Position = (v_ModelMatrix * vec4(v_Position, 1)).xyz;
+                f_Position = (v_ViewMatrix*v_ModelMatrix * vec4(v_Position, 1)).xyz;
             }
             ";
 
@@ -91,7 +95,7 @@ namespace Vex.Framework
             /*
              * Create gbuffer material
              */
-            string lightExposureVertexShaderText = @"#version 450
+            string ambientOcclusionVertexShaderText = @"#version 450
             layout(location = 0) in vec3 v_Position;
             layout(location = 1) in vec3 v_Normal;
             layout(location = 2) in vec2 v_Uv;
@@ -105,36 +109,69 @@ namespace Vex.Framework
             }
             ";
 
-             string lightExposureFragmentShaderText = @"
-             #version 450
+              string ambientOcclusionFragmentShaderText =
+              @"
+              #version 450
 
-
-              out float ExposureOut;
+              out vec3 ColorOut;
 
               in vec2 f_Uv;
-              uniform sampler2D f_ColorTexture;
+
+              int kernelSize = 64;
+              float radius = 1.0f;
+              float bias = 0.025f;
+              const vec2 noiseScale = vec2(1280.0/4.0,720.0/4.0);
+
               uniform sampler2D f_PositionTexture;
               uniform sampler2D f_NormalTexture;
-              uniform vec4 f_ViewPosition;
+              uniform sampler2D f_DepthBuffer;
+                
+             
+              uniform vec3[64] f_SSAOKernels;
+              uniform sampler2D f_NoiseTexture;
+              uniform mat4 f_ProjectionMatrix;
               void main()
               {
                     vec3 worldPosition = texture(f_PositionTexture,f_Uv).rgb;
                     vec3 worldNormal = texture(f_NormalTexture,f_Uv).rgb;
-                    float lightDot = max(dot(-vec3(1,0,0),normalize(worldNormal)),0.0f);
-                    ExposureOut = lightDot;
+                    vec3 randomVec = normalize(texture(f_NoiseTexture,f_Uv*noiseScale).xyz);
+                    vec3 tangent = normalize(randomVec-worldNormal*dot(randomVec,worldNormal));
+                    
+                    vec3 bitangent = cross(worldNormal,tangent);
+                    mat3 TBN = mat3(tangent,bitangent,worldNormal);
+                    
+                    float occlusion = 0.0f;
+                    for(int kernelIndex = 0;kernelIndex < kernelSize;kernelIndex++)
+                    {
+                        vec3 samplePosition = TBN * f_SSAOKernels[kernelIndex];
+                        samplePosition = samplePosition*radius + worldPosition;
+
+                        vec4 offset = vec4(samplePosition,1.0);
+                        offset = f_ProjectionMatrix*offset;
+                        offset.xyz /= offset.w;
+                        offset.xyz  = offset.xyz*0.5f + 0.5f;
+
+                        vec3 occluderPosition = texture(f_PositionTexture,offset.xy).rgb;
+
+                        occlusion += (occluderPosition.z >= samplePosition.z + bias ? 1.0 : 0.0);
+                    }
+                    occlusion = 1.0f - (occlusion / kernelSize);
+                    ColorOut = vec3(occlusion,occlusion,occlusion);
+                   // ColorOut = texture(f_NoiseTexture,f_Uv*noiseScale).rgb;
+                    
               }";
 
-            Shader lightExposureVertexShader = new Shader(ShaderStage.Vertex);
-            lightExposureVertexShader.Compile(lightExposureVertexShaderText);
+            Shader ambientOcclusionVertexShader = new Shader(ShaderStage.Vertex);
+            ambientOcclusionVertexShader.Compile(ambientOcclusionVertexShaderText);
 
-            Shader lightExposureFragmentShader = new Shader(ShaderStage.Fragment);
-            lightExposureFragmentShader.Compile(lightExposureFragmentShaderText);
+            Shader ambientOcclusionFragmentShader = new Shader(ShaderStage.Fragment);
+            ambientOcclusionFragmentShader.Compile(ambientOcclusionFragmentShaderText);
 
-            ShaderProgram lightExposureShaderProgram = new ShaderProgram("Deferred", "Light Exposure");
-            lightExposureShaderProgram.LinkProgram(new List<Shader>() { lightExposureVertexShader, lightExposureFragmentShader });
+            ShaderProgram ambientOcclusionShaderProgram = new ShaderProgram("Deferred", "Ambient Occlusion");
+            ambientOcclusionShaderProgram.LinkProgram(new List<Shader>() { ambientOcclusionVertexShader, ambientOcclusionFragmentShader });
 
-            Material lightExposureMaterial = new Material(lightExposureShaderProgram);
-            m_LightExposureMaterial = lightExposureMaterial;
+            Material ambientOcclusionMaterial = new Material(ambientOcclusionShaderProgram);
+            m_AmbientOcclusionMaterial = ambientOcclusionMaterial;
 
             /*
              * Create screen quad
@@ -149,16 +186,58 @@ namespace Vex.Framework
             mesh.SetVertexData(vertexes.ToArray());
             mesh.SetTriangleData(triangles.ToArray());
             m_ScreenQuad = mesh;
+
+            /*
+             * Create SSAO kernels
+             */
+            Random rangeGenerator = new Random();
+            for(int kernelIndex = 0;kernelIndex<64;kernelIndex++)
+            {
+
+                Vector3 kernel = new Vector3(
+                    (float)rangeGenerator.NextDouble()*2 -1,
+                    (float)rangeGenerator.NextDouble() * 2 - 1,
+                    (float)rangeGenerator.NextDouble()
+                    );
+                kernel.Normalize();
+                kernel *= (float)rangeGenerator.NextDouble();
+                m_SSAOKernels.Add(kernel);
+            }
+
+            /*
+             * Create SSAO noise texture
+             */
+            Texture2D ssaoNoiseTexture = new Texture2D(4, 4, TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.Float, TextureWrapMode.Repeat, TextureWrapMode.Repeat, TextureMinFilter.Nearest, TextureMagFilter.Nearest);
+            List<Vector3> noiseTextureKernels = new List<Vector3>();
+            for(int kernelIndex = 0;kernelIndex < 16;kernelIndex++)
+            {
+                noiseTextureKernels.Add(new Vector3(
+                     (float)rangeGenerator.NextDouble() * 2 - 1,
+                    (float)rangeGenerator.NextDouble() * 2 - 1,
+                    0
+                    ));
+            }
+            ssaoNoiseTexture.SetData(noiseTextureKernels.ToArray(), false);
+            m_SSAONoiseTexture = ssaoNoiseTexture;
         }
 
         public override List<GraphicsObjectRegisterInfo> GetGraphicsComponentRegisterInformations()
         {
             return new List<GraphicsObjectRegisterInfo>()
             {
-                new GraphicsObjectRegisterInfo(typeof(ForwardMeshRenderable),OnRenderableRegistered,OnRenderableRemoved)
+                new GraphicsObjectRegisterInfo(typeof(ForwardMeshRenderable),OnRenderableRegistered,OnRenderableRemoved),
+                new GraphicsObjectRegisterInfo(typeof(DeferredPointLight),OnPointLightRegister,OnPointLightRemove)
             };
         }
 
+        public void OnPointLightRegister(Component pointLight)
+        {
+            m_PointLights.Add(pointLight as DeferredPointLight);
+        }
+        public void OnPointLightRemove(Component pointLight)
+        {
+            m_PointLights.Remove(pointLight as DeferredPointLight);
+        }
         public override void OnObserverRegistered(ObserverComponent observer)
         {
             /*
@@ -174,7 +253,7 @@ namespace Vex.Framework
                     new FramebufferAttachmentCreateParams("Position",TextureFormat.Rgb,TextureInternalFormat.Rgb32f,TextureDataType.UnsignedByte),
                 },
                 true
-                );;
+                );
 
             gBufferFramebuffer.Name = "GBuffer";
 
@@ -189,19 +268,19 @@ namespace Vex.Framework
             m_GBuffers.Add(gBufferFramebuffer);
 
             /*
-             * Create observer light exposure framebuffer
+             * Create observer ambient occlusion framebuffer
              */
             Framebuffer2D lightExposureFramebuffer = new Framebuffer2D(
                 Framebuffer2D.IntermediateFramebuffer.Width,
                 Framebuffer2D.IntermediateFramebuffer.Height,
                 new List<FramebufferAttachmentCreateParams>()
                 {
-                    new FramebufferAttachmentCreateParams("Light Exposure",TextureFormat.Red, TextureInternalFormat.R32f, TextureDataType.UnsignedByte),
+                    new FramebufferAttachmentCreateParams("Occlusion",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
                 },
                 true
                 ); ;
 
-            lightExposureFramebuffer.Name = "Light Exposure";
+            lightExposureFramebuffer.Name = "Ambient";
 
             /*
              * Register as inspectable framebuffer
@@ -211,7 +290,7 @@ namespace Vex.Framework
             /*
              * Register light exposure framebuffer
              */
-            m_LightExposureBuffers.Add(lightExposureFramebuffer);
+            m_AmbientOcclusionBuffers.Add(lightExposureFramebuffer);
 
             /*
             * Register observer
@@ -261,26 +340,25 @@ namespace Vex.Framework
         {
             m_Renderables.Remove(renderable as ForwardMeshRenderable);
         }
-
         public override void Resolve()
         {
             /*
              * Create new command buffer
              */
-            CommandBuffer gBufferCommandBuffer = new CommandBuffer();
-            CommandBuffer lightExposureCommandBuffer = new CommandBuffer();
+            CommandBuffer gBufferPassCommandBuffer = new CommandBuffer();
+            CommandBuffer ambientOcclusionCommandBuffer = new CommandBuffer();
 
             /*
              * Start recording
              */
-            gBufferCommandBuffer.StartRecoding();
-            lightExposureCommandBuffer.StartRecoding();
+            gBufferPassCommandBuffer.StartRecoding();
+            ambientOcclusionCommandBuffer.StartRecoding();
 
             /*
              * Set gbuffer pipeline state
              */
             PipelineState gBufferPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
-            gBufferCommandBuffer.SetPipelineState(gBufferPipelineState);
+            gBufferPassCommandBuffer.SetPipelineState(gBufferPipelineState);
 
             /*
              * Iterate each observer for gbuffer
@@ -315,23 +393,23 @@ namespace Vex.Framework
                 /*
                  * Set color framebuffer
                  */
-                gBufferCommandBuffer.SetFramebuffer(gBuffer);
-
+                gBufferPassCommandBuffer.SetFramebuffer(gBuffer);
+                GL.DrawBuffers(3, new DrawBuffersEnum[] { DrawBuffersEnum.ColorAttachment0, DrawBuffersEnum.ColorAttachment1 , DrawBuffersEnum.ColorAttachment2 });
                 /*
                  * Set framebuffer viewport
                  */
-                gBufferCommandBuffer.SetViewport(Vector2.Zero, new Vector2(gBuffer.Width, gBuffer.Height));
+                gBufferPassCommandBuffer.SetViewport(Vector2.Zero, new Vector2(gBuffer.Width, gBuffer.Height));
 
                 /*
                  * Clear color the framebuffer
                  */
-                gBufferCommandBuffer.ClearColor(clearColor);
-                gBufferCommandBuffer.ClearDepth(1.0f);
-
+                gBufferPassCommandBuffer.ClearDepth(1.0f);
+                gBufferPassCommandBuffer.ClearColor(clearColor);
+                
                 /*
                  * Set color shader program
                  */
-                gBufferCommandBuffer.SetShaderProgram(m_GBufferMaterial.Program);
+                gBufferPassCommandBuffer.SetShaderProgram(m_GBufferMaterial.Program);
 
                 /*
                  * Render for gbuffer
@@ -381,12 +459,12 @@ namespace Vex.Framework
                     /*
                      * Set vertex buffer command
                      */
-                    gBufferCommandBuffer.SetVertexbuffer(vertexBuffer);
+                    gBufferPassCommandBuffer.SetVertexbuffer(vertexBuffer);
 
                     /*
                      * Set index buffer command
                      */
-                    gBufferCommandBuffer.SetIndexBuffer(indexBuffer);
+                    gBufferPassCommandBuffer.SetIndexBuffer(indexBuffer);
 
                     /*
                      * Create model matrix
@@ -420,38 +498,38 @@ namespace Vex.Framework
                     /*
                      * Set uniforms that are required from the gbuffer's vertex shader stage
                      */
-                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, mvp, "v_MvpMatrix");
-                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, modelMatrix, "v_ModelMatrix");
-                    gBufferCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, normalMatrix, "v_NormalMatrix");
-                    gBufferCommandBuffer.SetUniformVector4(m_GBufferMaterial.Program, new Vector4(observer.Spatial.Position.X, observer.Spatial.Position.Y, observer.Spatial.Position.Z, 1), "f_ViewPosition");
+                    gBufferPassCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, mvp, "v_MvpMatrix");
+                    gBufferPassCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, modelMatrix, "v_ModelMatrix");
+                    gBufferPassCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, normalMatrix, "v_NormalMatrix");
+                    gBufferPassCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, viewMatrix, "v_ViewMatrix");
+                    gBufferPassCommandBuffer.SetUniformMat4x4(m_GBufferMaterial.Program, projectionMatrix, "v_ProjectionMatrix");
+
                     /*
                      * Set color texture
                      */
-                    gBufferCommandBuffer.SetTexture2D(m_GBufferMaterial.Program, renderable.ColorTexture, "f_DeferredColorTexture");
+                    gBufferPassCommandBuffer.SetTexture2D(m_GBufferMaterial.Program, renderable.ColorTexture, "f_DeferredColorTexture");
 
                     /*
                      * Draw color buffer
                      */
-                    gBufferCommandBuffer.DrawIndexed((int)triangleCount);
+                    gBufferPassCommandBuffer.DrawIndexed((int)triangleCount);
 
 
                     Profiler.EndProfile();
                 }
-
-                
             }
 
             /*
              * End recording
              */
-            gBufferCommandBuffer.EndRecording();
+            gBufferPassCommandBuffer.EndRecording();
 
             /*
             * Set light exposure pipeline state
             */
             PipelineState lightExposurePipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
             lightExposurePipelineState.DepthTest = false;
-            lightExposureCommandBuffer.SetPipelineState(lightExposurePipelineState);
+            ambientOcclusionCommandBuffer.SetPipelineState(lightExposurePipelineState);
             for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
             {
                 /*
@@ -467,28 +545,28 @@ namespace Vex.Framework
                 /*
                  * Get observer gBuffer
                  */
-                Framebuffer2D lightExposureBuffer = m_LightExposureBuffers[observerIndex];
+                Framebuffer2D ambientOcclusionBuffer = m_AmbientOcclusionBuffers[observerIndex];
 
                 /*
                  * Set color framebuffer
                  */
-                lightExposureCommandBuffer.SetFramebuffer(lightExposureBuffer);
+                ambientOcclusionCommandBuffer.SetFramebuffer(ambientOcclusionBuffer);
 
                 /*
                  * Set framebuffer viewport
                  */
-                lightExposureCommandBuffer.SetViewport(Vector2.Zero, new Vector2(lightExposureBuffer.Width, lightExposureBuffer.Height));
+                ambientOcclusionCommandBuffer.SetViewport(Vector2.Zero, new Vector2(ambientOcclusionBuffer.Width, ambientOcclusionBuffer.Height));
 
                 /*
                  * Clear color the framebuffer
                  */
-                lightExposureCommandBuffer.ClearColor(clearColor);
-                lightExposureCommandBuffer.ClearDepth(1.0f);
+                ambientOcclusionCommandBuffer.ClearColor(clearColor);
+                ambientOcclusionCommandBuffer.ClearDepth(1.0f);
 
                 /*
                  * Set color shader program
                  */
-                lightExposureCommandBuffer.SetShaderProgram(m_LightExposureMaterial.Program);
+                ambientOcclusionCommandBuffer.SetShaderProgram(m_AmbientOcclusionMaterial.Program);
 
                 /*
                    * Get vertex buffer
@@ -508,49 +586,56 @@ namespace Vex.Framework
                 /*
                  * Set vertex buffer command
                  */
-                lightExposureCommandBuffer.SetVertexbuffer(vertexBuffer);
+                ambientOcclusionCommandBuffer.SetVertexbuffer(vertexBuffer);
 
                 /*
                  * Set index buffer command
                  */
-                lightExposureCommandBuffer.SetIndexBuffer(indexBuffer);
+                ambientOcclusionCommandBuffer.SetIndexBuffer(indexBuffer);
 
                 /*
                  * Set color texture
                  */
-                lightExposureCommandBuffer.SetTexture2D(m_LightExposureMaterial.Program, m_GBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
-                lightExposureCommandBuffer.SetTexture2D(m_LightExposureMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
-                lightExposureCommandBuffer.SetTexture2D(m_LightExposureMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
-                lightExposureCommandBuffer.SetUniformVector4(m_LightExposureMaterial.Program, new Vector4(observer.Spatial.Position.X, observer.Spatial.Position.Y, observer.Spatial.Position.Z, 1), "f_ViewPosition");
+                
+                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
+                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
+                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].DepthTexture, "f_DepthBuffer");
+                ambientOcclusionCommandBuffer.SetUniformVector3Array(m_AmbientOcclusionMaterial.Program, m_SSAOKernels.ToArray(), "f_SSAOKernels");
+                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_SSAONoiseTexture, "f_NoiseTexture");
+                ambientOcclusionCommandBuffer.SetUniformMat4x4(m_AmbientOcclusionMaterial.Program,observer.GetProjectionMatrix(), "f_ProjectionMatrix");
+
 
                 /*
                  * Draw color buffer
                  */
-                lightExposureCommandBuffer.DrawIndexed((int)triangleCount);
+                ambientOcclusionCommandBuffer.DrawIndexed((int)triangleCount);
             }
 
             /*
              * End recording
              */
-            lightExposureCommandBuffer.EndRecording();
+            ambientOcclusionCommandBuffer.EndRecording();
 
             /*
              * Execute command buffer
              */
-            gBufferCommandBuffer.Execute();
+            gBufferPassCommandBuffer.Execute();
 
             /*
              * Execute command buffer
              */
-            lightExposureCommandBuffer.Execute();
+            ambientOcclusionCommandBuffer.Execute();
         }
 
         private List<ObserverComponent> m_Observers;
         private List<Framebuffer2D> m_GBuffers;
-        private List<Framebuffer2D> m_LightExposureBuffers;
+        private List<Framebuffer2D> m_AmbientOcclusionBuffers;
         private List<ForwardMeshRenderable> m_Renderables;
+        private List<DeferredPointLight> m_PointLights;
+        private List<Vector3> m_SSAOKernels;
         private Material m_GBufferMaterial;
-        private Material m_LightExposureMaterial;
+        private Material m_AmbientOcclusionMaterial;
         private StaticMesh m_ScreenQuad;
+        private Texture2D m_SSAONoiseTexture;
     }
 }

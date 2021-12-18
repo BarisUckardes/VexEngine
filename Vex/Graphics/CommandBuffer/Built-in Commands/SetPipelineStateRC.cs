@@ -51,14 +51,16 @@ namespace Vex.Graphics
              */
             if(!m_State.DepthTest)
             {
-                GL.DepthMask(false);
+                
                 GL.Disable(EnableCap.DepthTest);
+                GL.DepthMask(false);
             }
             else
             {
-                GL.DepthMask(true);
+                
                 GL.Enable(EnableCap.DepthTest);
                 GL.DepthFunc(DepthFunctionUtils.GetNative(m_State.DepthFunction));
+                GL.DepthMask(true);
             }
             
 

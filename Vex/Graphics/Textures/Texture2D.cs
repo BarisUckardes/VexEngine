@@ -68,7 +68,7 @@ namespace Vex.Graphics
             return texture;
         }
 
-        public Texture2D(int width, int height, TextureFormat format, TextureInternalFormat internalFormat,TextureDataType dataType)
+        public Texture2D(int width, int height, TextureFormat format, TextureInternalFormat internalFormat,TextureDataType dataType,TextureWrapMode wrapS = TextureWrapMode.Repeat, TextureWrapMode wrapT = TextureWrapMode.Repeat, TextureMinFilter minFilter = TextureMinFilter.Nearest, TextureMagFilter magFilter = TextureMagFilter.Nearest)
         {
             /*
              * Create texture
@@ -84,12 +84,12 @@ namespace Vex.Graphics
             /*
              * Set empty data
              */
-            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)internalFormat, width, height, 0, (PixelFormat)format, (PixelType)dataType, IntPtr.Zero);
+            GL.TexImage2D(TextureTarget.Texture2D,0, (PixelInternalFormat)internalFormat, width, height, 0, (PixelFormat)format, (PixelType)dataType, IntPtr.Zero);
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrapS);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrapT);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
@@ -135,7 +135,7 @@ namespace Vex.Graphics
         /// Set texture data via byte array
         /// </summary>
         /// <param name="data"></param>
-        public void SetData(byte[] data,bool generateMipmaps)
+        public void SetData<TData>(TData[] data,bool generateMipmaps) where TData :struct
         {
             /*
              * Bind texture
@@ -164,7 +164,7 @@ namespace Vex.Graphics
             /*
              * Set cpu data
              */
-            CpuData = data;
+            //CpuData = data;
         }
 
         internal void ResizeInternal(int width, int height)

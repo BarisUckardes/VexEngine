@@ -72,7 +72,7 @@ namespace Vex.Framework
         /// Registers a renderable component to the resolver
         /// </summary>
         /// <param name="renderable"></param>
-        public void RegisterGraphicsObject(RenderableComponent renderable)
+        public void RegisterGraphicsObject(Component renderable)
         {
             /*
              * Register renderable
@@ -112,7 +112,7 @@ namespace Vex.Framework
         /// Removes a renderable from the resolver
         /// </summary>
         /// <param name="renderable"></param>
-        public void RemoveGraphicsObject(RenderableComponent renderable)
+        public void RemoveGraphicsObject(Component renderable)
         {
             /*
              * Remove renderable

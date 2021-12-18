@@ -34,7 +34,7 @@ namespace Vex.Graphics
         {
             m_Width = width;
             m_Height = height;
-            HasDepthTexture = true;
+            HasDepthTexture = hasDepthTexture;
 
             /*
              * Set attachment create parameters
@@ -201,16 +201,15 @@ namespace Vex.Graphics
             }
 
             /*
-             * Specify buffers for drawing
-             */
-            GL.DrawBuffers(attachmentSlots.Count, attachmentSlots.ToArray());
-
-            if(HasDepthTexture)
+            * Validate and create depth texture
+            */
+            if (HasDepthTexture)
             {
                 /*
                 * Create depth texture
                 */
-                Texture2D depthTexture = new Texture2D(m_Width, m_Height, TextureFormat.DepthComponent, TextureInternalFormat.DepthComponent, TextureDataType.Float);
+                Texture2D depthTexture = new Texture2D(m_Width, m_Height, TextureFormat.DepthComponent, TextureInternalFormat.DepthComponent24, TextureDataType.Float, TextureWrapMode.ClampToEdge, TextureWrapMode.ClampToEdge);
+                depthTexture.Name = "Depth Texture";
 
                 /*
                  * Set depth buffer
@@ -222,6 +221,10 @@ namespace Vex.Graphics
                 */
                 DepthTexture = depthTexture;
             }
+            /*
+             * Specify buffers for drawing
+             */
+            GL.DrawBuffers(attachmentSlots.Count, attachmentSlots.ToArray());
 
             /*
              * Unbind framebuffer
@@ -237,6 +240,8 @@ namespace Vex.Graphics
              * Set attachments
              */
             Attachments = attachments;
+
+            Console.WriteLine("Framebuffer status : " + GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer).ToString());
         }
 
         private int m_Width;

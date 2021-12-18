@@ -22,8 +22,6 @@ namespace Vex.Graphics
             GL.ActiveTexture(TextureUnit.Texture0 + m_Unit);
             GL.BindTexture(TextureTarget.Texture2D,m_Handle);
             GL.Uniform1(m_Location, m_Unit);
-
-            
         }
 
         private int m_Handle;

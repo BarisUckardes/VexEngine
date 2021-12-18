@@ -64,7 +64,7 @@ namespace Vex.Graphics
         /// <summary>
         /// The depth texture of this framebuffer
         /// </summary>
-        public Texture DepthTexture
+        public Texture2D DepthTexture
         {
             get
             {
@@ -137,7 +137,7 @@ namespace Vex.Graphics
 
         private List<FramebufferAttachment> m_Attachments;
         private List<FramebufferAttachmentCreateParams> m_AttachmentCreateParameters;
-        private Texture m_DetphTexture;
+        private Texture2D m_DetphTexture;
         private uint m_FramebufferID;
         private bool m_HasDepthTexture;
     }
