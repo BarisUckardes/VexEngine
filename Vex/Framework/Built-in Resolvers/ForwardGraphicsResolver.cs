@@ -120,9 +120,10 @@ namespace Vex.Framework
               in vec2 f_Uv;
 
               int kernelSize = 64;
-              float radius = 1.0f;
+              float radius = 0.5f;
               float bias = 0.025f;
-              const vec2 noiseScale = vec2(1280.0/4.0,720.0/4.0);
+              float power = 3.5f;
+              const vec2 noiseScale = vec2(1920.0/4.0,1080.0/4.0);
 
               uniform sampler2D f_PositionTexture;
               uniform sampler2D f_NormalTexture;
@@ -154,10 +155,10 @@ namespace Vex.Framework
                         offset.xyz  = offset.xyz*0.5f + 0.5f;
 
                         vec3 occluderPosition = texture(f_PositionTexture,offset.xy).rgb;
-                        float rangeCheck = smoothstep(0.0,1.0,radius / length(worldPosition - occluderPosition));
-                        occlusion += pow((occluderPosition.z >= samplePosition.z + bias ? 1.0 : 0.0),2)*rangeCheck;
+                        float rangeCheck = smoothstep(0.0,1.0,radius / length(worldPosition.z - occluderPosition.z));
+                        occlusion += (occluderPosition.z >= samplePosition.z + bias ? 1.0 : 0.0)*rangeCheck;
                     }
-                    occlusion = 1.0f -(occlusion / kernelSize);
+                    occlusion = 1.0f-pow((occlusion / kernelSize)*power,2);
                     ColorOut = occlusion; 
               }";
 
@@ -253,15 +254,15 @@ namespace Vex.Framework
               {
                     vec2 texelSize = 1.0f / vec2(textureSize(f_AmbientOcclusionTexture,0));
                     float result = 0.0f;
-                    for(int x = -8;x < 8;++x)
+                    for(int x = -2;x < 2;++x)
                     {
-                        for(int y = -8;y<8;++y)
+                        for(int y = -2;y<2;++y)
                         {
                             vec2 offset = vec2(float(x),float(y))*texelSize;
                             result+= texture(f_AmbientOcclusionTexture,f_Uv + offset).r;
                         }
                     }
-                    result = result / (16.0f*16.0f)-0.5f;
+                    result = result / (4.0f*4.0f)+0.1f;
                     ColorOut = result;
               }";
 
