@@ -155,7 +155,7 @@ namespace Vex.Framework
                         offset.xyz  = offset.xyz*0.5f + 0.5f;
 
                         vec3 occluderPosition = texture(f_PositionTexture,offset.xy).rgb;
-                        float rangeCheck = smoothstep(0.0,1.0,radius / length(worldPosition.z - occluderPosition.z));
+                        float rangeCheck = smoothstep(0.0,1.0,radius / abs(worldPosition.z - occluderPosition.z));    
                         occlusion += (occluderPosition.z >= samplePosition.z + bias ? 1.0 : 0.0)*rangeCheck;
                     }
                     occlusion = 1.0f-pow((occlusion / kernelSize)*power,2);
@@ -262,7 +262,7 @@ namespace Vex.Framework
                             result+= texture(f_AmbientOcclusionTexture,f_Uv + offset).r;
                         }
                     }
-                    result = result / (4.0f*4.0f)+0.1f;
+                    result = result / (4.0f*4.0f);
                     ColorOut = result;
               }";
 
