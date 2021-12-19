@@ -30,6 +30,7 @@ namespace Vex.Framework
             m_PointLights = new List<DeferredPointLight>();
             m_SSAOKernels = new List<Vector3>();
             m_BlurBuffers = new List<Framebuffer2D>();
+            m_FinalColorBuffers = new List<Framebuffer2D>();
 
             /*
              * Create gbuffer material
@@ -50,9 +51,9 @@ namespace Vex.Framework
             void main()
             {
                 gl_Position = v_MvpMatrix * vec4(v_Position, 1);
-
+                mat3 nMatrix = transpose(inverse(mat3(v_ViewMatrix*v_ModelMatrix)));
                 f_Uv = v_Uv;
-                f_Normal = (v_NormalMatrix*vec4(v_Normal,1)).xyz;
+                f_Normal = nMatrix*v_Normal;
                 f_Position = (v_ViewMatrix*v_ModelMatrix * vec4(v_Position, 1)).xyz;
             }
             ";
@@ -114,12 +115,12 @@ namespace Vex.Framework
               @"
               #version 450
 
-              out vec3 ColorOut;
+              out float ColorOut;
 
               in vec2 f_Uv;
 
               int kernelSize = 64;
-              float radius = 0.5f;
+              float radius = 1.0f;
               float bias = 0.025f;
               const vec2 noiseScale = vec2(1280.0/4.0,720.0/4.0);
 
@@ -153,14 +154,11 @@ namespace Vex.Framework
                         offset.xyz  = offset.xyz*0.5f + 0.5f;
 
                         vec3 occluderPosition = texture(f_PositionTexture,offset.xy).rgb;
-
-                        occlusion += (occluderPosition.z >= samplePosition.z + bias ? 1.0 : 0.0);
-                
+                        float rangeCheck = smoothstep(0.0,1.0,radius / length(worldPosition - occluderPosition));
+                        occlusion += pow((occluderPosition.z >= samplePosition.z + bias ? 1.0 : 0.0),2)*rangeCheck;
                     }
-                    occlusion = pow(1.0f - (occlusion / kernelSize),2);
-                    ColorOut = vec3(occlusion,occlusion,occlusion);
-                   // ColorOut = texture(f_NoiseTexture,f_Uv*noiseScale).rgb;
-                    
+                    occlusion = 1.0f -(occlusion / kernelSize);
+                    ColorOut = occlusion; 
               }";
 
             Shader ambientOcclusionVertexShader = new Shader(ShaderStage.Vertex);
@@ -246,7 +244,7 @@ namespace Vex.Framework
             @"
               #version 450
 
-              out vec3 ColorOut;
+              out float ColorOut;
 
               in vec2 f_Uv;
               uniform sampler2D f_AmbientOcclusionTexture;
@@ -255,16 +253,16 @@ namespace Vex.Framework
               {
                     vec2 texelSize = 1.0f / vec2(textureSize(f_AmbientOcclusionTexture,0));
                     float result = 0.0f;
-                    for(int x = -2;x < 2;++x)
+                    for(int x = -8;x < 8;++x)
                     {
-                        for(int y = -2;y<2;++y)
+                        for(int y = -8;y<8;++y)
                         {
                             vec2 offset = vec2(float(x),float(y))*texelSize;
                             result+= texture(f_AmbientOcclusionTexture,f_Uv + offset).r;
                         }
                     }
-                    result = result / (4.0f*4.0f) +0.5f;
-                    ColorOut = vec3(result,result,result);
+                    result = result / (16.0f*16.0f)-0.5f;
+                    ColorOut = result;
               }";
 
             Shader blurVertexShader = new Shader(ShaderStage.Vertex);
@@ -279,6 +277,51 @@ namespace Vex.Framework
             Material blurMaterial = new Material(blurShaderProgram);
             m_BlurMaterial = blurMaterial;
 
+            /*
+             * Final color pass
+             */
+            string finalColorVertexShaderText = @"#version 450
+            layout(location = 0) in vec3 v_Position;
+            layout(location = 1) in vec3 v_Normal;
+            layout(location = 2) in vec2 v_Uv;
+
+            out vec2 f_Uv;
+            
+            void main()
+            {
+                gl_Position = vec4(v_Position, 1);
+                f_Uv = v_Uv;
+            }
+            ";
+
+            string finalColorFragmentShaderText =
+            @"
+              #version 450
+
+              out vec3 ColorOut;
+
+              in vec2 f_Uv;
+
+              uniform sampler2D f_AmbientOcclusionTexture;
+              uniform sampler2D f_ColorTexture;
+              void main()
+              {
+                    float ambientFactor = texture(f_AmbientOcclusionTexture,f_Uv).r;
+                    float ambientLight = 1.0f*ambientFactor;
+                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*ambientLight;
+              }";
+
+            Shader finalColorVertexShader = new Shader(ShaderStage.Vertex);
+            finalColorVertexShader.Compile(finalColorVertexShaderText);
+
+            Shader finalColorFragmentShader = new Shader(ShaderStage.Fragment);
+            finalColorFragmentShader.Compile(finalColorFragmentShaderText);
+
+            ShaderProgram finalColorShaderProgram = new ShaderProgram("Deferred", "Final Color");
+            finalColorShaderProgram.LinkProgram(new List<Shader>() {finalColorVertexShader,finalColorFragmentShader});
+
+            Material finalColorMaterial = new Material(finalColorShaderProgram);
+            m_FinalColorMaterial = finalColorMaterial;
         }
         float Lerp(float firstFloat, float secondFloat, float by)
         {
@@ -338,7 +381,7 @@ namespace Vex.Framework
                 Framebuffer2D.IntermediateFramebuffer.Height,
                 new List<FramebufferAttachmentCreateParams>()
                 {
-                    new FramebufferAttachmentCreateParams("Occlusion",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
+                    new FramebufferAttachmentCreateParams("Occlusion",TextureFormat.Red, TextureInternalFormat.R32f, TextureDataType.Float),
                 },
                 true
                 ); ;
@@ -364,7 +407,7 @@ namespace Vex.Framework
                Framebuffer2D.IntermediateFramebuffer.Height,
                new List<FramebufferAttachmentCreateParams>()
                {
-                    new FramebufferAttachmentCreateParams("Ambiend Blured",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
+                    new FramebufferAttachmentCreateParams("Ambiend Blured",TextureFormat.Red, TextureInternalFormat.R32f, TextureDataType.Float),
                },
                true
                ); ;
@@ -380,6 +423,31 @@ namespace Vex.Framework
              * Register to list
              */
             m_BlurBuffers.Add(blurFramebuffer);
+
+            /*
+             * Create observer ambient occlusion framebuffer
+             */
+            Framebuffer2D finalColorFramebuffer = new Framebuffer2D(
+               Framebuffer2D.IntermediateFramebuffer.Width,
+               Framebuffer2D.IntermediateFramebuffer.Height,
+               new List<FramebufferAttachmentCreateParams>()
+               {
+                    new FramebufferAttachmentCreateParams("Color",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
+               },
+               true
+               ); ;
+
+            finalColorFramebuffer.Name = "Final";
+
+            /*
+             * Register as inspectable framebuffer
+             */
+            observer.RegisterFramebuffer2DResource(finalColorFramebuffer);
+
+            /*
+             * Register to list
+             */
+            m_FinalColorBuffers.Add(finalColorFramebuffer);
 
             /*
             * Register observer
@@ -437,6 +505,7 @@ namespace Vex.Framework
             CommandBuffer gBufferPassCommandBuffer = new CommandBuffer();
             CommandBuffer ambientOcclusionCommandBuffer = new CommandBuffer();
             CommandBuffer ambientBluredCommandBuffer = new CommandBuffer();
+            CommandBuffer finalColorCommandBuffer = new CommandBuffer();
 
             /*
              * Start recording
@@ -444,6 +513,7 @@ namespace Vex.Framework
             gBufferPassCommandBuffer.StartRecoding();
             ambientOcclusionCommandBuffer.StartRecoding();
             ambientBluredCommandBuffer.StartRecoding();
+            finalColorCommandBuffer.StartRecoding();
 
             /*
              * Set gbuffer pipeline state
@@ -794,6 +864,92 @@ namespace Vex.Framework
             ambientBluredCommandBuffer.EndRecording();
 
             /*
+           * Set ambient occlusion blur pipeline state
+           */
+            PipelineState finalColorPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+            finalColorPipelineState.DepthTest = false;
+            finalColorCommandBuffer.SetPipelineState(finalColorPipelineState);
+            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+            {
+                /*
+                 * Get observer
+                 */
+                ObserverComponent observer = m_Observers[observerIndex];
+
+                /*
+                 * Get observer clear color
+                 */
+                Color4 clearColor = Color4.Black;
+
+                /*
+                 * Get observer gBuffer
+                 */
+                Framebuffer2D finalColorBuffer = m_FinalColorBuffers[observerIndex];
+
+                /*
+                 * Set color framebuffer
+                 */
+                finalColorCommandBuffer.SetFramebuffer(finalColorBuffer);
+
+                /*
+                 * Set framebuffer viewport
+                 */
+                finalColorCommandBuffer.SetViewport(Vector2.Zero, new Vector2(finalColorBuffer.Width, finalColorBuffer.Height));
+
+                /*
+                 * Clear color the framebuffer
+                 */
+                finalColorCommandBuffer.ClearColor(clearColor);
+                finalColorCommandBuffer.ClearDepth(1.0f);
+
+                /*
+                 * Set color shader program
+                 */
+                finalColorCommandBuffer.SetShaderProgram(m_FinalColorMaterial.Program);
+
+                /*
+                 * Get vertex buffer
+                 */
+                VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
+
+                /*
+                 * Get index buffer
+                 */
+                IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
+
+                /*
+                 * Get triangle count
+                 */
+                uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
+
+                /*
+                 * Set vertex buffer command
+                 */
+                finalColorCommandBuffer.SetVertexbuffer(vertexBuffer);
+
+                /*
+                 * Set index buffer command
+                 */
+                finalColorCommandBuffer.SetIndexBuffer(indexBuffer);
+
+                /*
+                 * Set color texture
+                 */
+                finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_BlurBuffers[observerIndex].Attachments[0].Texture, "f_AmbientOcclusionTexture");
+                finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_GBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
+
+                /*
+                 * Draw color buffer
+                 */
+                finalColorCommandBuffer.DrawIndexed((int)triangleCount);
+            }
+
+            /*
+             * Finalize recording
+             */
+            finalColorCommandBuffer.EndRecording();
+
+            /*
              * Execute command buffer
              */
             gBufferPassCommandBuffer.Execute();
@@ -807,18 +963,25 @@ namespace Vex.Framework
              * Execute command buffer
              */
             ambientBluredCommandBuffer.Execute();
+
+            /*
+             * Execute command buffer
+             */
+            finalColorCommandBuffer.Execute();
         }
 
         private List<ObserverComponent> m_Observers;
         private List<Framebuffer2D> m_GBuffers;
         private List<Framebuffer2D> m_AmbientOcclusionBuffers;
         private List<Framebuffer2D> m_BlurBuffers;
+        private List<Framebuffer2D> m_FinalColorBuffers;
         private List<ForwardMeshRenderable> m_Renderables;
         private List<DeferredPointLight> m_PointLights;
         private List<Vector3> m_SSAOKernels;
         private Material m_GBufferMaterial;
         private Material m_AmbientOcclusionMaterial;
         private Material m_BlurMaterial;
+        private Material m_FinalColorMaterial;
         private StaticMesh m_ScreenQuad;
         private Texture2D m_SSAONoiseTexture;
     }
