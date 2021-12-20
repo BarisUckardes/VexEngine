@@ -9,6 +9,9 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp;
 using Vex.Extensions;
+using Vex.Platform;
+using System.Diagnostics;
+
 namespace Vex.Graphics
 {
     public sealed class CubeTexture : AssetObject
@@ -61,8 +64,11 @@ namespace Vex.Graphics
                 * Load image
                 */
                 IImageFormat format;
+                int loadStart = PlatformTime.GetCurrentMilliseconds();
+
                 Image<Rgba32> image = Image.Load<Rgba32>(path, out format);
-                Console.WriteLine("Image loaded: " + image.Width + " " + image.Height);
+                int loadEnd = PlatformTime.GetCurrentMilliseconds();
+
                 /*
                  * Get as byte array
                  */
@@ -76,7 +82,6 @@ namespace Vex.Graphics
                         pixels.Add(RowSpan[x].R);
                         pixels.Add(RowSpan[x].G);
                         pixels.Add(RowSpan[x].B);
-                        //pixels.Add(RowSpan[x].A);
                     }
                 }
 
@@ -91,7 +96,7 @@ namespace Vex.Graphics
                     PixelFormat.Rgb,
                     (PixelType)TextureDataType.UnsignedByte,
                     pixels.ToArray());
-                Console.WriteLine("Set bytes: " + pixels.Count);
+
             }
 
             /*

@@ -250,7 +250,6 @@ namespace Vex.Framework
 
               in vec2 f_Uv;
               uniform sampler2D f_AmbientOcclusionTexture;
-             
               void main()
               {
                     vec2 texelSize = 1.0f / vec2(textureSize(f_AmbientOcclusionTexture,0));
@@ -322,7 +321,6 @@ namespace Vex.Framework
                     float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0);
                     vec3 cubeColor = texture(f_CubeTexture,reflect(texture(f_ViewSpacePositionTexture,f_Uv).rgb,normalViewSpace)).rgb;
                     ColorOut = texture(f_ColorTexture,f_Uv).rgb*cubeColor*ambientFactor*diffuseFactor;
-                    //ColorOut = cubeColor;
               }";
 
             Shader finalColorVertexShader = new Shader(ShaderStage.Vertex);
@@ -888,7 +886,6 @@ namespace Vex.Framework
                  * Set color texture
                  */
                 ambientBluredCommandBuffer.SetTexture2D(m_BlurMaterial.Program, m_AmbientOcclusionBuffers[observerIndex].Attachments[0].Texture, "f_AmbientOcclusionTexture");
-
 
                 /*
                  * Draw color buffer

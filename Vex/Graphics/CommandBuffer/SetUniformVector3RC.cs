@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Vex.Graphics
 {
-    public sealed class SetUniformVector3Array : RenderCommand
+    internal class SetUniformVector3RC : RenderCommand
     {
-        public SetUniformVector3Array(int programID, in string uniformName, in Vector3[] value)
+        public SetUniformVector3RC(int programID, in string uniformName,in Vector3 value)
         {
             m_UniformName = uniformName;
             m_Value = value;
@@ -19,20 +19,12 @@ namespace Vex.Graphics
         protected override void ExecuteImpl()
         {
             int location = GL.GetUniformLocation(m_ProgramID, m_UniformName);
-            unsafe
-            {
-                fixed(float* dataPtr = &m_Value[0].X)
-                {
-                    GL.Uniform3(location, m_Value.Length, dataPtr);
-                }
-            }
-            
+            GL.Uniform3(location,ref m_Value);
         }
 
 
         private string m_UniformName;
-        private Vector3[] m_Value;
+        private Vector3 m_Value;
         private int m_ProgramID;
     }
 }
-

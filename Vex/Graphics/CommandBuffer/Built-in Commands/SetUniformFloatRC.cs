@@ -1,19 +1,21 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using OpenTK.Graphics.OpenGL4;
 namespace Vex.Graphics
 {
-    public sealed class SetUniformInteger : RenderCommand
+    /// <summary>
+    /// Set uniform float render command class
+    /// </summary>
+    public sealed class SetUniformFloatRC : RenderCommand
     {
-        public SetUniformInteger(int programID,int value,string name)
+        public SetUniformFloatRC(in int programId,in string name,in float value)
         {
-            m_ProgramID = programID;
-            m_Value = value;
             m_Name = name;
+            m_ProgramID = programId;
+            m_Value = value;
         }
         protected override void ExecuteImpl()
         {
@@ -22,7 +24,7 @@ namespace Vex.Graphics
         }
 
         private int m_ProgramID;
-        private int m_Value;
+        private float m_Value;
         private string m_Name;
     }
 }

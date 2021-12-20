@@ -11,9 +11,9 @@ namespace Vex.Graphics
     /// <summary>
     /// Set uniform matrix4x4 render command class
     /// </summary>
-    public sealed class SetUniformMat4x4 : RenderCommand
+    public sealed class SetUniformMat4x4RC : RenderCommand
     {
-        public SetUniformMat4x4(int pVexgramID, string name, Matrix4 value, bool isTransposed = false)
+        public SetUniformMat4x4RC(int pVexgramID, string name, Matrix4 value, bool isTransposed = false)
         {
             m_Value = value;
             m_PVexgramID = pVexgramID;

@@ -249,7 +249,7 @@ namespace Vex.Graphics
                 return;
             }
 
-            m_Commands.Add(new SetUniformVector4(program.Handle, name, value));
+            m_Commands.Add(new SetUniformVector4RC(program.Handle, name, value));
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace Vex.Graphics
                 return;
             }
 
-            m_Commands.Add(new SetUniformVector3Array(program.Handle, name, value));
+            m_Commands.Add(new SetUniformVector3ArrayRC(program.Handle, name, value));
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace Vex.Graphics
                 return;
             }
 
-            m_Commands.Add(new SetUniformFloat(program.Handle, name, value));
+            m_Commands.Add(new SetUniformFloatRC(program.Handle, name, value));
         }
 
         /// <summary>
@@ -338,7 +338,7 @@ namespace Vex.Graphics
                 return;
             }
 
-            m_Commands.Add(new SetUniformFloat(program.Handle, name, value));
+            m_Commands.Add(new SetUniformFloatRC(program.Handle, name, value));
         }
 
         public void SetUniformUnsignedInteger(in ShaderProgram program, uint value, string name)
@@ -371,7 +371,7 @@ namespace Vex.Graphics
                 return;
             }
 
-            m_Commands.Add(new SetUniformMat4x4(program.Handle,name,value,isTransposed));
+            m_Commands.Add(new SetUniformMat4x4RC(program.Handle,name,value,isTransposed));
         }
 
         public void SetUniformMat4x4Array(in ShaderProgram program,Matrix4[] values,string name,bool isTransposed = false)
