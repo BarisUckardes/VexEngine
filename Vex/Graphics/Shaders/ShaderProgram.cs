@@ -272,6 +272,7 @@ namespace Vex.Graphics
                  * Debug log
                  */
                 Console.WriteLine("Program link failed!");
+                Console.WriteLine(errorLog);
                 m_LastLinkErrorMessage = errorLog;
                 return;
             }

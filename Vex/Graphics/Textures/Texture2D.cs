@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
@@ -19,7 +20,6 @@ namespace Vex.Graphics
     {
         public static Texture2D LoadTextureFromPath(string path,bool flipVertically = false)
         {
-
             /*
              * Load image
              */
@@ -59,7 +59,7 @@ namespace Vex.Graphics
                 format.DefaultMimeType.GetAsTextureInternalFormat(image.PixelType.BitsPerPixel, image.PixelType.AlphaRepresentation == PixelAlphaRepresentation.Associated),TextureDataType.UnsignedByte);
 
             texture.SetData(pixels.ToArray(),true);
-
+            
             /*
              * Dispose image data
              */
@@ -164,9 +164,9 @@ namespace Vex.Graphics
             /*
              * Set cpu data
              */
-            //CpuData = data;
+            CpuData = data as byte[];
         }
-
+       
         internal void ResizeInternal(int width, int height)
         {
             /*

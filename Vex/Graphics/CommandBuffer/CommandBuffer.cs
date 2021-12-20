@@ -201,6 +201,22 @@ namespace Vex.Graphics
         }
 
         /// <summary>
+        /// Sets instanced draw call
+        /// </summary>
+        /// <param name="triangleCount"></param>
+        /// <param name="instanceCount"></param>
+        public void DrawInstanced(int triangleCount, int instanceCount)
+        {
+            /*
+             * Validate recording
+             */
+            if (!IsRecording)
+                return;
+
+            m_Commands.Add(new DrawInstancedRC(triangleCount, instanceCount));
+        }
+
+        /// <summary>
         /// Set pipeline command
         /// </summary>
         /// <param name="state"></param>
@@ -358,6 +374,19 @@ namespace Vex.Graphics
             m_Commands.Add(new SetUniformMat4x4(program.Handle,name,value,isTransposed));
         }
 
+        public void SetUniformMat4x4Array(in ShaderProgram program,Matrix4[] values,string name,bool isTransposed = false)
+        {
+            /*
+            * Validate recording
+            */
+            if (!IsRecording)
+            {
+                return;
+            }
+
+            m_Commands.Add(new SetUniformMat4x4Array(program.Handle, name, values));
+        }
+
         /// <summary>
         /// Set texture2D command
         /// </summary>
@@ -375,6 +404,24 @@ namespace Vex.Graphics
             }
 
             m_Commands.Add(new SetTexture2DRC(texture, program, name, m_TextureUnits));
+
+            /*
+             * Increment texture units
+             */
+            m_TextureUnits++;
+        }
+
+        public void SetCubeTexture(ShaderProgram program,CubeTexture texture,string name)
+        {
+            /*
+             * Validate recording
+             */
+            if(!IsRecording)
+            {
+                return;
+            }
+
+            m_Commands.Add(new SetCubeTextureRC(texture, program, name, m_TextureUnits));
 
             /*
              * Increment texture units

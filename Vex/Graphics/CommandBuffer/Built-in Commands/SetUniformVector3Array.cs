@@ -13,25 +13,25 @@ namespace Vex.Graphics
         public SetUniformVector3Array(int programID, in string uniformName, in Vector3[] value)
         {
             m_UniformName = uniformName;
-            List<float> floats = new List<float>();
-            foreach (Vector3 vector in value)
-            {
-                floats.Add(vector.X);
-                floats.Add(vector.Y);
-                floats.Add(vector.Z);
-            }
-            m_Value = floats.ToArray();
+            m_Value = value;
             m_ProgramID = programID;
         }
         protected override void ExecuteImpl()
         {
             int location = GL.GetUniformLocation(m_ProgramID, m_UniformName);
-            GL.Uniform3(location, m_Value.Length, m_Value);
+            unsafe
+            {
+                fixed(float* dataPtr = &m_Value[0].X)
+                {
+                    GL.Uniform3(location, m_Value.Length, dataPtr);
+                }
+            }
+            
         }
 
 
         private string m_UniformName;
-        private float[] m_Value;
+        private Vector3[] m_Value;
         private int m_ProgramID;
     }
 }

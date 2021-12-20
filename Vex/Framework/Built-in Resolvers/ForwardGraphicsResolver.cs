@@ -31,6 +31,7 @@ namespace Vex.Framework
             m_SSAOKernels = new List<Vector3>();
             m_BlurBuffers = new List<Framebuffer2D>();
             m_FinalColorBuffers = new List<Framebuffer2D>();
+            m_InstancedMeshes = new List<DeferredInstancedMesh>();
 
             /*
              * Create gbuffer material
@@ -120,8 +121,8 @@ namespace Vex.Framework
               in vec2 f_Uv;
 
               int kernelSize = 64;
-              float radius = 0.5f;
-              float bias = 0.025f;
+              float radius = 0.15f;
+              float bias = 0.01f;
               float power = 3.5f;
               const vec2 noiseScale = vec2(1920.0/4.0,1080.0/4.0);
 
@@ -135,19 +136,19 @@ namespace Vex.Framework
               uniform mat4 f_ProjectionMatrix;
               void main()
               {
-                    vec3 worldPosition = texture(f_PositionTexture,f_Uv).rgb;
-                    vec3 worldNormal = texture(f_NormalTexture,f_Uv).rgb;
+                    vec3 viewPosition = texture(f_PositionTexture,f_Uv).rgb;
+                    vec3 viewNormal = texture(f_NormalTexture,f_Uv).rgb;
                     vec3 randomVec = texture(f_NoiseTexture,f_Uv*noiseScale).xyz;
-                    vec3 tangent = normalize(randomVec-worldNormal*dot(randomVec,worldNormal));
+                    vec3 tangent = normalize(randomVec-viewNormal*dot(randomVec,viewNormal));
                     
-                    vec3 bitangent = cross(worldNormal,tangent);
-                    mat3 TBN = mat3(tangent,bitangent,worldNormal);
+                    vec3 bitangent = cross(viewNormal,tangent);
+                    mat3 TBN = mat3(tangent,bitangent,viewNormal);
                     
                     float occlusion = 0.0f;
                     for(int kernelIndex = 0;kernelIndex < kernelSize;kernelIndex++)
                     {
                         vec3 samplePosition = TBN * f_SSAOKernels[kernelIndex];
-                        samplePosition = samplePosition*radius + worldPosition;
+                        samplePosition = samplePosition*radius + viewPosition;
 
                         vec4 offset = vec4(samplePosition,1.0);
                         offset = f_ProjectionMatrix*offset;
@@ -155,7 +156,7 @@ namespace Vex.Framework
                         offset.xyz  = offset.xyz*0.5f + 0.5f;
 
                         vec3 occluderPosition = texture(f_PositionTexture,offset.xy).rgb;
-                        float rangeCheck = smoothstep(0.0,1.0,radius / abs(worldPosition.z - occluderPosition.z));    
+                        float rangeCheck = smoothstep(0.0,1.0,radius / abs(viewPosition.z - occluderPosition.z));    
                         occlusion += (occluderPosition.z >= samplePosition.z + bias ? 1.0 : 0.0)*rangeCheck;
                     }
                     occlusion = 1.0f-pow((occlusion / kernelSize)*power,2);
@@ -302,14 +303,26 @@ namespace Vex.Framework
               out vec3 ColorOut;
 
               in vec2 f_Uv;
-
+              const float nearPlane = 0.001f;
+              const float farPlane = 10.0f;
               uniform sampler2D f_AmbientOcclusionTexture;
               uniform sampler2D f_ColorTexture;
+              uniform sampler2D f_NormalTexture;
+              uniform sampler2D f_ViewSpacePositionTexture;
+              uniform samplerCube f_CubeTexture;
+              uniform mat4 f_ProjectionMatrix;
+              uniform vec4 f_TextureSize;
+            
+              float amount = 0.8f;
+               
               void main()
               {
                     float ambientFactor = texture(f_AmbientOcclusionTexture,f_Uv).r;
-                    float ambientLight = 1.0f*ambientFactor;
-                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*ambientLight;
+                    vec3 normalViewSpace = texture(f_NormalTexture,f_Uv).rgb;
+                    float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0);
+                    vec3 cubeColor = texture(f_CubeTexture,reflect(texture(f_ViewSpacePositionTexture,f_Uv).rgb,normalViewSpace)).rgb;
+                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*cubeColor*ambientFactor*diffuseFactor;
+                    //ColorOut = cubeColor;
               }";
 
             Shader finalColorVertexShader = new Shader(ShaderStage.Vertex);
@@ -323,6 +336,24 @@ namespace Vex.Framework
 
             Material finalColorMaterial = new Material(finalColorShaderProgram);
             m_FinalColorMaterial = finalColorMaterial;
+
+            /*
+             * Load cubemap
+             */
+            List<string> paths = new List<string>()
+            {
+                @"C:\Users\PC\Documents\Cubemap\right.jpg",
+                @"C:\Users\PC\Documents\Cubemap\left.jpg",
+                @"C:\Users\PC\Documents\Cubemap\top.jpg",
+                @"C:\Users\PC\Documents\Cubemap\bottom.jpg",
+                @"C:\Users\PC\Documents\Cubemap\front.jpg",
+                @"C:\Users\PC\Documents\Cubemap\back.jpg"
+            };
+
+            CubeTexture cubeTexture = new CubeTexture();
+            cubeTexture.LoadFromFile(paths);
+            m_CubeTexture = cubeTexture;
+
         }
         float Lerp(float firstFloat, float secondFloat, float by)
         {
@@ -333,7 +364,8 @@ namespace Vex.Framework
             return new List<GraphicsObjectRegisterInfo>()
             {
                 new GraphicsObjectRegisterInfo(typeof(ForwardMeshRenderable),OnRenderableRegistered,OnRenderableRemoved),
-                new GraphicsObjectRegisterInfo(typeof(DeferredPointLight),OnPointLightRegister,OnPointLightRemove)
+                new GraphicsObjectRegisterInfo(typeof(DeferredPointLight),OnPointLightRegister,OnPointLightRemove),
+                new GraphicsObjectRegisterInfo(typeof(DeferredInstancedMesh),OnInstancedMeshRegister,OnInstancedMeshRemove)
             };
         }
 
@@ -344,6 +376,14 @@ namespace Vex.Framework
         public void OnPointLightRemove(Component pointLight)
         {
             m_PointLights.Remove(pointLight as DeferredPointLight);
+        }
+        public void OnInstancedMeshRegister(Component mesh)
+        {
+            m_InstancedMeshes.Add(mesh as DeferredInstancedMesh);
+        }
+        public void OnInstancedMeshRemove(Component mesh)
+        {
+            m_InstancedMeshes.Remove(mesh as DeferredInstancedMesh);
         }
         public override void OnObserverRegistered(ObserverComponent observer)
         {
@@ -578,11 +618,9 @@ namespace Vex.Framework
                  */
                 for (int renderableIndex = 0; renderableIndex < m_Renderables.Count; renderableIndex++)
                 {
-                    Profiler.StartProfile("Deferred GBuffer Pass");
-
                     /*
-                     * Get renderable
-                     */
+                      * Get renderable
+                      */
                     ForwardMeshRenderable renderable = m_Renderables[renderableIndex];
 
                     /*
@@ -677,7 +715,6 @@ namespace Vex.Framework
                     gBufferPassCommandBuffer.DrawIndexed((int)triangleCount);
 
 
-                    Profiler.EndProfile();
                 }
             }
 
@@ -938,6 +975,11 @@ namespace Vex.Framework
                  */
                 finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_BlurBuffers[observerIndex].Attachments[0].Texture, "f_AmbientOcclusionTexture");
                 finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_GBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
+                finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
+                finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program,m_GBuffers[observerIndex].Attachments[2].Texture, "f_ViewSpacePositionTexture");
+                finalColorCommandBuffer.SetUniformMat4x4(m_FinalColorMaterial.Program, observer.GetProjectionMatrix(), "f_ProjectionMatrix");
+                finalColorCommandBuffer.SetUniformVector4(m_FinalColorMaterial.Program, new Vector4(finalColorBuffer.Width, finalColorBuffer.Height, 0, 0),"f_TextureSize");
+                finalColorCommandBuffer.SetCubeTexture(m_FinalColorMaterial.Program, m_CubeTexture, "f_CubeTexture");
 
                 /*
                  * Draw color buffer
@@ -978,6 +1020,7 @@ namespace Vex.Framework
         private List<Framebuffer2D> m_FinalColorBuffers;
         private List<ForwardMeshRenderable> m_Renderables;
         private List<DeferredPointLight> m_PointLights;
+        private List<DeferredInstancedMesh> m_InstancedMeshes;
         private List<Vector3> m_SSAOKernels;
         private Material m_GBufferMaterial;
         private Material m_AmbientOcclusionMaterial;
@@ -985,5 +1028,6 @@ namespace Vex.Framework
         private Material m_FinalColorMaterial;
         private StaticMesh m_ScreenQuad;
         private Texture2D m_SSAONoiseTexture;
+        private CubeTexture m_CubeTexture;
     }
 }
