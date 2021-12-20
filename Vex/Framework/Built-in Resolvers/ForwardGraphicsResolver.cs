@@ -30,6 +30,8 @@ namespace Vex.Framework
             m_PointLights = new List<DeferredPointLight>();
             m_SSAOKernels = new List<Vector3>();
             m_BlurBuffers = new List<Framebuffer2D>();
+            m_SsgiBuffers = new List<Framebuffer2D>();
+            m_BlurSsgiBuffers = new List<Framebuffer2D>();
             m_FinalColorBuffers = new List<Framebuffer2D>();
             m_InstancedMeshes = new List<DeferredInstancedMesh>();
 
@@ -280,6 +282,60 @@ namespace Vex.Framework
             m_BlurMaterial = blurMaterial;
 
             /*
+           * Create blur pass
+           */
+            string blurColorVertexShaderText = @"#version 450
+            layout(location = 0) in vec3 v_Position;
+            layout(location = 1) in vec3 v_Normal;
+            layout(location = 2) in vec2 v_Uv;
+
+            out vec2 f_Uv;
+            
+            void main()
+            {
+                gl_Position = vec4(v_Position, 1);
+                f_Uv = v_Uv;
+            }
+            ";
+
+            string blurColorFragmentShaderText =
+            @"
+              #version 450
+
+              out vec3 ColorOut;
+
+              in vec2 f_Uv;
+              uniform sampler2D f_ColorTexture;
+             
+              void main()
+              {
+                    vec2 texelSize = 1.0f / vec2(textureSize(f_ColorTexture,0));
+                    vec3 result = vec3(0);
+                    for(int x = -2;x < 2;++x)
+                    {
+                        for(int y = -2;y<2;++y)
+                        {
+                            vec2 offset = vec2(float(x),float(y))*texelSize;
+                            result+= texture(f_ColorTexture,f_Uv + offset).rgb;
+                        }
+                    }
+                    result = result / (4.0f*4.0f);
+                    ColorOut = result;
+              }";
+
+            Shader blurColorVertexShader = new Shader(ShaderStage.Vertex);
+            blurColorVertexShader.Compile(blurColorVertexShaderText);
+
+            Shader blurColorFragmentShader = new Shader(ShaderStage.Fragment);
+            blurColorFragmentShader.Compile(blurColorFragmentShaderText);
+
+            ShaderProgram blurColorShaderProgram = new ShaderProgram("Deferred", "Color Blur");
+            blurColorShaderProgram.LinkProgram(new List<Shader>() { blurColorVertexShader, blurColorFragmentShader });
+
+            Material blurColorMaterial = new Material(blurColorShaderProgram);
+            m_BlurColorMaterial = blurColorMaterial;
+
+            /*
              * Final color pass
              */
             string finalColorVertexShaderText = @"#version 450
@@ -306,9 +362,11 @@ namespace Vex.Framework
               const float nearPlane = 0.001f;
               const float farPlane = 10.0f;
               uniform sampler2D f_AmbientOcclusionTexture;
+              uniform sampler2D f_GITexture;
               uniform sampler2D f_ColorTexture;
               uniform sampler2D f_NormalTexture;
               uniform sampler2D f_ViewSpacePositionTexture;
+        
               uniform samplerCube f_CubeTexture;
               uniform mat4 f_ProjectionMatrix;
               uniform vec4 f_TextureSize;
@@ -318,11 +376,12 @@ namespace Vex.Framework
               void main()
               {
                     float ambientFactor = texture(f_AmbientOcclusionTexture,f_Uv).r;
+                    vec3 giColor = texture(f_GITexture,f_Uv).rgb;
                     vec3 normalViewSpace = texture(f_NormalTexture,f_Uv).rgb;
                     float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0);
                     vec3 cubeColor = texture(f_CubeTexture,reflect(texture(f_ViewSpacePositionTexture,f_Uv).rgb,normalViewSpace)).rgb;
-                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*cubeColor*ambientFactor*diffuseFactor;
-                    //ColorOut = cubeColor;
+                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*cubeColor*ambientFactor*diffuseFactor*giColor;
+                    ColorOut = texture(f_ColorTexture,f_Uv).rgb+texture(f_GITexture,f_Uv).rgb;
               }";
 
             Shader finalColorVertexShader = new Shader(ShaderStage.Vertex);
@@ -338,16 +397,96 @@ namespace Vex.Framework
             m_FinalColorMaterial = finalColorMaterial;
 
             /*
+             * SSGI
+             */
+            string ssgiVertexShaderText = @"#version 450
+            layout(location = 0) in vec3 v_Position;
+            layout(location = 1) in vec3 v_Normal;
+            layout(location = 2) in vec2 v_Uv;
+
+            out vec2 f_Uv;
+            
+            void main()
+            {
+                gl_Position = vec4(v_Position, 1);
+                f_Uv = v_Uv;
+            }
+            ";
+
+            string ssgiFragmentShaderText =
+            @"
+              #version 450
+
+              out vec3 ColorOut;
+              in vec2 f_Uv;
+
+              int kernelSize = 64;
+              float radius = 0.15f;
+              float bias = 0.01f;
+              float power = 3.5f;
+              const vec2 noiseScale = vec2(1920.0/4.0,1080.0/4.0);
+
+              uniform sampler2D f_PositionTexture;
+              uniform sampler2D f_NormalTexture;
+              uniform sampler2D f_DepthBuffer;
+                
+             
+              uniform vec3[64] f_SSAOKernels;
+              uniform sampler2D f_NoiseTexture;
+              uniform mat4 f_ProjectionMatrix;
+              uniform samplerCube f_EnvironmentTexture;
+              void main()
+              {
+                    vec3 viewPosition = texture(f_PositionTexture,f_Uv).rgb;
+                    vec3 viewNormal = texture(f_NormalTexture,f_Uv).rgb;
+                    vec3 randomVec = texture(f_NoiseTexture,f_Uv*noiseScale).xyz;
+                    vec3 tangent = normalize(randomVec-viewNormal*dot(randomVec,viewNormal));
+                    
+                    vec3 bitangent = cross(viewNormal,tangent);
+                    mat3 TBN = mat3(tangent,bitangent,viewNormal);
+                    
+                    vec3 accumulatedGI = vec3(0);
+                    for(int kernelIndex = 0;kernelIndex < kernelSize;kernelIndex++)
+                    {
+                        vec3 samplePosition = TBN * f_SSAOKernels[kernelIndex];
+                        samplePosition = samplePosition*radius + viewPosition;
+
+                        vec4 offset = vec4(samplePosition,1.0);
+                        offset = f_ProjectionMatrix*offset;
+                        offset.xyz /= offset.w;
+                        offset.xyz  = offset.xyz*0.5f + 0.5f;
+
+                        vec3 occluderPosition = texture(f_PositionTexture,offset.xy).rgb;
+                        vec3 direction = normalize(occluderPosition-samplePosition);
+                        accumulatedGI+= texture(f_EnvironmentTexture,direction).rgb;
+                    }
+                    
+                   ColorOut = accumulatedGI/(kernelSize);
+              }";
+
+            Shader ssgiVertexShader = new Shader(ShaderStage.Vertex);
+            ssgiVertexShader.Compile(ssgiVertexShaderText);
+
+            Shader ssgiFragmentShader = new Shader(ShaderStage.Fragment);
+            ssgiFragmentShader.Compile(ssgiFragmentShaderText);
+
+            ShaderProgram ssgiShaderProgram = new ShaderProgram("Deferred", "Ssgi");
+            ssgiShaderProgram.LinkProgram(new List<Shader>() { ssgiVertexShader, ssgiFragmentShader });
+
+            Material ssgiMaterial = new Material(ssgiShaderProgram);
+            m_SsgiMaterial = ssgiMaterial;
+
+            /*
              * Load cubemap
              */
             List<string> paths = new List<string>()
             {
-                @"C:\Users\PC\Documents\Cubemap\right.jpg",
-                @"C:\Users\PC\Documents\Cubemap\left.jpg",
-                @"C:\Users\PC\Documents\Cubemap\top.jpg",
-                @"C:\Users\PC\Documents\Cubemap\bottom.jpg",
-                @"C:\Users\PC\Documents\Cubemap\front.jpg",
-                @"C:\Users\PC\Documents\Cubemap\back.jpg"
+                @"C:\Users\PC\Desktop\Sky\right.jpg",
+                @"C:\Users\PC\Desktop\Sky\left.jpg",
+                @"C:\Users\PC\Desktop\Sky\top.jpg",
+                @"C:\Users\PC\Desktop\Sky\bottom.jpg",
+                @"C:\Users\PC\Desktop\Sky\front.jpg",
+                @"C:\Users\PC\Desktop\Sky\back.jpg"
             };
 
             CubeTexture cubeTexture = new CubeTexture();
@@ -466,7 +605,57 @@ namespace Vex.Framework
             m_BlurBuffers.Add(blurFramebuffer);
 
             /*
-             * Create observer ambient occlusion framebuffer
+             * Create observer ssgi framebuffer
+             */
+            Framebuffer2D ssgiFramebuffer = new Framebuffer2D(
+               Framebuffer2D.IntermediateFramebuffer.Width,
+               Framebuffer2D.IntermediateFramebuffer.Height,
+               new List<FramebufferAttachmentCreateParams>()
+               {
+                    new FramebufferAttachmentCreateParams("Environment Ssgi",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
+               },
+               true
+               );
+
+            ssgiFramebuffer.Name = "Global Illumination";
+
+            /*
+             * Register as insepctable framebuffer
+             */
+            observer.RegisterFramebuffer2DResource(ssgiFramebuffer);
+
+            /*
+             * Register to list
+             */
+            m_SsgiBuffers.Add(ssgiFramebuffer);
+
+            /*
+             * Create observer ssgi framebuffer
+             */
+            Framebuffer2D ssgiBlurFramebuffer = new Framebuffer2D(
+               Framebuffer2D.IntermediateFramebuffer.Width,
+               Framebuffer2D.IntermediateFramebuffer.Height,
+               new List<FramebufferAttachmentCreateParams>()
+               {
+                    new FramebufferAttachmentCreateParams("Environment Ssgi",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
+               },
+               true
+               );
+
+            ssgiBlurFramebuffer.Name = "Global Illumination Blured";
+
+            /*
+             * Register as insepctable framebuffer
+             */
+            observer.RegisterFramebuffer2DResource(ssgiBlurFramebuffer);
+
+            /*
+             * Register to list
+             */
+            m_BlurSsgiBuffers.Add(ssgiBlurFramebuffer);
+
+            /*
+             * Create observer final color framebuffer
              */
             Framebuffer2D finalColorFramebuffer = new Framebuffer2D(
                Framebuffer2D.IntermediateFramebuffer.Width,
@@ -546,6 +735,7 @@ namespace Vex.Framework
             CommandBuffer gBufferPassCommandBuffer = new CommandBuffer();
             CommandBuffer ambientOcclusionCommandBuffer = new CommandBuffer();
             CommandBuffer ambientBluredCommandBuffer = new CommandBuffer();
+            CommandBuffer ssgiCommandBuffer = new CommandBuffer();
             CommandBuffer finalColorCommandBuffer = new CommandBuffer();
 
             /*
@@ -554,6 +744,7 @@ namespace Vex.Framework
             gBufferPassCommandBuffer.StartRecoding();
             ambientOcclusionCommandBuffer.StartRecoding();
             ambientBluredCommandBuffer.StartRecoding();
+            ssgiCommandBuffer.StartRecoding();
             finalColorCommandBuffer.StartRecoding();
 
             /*
@@ -902,8 +1093,180 @@ namespace Vex.Framework
             ambientBluredCommandBuffer.EndRecording();
 
             /*
-           * Set ambient occlusion blur pipeline state
-           */
+            * Set ambient occlusion pipeline state
+            */
+            PipelineState ssgiPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+            ssgiPipelineState.DepthTest = false;
+            ssgiCommandBuffer.SetPipelineState(ssgiPipelineState);
+            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+            {
+                /*
+                 * Get observer
+                 */
+                ObserverComponent observer = m_Observers[observerIndex];
+
+                /*
+                 * Get observer clear color
+                 */
+                Color4 clearColor = Color4.Black;
+
+                /*
+                 * Get observer gBuffer
+                 */
+                Framebuffer2D ssgiBuffer = m_SsgiBuffers[observerIndex];
+
+                /*
+                 * Set color framebuffer
+                 */
+                ssgiCommandBuffer.SetFramebuffer(ssgiBuffer);
+
+                /*
+                 * Set framebuffer viewport
+                 */
+                ssgiCommandBuffer.SetViewport(Vector2.Zero, new Vector2(ssgiBuffer.Width, ssgiBuffer.Height));
+
+                /*
+                 * Clear color the framebuffer
+                 */
+                ssgiCommandBuffer.ClearColor(clearColor);
+                ssgiCommandBuffer.ClearDepth(1.0f);
+
+                /*
+                 * Set color shader program
+                 */
+                ssgiCommandBuffer.SetShaderProgram(m_SsgiMaterial.Program);
+
+                /*
+                   * Get vertex buffer
+                   */
+                VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
+
+                /*
+                 * Get index buffer
+                 */
+                IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
+
+                /*
+                 * Get triangle count
+                 */
+                uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
+
+                /*
+                 * Set vertex buffer command
+                 */
+                ssgiCommandBuffer.SetVertexbuffer(vertexBuffer);
+
+                /*
+                 * Set index buffer command
+                 */
+                ssgiCommandBuffer.SetIndexBuffer(indexBuffer);
+
+                /*
+                 * Set color texture
+                 */
+                ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
+                ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
+                ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_GBuffers[observerIndex].DepthTexture, "f_DepthBuffer");
+                ssgiCommandBuffer.SetUniformVector3Array(m_SsgiMaterial.Program, m_SSAOKernels.ToArray(), "f_SSAOKernels");
+                ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_SSAONoiseTexture, "f_NoiseTexture");
+                ssgiCommandBuffer.SetUniformMat4x4(m_SsgiMaterial.Program, observer.GetProjectionMatrix(), "f_ProjectionMatrix");
+                ssgiCommandBuffer.SetCubeTexture(m_SsgiMaterial.Program, m_CubeTexture, "f_EnvironmentTexture");
+
+
+                /*
+                 * Draw color buffer
+                 */
+                ssgiCommandBuffer.DrawIndexed((int)triangleCount);
+            }
+
+            /*
+            * Set ambient occlusion pipeline state
+            */
+            PipelineState blurColorPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+            blurColorPipelineState.DepthTest = false;
+            ssgiCommandBuffer.SetPipelineState(blurColorPipelineState);
+            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+            {
+                /*
+                 * Get observer
+                 */
+                ObserverComponent observer = m_Observers[observerIndex];
+
+                /*
+                 * Get observer clear color
+                 */
+                Color4 clearColor = Color4.Black;
+
+                /*
+                 * Get observer gBuffer
+                 */
+                Framebuffer2D ssgiBuffer = m_BlurSsgiBuffers[observerIndex];
+
+                /*
+                 * Set color framebuffer
+                 */
+                ssgiCommandBuffer.SetFramebuffer(ssgiBuffer);
+
+                /*
+                 * Set framebuffer viewport
+                 */
+                ssgiCommandBuffer.SetViewport(Vector2.Zero, new Vector2(ssgiBuffer.Width, ssgiBuffer.Height));
+
+                /*
+                 * Clear color the framebuffer
+                 */
+                ssgiCommandBuffer.ClearColor(clearColor);
+                ssgiCommandBuffer.ClearDepth(1.0f);
+
+                /*
+                 * Set color shader program
+                 */
+                ssgiCommandBuffer.SetShaderProgram(m_BlurColorMaterial.Program);
+
+                /*
+                   * Get vertex buffer
+                   */
+                VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
+
+                /*
+                 * Get index buffer
+                 */
+                IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
+
+                /*
+                 * Get triangle count
+                 */
+                uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
+
+                /*
+                 * Set vertex buffer command
+                 */
+                ssgiCommandBuffer.SetVertexbuffer(vertexBuffer);
+
+                /*
+                 * Set index buffer command
+                 */
+                ssgiCommandBuffer.SetIndexBuffer(indexBuffer);
+
+                /*
+                 * Set color texture
+                 */
+                ssgiCommandBuffer.SetTexture2D(m_BlurColorMaterial.Program, m_SsgiBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
+
+                /*
+                 * Draw color buffer
+                 */
+                ssgiCommandBuffer.DrawIndexed((int)triangleCount);
+            }
+
+            /*
+             * End recording
+             */
+            ssgiCommandBuffer.EndRecording();
+
+            /*
+            * Set final color  pipeline state
+            */
             PipelineState finalColorPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
             finalColorPipelineState.DepthTest = false;
             finalColorCommandBuffer.SetPipelineState(finalColorPipelineState);
@@ -974,6 +1337,7 @@ namespace Vex.Framework
                  * Set color texture
                  */
                 finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_BlurBuffers[observerIndex].Attachments[0].Texture, "f_AmbientOcclusionTexture");
+                finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_BlurSsgiBuffers[observerIndex].Attachments[0].Texture, "f_GITexture");
                 finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_GBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
                 finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
                 finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program,m_GBuffers[observerIndex].Attachments[2].Texture, "f_ViewSpacePositionTexture");
@@ -1010,6 +1374,11 @@ namespace Vex.Framework
             /*
              * Execute command buffer
              */
+            ssgiCommandBuffer.Execute();
+
+            /*
+             * Execute command buffer
+             */
             finalColorCommandBuffer.Execute();
         }
 
@@ -1017,6 +1386,8 @@ namespace Vex.Framework
         private List<Framebuffer2D> m_GBuffers;
         private List<Framebuffer2D> m_AmbientOcclusionBuffers;
         private List<Framebuffer2D> m_BlurBuffers;
+        private List<Framebuffer2D> m_SsgiBuffers;
+        private List<Framebuffer2D> m_BlurSsgiBuffers;
         private List<Framebuffer2D> m_FinalColorBuffers;
         private List<ForwardMeshRenderable> m_Renderables;
         private List<DeferredPointLight> m_PointLights;
@@ -1026,6 +1397,8 @@ namespace Vex.Framework
         private Material m_AmbientOcclusionMaterial;
         private Material m_BlurMaterial;
         private Material m_FinalColorMaterial;
+        private Material m_SsgiMaterial;
+        private Material m_BlurColorMaterial;
         private StaticMesh m_ScreenQuad;
         private Texture2D m_SSAONoiseTexture;
         private CubeTexture m_CubeTexture;
