@@ -378,10 +378,9 @@ namespace Vex.Framework
                     float ambientFactor = texture(f_AmbientOcclusionTexture,f_Uv).r;
                     vec3 giColor = texture(f_GITexture,f_Uv).rgb;
                     vec3 normalViewSpace = texture(f_NormalTexture,f_Uv).rgb;
-                    float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0);
+                    float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0)*2;
                     vec3 cubeColor = texture(f_CubeTexture,reflect(texture(f_ViewSpacePositionTexture,f_Uv).rgb,normalViewSpace)).rgb;
                     ColorOut = texture(f_ColorTexture,f_Uv).rgb*cubeColor*ambientFactor*diffuseFactor*giColor;
-                    ColorOut = texture(f_ColorTexture,f_Uv).rgb+texture(f_GITexture,f_Uv).rgb;
               }";
 
             Shader finalColorVertexShader = new Shader(ShaderStage.Vertex);
