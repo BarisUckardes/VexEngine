@@ -37,6 +37,11 @@ namespace Vex.Framework
         /// <returns></returns>
         public abstract List<GraphicsObjectRegisterInfo> GetGraphicsComponentRegisterInformations();
 
+        /// <summary>
+        /// Returns the exposable graphics parameters
+        /// </summary>
+        /// <returns></returns>
+        public abstract List<GraphicsResolverParameterGroup> GetGraphicsResolverParameterGroups();
 
         public Type TargetViewType
         {

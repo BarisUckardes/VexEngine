@@ -11,13 +11,14 @@ using Vex.Framework;
 using Vex.Types;
 namespace Bite.GUI
 {
-    //[ComponentLayout(typeof(FreeGameObserver))]
+    [ComponentLayout(typeof(FreeGameObserver))]
     public sealed class FreeGameObserverComponentLayout : ComponentLayout
     {
+        private List<GraphicsResolverParameterGroup> m_ParameterGroups;
         public override void OnAttach()
         {
             m_TargetObserver = TargetComponent as FreeGameObserver;
-          
+            m_ParameterGroups = (m_TargetObserver.OwnerEntity.World.GetView<WorldGraphicsView>().Resolvers[0] as GraphicsResolver).GetGraphicsResolverParameterGroups();
         }
 
         public override void OnDetach()
@@ -29,6 +30,17 @@ namespace Bite.GUI
         {
             GUIRenderCommands.CreateEmptySpace();
             GUIRenderCommands.CreateEmptySpace();
+
+            foreach(GraphicsResolverParameterGroup group in m_ParameterGroups)
+            {
+                GUIRenderCommands.CreateText(group.CategoryName, "");
+                GUIRenderCommands.CreateSeperatorLine();
+                foreach(GraphicsResolverParameter parameter in group.Parameters)
+                {
+                    GUIRenderCommands.CreateText(parameter.ParameterName, "");
+                    parameter.SetParameter(GUIRenderCommands.CreateFloatSlider(" ##" + parameter.ParameterName,parameter.ParameterName, parameter.GetParameter<float>(), 0.0f, 1.0f));
+                }
+            }
             /*
              * Create framebuffer resources header
              */

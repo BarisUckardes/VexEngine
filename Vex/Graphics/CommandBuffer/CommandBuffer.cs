@@ -233,13 +233,34 @@ namespace Vex.Graphics
             m_Commands.Add(new SetPipelineStateRC(state));
         }
 
+
         /// <summary>
-        /// Set uniform vector4 parameter command
+        /// Sets an uniform vector2 parameter
         /// </summary>
-        /// <param name="pVexgram"></param>
+        /// <param name="program"></param>
         /// <param name="value"></param>
         /// <param name="name"></param>
-        public void SetUniformVector4(in ShaderProgram program, in Vector4 value,in string name)
+        public void SetUniformVector2(in ShaderProgram program,in Vector2 value,in string name)
+        {
+            /*
+             * Validate recording
+             */
+            if (!IsRecording)
+            {
+                return;
+            }
+
+            m_Commands.Add(new SetUniformVector2RC(program.Handle, name, value));
+
+        }
+
+        /// <summary>
+        /// Sets an uniform vector2 aarray
+        /// </summary>
+        /// <param name="program"></param>
+        /// <param name="value"></param>
+        /// <param name="name"></param>
+        public void SetUniformVector2Array(in ShaderProgram program,in Vector2[] value,in string name)
         {
             /*
             * Validate recording
@@ -249,7 +270,27 @@ namespace Vex.Graphics
                 return;
             }
 
-            m_Commands.Add(new SetUniformVector4RC(program.Handle, name, value));
+            m_Commands.Add(new SetUniformVector2ArrayRC(program.Handle, name, value));
+        }
+
+        /// <summary>
+        /// Sets uniform vector3 parameter
+        /// </summary>
+        /// <param name="program"></param>
+        /// <param name="value"></param>
+        /// <param name="name"></param>
+        public void SetUniformVector3(in ShaderProgram program, in Vector3 value, in string name)
+        {
+
+            /*
+            * Validate recording
+            */
+            if (!IsRecording)
+            {
+                return;
+            }
+
+            m_Commands.Add(new SetUniformVector3RC(program.Handle, name, value));
         }
 
         /// <summary>
@@ -277,6 +318,25 @@ namespace Vex.Graphics
         /// <param name="pVexgram"></param>
         /// <param name="value"></param>
         /// <param name="name"></param>
+        public void SetUniformVector4(in ShaderProgram program, in Vector4 value,in string name)
+        {
+            /*
+            * Validate recording
+            */
+            if (!IsRecording)
+            {
+                return;
+            }
+
+            m_Commands.Add(new SetUniformVector4RC(program.Handle, name, value));
+        }
+
+        /// <summary>
+        /// Set uniform vector4 parameter command
+        /// </summary>
+        /// <param name="pVexgram"></param>
+        /// <param name="value"></param>
+        /// <param name="name"></param>
         public void SetUniformVector4Array(in ShaderProgram program, in Vector4[] value, in string name)
         {
             /*
@@ -289,6 +349,9 @@ namespace Vex.Graphics
 
             m_Commands.Add(new SetUniformVector4ArrayRC(program.Handle, name, value));
         }
+
+       
+
 
         /// <summary>
         /// Set uniform float parameter command

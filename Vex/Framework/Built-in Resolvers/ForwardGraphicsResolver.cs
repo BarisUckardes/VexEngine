@@ -136,6 +136,7 @@ namespace Vex.Framework
               uniform vec3[64] f_SSAOKernels;
               uniform sampler2D f_NoiseTexture;
               uniform mat4 f_ProjectionMatrix;
+              uniform float f_AmbientPower;
               void main()
               {
                     vec3 viewPosition = texture(f_PositionTexture,f_Uv).rgb;
@@ -161,6 +162,7 @@ namespace Vex.Framework
                         float rangeCheck = smoothstep(0.0,1.0,radius / abs(viewPosition.z - occluderPosition.z));    
                         occlusion += (occluderPosition.z >= samplePosition.z + bias ? 1.0 : 0.0)*rangeCheck;
                     }
+                    occlusion*=f_AmbientPower;
                     occlusion = 1.0f-pow((occlusion / kernelSize)*power,2);
                     ColorOut = occlusion; 
               }";
@@ -480,12 +482,12 @@ namespace Vex.Framework
              */
             List<string> paths = new List<string>()
             {
-                @"C:\Users\PC\Desktop\Sky\right.jpg",
-                @"C:\Users\PC\Desktop\Sky\left.jpg",
-                @"C:\Users\PC\Desktop\Sky\top.jpg",
-                @"C:\Users\PC\Desktop\Sky\bottom.jpg",
-                @"C:\Users\PC\Desktop\Sky\front.jpg",
-                @"C:\Users\PC\Desktop\Sky\back.jpg"
+                @"C:\Users\PC\Documents\Cubemap\right.jpg",
+                @"C:\Users\PC\Documents\Cubemap\left.jpg",
+                @"C:\Users\PC\Documents\Cubemap\top.jpg",
+                @"C:\Users\PC\Documents\Cubemap\bottom.jpg",
+                @"C:\Users\PC\Documents\Cubemap\front.jpg",
+                @"C:\Users\PC\Documents\Cubemap\back.jpg"
             };
 
             CubeTexture cubeTexture = new CubeTexture();
@@ -497,15 +499,7 @@ namespace Vex.Framework
         {
             return firstFloat + (secondFloat - firstFloat) * by;
         }
-        public override List<GraphicsObjectRegisterInfo> GetGraphicsComponentRegisterInformations()
-        {
-            return new List<GraphicsObjectRegisterInfo>()
-            {
-                new GraphicsObjectRegisterInfo(typeof(ForwardMeshRenderable),OnRenderableRegistered,OnRenderableRemoved),
-                new GraphicsObjectRegisterInfo(typeof(DeferredPointLight),OnPointLightRegister,OnPointLightRemove),
-                new GraphicsObjectRegisterInfo(typeof(DeferredInstancedMesh),OnInstancedMeshRegister,OnInstancedMeshRemove)
-            };
-        }
+      
 
         public void OnPointLightRegister(Component pointLight)
         {
@@ -992,7 +986,7 @@ namespace Vex.Framework
                 ambientOcclusionCommandBuffer.SetUniformVector3Array(m_AmbientOcclusionMaterial.Program, m_SSAOKernels.ToArray(), "f_SSAOKernels");
                 ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_SSAONoiseTexture, "f_NoiseTexture");
                 ambientOcclusionCommandBuffer.SetUniformMat4x4(m_AmbientOcclusionMaterial.Program,observer.GetProjectionMatrix(), "f_ProjectionMatrix");
-
+                ambientOcclusionCommandBuffer.SetUniformFloat(m_AmbientOcclusionMaterial.Program, m_AmbientPower, "f_AmbientPower");
 
                 /*
                  * Draw color buffer
@@ -1380,6 +1374,24 @@ namespace Vex.Framework
             finalColorCommandBuffer.Execute();
         }
 
+        public override List<GraphicsObjectRegisterInfo> GetGraphicsComponentRegisterInformations()
+        {
+            return new List<GraphicsObjectRegisterInfo>()
+            {
+                new GraphicsObjectRegisterInfo(typeof(ForwardMeshRenderable),OnRenderableRegistered,OnRenderableRemoved),
+                new GraphicsObjectRegisterInfo(typeof(DeferredPointLight),OnPointLightRegister,OnPointLightRemove),
+                new GraphicsObjectRegisterInfo(typeof(DeferredInstancedMesh),OnInstancedMeshRegister,OnInstancedMeshRemove)
+            };
+        }
+        public override List<GraphicsResolverParameterGroup> GetGraphicsResolverParameterGroups()
+        {
+            return new List<GraphicsResolverParameterGroup>()
+            {
+                new GraphicsResolverParameterGroup(this,"Ambient Occlusion",new List<string>(){"m_AmbientPower"})
+            };
+
+        }
+
         private List<ObserverComponent> m_Observers;
         private List<Framebuffer2D> m_GBuffers;
         private List<Framebuffer2D> m_AmbientOcclusionBuffers;
@@ -1400,5 +1412,6 @@ namespace Vex.Framework
         private StaticMesh m_ScreenQuad;
         private Texture2D m_SSAONoiseTexture;
         private CubeTexture m_CubeTexture;
+        private float m_AmbientPower = 1.0f;
     }
 }
