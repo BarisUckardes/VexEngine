@@ -19,8 +19,19 @@ namespace Vex.Framework
             m_Observers = new List<ObserverComponent>();
             m_GraphicComponents = new List<Component>();
             m_RegisterInformations = new List<List<GraphicsObjectRegisterInfo>>();
+            m_InformationBlock = new GraphicsViewInformationBlock();
         }
 
+        /// <summary>
+        /// Returns the information block of this graphics view
+        /// </summary>
+        public GraphicsViewInformationBlock InformationBlock
+        {
+            get
+            {
+                return m_InformationBlock;
+            }
+        }
         public override Type ExpectedBaseComponentType
         {
             get
@@ -28,6 +39,7 @@ namespace Vex.Framework
                 return typeof(Component);
             }
         }
+
 
         /// <summary>
         /// Registers an observer to the resolvers
@@ -228,6 +240,11 @@ namespace Vex.Framework
              * Register register informations
              */
             m_RegisterInformations.Add(resolverRegisterInformations);
+
+            /*
+             * Register to information block
+             */
+            m_InformationBlock.RegisterResolver(resolver.GetType().Name, resolver.GetGraphicsResolverParameterGroups());
         }
         public override void RemoveResolver(Type resolverType)
         {
@@ -235,6 +252,10 @@ namespace Vex.Framework
             {
                 if(m_Resolvers[resolverIndex].GetType() == resolverType)
                 {
+                    /*
+                    * Remove from the information block
+                    */
+                    m_InformationBlock.RemoveResolver(m_Resolvers[resolverIndex].GetType().Name);
                     /*
                      * SHOULD implement a shutdown&dispose routine
                      */
@@ -247,6 +268,8 @@ namespace Vex.Framework
                      * Remove register informations
                      */
                     m_RegisterInformations.RemoveAt(resolverIndex);
+
+                  
                     return;
                 }
             }
@@ -275,5 +298,6 @@ namespace Vex.Framework
         private List<Component> m_GraphicComponents;
         private List<GraphicsResolver> m_Resolvers;
         private List<List<GraphicsObjectRegisterInfo>> m_RegisterInformations;
+        private GraphicsViewInformationBlock m_InformationBlock;
     }
 }

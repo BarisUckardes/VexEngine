@@ -51,6 +51,18 @@ namespace Vex.Framework
             }
         }
 
+        /// <summary>
+        /// Frees this parameter group
+        /// </summary>
+        public void Free()
+        {
+            foreach(GraphicsResolverParameter parameter in m_Parameters)
+            {
+                parameter.Free();
+            }
+            m_Parameters.Clear();
+        }
+
         private List<GraphicsResolverParameter> m_Parameters;
         private object m_TargetObject;
         private string m_CategoryName;
