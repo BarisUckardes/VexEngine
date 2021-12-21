@@ -1387,7 +1387,10 @@ namespace Vex.Framework
         {
             return new List<GraphicsResolverParameterGroup>()
             {
-                new GraphicsResolverParameterGroup(this,"Ambient Occlusion",new List<string>(){"m_AmbientPower"})
+                new GraphicsResolverParameterGroup(this,"Ambient Occlusion",new List<Tuple<string,string>>()
+                {
+                    new Tuple<string, string>("m_AmbientPower","Ambient Power")
+                })
             };
 
         }

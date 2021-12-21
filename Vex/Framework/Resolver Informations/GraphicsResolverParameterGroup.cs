@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace Vex.Framework
 {
+    /// <summary>
+    /// Contains a graphics resolver's parameter groups
+    /// </summary>
     public sealed class GraphicsResolverParameterGroup
     {
-        public GraphicsResolverParameterGroup(object targetObject,string categoryName,List<string> parameterNames)
+        public GraphicsResolverParameterGroup(object targetObject,string categoryName,List<Tuple<string,string>> parameterNames)
         {
-            /*
-             * Set target object
-             */
-            m_TargetObject = targetObject;
-
             /*
              * Set category
              */
@@ -23,9 +21,9 @@ namespace Vex.Framework
              * Set parameters
              */
             m_Parameters = new List<GraphicsResolverParameter>(parameterNames.Count);
-            foreach(string parameterName in parameterNames)
+            foreach(Tuple<string,string> parameterName in parameterNames)
             {
-                m_Parameters.Add(new GraphicsResolverParameter(targetObject, parameterName, categoryName));
+                m_Parameters.Add(new GraphicsResolverParameter(targetObject, parameterName.Item1, parameterName.Item2, categoryName));
             }
 
         }
@@ -64,7 +62,6 @@ namespace Vex.Framework
         }
 
         private List<GraphicsResolverParameter> m_Parameters;
-        private object m_TargetObject;
         private string m_CategoryName;
         
     }

@@ -11,7 +11,7 @@ namespace Vex.Framework
     /// </summary>
     public sealed class GraphicsResolverParameter
     {
-        public GraphicsResolverParameter(object targetObject,string parameterName,string parameterCategory)
+        public GraphicsResolverParameter(object targetObject,string parameterName,string parameterVisibleName,string parameterCategory)
         {
             /*
              * Set target object
@@ -28,8 +28,19 @@ namespace Vex.Framework
              */
             m_ParameterCategory = parameterCategory;
             m_ParameterName = parameterName;
+            m_ParameterVisibleName = parameterVisibleName;
         }
 
+        /// <summary>
+        /// Returns the expected data type for this parameter
+        /// </summary>
+        public Type ExpectedDataType
+        {
+            get
+            {
+                return m_TargetFieldInformation.FieldType;
+            }
+        }
         /// <summary>
         /// Returns the parameter category
         /// </summary>
@@ -49,6 +60,17 @@ namespace Vex.Framework
             get
             {
                 return m_ParameterName;
+            }
+        }
+
+        /// <summary>
+        /// Returns the visible name of this parameter
+        /// </summary>
+        public string VisibleParameterName
+        {
+            get
+            {
+                return m_ParameterVisibleName;
             }
         }
 
@@ -86,9 +108,11 @@ namespace Vex.Framework
             m_ParameterName = String.Empty;
             m_ParameterCategory = String.Empty;
         }
+
         private FieldInfo m_TargetFieldInformation;
         private object m_TargetObject;
         private string m_ParameterCategory;
         private string m_ParameterName;
+        private string m_ParameterVisibleName;
     }
 }

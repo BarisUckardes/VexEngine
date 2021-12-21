@@ -137,8 +137,6 @@ namespace Vex.Graphics
                                 int normalIndex = int.Parse(sections[sectionIndex].Split("/")[2]);
 
                                 faces.Add(new Tuple<int, int, int>(vertexIndex, uvIndex, normalIndex));
-
-
                             }
                             break;
                         }

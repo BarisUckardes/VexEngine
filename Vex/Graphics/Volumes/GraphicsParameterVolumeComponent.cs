@@ -10,7 +10,7 @@ namespace Vex.Graphics
     /// <summary>
     /// A volume component which creates a interface to the graphics resolver parameters and interpolates them
     /// </summary>
-    public sealed class GraphicsParamerVolume : Component
+    public sealed class GraphicsParameterVolumeComponent : Component
     {
 
         /// <summary>
@@ -28,6 +28,18 @@ namespace Vex.Graphics
             }
         }
 
+        /// <summary>
+        /// Returns the obtained information block of this parameter volume
+        /// </summary>
+        public GraphicsViewInformationBlock ObtainedInformationBlock
+        {
+            get
+            {
+                return m_InformationBlock;
+            }
+        }
+
+
         public override bool ShouldTick
         {
             get
@@ -36,15 +48,19 @@ namespace Vex.Graphics
             }
         }
 
+
         protected override void OnAttach()
         {
             base.OnAttach();
+            m_InformationBlock = OwnerEntity.World.GetView<WorldGraphicsView>().InformationBlock;
         }
         protected override void OnDetach()
         {
             base.OnDetach();
+            m_InformationBlock = null;
         }
 
+        private GraphicsViewInformationBlock m_InformationBlock;
         private bool m_Global;
     }
 }
