@@ -45,8 +45,24 @@ namespace Vex.Graphics
             }
         }
 
+
+        [ExposeThis]
+        public Texture2D NormalTexture
+        {
+            get
+            {
+                return m_NormalTexture;
+            }
+            set
+            {
+                m_NormalTexture = value;
+            }
+        }
+
         [ExposeThis]
         private Texture2D m_ColorTexture;
+        [ExposeThis]
+        private Texture2D m_NormalTexture;
         [ExposeThis]
         private StaticMesh m_Mesh;
     }

@@ -8,14 +8,18 @@ namespace Vex.Graphics
 {
     public struct  StaticMeshVertex
     {
-        public StaticMeshVertex(Vector3 position, Vector3 normal, Vector2 uv)
+        public StaticMeshVertex(in Vector3 position,in Vector3 normal,in Vector3 tangent,in Vector3 bitangent,in Vector2 uv)
         {
             Position = position;
             Normal = normal;
+            Tangent = tangent;
+            BiTangent = tangent;
             Uv = uv;
         }
         public Vector3 Position;
         public Vector3 Normal;
+        public Vector3 Tangent;
+        public Vector3 BiTangent;
         public Vector2 Uv;
 
        

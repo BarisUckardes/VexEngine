@@ -41,11 +41,14 @@ namespace Vex.Framework
             string gBufferVertexShaderText = @"#version 450
             layout(location = 0) in vec3 v_Position;
             layout(location = 1) in vec3 v_Normal;
-            layout(location = 2) in vec2 v_Uv;
+            layout(location = 2) in vec3 v_Tangent;
+            layout(location = 3) in vec3 v_BiTangent;
+            layout(location = 4) in vec2 v_Uv;
 
             out vec2 f_Uv;
             out vec3 f_Normal;
             out vec3 f_Position;
+            out mat3 f_TBN;
             uniform mat4 v_MvpMatrix;
             uniform mat4 v_ModelMatrix;
             uniform mat4 v_ViewMatrix;
@@ -54,10 +57,11 @@ namespace Vex.Framework
             void main()
             {
                 gl_Position = v_MvpMatrix * vec4(v_Position, 1);
-                mat3 nMatrix = transpose(inverse(mat3(v_ViewMatrix*v_ModelMatrix)));
+               // mat3 nMatrix = transpose(inverse(mat3(v_ViewMatrix*v_ModelMatrix)));
                 f_Uv = v_Uv;
-                f_Normal = nMatrix*v_Normal;
+                f_Normal = v_Normal;
                 f_Position = (v_ViewMatrix*v_ModelMatrix * vec4(v_Position, 1)).xyz;
+                f_TBN = mat3(normalize(vec3(v_ModelMatrix*vec4(v_Tangent,0.0))),normalize(vec3(v_ModelMatrix*vec4(v_BiTangent,0.0))),normalize(vec3(v_ModelMatrix*vec4(v_Normal,0.0))));
             }
             ";
 
@@ -72,13 +76,16 @@ namespace Vex.Framework
               in vec2 f_Uv;
               in vec3 f_Normal;
               in vec3 f_Position;
-
+              in mat3 f_TBN;
               uniform sampler2D f_DeferredColorTexture;
+              uniform sampler2D f_DeferredNormalTexture;
               uniform vec4 f_ViewPosition;
               void main()
               {
                   ColorOut = texture(f_DeferredColorTexture,f_Uv);
-                  NormalOut = normalize(f_Normal);
+                  NormalOut = texture(f_DeferredNormalTexture,f_Uv).rgb;
+                  NormalOut = NormalOut*2.0f - 1.0f;
+                  NormalOut = normalize(f_TBN*NormalOut);
                   PositionOut = f_Position;
               }";
             Shader gBufferVertexShader = new Shader(ShaderStage.Vertex);
@@ -101,9 +108,11 @@ namespace Vex.Framework
              * Create gbuffer material
              */
             string ambientOcclusionVertexShaderText = @"#version 450
-            layout(location = 0) in vec3 v_Position;
+          layout(location = 0) in vec3 v_Position;
             layout(location = 1) in vec3 v_Normal;
-            layout(location = 2) in vec2 v_Uv;
+            layout(location = 2) in vec3 v_Tangent;
+            layout(location = 3) in vec3 v_BiTangent;
+            layout(location = 4) in vec2 v_Uv;
 
             out vec2 f_Uv;
             
@@ -183,10 +192,10 @@ namespace Vex.Framework
              * Create screen quad
              */
             List<StaticMeshVertex> vertexes = new List<StaticMeshVertex>();
-            vertexes.Add(new StaticMeshVertex(new Vector3(-1, -1, 0), new Vector3(0, 0, 0), new Vector2(0, 0)));
-            vertexes.Add(new StaticMeshVertex(new Vector3(1, -1, 0), new Vector3(0, 0, 0), new Vector2(1, 0)));
-            vertexes.Add(new StaticMeshVertex(new Vector3(-1, 1, 0), new Vector3(0, 0, 0), new Vector2(0, 1)));
-            vertexes.Add(new StaticMeshVertex(new Vector3(1, 1, 0), new Vector3(0, 0, 0), new Vector2(1, 1)));
+            vertexes.Add(new StaticMeshVertex(new Vector3(-1, -1, 0), new Vector3(0, 0, 0),Vector3.Zero, Vector3.Zero, new Vector2(0, 0)));
+            vertexes.Add(new StaticMeshVertex(new Vector3(1, -1, 0), new Vector3(0, 0, 0), Vector3.Zero, Vector3.Zero, new Vector2(1, 0)));
+            vertexes.Add(new StaticMeshVertex(new Vector3(-1, 1, 0), new Vector3(0, 0, 0), Vector3.Zero, Vector3.Zero, new Vector2(0, 1)));
+            vertexes.Add(new StaticMeshVertex(new Vector3(1, 1, 0), new Vector3(0, 0, 0), Vector3.Zero, Vector3.Zero, new Vector2(1, 1)));
             List<int> triangles = new List<int>() {0,1,2,1,3,2};
             StaticMesh mesh = new StaticMesh();
             mesh.SetVertexData(vertexes.ToArray());
@@ -233,9 +242,11 @@ namespace Vex.Framework
              * Create blur pass
              */
             string blurVertexShaderText = @"#version 450
-            layout(location = 0) in vec3 v_Position;
+    layout(location = 0) in vec3 v_Position;
             layout(location = 1) in vec3 v_Normal;
-            layout(location = 2) in vec2 v_Uv;
+            layout(location = 2) in vec3 v_Tangent;
+            layout(location = 3) in vec3 v_BiTangent;
+            layout(location = 4) in vec2 v_Uv;
 
             out vec2 f_Uv;
             
@@ -286,9 +297,11 @@ namespace Vex.Framework
            * Create blur pass
            */
             string blurColorVertexShaderText = @"#version 450
-            layout(location = 0) in vec3 v_Position;
+    layout(location = 0) in vec3 v_Position;
             layout(location = 1) in vec3 v_Normal;
-            layout(location = 2) in vec2 v_Uv;
+            layout(location = 2) in vec3 v_Tangent;
+            layout(location = 3) in vec3 v_BiTangent;
+            layout(location = 4) in vec2 v_Uv;
 
             out vec2 f_Uv;
             
@@ -342,7 +355,9 @@ namespace Vex.Framework
             string finalColorVertexShaderText = @"#version 450
             layout(location = 0) in vec3 v_Position;
             layout(location = 1) in vec3 v_Normal;
-            layout(location = 2) in vec2 v_Uv;
+            layout(location = 2) in vec3 v_Tangent;
+            layout(location = 3) in vec3 v_BiTangent;
+            layout(location = 4) in vec2 v_Uv;
 
             out vec2 f_Uv;
             
@@ -378,11 +393,10 @@ namespace Vex.Framework
               {
                     float ambientFactor = texture(f_AmbientOcclusionTexture,f_Uv).r;
                     vec3 giColor = texture(f_GITexture,f_Uv).rgb;
-                    vec3 normalViewSpace = texture(f_NormalTexture,f_Uv).rgb;
-                    float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0)*2;
+                    vec3 normalViewSpace = normalize(texture(f_NormalTexture,f_Uv).rgb*2 -1.0f);
+                    float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0);
                     vec3 cubeColor = texture(f_CubeTexture,reflect(texture(f_ViewSpacePositionTexture,f_Uv).rgb,normalViewSpace)).rgb;
-                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*cubeColor*ambientFactor*diffuseFactor;
-                    //ColorOut = cubeColor;
+                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*diffuseFactor;
               }";
 
             Shader finalColorVertexShader = new Shader(ShaderStage.Vertex);
@@ -403,7 +417,9 @@ namespace Vex.Framework
             string ssgiVertexShaderText = @"#version 450
             layout(location = 0) in vec3 v_Position;
             layout(location = 1) in vec3 v_Normal;
-            layout(location = 2) in vec2 v_Uv;
+            layout(location = 2) in vec3 v_Tangent;
+            layout(location = 3) in vec3 v_BiTangent;
+            layout(location = 4) in vec2 v_Uv;
 
             out vec2 f_Uv;
             
@@ -482,12 +498,12 @@ namespace Vex.Framework
              */
             List<string> paths = new List<string>()
             {
-                @"C:\Users\PC\Documents\Cubemap\right.jpg",
-                @"C:\Users\PC\Documents\Cubemap\left.jpg",
-                @"C:\Users\PC\Documents\Cubemap\top.jpg",
-                @"C:\Users\PC\Documents\Cubemap\bottom.jpg",
-                @"C:\Users\PC\Documents\Cubemap\front.jpg",
-                @"C:\Users\PC\Documents\Cubemap\back.jpg"
+                @"C:\Users\PC\Desktop\Sky\right.jpg",
+                @"C:\Users\PC\Desktop\Sky\left.jpg",
+                @"C:\Users\PC\Desktop\Sky\top.jpg",
+                @"C:\Users\PC\Desktop\Sky\bottom.jpg",
+                @"C:\Users\PC\Desktop\Sky\front.jpg",
+                @"C:\Users\PC\Desktop\Sky\back.jpg"
             };
 
             CubeTexture cubeTexture = new CubeTexture();
@@ -892,6 +908,7 @@ namespace Vex.Framework
                      * Set color texture
                      */
                     gBufferPassCommandBuffer.SetTexture2D(m_GBufferMaterial.Program, renderable.ColorTexture, "f_DeferredColorTexture");
+                    gBufferPassCommandBuffer.SetTexture2D(m_GBufferMaterial.Program, renderable.NormalTexture, "f_DeferredNormalTexture");
 
                     /*
                      * Draw color buffer
@@ -907,349 +924,349 @@ namespace Vex.Framework
              */
             gBufferPassCommandBuffer.EndRecording();
 
-            /*
-            * Set ambient occlusion pipeline state
-            */
-            PipelineState ambientOcclusionPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
-            ambientOcclusionPipelineState.DepthTest = false;
-            ambientOcclusionCommandBuffer.SetPipelineState(ambientOcclusionPipelineState);
-            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
-            {
-                /*
-                 * Get observer
-                 */
-                ObserverComponent observer = m_Observers[observerIndex];
+            ///*
+            //* Set ambient occlusion pipeline state
+            //*/
+            //PipelineState ambientOcclusionPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+            //ambientOcclusionPipelineState.DepthTest = false;
+            //ambientOcclusionCommandBuffer.SetPipelineState(ambientOcclusionPipelineState);
+            //for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+            //{
+            //    /*
+            //     * Get observer
+            //     */
+            //    ObserverComponent observer = m_Observers[observerIndex];
 
-                /*
-                 * Get observer clear color
-                 */
-                Color4 clearColor = Color4.Black;
+            //    /*
+            //     * Get observer clear color
+            //     */
+            //    Color4 clearColor = Color4.Black;
 
-                /*
-                 * Get observer gBuffer
-                 */
-                Framebuffer2D ambientOcclusionBuffer = m_AmbientOcclusionBuffers[observerIndex];
+            //    /*
+            //     * Get observer gBuffer
+            //     */
+            //    Framebuffer2D ambientOcclusionBuffer = m_AmbientOcclusionBuffers[observerIndex];
 
-                /*
-                 * Set color framebuffer
-                 */
-                ambientOcclusionCommandBuffer.SetFramebuffer(ambientOcclusionBuffer);
+            //    /*
+            //     * Set color framebuffer
+            //     */
+            //    ambientOcclusionCommandBuffer.SetFramebuffer(ambientOcclusionBuffer);
 
-                /*
-                 * Set framebuffer viewport
-                 */
-                ambientOcclusionCommandBuffer.SetViewport(Vector2.Zero, new Vector2(ambientOcclusionBuffer.Width, ambientOcclusionBuffer.Height));
+            //    /*
+            //     * Set framebuffer viewport
+            //     */
+            //    ambientOcclusionCommandBuffer.SetViewport(Vector2.Zero, new Vector2(ambientOcclusionBuffer.Width, ambientOcclusionBuffer.Height));
 
-                /*
-                 * Clear color the framebuffer
-                 */
-                ambientOcclusionCommandBuffer.ClearColor(clearColor);
-                ambientOcclusionCommandBuffer.ClearDepth(1.0f);
+            //    /*
+            //     * Clear color the framebuffer
+            //     */
+            //    ambientOcclusionCommandBuffer.ClearColor(clearColor);
+            //    ambientOcclusionCommandBuffer.ClearDepth(1.0f);
 
-                /*
-                 * Set color shader program
-                 */
-                ambientOcclusionCommandBuffer.SetShaderProgram(m_AmbientOcclusionMaterial.Program);
+            //    /*
+            //     * Set color shader program
+            //     */
+            //    ambientOcclusionCommandBuffer.SetShaderProgram(m_AmbientOcclusionMaterial.Program);
 
-                /*
-                   * Get vertex buffer
-                   */
-                VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
+            //    /*
+            //       * Get vertex buffer
+            //       */
+            //    VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
 
-                /*
-                 * Get index buffer
-                 */
-                IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
+            //    /*
+            //     * Get index buffer
+            //     */
+            //    IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
 
-                /*
-                 * Get triangle count
-                 */
-                uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
+            //    /*
+            //     * Get triangle count
+            //     */
+            //    uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
 
-                /*
-                 * Set vertex buffer command
-                 */
-                ambientOcclusionCommandBuffer.SetVertexbuffer(vertexBuffer);
+            //    /*
+            //     * Set vertex buffer command
+            //     */
+            //    ambientOcclusionCommandBuffer.SetVertexbuffer(vertexBuffer);
 
-                /*
-                 * Set index buffer command
-                 */
-                ambientOcclusionCommandBuffer.SetIndexBuffer(indexBuffer);
+            //    /*
+            //     * Set index buffer command
+            //     */
+            //    ambientOcclusionCommandBuffer.SetIndexBuffer(indexBuffer);
 
-                /*
-                 * Set color texture
-                 */
+            //    /*
+            //     * Set color texture
+            //     */
                 
-                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
-                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
-                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].DepthTexture, "f_DepthBuffer");
-                ambientOcclusionCommandBuffer.SetUniformVector3Array(m_AmbientOcclusionMaterial.Program, m_SSAOKernels.ToArray(), "f_SSAOKernels");
-                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_SSAONoiseTexture, "f_NoiseTexture");
-                ambientOcclusionCommandBuffer.SetUniformMat4x4(m_AmbientOcclusionMaterial.Program,observer.GetProjectionMatrix(), "f_ProjectionMatrix");
-                ambientOcclusionCommandBuffer.SetUniformFloat(m_AmbientOcclusionMaterial.Program, m_AmbientPower, "f_AmbientPower");
+            //    ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
+            //    ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
+            //    ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].DepthTexture, "f_DepthBuffer");
+            //    ambientOcclusionCommandBuffer.SetUniformVector3Array(m_AmbientOcclusionMaterial.Program, m_SSAOKernels.ToArray(), "f_SSAOKernels");
+            //    ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_SSAONoiseTexture, "f_NoiseTexture");
+            //    ambientOcclusionCommandBuffer.SetUniformMat4x4(m_AmbientOcclusionMaterial.Program,observer.GetProjectionMatrix(), "f_ProjectionMatrix");
+            //    ambientOcclusionCommandBuffer.SetUniformFloat(m_AmbientOcclusionMaterial.Program, m_AmbientPower, "f_AmbientPower");
 
-                /*
-                 * Draw color buffer
-                 */
-                ambientOcclusionCommandBuffer.DrawIndexed((int)triangleCount);
-            }
+            //    /*
+            //     * Draw color buffer
+            //     */
+            //    ambientOcclusionCommandBuffer.DrawIndexed((int)triangleCount);
+            //}
 
-            /*
-             * End recording
-             */
-            ambientOcclusionCommandBuffer.EndRecording();
+            ///*
+            // * End recording
+            // */
+            //ambientOcclusionCommandBuffer.EndRecording();
 
-            /*
-            * Set ambient occlusion blur pipeline state
-            */
-            PipelineState blurPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
-            blurPipelineState.DepthTest = false;
-            ambientBluredCommandBuffer.SetPipelineState(ambientOcclusionPipelineState);
-            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
-            {
-                /*
-                 * Get observer
-                 */
-                ObserverComponent observer = m_Observers[observerIndex];
+            ///*
+            //* Set ambient occlusion blur pipeline state
+            //*/
+            //PipelineState blurPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+            //blurPipelineState.DepthTest = false;
+            //ambientBluredCommandBuffer.SetPipelineState(ambientOcclusionPipelineState);
+            //for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+            //{
+            //    /*
+            //     * Get observer
+            //     */
+            //    ObserverComponent observer = m_Observers[observerIndex];
 
-                /*
-                 * Get observer clear color
-                 */
-                Color4 clearColor = Color4.Black;
+            //    /*
+            //     * Get observer clear color
+            //     */
+            //    Color4 clearColor = Color4.Black;
 
-                /*
-                 * Get observer gBuffer
-                 */
-                Framebuffer2D blurBuffer = m_BlurBuffers[observerIndex];
+            //    /*
+            //     * Get observer gBuffer
+            //     */
+            //    Framebuffer2D blurBuffer = m_BlurBuffers[observerIndex];
 
-                /*
-                 * Set color framebuffer
-                 */
-                ambientBluredCommandBuffer.SetFramebuffer(blurBuffer);
+            //    /*
+            //     * Set color framebuffer
+            //     */
+            //    ambientBluredCommandBuffer.SetFramebuffer(blurBuffer);
 
-                /*
-                 * Set framebuffer viewport
-                 */
-                ambientBluredCommandBuffer.SetViewport(Vector2.Zero, new Vector2(blurBuffer.Width, blurBuffer.Height));
+            //    /*
+            //     * Set framebuffer viewport
+            //     */
+            //    ambientBluredCommandBuffer.SetViewport(Vector2.Zero, new Vector2(blurBuffer.Width, blurBuffer.Height));
 
-                /*
-                 * Clear color the framebuffer
-                 */
-                ambientBluredCommandBuffer.ClearColor(clearColor);
-                ambientBluredCommandBuffer.ClearDepth(1.0f);
+            //    /*
+            //     * Clear color the framebuffer
+            //     */
+            //    ambientBluredCommandBuffer.ClearColor(clearColor);
+            //    ambientBluredCommandBuffer.ClearDepth(1.0f);
 
-                /*
-                 * Set color shader program
-                 */
-                ambientBluredCommandBuffer.SetShaderProgram(m_BlurMaterial.Program);
+            //    /*
+            //     * Set color shader program
+            //     */
+            //    ambientBluredCommandBuffer.SetShaderProgram(m_BlurMaterial.Program);
 
-                /*
-                   * Get vertex buffer
-                   */
-                VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
+            //    /*
+            //       * Get vertex buffer
+            //       */
+            //    VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
 
-                /*
-                 * Get index buffer
-                 */
-                IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
+            //    /*
+            //     * Get index buffer
+            //     */
+            //    IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
 
-                /*
-                 * Get triangle count
-                 */
-                uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
+            //    /*
+            //     * Get triangle count
+            //     */
+            //    uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
 
-                /*
-                 * Set vertex buffer command
-                 */
-                ambientBluredCommandBuffer.SetVertexbuffer(vertexBuffer);
+            //    /*
+            //     * Set vertex buffer command
+            //     */
+            //    ambientBluredCommandBuffer.SetVertexbuffer(vertexBuffer);
 
-                /*
-                 * Set index buffer command
-                 */
-                ambientBluredCommandBuffer.SetIndexBuffer(indexBuffer);
+            //    /*
+            //     * Set index buffer command
+            //     */
+            //    ambientBluredCommandBuffer.SetIndexBuffer(indexBuffer);
 
-                /*
-                 * Set color texture
-                 */
-                ambientBluredCommandBuffer.SetTexture2D(m_BlurMaterial.Program, m_AmbientOcclusionBuffers[observerIndex].Attachments[0].Texture, "f_AmbientOcclusionTexture");
+            //    /*
+            //     * Set color texture
+            //     */
+            //    ambientBluredCommandBuffer.SetTexture2D(m_BlurMaterial.Program, m_AmbientOcclusionBuffers[observerIndex].Attachments[0].Texture, "f_AmbientOcclusionTexture");
 
-                /*
-                 * Draw color buffer
-                 */
-                ambientBluredCommandBuffer.DrawIndexed((int)triangleCount);
-            }
+            //    /*
+            //     * Draw color buffer
+            //     */
+            //    ambientBluredCommandBuffer.DrawIndexed((int)triangleCount);
+            //}
 
-            /*
-             * End recording
-             */
-            ambientBluredCommandBuffer.EndRecording();
+            ///*
+            // * End recording
+            // */
+            //ambientBluredCommandBuffer.EndRecording();
 
-            /*
-            * Set ambient occlusion pipeline state
-            */
-            PipelineState ssgiPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
-            ssgiPipelineState.DepthTest = false;
-            ssgiCommandBuffer.SetPipelineState(ssgiPipelineState);
-            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
-            {
-                /*
-                 * Get observer
-                 */
-                ObserverComponent observer = m_Observers[observerIndex];
+            ///*
+            //* Set ssgipipeline state
+            //*/
+            //PipelineState ssgiPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+            //ssgiPipelineState.DepthTest = false;
+            //ssgiCommandBuffer.SetPipelineState(ssgiPipelineState);
+            //for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+            //{
+            //    /*
+            //     * Get observer
+            //     */
+            //    ObserverComponent observer = m_Observers[observerIndex];
 
-                /*
-                 * Get observer clear color
-                 */
-                Color4 clearColor = Color4.Black;
+            //    /*
+            //     * Get observer clear color
+            //     */
+            //    Color4 clearColor = Color4.Black;
 
-                /*
-                 * Get observer gBuffer
-                 */
-                Framebuffer2D ssgiBuffer = m_SsgiBuffers[observerIndex];
+            //    /*
+            //     * Get observer gBuffer
+            //     */
+            //    Framebuffer2D ssgiBuffer = m_SsgiBuffers[observerIndex];
 
-                /*
-                 * Set color framebuffer
-                 */
-                ssgiCommandBuffer.SetFramebuffer(ssgiBuffer);
+            //    /*
+            //     * Set color framebuffer
+            //     */
+            //    ssgiCommandBuffer.SetFramebuffer(ssgiBuffer);
 
-                /*
-                 * Set framebuffer viewport
-                 */
-                ssgiCommandBuffer.SetViewport(Vector2.Zero, new Vector2(ssgiBuffer.Width, ssgiBuffer.Height));
+            //    /*
+            //     * Set framebuffer viewport
+            //     */
+            //    ssgiCommandBuffer.SetViewport(Vector2.Zero, new Vector2(ssgiBuffer.Width, ssgiBuffer.Height));
 
-                /*
-                 * Clear color the framebuffer
-                 */
-                ssgiCommandBuffer.ClearColor(clearColor);
-                ssgiCommandBuffer.ClearDepth(1.0f);
+            //    /*
+            //     * Clear color the framebuffer
+            //     */
+            //    ssgiCommandBuffer.ClearColor(clearColor);
+            //    ssgiCommandBuffer.ClearDepth(1.0f);
 
-                /*
-                 * Set color shader program
-                 */
-                ssgiCommandBuffer.SetShaderProgram(m_SsgiMaterial.Program);
+            //    /*
+            //     * Set color shader program
+            //     */
+            //    ssgiCommandBuffer.SetShaderProgram(m_SsgiMaterial.Program);
 
-                /*
-                   * Get vertex buffer
-                   */
-                VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
+            //    /*
+            //       * Get vertex buffer
+            //       */
+            //    VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
 
-                /*
-                 * Get index buffer
-                 */
-                IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
+            //    /*
+            //     * Get index buffer
+            //     */
+            //    IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
 
-                /*
-                 * Get triangle count
-                 */
-                uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
+            //    /*
+            //     * Get triangle count
+            //     */
+            //    uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
 
-                /*
-                 * Set vertex buffer command
-                 */
-                ssgiCommandBuffer.SetVertexbuffer(vertexBuffer);
+            //    /*
+            //     * Set vertex buffer command
+            //     */
+            //    ssgiCommandBuffer.SetVertexbuffer(vertexBuffer);
 
-                /*
-                 * Set index buffer command
-                 */
-                ssgiCommandBuffer.SetIndexBuffer(indexBuffer);
+            //    /*
+            //     * Set index buffer command
+            //     */
+            //    ssgiCommandBuffer.SetIndexBuffer(indexBuffer);
 
-                /*
-                 * Set color texture
-                 */
-                ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
-                ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
-                ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_GBuffers[observerIndex].DepthTexture, "f_DepthBuffer");
-                ssgiCommandBuffer.SetUniformVector3Array(m_SsgiMaterial.Program, m_SSAOKernels.ToArray(), "f_SSAOKernels");
-                ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_SSAONoiseTexture, "f_NoiseTexture");
-                ssgiCommandBuffer.SetUniformMat4x4(m_SsgiMaterial.Program, observer.GetProjectionMatrix(), "f_ProjectionMatrix");
-                ssgiCommandBuffer.SetCubeTexture(m_SsgiMaterial.Program, m_CubeTexture, "f_EnvironmentTexture");
+            //    /*
+            //     * Set color texture
+            //     */
+            //    ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
+            //    ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
+            //    ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_GBuffers[observerIndex].DepthTexture, "f_DepthBuffer");
+            //    ssgiCommandBuffer.SetUniformVector3Array(m_SsgiMaterial.Program, m_SSAOKernels.ToArray(), "f_SSAOKernels");
+            //    ssgiCommandBuffer.SetTexture2D(m_SsgiMaterial.Program, m_SSAONoiseTexture, "f_NoiseTexture");
+            //    ssgiCommandBuffer.SetUniformMat4x4(m_SsgiMaterial.Program, observer.GetProjectionMatrix(), "f_ProjectionMatrix");
+            //    ssgiCommandBuffer.SetCubeTexture(m_SsgiMaterial.Program, m_CubeTexture, "f_EnvironmentTexture");
 
 
-                /*
-                 * Draw color buffer
-                 */
-                ssgiCommandBuffer.DrawIndexed((int)triangleCount);
-            }
+            //    /*
+            //     * Draw color buffer
+            //     */
+            //    ssgiCommandBuffer.DrawIndexed((int)triangleCount);
+            //}
 
-            /*
-            * Set ambient occlusion pipeline state
-            */
-            PipelineState blurColorPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
-            blurColorPipelineState.DepthTest = false;
-            ssgiCommandBuffer.SetPipelineState(blurColorPipelineState);
-            for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
-            {
-                /*
-                 * Get observer
-                 */
-                ObserverComponent observer = m_Observers[observerIndex];
+            ///*
+            //* Set ssgi blur pipeline state
+            //*/
+            //PipelineState blurColorPipelineState = new PipelineState(new Graphics.PolygonMode(PolygonFillFace.Front, PolygonFillMethod.Fill), new CullingMode(TriangleFrontFace.CCW, CullFace.Back));
+            //blurColorPipelineState.DepthTest = false;
+            //ssgiCommandBuffer.SetPipelineState(blurColorPipelineState);
+            //for (int observerIndex = 0; observerIndex < m_Observers.Count; observerIndex++)
+            //{
+            //    /*
+            //     * Get observer
+            //     */
+            //    ObserverComponent observer = m_Observers[observerIndex];
 
-                /*
-                 * Get observer clear color
-                 */
-                Color4 clearColor = Color4.Black;
+            //    /*
+            //     * Get observer clear color
+            //     */
+            //    Color4 clearColor = Color4.Black;
 
-                /*
-                 * Get observer gBuffer
-                 */
-                Framebuffer2D ssgiBuffer = m_BlurSsgiBuffers[observerIndex];
+            //    /*
+            //     * Get observer gBuffer
+            //     */
+            //    Framebuffer2D ssgiBuffer = m_BlurSsgiBuffers[observerIndex];
 
-                /*
-                 * Set color framebuffer
-                 */
-                ssgiCommandBuffer.SetFramebuffer(ssgiBuffer);
+            //    /*
+            //     * Set color framebuffer
+            //     */
+            //    ssgiCommandBuffer.SetFramebuffer(ssgiBuffer);
 
-                /*
-                 * Set framebuffer viewport
-                 */
-                ssgiCommandBuffer.SetViewport(Vector2.Zero, new Vector2(ssgiBuffer.Width, ssgiBuffer.Height));
+            //    /*
+            //     * Set framebuffer viewport
+            //     */
+            //    ssgiCommandBuffer.SetViewport(Vector2.Zero, new Vector2(ssgiBuffer.Width, ssgiBuffer.Height));
 
-                /*
-                 * Clear color the framebuffer
-                 */
-                ssgiCommandBuffer.ClearColor(clearColor);
-                ssgiCommandBuffer.ClearDepth(1.0f);
+            //    /*
+            //     * Clear color the framebuffer
+            //     */
+            //    ssgiCommandBuffer.ClearColor(clearColor);
+            //    ssgiCommandBuffer.ClearDepth(1.0f);
 
-                /*
-                 * Set color shader program
-                 */
-                ssgiCommandBuffer.SetShaderProgram(m_BlurColorMaterial.Program);
+            //    /*
+            //     * Set color shader program
+            //     */
+            //    ssgiCommandBuffer.SetShaderProgram(m_BlurColorMaterial.Program);
 
-                /*
-                   * Get vertex buffer
-                   */
-                VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
+            //    /*
+            //       * Get vertex buffer
+            //       */
+            //    VertexBuffer vertexBuffer = m_ScreenQuad.VertexBuffer;
 
-                /*
-                 * Get index buffer
-                 */
-                IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
+            //    /*
+            //     * Get index buffer
+            //     */
+            //    IndexBuffer indexBuffer = m_ScreenQuad.IndexBuffer;
 
-                /*
-                 * Get triangle count
-                 */
-                uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
+            //    /*
+            //     * Get triangle count
+            //     */
+            //    uint triangleCount = m_ScreenQuad.IndexBuffer.IndexCount;
 
-                /*
-                 * Set vertex buffer command
-                 */
-                ssgiCommandBuffer.SetVertexbuffer(vertexBuffer);
+            //    /*
+            //     * Set vertex buffer command
+            //     */
+            //    ssgiCommandBuffer.SetVertexbuffer(vertexBuffer);
 
-                /*
-                 * Set index buffer command
-                 */
-                ssgiCommandBuffer.SetIndexBuffer(indexBuffer);
+            //    /*
+            //     * Set index buffer command
+            //     */
+            //    ssgiCommandBuffer.SetIndexBuffer(indexBuffer);
 
-                /*
-                 * Set color texture
-                 */
-                ssgiCommandBuffer.SetTexture2D(m_BlurColorMaterial.Program, m_SsgiBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
+            //    /*
+            //     * Set color texture
+            //     */
+            //    ssgiCommandBuffer.SetTexture2D(m_BlurColorMaterial.Program, m_SsgiBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
 
-                /*
-                 * Draw color buffer
-                 */
-                ssgiCommandBuffer.DrawIndexed((int)triangleCount);
-            }
+            //    /*
+            //     * Draw color buffer
+            //     */
+            //    ssgiCommandBuffer.DrawIndexed((int)triangleCount);
+            //}
 
             /*
              * End recording

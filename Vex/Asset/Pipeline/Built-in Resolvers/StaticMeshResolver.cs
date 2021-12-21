@@ -53,10 +53,18 @@ namespace Vex.Asset
                     float.Parse(vertexString[3]),
                     float.Parse(vertexString[4]),
                     float.Parse(vertexString[5]));
+                Vector3 tangent = new Vector3(
+                   float.Parse(vertexString[6]),
+                   float.Parse(vertexString[7]),
+                   float.Parse(vertexString[8]));
+                Vector3 biTangent = new Vector3(
+                   float.Parse(vertexString[9]),
+                   float.Parse(vertexString[10]),
+                   float.Parse(vertexString[11]));
                 Vector2 uv = new Vector2(
-                    float.Parse(vertexString[6]),
-                    float.Parse(vertexString[7]));
-                vertexes.Add(new StaticMeshVertex(position, normal, uv));
+                    float.Parse(vertexString[12]),
+                    float.Parse(vertexString[13]));
+                vertexes.Add(new StaticMeshVertex(position, normal,tangent, biTangent, uv));
 
 
                 /*
@@ -125,8 +133,11 @@ namespace Vex.Asset
                  */
                 StaticMeshVertex vertex = vertexes[vertexIndex];
 
-                string vertexText = vertex.Position.X.ToString() + " " + vertex.Position.Y.ToString() + " " + vertex.Position.Z.ToString() +
+                string vertexText =
+                    vertex.Position.X.ToString() + " " + vertex.Position.Y.ToString() + " " + vertex.Position.Z.ToString() +
                     " " + vertex.Normal.X.ToString() + " " + vertex.Normal.Y.ToString() + " " + vertex.Normal.Z.ToString() +
+                    " " + vertex.Tangent.X.ToString() + " " + vertex.Tangent.Y.ToString() + " " + vertex.Tangent.Z.ToString() +
+                    " " + vertex.BiTangent.X.ToString() + " " + vertex.BiTangent.Y.ToString() + " " + vertex.BiTangent.Z.ToString() +
                     " " + vertex.Uv.X.ToString() + " " + vertex.Uv.Y.ToString();
 
                 /*

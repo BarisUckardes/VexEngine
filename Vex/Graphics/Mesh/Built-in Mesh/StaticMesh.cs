@@ -54,6 +54,8 @@ namespace Vex.Graphics
             List<Vector3> positions = new List<Vector3>();
             List<Vector3> normals = new List<Vector3>();
             List<Vector2> uvs = new List<Vector2>();
+            List<Vector3> tangents;
+            List<Vector3> bitangents;
 
             List<Tuple<int, int, int>> faces = new List<Tuple<int, int, int>>();
 
@@ -181,7 +183,7 @@ namespace Vex.Graphics
                 /*
                  * Add vertex
                  */
-                vertexes.Add(new StaticMeshVertex(position, normal, uv));
+                vertexes.Add(new StaticMeshVertex(position, normal,Vector3.Zero,Vector3.Zero, uv));
             }
 
 
@@ -198,7 +200,68 @@ namespace Vex.Graphics
                 triangles.Add(face.Item1 - 1);
             }
 
+            /*
+             * Calculate tangent and bitangent
+             */
+            for(int triangleIndex = 0;triangleIndex < triangles.Count;triangleIndex+=3)
+            {
+                /*
+                 * Get triangles
+                 */
+                int triangle0 = triangles[triangleIndex];
+                int triangle1 = triangles[triangleIndex+1];
+                int triangle2 = triangles[triangleIndex+2];
 
+                /*
+                 * Get positions
+                 */
+                Vector3 position0 = vertexes[triangle0].Position;
+                Vector3 position1 = vertexes[triangle1].Position;
+                Vector3 position2 = vertexes[triangle2].Position;
+
+                /*
+                 * Get uvs
+                 */
+                Vector2 uv0 = vertexes[triangle0].Uv;
+                Vector2 uv1 = vertexes[triangle1].Uv;
+                Vector2 uv2 = vertexes[triangle2].Uv;
+
+                /*
+                 * Calculate edges
+                 */
+                Vector3 edge0 = position1 - position0;
+                Vector3 edge1 = position2 - position0;
+
+                /*
+                 * Calculate uv deltas
+                 */
+                Vector2 uvDelta0 = uv1 - uv0;
+                Vector2 uvDelta1 = uv2 - uv0;
+
+                /*
+                 * Calculate tangent bitangent
+                 */
+                Vector3 tangent;
+                Vector3 bitangent;
+                float f = 1.0f / (uvDelta0.X * uvDelta1.Y - uvDelta1.X * uvDelta0.Y);
+                tangent.X = f * (uvDelta1.Y * edge0.X - uvDelta0.Y * edge1.X);
+                tangent.Y = f * (uvDelta1.Y * edge0.Y - uvDelta0.Y * edge1.Y);
+                tangent.Z = f * (uvDelta1.Y * edge0.Z - uvDelta0.Y * edge1.Z);
+
+                bitangent.X = f * (-uvDelta1.X * edge0.X + uvDelta0.X * edge1.X);
+                bitangent.Y = f * (-uvDelta1.Y * edge0.X + uvDelta0.X * edge1.X);
+                bitangent.Z = f * (-uvDelta1.X * edge0.X + uvDelta0.X * edge1.X);
+
+                /*
+                 * Set tangent and bitangents
+                 */
+                Vector3 normal = vertexes[triangle0].Normal;
+
+                vertexes[triangle0] = new StaticMeshVertex(position0,normal,tangent,bitangent,uv0);
+                vertexes[triangle1] = new StaticMeshVertex(position1, normal, tangent, bitangent, uv1);
+                vertexes[triangle2] = new StaticMeshVertex(position2, normal, tangent, bitangent, uv2);
+            }
+            
             /*
              * Create mesh
              */
@@ -219,6 +282,8 @@ namespace Vex.Graphics
                 List<VertexLayoutElement> elements = new List<VertexLayoutElement>();
                 elements.Add(new VertexLayoutElement(VertexLayoutDataType.Float3, "v_Position"));
                 elements.Add(new VertexLayoutElement(VertexLayoutDataType.Float3, "v_Normal"));
+                elements.Add(new VertexLayoutElement(VertexLayoutDataType.Float3, "v_Tangent"));
+                elements.Add(new VertexLayoutElement(VertexLayoutDataType.Float3, "v_BiTangent"));
                 elements.Add(new VertexLayoutElement(VertexLayoutDataType.Float2, "v_Uv"));
                 return new VertexLayout(elements.ToArray());
             }
