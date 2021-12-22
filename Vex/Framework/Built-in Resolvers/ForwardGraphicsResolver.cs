@@ -57,7 +57,6 @@ namespace Vex.Framework
             void main()
             {
                 gl_Position = v_MvpMatrix * vec4(v_Position, 1);
-               // mat3 nMatrix = transpose(inverse(mat3(v_ViewMatrix*v_ModelMatrix)));
                 f_Uv = v_Uv;
                 f_Normal = v_Normal;
                 f_Position = (v_ViewMatrix*v_ModelMatrix * vec4(v_Position, 1)).xyz;
@@ -71,6 +70,7 @@ namespace Vex.Framework
 
               out vec4 ColorOut;
               out vec3 NormalOut;
+              out float RoughnessOut;
               out vec3 PositionOut;
 
               in vec2 f_Uv;
@@ -79,6 +79,7 @@ namespace Vex.Framework
               in mat3 f_TBN;
               uniform sampler2D f_DeferredColorTexture;
               uniform sampler2D f_DeferredNormalTexture;
+              uniform sampler2D f_DeferredRoughnessTexture;
               uniform vec4 f_ViewPosition;
               void main()
               {
@@ -86,6 +87,7 @@ namespace Vex.Framework
                   NormalOut = texture(f_DeferredNormalTexture,f_Uv).rgb;
                   NormalOut = NormalOut*2.0f - 1.0f;
                   NormalOut = normalize(f_TBN*NormalOut);
+                  RoughnessOut = texture(f_DeferredRoughnessTexture,f_Uv).r;
                   PositionOut = f_Position;
               }";
             Shader gBufferVertexShader = new Shader(ShaderStage.Vertex);
@@ -382,21 +384,23 @@ namespace Vex.Framework
               uniform sampler2D f_ColorTexture;
               uniform sampler2D f_NormalTexture;
               uniform sampler2D f_ViewSpacePositionTexture;
+              uniform sampler2D f_RoughnessTexture;
         
               uniform samplerCube f_CubeTexture;
               uniform mat4 f_ProjectionMatrix;
               uniform vec4 f_TextureSize;
-            
+              uniform float f_EnvironmentPower;
               float amount = 0.8f;
                
               void main()
               {
                     float ambientFactor = texture(f_AmbientOcclusionTexture,f_Uv).r;
+                    float roughness = (texture(f_RoughnessTexture,f_Uv).r);
                     vec3 giColor = texture(f_GITexture,f_Uv).rgb;
                     vec3 normalViewSpace = normalize(texture(f_NormalTexture,f_Uv).rgb*2 -1.0f);
-                    float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0);
-                    vec3 cubeColor = texture(f_CubeTexture,reflect(texture(f_ViewSpacePositionTexture,f_Uv).rgb,normalViewSpace)).rgb;
-                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*diffuseFactor;
+                    float diffuseFactor = pow(max(dot(normalViewSpace,vec3(0,1,0)),0),1.0f + 2.0f);
+                    vec3 cubeColor = texture(f_CubeTexture,vec3(0,1,0)).rgb*pow(f_EnvironmentPower,2);
+                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*diffuseFactor+cubeColor*roughness*diffuseFactor*2;
               }";
 
             Shader finalColorVertexShader = new Shader(ShaderStage.Vertex);
@@ -498,12 +502,12 @@ namespace Vex.Framework
              */
             List<string> paths = new List<string>()
             {
-                @"C:\Users\PC\Desktop\Sky\right.jpg",
-                @"C:\Users\PC\Desktop\Sky\left.jpg",
-                @"C:\Users\PC\Desktop\Sky\top.jpg",
-                @"C:\Users\PC\Desktop\Sky\bottom.jpg",
-                @"C:\Users\PC\Desktop\Sky\front.jpg",
-                @"C:\Users\PC\Desktop\Sky\back.jpg"
+                @"C:\Users\PC\Documents\Cubemap\right.jpg",
+                @"C:\Users\PC\Documents\Cubemap\left.jpg",
+                @"C:\Users\PC\Documents\Cubemap\top.jpg",
+                @"C:\Users\PC\Documents\Cubemap\bottom.jpg",
+                @"C:\Users\PC\Documents\Cubemap\front.jpg",
+                @"C:\Users\PC\Documents\Cubemap\back.jpg"
             };
 
             CubeTexture cubeTexture = new CubeTexture();
@@ -545,6 +549,7 @@ namespace Vex.Framework
                 {
                     new FramebufferAttachmentCreateParams("Color",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
                     new FramebufferAttachmentCreateParams("Normal",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
+                    new FramebufferAttachmentCreateParams("Roughness",TextureFormat.Red, TextureInternalFormat.R32f, TextureDataType.UnsignedByte),
                     new FramebufferAttachmentCreateParams("Position",TextureFormat.Rgb,TextureInternalFormat.Rgb32f,TextureDataType.UnsignedByte),
                 },
                 true
@@ -909,6 +914,7 @@ namespace Vex.Framework
                      */
                     gBufferPassCommandBuffer.SetTexture2D(m_GBufferMaterial.Program, renderable.ColorTexture, "f_DeferredColorTexture");
                     gBufferPassCommandBuffer.SetTexture2D(m_GBufferMaterial.Program, renderable.NormalTexture, "f_DeferredNormalTexture");
+                    gBufferPassCommandBuffer.SetTexture2D(m_GBufferMaterial.Program, renderable.RoughnessTexture, "f_DeferredRoughnessTexture");
 
                     /*
                      * Draw color buffer
@@ -1349,10 +1355,12 @@ namespace Vex.Framework
                 finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_BlurSsgiBuffers[observerIndex].Attachments[0].Texture, "f_GITexture");
                 finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_GBuffers[observerIndex].Attachments[0].Texture, "f_ColorTexture");
                 finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
-                finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program,m_GBuffers[observerIndex].Attachments[2].Texture, "f_ViewSpacePositionTexture");
+                finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_RoughnessTexture");
+                finalColorCommandBuffer.SetTexture2D(m_FinalColorMaterial.Program,m_GBuffers[observerIndex].Attachments[3].Texture, "f_ViewSpacePositionTexture");
                 finalColorCommandBuffer.SetUniformMat4x4(m_FinalColorMaterial.Program, observer.GetProjectionMatrix(), "f_ProjectionMatrix");
                 finalColorCommandBuffer.SetUniformVector4(m_FinalColorMaterial.Program, new Vector4(finalColorBuffer.Width, finalColorBuffer.Height, 0, 0),"f_TextureSize");
                 finalColorCommandBuffer.SetCubeTexture(m_FinalColorMaterial.Program, m_CubeTexture, "f_CubeTexture");
+                finalColorCommandBuffer.SetUniformFloat(m_FinalColorMaterial.Program, m_EnvironmentPower, "f_EnvironmentPower");
 
                 /*
                  * Draw color buffer
@@ -1407,6 +1415,10 @@ namespace Vex.Framework
                 new GraphicsResolverParameterGroup(this,"Ambient Occlusion",new List<Tuple<string,string>>()
                 {
                     new Tuple<string, string>("m_AmbientPower","Ambient Power")
+                }),
+                new GraphicsResolverParameterGroup(this,"Environment",new List<Tuple<string, string>>()
+                {
+                    new Tuple<string,string>("m_EnvironmentPower","HDR exposure")
                 })
             };
 
@@ -1433,5 +1445,6 @@ namespace Vex.Framework
         private Texture2D m_SSAONoiseTexture;
         private CubeTexture m_CubeTexture;
         private float m_AmbientPower = 1.0f;
+        private float m_EnvironmentPower = 1.0f;
     }
 }

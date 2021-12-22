@@ -16,5 +16,9 @@ namespace Vex.Extensions
         {
             return new OpenTK.Mathematics.Vector2(vec.X, vec.Y);
         }
+        public static OpenTK.Mathematics.Vector2 GetAsOpenTK(this Assimp.Vector2D vec)
+        {
+            return new OpenTK.Mathematics.Vector2(vec.X, vec.Y);
+        }
     }
 }

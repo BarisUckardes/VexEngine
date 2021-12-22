@@ -71,7 +71,7 @@ namespace Bite.GUI
                                  */
                                 if (expectedType == typeof(float))
                                 {
-                                    parameter.SetParameter<float>(GUIRenderCommands.CreateFloatSlider(" ##" + parameter.GetHashCode().ToString(), "nocode", parameter.GetParameter<float>()));
+                                    parameter.SetParameter<float>(GUIRenderCommands.CreateFloatSlider(" ##" + parameter.GetHashCode().ToString(), "nocode", parameter.GetParameter<float>(),0.0f,10.0f));
                                 }
                                 else
                                 {

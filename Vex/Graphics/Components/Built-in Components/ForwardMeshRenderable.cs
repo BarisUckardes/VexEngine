@@ -12,6 +12,11 @@ namespace Vex.Graphics
     /// </summary>
     public sealed class ForwardMeshRenderable : RenderableComponent
     {
+        protected override void OnAttach()
+        {
+            base.OnAttach();
+            Spatial.Scale = Spatial.Scale / 100.0f;
+        }
         public StaticMesh Mesh
         {
             get
@@ -58,11 +63,25 @@ namespace Vex.Graphics
                 m_NormalTexture = value;
             }
         }
+        [ExposeThis]
+        public Texture2D RoughnessTexture
+        {
+            get
+            {
+                return m_RoughnessTexture;
+            }
+            set
+            {
+                m_RoughnessTexture = value;
+            }
+        }
 
         [ExposeThis]
         private Texture2D m_ColorTexture;
         [ExposeThis]
         private Texture2D m_NormalTexture;
+        [ExposeThis]
+        private Texture2D m_RoughnessTexture;
         [ExposeThis]
         private StaticMesh m_Mesh;
     }

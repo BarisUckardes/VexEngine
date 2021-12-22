@@ -72,14 +72,14 @@ namespace Bite.GUI
                 }
                 else if(info.FieldType.IsSubclassOf(typeof(VexObject)))
                 {
-                    GUIRenderCommands.CreateText(info.FieldType.Name, "");
+                    GUIRenderCommands.CreateText(info.Name, "");
                     VexObject value = (VexObject)info.GetValue(TargetComponent);
                     info.SetValue(TargetComponent, GUIRenderCommands.CreateObjectField(value, value == null ? "nll_obj_" + info.GetHashCode().ToString() : value.ID.ToString()));
                     GUIRenderCommands.CreateEmptySpace();
                 }
                 else if(info.FieldType == typeof(string))
                 {
-                    GUIRenderCommands.CreateText(info.FieldType.Name, "");
+                    GUIRenderCommands.CreateText(info.Name, "");
                     GUILayoutCommands.StayOnSameLine();
                     string value = info.GetValue(TargetComponent) as string;
                     GUIRenderCommands.CreateTextInput("", "txtt", ref value);
@@ -129,7 +129,7 @@ namespace Bite.GUI
                 }
                 else if(info.PropertyType.IsSubclassOf(typeof(VexObject))) // set as vexobject variant
                 {
-                    GUIRenderCommands.CreateText(info.PropertyType.Name, "");
+                    GUIRenderCommands.CreateText(info.Name, "");
                     VexObject value = (VexObject)info.GetValue(TargetComponent);
                     info.SetValue(TargetComponent, GUIRenderCommands.CreateObjectField(value, value == null ? "nll_obj_" + info.GetHashCode().ToString() : value.ID.ToString()));
                     GUIRenderCommands.CreateEmptySpace();
