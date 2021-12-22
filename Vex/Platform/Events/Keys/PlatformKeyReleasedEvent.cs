@@ -28,7 +28,7 @@ namespace Vex.Platform
         {
             get
             {
-                return PlatformEventCategory.CategoryInput;
+                return PlatformEventCategory.Input;
             }
         }
 

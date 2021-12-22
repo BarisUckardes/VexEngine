@@ -251,7 +251,7 @@ void main()
             PressedChars.Add(keyChar);
         }
 
-        public void MouseScVexll(Vector2 offset)
+        public void MouseScrolled(Vector2 offset)
         {
             ImGuiIOPtr io = ImGui.GetIO();
 

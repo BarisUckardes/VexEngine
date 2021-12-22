@@ -11,11 +11,12 @@ namespace Vex.Platform
 	/// </summary>
     public enum PlatformEventCategory
     {
-		CategoryNone = 0,
-		CategoryApplication,
-		CategoryInput,
-		CategoryKeyboard,
-		CategoryMouse,
-		CategoryMouseButton
+		None = 0,
+		Application,
+		Input,
+		Keyboard,
+		Mouse,
+		MouseButton,
+		File
 	}
 }

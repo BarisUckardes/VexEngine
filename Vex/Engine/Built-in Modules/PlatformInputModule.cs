@@ -13,7 +13,7 @@ namespace Vex.Engine
     /// <summary>
     /// Engine game input module
     /// </summary>
-    public sealed class GameInputModule : EngineModule
+    public sealed class PlatformInputModule : EngineModule
     {
         public override void OnAttach()
         {
@@ -24,12 +24,21 @@ namespace Vex.Engine
 
         public override void OnUpdate(bool active)
         {
-            if(active)
+            /*
+             * Set File events
+             */
+            GameInput.SetFileDropEvent(m_FileDropEvent);
+            m_FileDropEvent = null;
+
+            /*
+             * Set game input
+             */
+            if (active)
             {
                 /*
                 * Update these keys to game input
                 */
-                GameInput.SetKeyEvents(new List<Keys>(m_PressedKeys),new List<Keys>(m_ReleasedKeys),m_DownKeys);
+                GameInput.SetEventBulk(new List<Keys>(m_PressedKeys),new List<Keys>(m_ReleasedKeys),m_DownKeys);
 
                 /*
                  * Clear one time key buffers
@@ -88,6 +97,10 @@ namespace Vex.Engine
                  */
                 m_MousePosition = new Vector2(((PlatformMouseMovedEvent)eventData).X, ((PlatformMouseMovedEvent)eventData).Y);
             }
+            else if(eventData.Type == PlatformEventType.FileDrop)
+            {
+                m_FileDropEvent = (PlatformFileDropEvent)eventData;
+            }
 
             /*
              * Mark this event handled
@@ -98,6 +111,7 @@ namespace Vex.Engine
         private List<Keys> m_PressedKeys;
         private List<Keys> m_ReleasedKeys;
         private List<Keys> m_DownKeys;
+        private PlatformFileDropEvent m_FileDropEvent;
         private Vector2 m_MousePosition;
     }
 }

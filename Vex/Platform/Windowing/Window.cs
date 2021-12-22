@@ -268,6 +268,18 @@ namespace Vex.Platform
             */
             m_ApplicationEventDelegate(ev);
         }
+        protected override void OnFileDrop(FileDropEventArgs e)
+        {
+            /*
+             * Get platform file drop event
+             */
+            PlatformFileDropEvent ev = new PlatformFileDropEvent(e.FileNames);
+
+            /*
+             * Inform application
+             */
+            m_ApplicationEventDelegate(ev);
+        }
 
 
         private List<PlatformEvent> m_Events;

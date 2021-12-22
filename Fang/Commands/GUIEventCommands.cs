@@ -27,10 +27,15 @@ namespace Fang.Commands
         {
             return ImGui.IsMouseClicked(ImGuiMouseButton.Left);
         }
-        public static bool IsRightButtonReleased()
+        public static bool IsMouseRightButtonReleased()
         {
             return ImGui.IsMouseReleased(ImGuiMouseButton.Right);
         }
+        public static bool IsMouseLeftButtonReleased()
+        {
+            return ImGui.IsMouseReleased(ImGuiMouseButton.Left);
+        }
+
         public static Vector2 GetMousePosition()
         {
             return ImGui.GetMousePos();

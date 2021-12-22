@@ -52,7 +52,7 @@ namespace Vex.Platform
         {
             get
             {
-                return PlatformEventCategory.CategoryApplication;
+                return PlatformEventCategory.Application;
             }
         }
 

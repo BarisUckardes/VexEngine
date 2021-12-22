@@ -27,7 +27,7 @@ namespace Vex.Platform
         {
             get
             {
-                return PlatformEventCategory.CategoryMouseButton;
+                return PlatformEventCategory.MouseButton;
             }
         }
 

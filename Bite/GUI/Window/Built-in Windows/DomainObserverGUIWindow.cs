@@ -12,6 +12,7 @@ using System.Numerics;
 using ImGuiNET;
 using System.IO;
 using Vex.Framework;
+using Vex.Input;
 
 namespace Bite.GUI
 {
@@ -77,9 +78,28 @@ namespace Bite.GUI
         {
             RenderDomainView(m_CurrentFolder);
         }
-
+        int h = 0;
         private void RenderDomainView(DomainFolderView folder)
         {
+            if (GUIEventCommands.IsWindowHovered() && GameInput.GetFileDropEvent() != null)
+            {
+                PlatformFileDropEvent fileDropEvent = GameInput.GetFileDropEvent();
+                for(int fileIndex = 0;fileIndex < fileDropEvent.FileExtensions.Count;fileIndex++)
+                {
+                    string extension = fileDropEvent.FileExtensions[fileIndex];
+                    string name = fileDropEvent.FileNames[fileIndex];
+                    string path = fileDropEvent.FilePaths[fileIndex];
+                    Console.WriteLine($"Catch drop: Name[{name}], Path[{path}], Extension[{extension}]");
+                    if(extension == ".png" || extension == ".jpg")
+                    {
+                        Session.CreateTexture2DomainContent(m_CurrentFolder, name, path);
+                    }
+                    else if(extension == ".obj" || extension == ".fbx")
+                    {
+                        Session.CreateStaticMeshDomainContent(m_CurrentFolder, name, path);
+                    }
+                }
+            }
             bool isClickedEmpty = true;
             bool isClicked = false;
 

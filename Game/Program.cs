@@ -33,7 +33,7 @@ namespace Game
              * Create required modules
              */
             List<EngineModule> modules = new List<EngineModule>();
-            modules.Add(new GameInputModule());
+            modules.Add(new PlatformInputModule());
             modules.Add(new LogicModule());
             modules.Add(new GraphicsModule());
 

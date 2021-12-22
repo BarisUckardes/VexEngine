@@ -20,7 +20,7 @@ namespace Vex.Platform
         {
             get
             {
-                return PlatformEventType.MouseScVexlled;
+                return PlatformEventType.MouseScrolled;
             }
         }
 
@@ -28,7 +28,7 @@ namespace Vex.Platform
         {
             get
             {
-                return PlatformEventCategory.CategoryMouse;
+                return PlatformEventCategory.Mouse;
             }
         }
 

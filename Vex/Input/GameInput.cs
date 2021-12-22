@@ -24,7 +24,15 @@ namespace Vex.Input
         {
             return s_DownKeyEvents.Contains(targetKey);
         }
-        internal static void SetKeyEvents(List<Keys> pressedKeys,List<Keys> releasedKeys,List<Keys> downKeys)
+        public static PlatformFileDropEvent GetFileDropEvent()
+        {
+            return s_FileDropEvent;
+        }
+        internal static void SetFileDropEvent(PlatformFileDropEvent eventData)
+        {
+            s_FileDropEvent = eventData;
+        }
+        internal static void SetEventBulk(List<Keys> pressedKeys,List<Keys> releasedKeys,List<Keys> downKeys)
         {
             s_KeyPressedEvents = pressedKeys;
             s_KeyReleasedEvents = releasedKeys;
@@ -35,5 +43,6 @@ namespace Vex.Input
         private static List<Keys> s_KeyPressedEvents = new List<Keys>();
         private static List<Keys> s_KeyReleasedEvents = new List<Keys>();
         private static List<Keys> s_DownKeyEvents = new List<Keys>();
+        private static PlatformFileDropEvent s_FileDropEvent;
     }
 }

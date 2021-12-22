@@ -29,7 +29,7 @@ namespace Vex.Platform
         {
             get
             {
-                return PlatformEventCategory.CategoryMouse;
+                return PlatformEventCategory.Mouse;
             }
         }
 

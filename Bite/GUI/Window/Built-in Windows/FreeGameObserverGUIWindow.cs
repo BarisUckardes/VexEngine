@@ -152,7 +152,7 @@ namespace Bite.GUI
                     Session.MouseCursorLocked = true;
                     Session.MouseCursorVisible = false;
                 }
-                else if(m_ViewportTransformActive && GUIEventCommands.IsRightButtonReleased())
+                else if(m_ViewportTransformActive && GUIEventCommands.IsMouseRightButtonReleased())
                 {
                    // Console.WriteLine("Viewport transfor disabled");
                     m_ViewportTransformActive = false;

@@ -123,10 +123,10 @@ namespace Slope.Editor
                 PlatformKeyCharEvent ev = (PlatformKeyCharEvent)eventData;
                 m_Renderer.PressChar((char)ev.KeyCode);
             }
-            else if (eventData.Type == PlatformEventType.MouseScVexlled)
+            else if (eventData.Type == PlatformEventType.MouseScrolled)
             {
                 PlatformMouseScrolledEvent ev = (PlatformMouseScrolledEvent)eventData;
-                m_Renderer.MouseScVexll(new OpenTK.Mathematics.Vector2(ev.AmountX, ev.AmountY));
+                m_Renderer.MouseScrolled(new OpenTK.Mathematics.Vector2(ev.AmountX, ev.AmountY));
             }
         }
 

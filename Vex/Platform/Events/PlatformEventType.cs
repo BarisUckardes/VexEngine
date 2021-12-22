@@ -14,6 +14,7 @@ namespace Vex.Platform
         None = 0,
         WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
         KeyPressed, KeyReleased, KeyChar,
-        MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScVexlled
+        MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
+        FileDrop
     }
 }

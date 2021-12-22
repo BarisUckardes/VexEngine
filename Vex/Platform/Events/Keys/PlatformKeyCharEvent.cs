@@ -25,7 +25,7 @@ namespace Vex.Platform
         {
             get
             {
-                return PlatformEventCategory.CategoryKeyboard;
+                return PlatformEventCategory.Keyboard;
             }
         }
 

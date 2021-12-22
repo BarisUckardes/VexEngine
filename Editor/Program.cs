@@ -113,7 +113,7 @@ namespace Game
             List<EngineModule> modules = new List<EngineModule>();
             modules.Add(new TestModule());
             modules.Add(new LogicModule());
-            modules.Add(new GameInputModule());
+            modules.Add(new PlatformInputModule());
             modules.Add(new GraphicsModule());
             modules.Add(new BiteModule(coreCommands,guiSystems));
 
