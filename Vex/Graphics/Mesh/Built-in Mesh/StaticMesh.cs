@@ -52,11 +52,10 @@ namespace Vex.Graphics
             List<StaticMeshVertex> vertexes = new List<StaticMeshVertex>(aMesh.VertexCount);
             for(int i = 0;i < aMesh.VertexCount;i++)
             {
-                Vector3 normal = aMesh.Normals[i].GetAsOpenTK();
                 vertexes.Add(
                     new StaticMeshVertex(
                         aMesh.Vertices[i].GetAsOpenTK(),
-                        normal,
+                        aMesh.Normals[i].GetAsOpenTK(),
                         aMesh.Tangents[i].GetAsOpenTK(),
                         aMesh.BiTangents[i].GetAsOpenTK(),
                         new Vector2(aMesh.TextureCoordinateChannels[0][i].X,- aMesh.TextureCoordinateChannels[0][i].Y)
