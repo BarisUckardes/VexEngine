@@ -22,6 +22,7 @@ namespace Vex.Asset
         World = 8,
         EntityPrefab = 9,
         Definition = 10,
-        Mesh = 11
+        Mesh = 11,
+        CubTexture = 12
     }
 }

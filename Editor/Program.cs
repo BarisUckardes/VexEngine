@@ -96,8 +96,6 @@ namespace Game
             coreCommands.Add(new EditorResourcesLoaderCommand());
             coreCommands.Add(new LastWorldLoaderCommand());
 
-            
-
             /*
              * Creat bite gui systems
              */

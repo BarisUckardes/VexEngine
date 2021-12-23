@@ -27,7 +27,11 @@ namespace Vex.Asset
              * Initialize
              */
             StaticMesh mesh = new StaticMesh();
-            List<StaticMeshVertex> vertexes = new List<StaticMeshVertex>();
+            List<Vector3> positions = new List<Vector3>();
+            List<Vector3> normals = new List<Vector3>();
+            List<Vector3> tangents = new List<Vector3>();
+            List<Vector3> bitangents = new List<Vector3>();
+            List<Vector2> textureCoordinates = new List<Vector2>();
             List<int> triangles = new List<int>();
 
             /*
@@ -64,8 +68,11 @@ namespace Vex.Asset
                 Vector2 uv = new Vector2(
                     float.Parse(vertexString[12]),
                     float.Parse(vertexString[13]));
-                vertexes.Add(new StaticMeshVertex(position, normal,tangent, biTangent, uv));
-
+                positions.Add(position);
+                normals.Add(normal);
+                tangents.Add(tangent);
+                bitangents.Add(biTangent);
+                textureCoordinates.Add(uv);
 
                 /*
                  * Move to next vertex
@@ -102,8 +109,12 @@ namespace Vex.Asset
             /*
              * Set mesh data and return
              */
-            mesh.SetVertexData(vertexes.ToArray());
-            mesh.SetTriangleData(triangles.ToArray());
+            mesh.Positions = positions;
+            mesh.Normals = normals;
+            mesh.Tangents = tangents;
+            mesh.BiTangents = bitangents;
+            mesh.TextureCoordinates = textureCoordinates;
+            mesh.ApplyChanges();
             return mesh;
         }
 
@@ -113,8 +124,12 @@ namespace Vex.Asset
              * Get static mesh
              */
             StaticMesh mesh = targetObject as StaticMesh;
-            StaticMeshVertex[] vertexes = mesh.VertexData;
-            int[] triangles = mesh.TriangleData;
+            List<Vector3> positions = mesh.Positions;
+            List<Vector3> normals = mesh.Normals;
+            List<Vector3> tangents = mesh.Tangents;
+            List<Vector3> bitangents = mesh.BiTangents;
+            List<Vector2> textureCoordinates =mesh.TextureCoordinates;
+            List<int> triangles = mesh.Triangles;
 
             /*
              * Start mapping
@@ -126,19 +141,23 @@ namespace Vex.Asset
              */
             emitter.Emit(new Scalar(null, "Vertexes"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for(int vertexIndex = 0;vertexIndex < vertexes.Length;vertexIndex++)
+            for(int vertexIndex = 0;vertexIndex < positions.Count;vertexIndex++)
             {
                 /*
                  * Get vertex
                  */
-                StaticMeshVertex vertex = vertexes[vertexIndex];
+                Vector3 position = positions[vertexIndex];
+                Vector3 normal = normals[vertexIndex];
+                Vector3 tangent = tangents[vertexIndex];
+                Vector3 bitangent = bitangents[vertexIndex];
+                Vector2 textureCoordinate = textureCoordinates[vertexIndex];
 
                 string vertexText =
-                    vertex.Position.X.ToString() + " " + vertex.Position.Y.ToString() + " " + vertex.Position.Z.ToString() +
-                    " " + vertex.Normal.X.ToString() + " " + vertex.Normal.Y.ToString() + " " + vertex.Normal.Z.ToString() +
-                    " " + vertex.Tangent.X.ToString() + " " + vertex.Tangent.Y.ToString() + " " + vertex.Tangent.Z.ToString() +
-                    " " + vertex.BiTangent.X.ToString() + " " + vertex.BiTangent.Y.ToString() + " " + vertex.BiTangent.Z.ToString() +
-                    " " + vertex.Uv.X.ToString() + " " + vertex.Uv.Y.ToString();
+                    position.X.ToString() + " " + position.Y.ToString() + " " + position.Z.ToString() +
+                    " " + normal.X.ToString() + " " + normal.ToString() + " " + normal.Z.ToString() +
+                    " " + tangent.X.ToString() + " " + tangent.Y.ToString() + " " + tangent.Z.ToString() +
+                    " " + bitangent.X.ToString() + " " + bitangent.Y.ToString() + " " + bitangent.Z.ToString() +
+                    " " + textureCoordinate.X.ToString() + " " + textureCoordinate.Y.ToString();
 
                 /*
                  * Emiter vertex
@@ -152,10 +171,10 @@ namespace Vex.Asset
              */
             emitter.Emit(new Scalar(null, "Triangles"));
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-            for (int triangleIndex = 0; triangleIndex < triangles.Length; triangleIndex+=3)
+            for (int triangleIndex = 0; triangleIndex < triangles.Count; triangleIndex+=3)
             {
                 /*
-                 * Emiter vertex
+                 * Emiter triangle
                  */
                 emitter.Emit(new Scalar(null, triangles[triangleIndex].ToString() + " " + triangles[triangleIndex+1].ToString() + " " + triangles[triangleIndex+2].ToString()));
 

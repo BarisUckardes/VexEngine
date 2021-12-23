@@ -13,7 +13,6 @@ namespace Vex.Graphics
     /// </summary>
     public abstract class Mesh : AssetObject
     {
-        public abstract VertexLayout Layout { get; }
 
         /// <summary>
         /// Returns the vertex buffer of this mesh
@@ -45,6 +44,17 @@ namespace Vex.Graphics
             }
         }
 
+        public VertexLayout Layout
+        {
+            get
+            {
+                return m_Layout;
+            }
+            protected set
+            {
+                m_Layout = value;
+            }
+        }
        
         /// <summary>
         /// Sets the vertex buffer data
@@ -120,5 +130,6 @@ namespace Vex.Graphics
 
         private VertexBuffer m_VertexBuffer;
         private IndexBuffer m_IndexBuffer;
+        private VertexLayout m_Layout;
     }
 }

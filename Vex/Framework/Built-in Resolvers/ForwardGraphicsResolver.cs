@@ -197,14 +197,52 @@ namespace Vex.Framework
              * Create screen quad
              */
             List<StaticMeshVertex> vertexes = new List<StaticMeshVertex>();
-            vertexes.Add(new StaticMeshVertex(new Vector3(-1, -1, 0), new Vector3(0, 0, 0),Vector3.Zero, Vector3.Zero, new Vector2(0, 0)));
-            vertexes.Add(new StaticMeshVertex(new Vector3(1, -1, 0), new Vector3(0, 0, 0), Vector3.Zero, Vector3.Zero, new Vector2(1, 0)));
-            vertexes.Add(new StaticMeshVertex(new Vector3(-1, 1, 0), new Vector3(0, 0, 0), Vector3.Zero, Vector3.Zero, new Vector2(0, 1)));
-            vertexes.Add(new StaticMeshVertex(new Vector3(1, 1, 0), new Vector3(0, 0, 0), Vector3.Zero, Vector3.Zero, new Vector2(1, 1)));
+            List<Vector3> positions = new List<Vector3>()
+            {
+                new Vector3(-1, -1, 0),
+                new Vector3(1, -1, 0),
+                new Vector3(-1, 1, 0),
+                new Vector3(1, 1, 0)
+            };
+            List<Vector3> normals = new List<Vector3>()
+            {
+                new Vector3(-1, -1, 0),
+                new Vector3(1, -1, 0),
+                new Vector3(-1, 1, 0),
+                new Vector3(1, 1, 0)
+            };
+
+            List<Vector3> tangents = new List<Vector3>()
+            {
+                new Vector3(-1, -1, 0),
+                new Vector3(1, -1, 0),
+                new Vector3(-1, 1, 0),
+                new Vector3(1, 1, 0)
+            };
+            List<Vector3> bitangents = new List<Vector3>()
+            {
+                new Vector3(-1, -1, 0),
+                new Vector3(1, -1, 0),
+                new Vector3(-1, 1, 0),
+                new Vector3(1, 1, 0)
+            };
+            List<Vector2> textureCoordinates = new List<Vector2>()
+            {
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(0, 1),
+                new Vector2(1, 1)
+            };
+
             List<int> triangles = new List<int>() {0,1,2,1,3,2};
             StaticMesh mesh = new StaticMesh();
-            mesh.SetVertexData(vertexes.ToArray());
-            mesh.SetTriangleData(triangles.ToArray());
+            mesh.Positions = positions;
+            mesh.Normals = normals;
+            mesh.Tangents = tangents;
+            mesh.BiTangents = bitangents;
+            mesh.TextureCoordinates = textureCoordinates;
+            mesh.Triangles = triangles;
+            mesh.ApplyChanges();
             m_ScreenQuad = mesh;
 
             /*
@@ -215,15 +253,10 @@ namespace Vex.Framework
             {
 
                 Vector3 kernel = new Vector3(
-                    ((float)rangeGenerator.NextDouble())*2 -1.0f,
-                    ((float)rangeGenerator.NextDouble()) * 2 - 1.0f,
+                    ((float)rangeGenerator.NextDouble()),
+                    ((float)rangeGenerator.NextDouble()),
                     ((float)rangeGenerator.NextDouble())
                     );
-                kernel.Normalize();
-                kernel *= (float)rangeGenerator.NextDouble();
-
-                float scale = (float)kernelIndex / 64.0f;
-                kernel *= Lerp(0.1f, 1.0f, scale * scale);
                 m_SSAOKernels.Add(kernel);
             }
 
