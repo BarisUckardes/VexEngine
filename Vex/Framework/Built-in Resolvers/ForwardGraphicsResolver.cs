@@ -127,7 +127,7 @@ namespace Vex.Framework
               @"
               #version 450
 
-              out float ColorOut;
+              out vec3 ColorOut;
 
               in vec2 f_Uv;
 
@@ -152,6 +152,8 @@ namespace Vex.Framework
               {
                     vec3 worldPosition = texture(f_PositionTexture,f_Uv).rgb;
                     vec3 worldNormal = texture(f_NormalTexture,f_Uv).rgb;
+                    vec4 screenPosition = vec4(worldPosition,1);
+                    ColorOut = worldPosition.rgb;
                     //vec3 randomVec = texture(f_NoiseTexture,f_Uv*noiseScale).xyz;
                     //vec3 tangent = normalize(randomVec-worldNormal*dot(randomVec,viewNormal));
                     
@@ -161,8 +163,9 @@ namespace Vex.Framework
                     //float occlusion = 0.0f;
                     //for(int kernelIndex = 0;kernelIndex < kernelSize;kernelIndex++)
                     //{
-                    //    vec3 samplePosition = worldPosition+f_SSAOKernels[kernelIndex]*radius;
+                    //    vec3 samplePosition = worldPosition+normalize(f_SSAOKernels[kernelIndex])*radius;
                     //    float sampleDistance = distance(f_ViewPosition,samplePosition);
+                        
                     //    vec4 offset = vec4(samplePosition,1.0);
                     //    offset = f_ViewMatrix*f_ProjectionMatrix*offset;
                     //    offset.xyz /= offset.w;
@@ -175,7 +178,7 @@ namespace Vex.Framework
                     //occlusion*=f_AmbientPower;
                     //occlusion = pow((occlusion / kernelSize)*power,2);
                     //ColorOut = occlusion; 
-                      ColorOut = 1.0f-(distance(worldPosition,f_ViewPosition)/5.0f);
+                    
               }";
 
             Shader ambientOcclusionVertexShader = new Shader(ShaderStage.Vertex);
@@ -339,8 +342,8 @@ namespace Vex.Framework
                     float roughness = (texture(f_RoughnessTexture,f_Uv).r);
                     vec3 giColor = texture(f_GITexture,f_Uv).rgb;
                     vec3 normalViewSpace = normalize(texture(f_NormalTexture,f_Uv).rgb*2 -1.0f);
-                    float diffuseFactor = max(pow(max(dot(normalViewSpace,vec3(0,1,0)),0),1.0f + 2.0f),0.3f);
-                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*ambientFactor;
+                    float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0);
+                    ColorOut = texture(f_ColorTexture,f_Uv).rgb*diffuseFactor;
               }";
 
             Shader finalColorVertexShader = new Shader(ShaderStage.Vertex);
@@ -415,7 +418,7 @@ namespace Vex.Framework
                 Framebuffer2D.IntermediateFramebuffer.Height,
                 new List<FramebufferAttachmentCreateParams>()
                 {
-                    new FramebufferAttachmentCreateParams("Occlusion",TextureFormat.Red, TextureInternalFormat.R32f, TextureDataType.Float),
+                    new FramebufferAttachmentCreateParams("Occlusion",TextureFormat.Rgb, TextureInternalFormat.Rgb32f, TextureDataType.UnsignedByte),
                 },
                 true
                 ); ;
@@ -792,12 +795,14 @@ namespace Vex.Framework
                  */
 
                 ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].Attachments[1].Texture, "f_NormalTexture");
-                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].Attachments[2].Texture, "f_PositionTexture");
+                ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].Attachments[3].Texture, "f_PositionTexture");
                 ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_GBuffers[observerIndex].DepthTexture, "f_DepthBuffer");
                 ambientOcclusionCommandBuffer.SetUniformVector3Array(m_AmbientOcclusionMaterial.Program, m_SSAOKernels.ToArray(), "f_SSAOKernels");
                 ambientOcclusionCommandBuffer.SetTexture2D(m_AmbientOcclusionMaterial.Program, m_SSAONoiseTexture, "f_NoiseTexture");
+
                 ambientOcclusionCommandBuffer.SetUniformMat4x4(m_AmbientOcclusionMaterial.Program, observer.GetProjectionMatrix(), "f_ProjectionMatrix");
                 ambientOcclusionCommandBuffer.SetUniformMat4x4(m_AmbientOcclusionMaterial.Program, observer.GetViewMatrix(), "f_ViewMatrix");
+
                 ambientOcclusionCommandBuffer.SetUniformFloat(m_AmbientOcclusionMaterial.Program, m_AmbientPower, "f_AmbientPower");
                 ambientBluredCommandBuffer.SetUniformVector3(m_AmbientOcclusionMaterial.Program, observer.Spatial.Position.GetAsOpenTK(), "f_ViewPosition");
 

@@ -65,7 +65,7 @@ namespace Bite.GUI
             GUIRenderCommands.CreateText("EDIT SHADER SOURCE CODE", " ");
             GUIRenderCommands.CreateSeperatorLine();
             GUIRenderCommands.CreateEmptySpace();
-            GUIRenderCommands.CreateMultilineTextInput(" ", "mmm", ref m_ShaderSourceEditText, new System.Numerics.Vector2(512, 512));
+            GUIRenderCommands.CreateMultilineTextInput(" ", "mmm", ref m_ShaderSourceEditText, ImGui.CalcTextSize(m_ShaderSourceEditText) + new System.Numerics.Vector2(16,16));
             if(GUIRenderCommands.CreateButton("Apply&Compile","apply-But"))
             {
                 /*

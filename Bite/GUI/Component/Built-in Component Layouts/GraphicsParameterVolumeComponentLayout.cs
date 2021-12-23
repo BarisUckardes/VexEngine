@@ -73,6 +73,10 @@ namespace Bite.GUI
                                 {
                                     parameter.SetParameter<float>(GUIRenderCommands.CreateFloatSlider(" ##" + parameter.GetHashCode().ToString(), "nocode", parameter.GetParameter<float>(),0.0f,10.0f));
                                 }
+                                else if(expectedType.IsAssignableTo(typeof(VexObject)))
+                                {
+                                    parameter.SetParameter<VexObject>(GUIRenderCommands.CreateObjectField(parameter.GetParameter<VexObject>(), "m_kode"));
+                                }
                                 else
                                 {
                                     GUIRenderCommands.CreateText($"Parameter [{expectedType.ToString()}] data type is not recognized", "");

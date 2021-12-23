@@ -192,7 +192,7 @@ namespace Fang.Commands
             ImGui.PopID();
             return state;
         }
-        public static bool CreateMultilineTextInput(string name,string code,ref string value,in Vector2 size,ImGuiInputTextFlags flags = ImGuiInputTextFlags.None,uint length = 1500)
+        public static bool CreateMultilineTextInput(string name,string code,ref string value,in Vector2 size,ImGuiInputTextFlags flags = ImGuiInputTextFlags.None,uint length = 100000)
         {
 
             ImGui.PushID(code);
