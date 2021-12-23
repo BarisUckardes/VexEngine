@@ -114,6 +114,7 @@ namespace Vex.Asset
             mesh.Tangents = tangents;
             mesh.BiTangents = bitangents;
             mesh.TextureCoordinates = textureCoordinates;
+            mesh.Triangles = triangles;
             mesh.ApplyChanges();
             return mesh;
         }

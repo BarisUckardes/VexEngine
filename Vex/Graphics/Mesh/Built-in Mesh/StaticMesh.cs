@@ -130,7 +130,7 @@ namespace Vex.Graphics
             }
             set
             {
-                BiTangents = value;
+                m_CpuBitangents = value;
             }
         }
         public List<Vector2> TextureCoordinates

@@ -243,6 +243,7 @@ namespace Vex.Framework
             mesh.TextureCoordinates = textureCoordinates;
             mesh.Triangles = triangles;
             mesh.ApplyChanges();
+
             m_ScreenQuad = mesh;
 
             /*
