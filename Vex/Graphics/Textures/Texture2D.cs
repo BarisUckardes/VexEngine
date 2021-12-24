@@ -31,32 +31,37 @@ namespace Vex.Graphics
              * Load image
              */
             IImageFormat format;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             Image<Rgba32> image = Image.Load<Rgba32>(path, out format);
+            sw.Stop();
+            Console.WriteLine("Texture load from disk took: " + sw.ElapsedMilliseconds.ToString());
+            sw.Restart();
 
             /*
              * Flip vertical
              */
             if (flipVertically)
             {
-                image.Mutate(x => x.Flip(FlipMode.Vertical));
+                //image.Mutate(x => x.Flip(FlipMode.Vertical));
             }
 
             /*
-             * Get as byte array
+             * Initialize pixel array
              */
-            List<byte> pixels = new List<byte>(4 * image.Width * image.Height);
+            Rgba32[] pixels = new Rgba32[image.Width * image.Height];
 
             for (int y = 0; y < image.Height; y++)
             {
-                Span<Rgba32> RowSpan = image.GetPixelRowSpan(y);
                 for (int x = 0; x < image.Width; x++)
                 {
-                    pixels.Add(RowSpan[x].R);
-                    pixels.Add(RowSpan[x].G);
-                    pixels.Add(RowSpan[x].B);
-                    pixels.Add(RowSpan[x].A);
+                    pixels[x + y * image.Width] = image[x,y];
                 }
             }
+
+            sw.Stop();
+            Console.WriteLine("Texture data mutation took " + sw.ElapsedMilliseconds.ToString());
+            sw.Restart();
 
             /*
              * Create texture
@@ -65,8 +70,10 @@ namespace Vex.Graphics
                 format.DefaultMimeType.GetAsTextureFormat(image.PixelType.AlphaRepresentation == null),
                 format.DefaultMimeType.GetAsTextureInternalFormat(image.PixelType.BitsPerPixel, image.PixelType.AlphaRepresentation == PixelAlphaRepresentation.Associated),TextureDataType.UnsignedByte);
 
-            texture.SetData(pixels.ToArray(),true);
-            
+            texture.SetData(pixels,true);
+            sw.Stop();
+            Console.WriteLine("Texture gpu upload took " + sw.ElapsedMilliseconds.ToString());
+
             /*
              * Dispose image data
              */
@@ -173,7 +180,38 @@ namespace Vex.Graphics
              */
             CpuData = data as byte[];
         }
-       
+        public void SetData(IntPtr dataPtr, bool generateMipmaps)
+        {
+            /*
+             * Bind texture
+             */
+            GL.BindTexture(TextureTarget.Texture2D, Handle);
+
+            /*
+             * Set data
+             */
+            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)InternalFormat, m_Width, m_Height, 0, (PixelFormat)Format, PixelType.UnsignedByte, dataPtr);
+
+            /*
+             * Set texture parameters
+             */
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, generateMipmaps ? (int)TextureMinFilter.LinearMipmapLinear : (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+            /*
+             * Unbind texture
+             */
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            /*
+             * Set cpu data
+             */
+            //CpuData = data as byte[];
+        }
+
         internal void ResizeInternal(int width, int height)
         {
             /*

@@ -379,7 +379,7 @@ namespace Bite.GUI
                 }
                 else if (file.AssetType == AssetType.Mesh)
                 {
-                    //GUIRenderCommands.CreateImage(m_StaticMeshFileIcon, new Vector2(128, 128));
+                    GUIRenderCommands.CreateImage(m_StaticMeshFileIcon, new Vector2(128, 128));
                 }
                 else if (file.AssetType == AssetType.World)
                 {

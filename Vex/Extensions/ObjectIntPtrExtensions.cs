@@ -9,7 +9,7 @@ namespace Vex.Extensions
 {
     public static class ObjectIntPtrExtensions
     {
-        public static GCHandle GetNativePtr(this object target,out IntPtr ptr)
+        public static GCHandle GetNativePtr(this object target, out IntPtr ptr)
         {
             GCHandle handle = GCHandle.Alloc(target);
             ptr = (IntPtr)handle;

@@ -95,7 +95,6 @@ namespace Vex.Graphics
             /*
              * Iterate each material
              */
-            Console.WriteLine("This mesh has " + aScene.MaterialCount + " materials");
             for (int materialIndex = 0;materialIndex < aScene.MaterialCount;materialIndex++)
             {
                 /*
@@ -119,7 +118,7 @@ namespace Vex.Graphics
                     string rootPath = Path.GetDirectoryName(path);
                     string textureName = textureSlot.FilePath;
                     string fullPath = rootPath + @"\" + textureName;
-
+                    
                     /*
                      * Load new texture
                      */

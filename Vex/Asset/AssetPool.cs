@@ -196,8 +196,7 @@ namespace Vex.Asset
              * Write asset 
              */
             System.IO.File.WriteAllText(assetPath, assetYaml);
-            Console.WriteLine("Definition created at: " + definitionPath);
-            Console.WriteLine("Asset created at: " + assetPath);
+            Console.WriteLine("New Asset Created as : " + type.ToString());
             return definition;
 
         }
