@@ -35,6 +35,10 @@ namespace Fang.Commands
         {
             return ImGui.IsMouseReleased(ImGuiMouseButton.Left);
         }
+        public static float GetMouseScrollAmount()
+        {
+            return ImGui.GetIO().MouseWheel;
+        }
 
         public static Vector2 GetMousePosition()
         {

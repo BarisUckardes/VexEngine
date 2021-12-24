@@ -251,6 +251,13 @@ namespace Bite.GUI
             bool fileHovered = false;
 
             /*
+             * Get origin
+             */
+            Vector2 origin = GUILayoutCommands.GetCursor();
+            float horizontalAvialableSpace = GUILayoutCommands.GetAvailableSpace().X;
+            int rowCount = (int)horizontalAvialableSpace / 128;
+
+            /*
              * Draw sub folders
              */
             IReadOnlyCollection<DomainFolderView> subFolders = folder.SubFolders;
@@ -320,9 +327,13 @@ namespace Bite.GUI
                 offset = offset < 0 ? 0 : offset;
                 GUILayoutCommands.SetCursorPos(folderAnchorPos + new Vector2(offset, 128));
                 GUIRenderCommands.CreateText(subFolder.Name, subFolder.ID.ToString());
-                GUILayoutCommands.SetCursorPos(folderAnchorPos + new Vector2(128, 0));
 
-               
+                if(folderAnchorPos.X + 128 >= horizontalAvialableSpace)
+                    GUILayoutCommands.SetCursorPos(origin + new Vector2(0,folderAnchorPos.Y +128));
+                else
+                    GUILayoutCommands.SetCursorPos(folderAnchorPos + new Vector2(128, 0));
+
+
             }
 
             /*
@@ -474,7 +485,10 @@ namespace Bite.GUI
                 offset = offset < 0 ? 0 : offset;
                 GUILayoutCommands.SetCursorPos(fileAnchor + new Vector2(offset, 128));
                 GUIRenderCommands.CreateText(file.AssetName, file.AssetID.ToString());
-                GUILayoutCommands.SetCursorPos(fileAnchor + new Vector2(128, 0));
+                if(fileAnchor.X + 128 >= horizontalAvialableSpace)
+                    GUILayoutCommands.SetCursorPos(origin + new Vector2(0, fileAnchor.Y +128));
+                else
+                    GUILayoutCommands.SetCursorPos(fileAnchor + new Vector2(128, 0));
             }
 
             /*

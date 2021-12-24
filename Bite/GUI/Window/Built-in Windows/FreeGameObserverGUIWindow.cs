@@ -13,6 +13,10 @@ namespace Bite.GUI
     [WindowLayout("Free Game Observer")]
     public sealed class FreeGameObserverGUIWindow : WindowGUILayout
     {
+        public FreeGameObserverGUIWindow()
+        {
+            m_RoamSpeed = 5;
+        }
         public override void OnInVisible()
         {
 
@@ -168,25 +172,30 @@ namespace Bite.GUI
             if(m_ViewportTransformActive)
             {
                 /*
+                 * Increase||Decrease roam speed
+                 */
+                m_RoamSpeed += GUIEventCommands.GetMouseScrollAmount();
+
+                /*
                  * Catch w-a-s-d movement
                  */
                 if (GUIEventCommands.IsKeyDown(Vex.Input.Keys.W))
                 {
-                    m_Observer.Spatial.Position += m_Observer.Spatial.Forward * 0.01f * 5;
+                    m_Observer.Spatial.Position += m_Observer.Spatial.Forward * 0.01f * m_RoamSpeed;
                 }
                 if (GUIEventCommands.IsKeyDown(Vex.Input.Keys.S))
                 {
-                    m_Observer.Spatial.Position += m_Observer.Spatial.Backward * 0.01f * 5;
+                    m_Observer.Spatial.Position += m_Observer.Spatial.Backward * 0.01f * m_RoamSpeed;
                 }
                 if (GUIEventCommands.IsKeyDown(Vex.Input.Keys.A))
                 {
-                    m_Observer.Spatial.Position += m_Observer.Spatial.Right * 0.01f * 5;
+                    m_Observer.Spatial.Position += m_Observer.Spatial.Right * 0.01f * m_RoamSpeed;
                 }
                 if (GUIEventCommands.IsKeyDown(Vex.Input.Keys.D))
                 {
-                    m_Observer.Spatial.Position += m_Observer.Spatial.Left * 0.01f * 5;
+                    m_Observer.Spatial.Position += m_Observer.Spatial.Left * 0.01f * m_RoamSpeed;
                 }
-
+               
                 /*
                  * Catch rotation movement
                  */
@@ -320,6 +329,7 @@ namespace Bite.GUI
         private Vector2 m_LastMousePosition;
         private Vector2 m_ActivationPosition;
         private Vector2 m_CurrentTextureSpace;
+        private float m_RoamSpeed;
         private bool m_ViewportTransformActive;
     }
 }

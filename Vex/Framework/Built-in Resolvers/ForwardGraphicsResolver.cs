@@ -375,7 +375,7 @@ namespace Vex.Framework
                     float ambientFactor = texture(f_AmbientOcclusionTexture,f_Uv).r;
                     float roughness = (texture(f_RoughnessTexture,f_Uv).r);
                     vec3 giColor = texture(f_GITexture,f_Uv).rgb;
-                    vec3 normalViewSpace = normalize(texture(f_NormalTexture,f_Uv).rgb*2 -1.0f);
+                    vec3 normalViewSpace = normalize(texture(f_NormalTexture,f_Uv).rgb);
                     float diffuseFactor = max(dot(normalViewSpace,vec3(0,1,0)),0);
                     ColorOut = texture(f_ColorTexture,f_Uv).rgb*diffuseFactor;
               }";
