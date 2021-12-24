@@ -22,6 +22,12 @@ namespace Vex.Graphics
         public static Texture2D LoadTextureFromPath(string path,bool flipVertically = false)
         {
             /*
+             * Validate path
+             */
+            if (!File.Exists(path))
+                return null;
+
+            /*
              * Load image
              */
             IImageFormat format;

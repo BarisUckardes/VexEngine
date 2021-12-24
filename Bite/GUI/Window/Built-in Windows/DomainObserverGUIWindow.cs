@@ -78,28 +78,16 @@ namespace Bite.GUI
         {
             RenderDomainView(m_CurrentFolder);
         }
-        int h = 0;
         private void RenderDomainView(DomainFolderView folder)
         {
+            /*
+             * Check if there is any file drag drop event
+             */
             if (GUIEventCommands.IsWindowHovered() && GameInput.GetFileDropEvent() != null)
             {
-                PlatformFileDropEvent fileDropEvent = GameInput.GetFileDropEvent();
-                for(int fileIndex = 0;fileIndex < fileDropEvent.FileExtensions.Count;fileIndex++)
-                {
-                    string extension = fileDropEvent.FileExtensions[fileIndex];
-                    string name = fileDropEvent.FileNames[fileIndex];
-                    string path = fileDropEvent.FilePaths[fileIndex];
-                    Console.WriteLine($"Catch drop: Name[{name}], Path[{path}], Extension[{extension}]");
-                    if(extension == ".png" || extension == ".jpg")
-                    {
-                        Session.CreateTexture2DomainContent(m_CurrentFolder, name, path);
-                    }
-                    else if(extension == ".obj" || extension == ".fbx")
-                    {
-                        Session.CreateStaticMeshDomainContent(m_CurrentFolder, name, path);
-                    }
-                }
+                OnFileDrop(GameInput.GetFileDropEvent());
             }
+
             bool isClickedEmpty = true;
             bool isClicked = false;
 
@@ -172,7 +160,7 @@ namespace Bite.GUI
                 }
                 else
                 {
-                    Session.CreateTexture2DomainContent(m_CurrentFolder, m_Texture2DOpenFileDialog.SelectedFileName, m_Texture2DOpenFileDialog.SelectedPath);
+                    Session.CreateTexture2DomainContent(m_CurrentFolder, m_Texture2DOpenFileDialog.SelectedPath);
                 }
 
                 /*
@@ -196,7 +184,7 @@ namespace Bite.GUI
                 }
                 else
                 {
-                    Session.CreateStaticMeshDomainContent(m_CurrentFolder, m_StaticMeshOpenFileDialog.SelectedFileName, m_StaticMeshOpenFileDialog.SelectedPath);
+                    //Session.CreateStaticMeshDomainContent(m_CurrentFolder, m_StaticMeshOpenFileDialog.SelectedFileName, m_StaticMeshOpenFileDialog.SelectedPath);
                 }
 
                 /*
@@ -391,7 +379,7 @@ namespace Bite.GUI
                 }
                 else if (file.AssetType == AssetType.Mesh)
                 {
-                    GUIRenderCommands.CreateImage(m_StaticMeshFileIcon, new Vector2(128, 128));
+                    //GUIRenderCommands.CreateImage(m_StaticMeshFileIcon, new Vector2(128, 128));
                 }
                 else if (file.AssetType == AssetType.World)
                 {
@@ -933,7 +921,32 @@ namespace Bite.GUI
             }
         }
 
+        private void OnFileDrop(PlatformFileDropEvent dropEvent)
+        {
+            for (int fileIndex = 0; fileIndex < dropEvent.FileExtensions.Count; fileIndex++)
+            {
+                string extension = dropEvent.FileExtensions[fileIndex];
+                string name = dropEvent.FileNames[fileIndex];
+                string path = dropEvent.FilePaths[fileIndex];
+                string rootPath = dropEvent.RootPaths[fileIndex];
 
+                /*
+                 * Check for image formats
+                 */
+                if (extension == ".png" || extension == ".jpg")
+                {
+                    Session.CreateTexture2DomainContent(m_CurrentFolder,path);
+                }
+
+                /*
+                 * Check for mesh formats
+                 */
+                else if (extension == ".obj" || extension == ".fbx")
+                {
+                    Session.CreateStaticMeshDomainContent(m_CurrentFolder,path);
+                }
+            }
+        }
         /*
          * Create resources
          */

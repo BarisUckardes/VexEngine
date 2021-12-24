@@ -155,7 +155,7 @@ namespace Vex.Asset
 
                 string vertexText =
                     position.X.ToString() + " " + position.Y.ToString() + " " + position.Z.ToString() +
-                    " " + normal.X.ToString() + " " + normal.ToString() + " " + normal.Z.ToString() +
+                    " " + normal.X.ToString() + " " + normal.Y.ToString() + " " + normal.Z.ToString() +
                     " " + tangent.X.ToString() + " " + tangent.Y.ToString() + " " + tangent.Z.ToString() +
                     " " + bitangent.X.ToString() + " " + bitangent.Y.ToString() + " " + bitangent.Z.ToString() +
                     " " + textureCoordinate.X.ToString() + " " + textureCoordinate.Y.ToString();

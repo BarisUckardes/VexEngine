@@ -17,6 +17,7 @@ namespace Vex.Platform
              * Get file paths
              */
             m_FilePaths = new List<string>(filePaths);
+            m_RootPaths = new List<string>(filePaths.Length);
 
             /*
              * Get file names&extensions
@@ -27,6 +28,7 @@ namespace Vex.Platform
             {
                 m_FileNames.Add(Path.GetFileNameWithoutExtension(path));
                 m_FileExtensions.Add(Path.GetExtension(path));
+                m_RootPaths.Add(Path.GetDirectoryName(path));
             }
 
         }
@@ -39,6 +41,17 @@ namespace Vex.Platform
             get
             {
                 return m_FilePaths;
+            }
+        }
+
+        /// <summary>
+        /// Returns the root of the file path
+        /// </summary>
+        public List<string> RootPaths
+        {
+            get
+            {
+                return m_RootPaths;
             }
         }
 
@@ -82,6 +95,7 @@ namespace Vex.Platform
         public override string AsString => throw new NotImplementedException();
 
         private List<string> m_FilePaths;
+        private List<string> m_RootPaths;
         private List<string> m_FileNames;
         private List<string> m_FileExtensions;
     }

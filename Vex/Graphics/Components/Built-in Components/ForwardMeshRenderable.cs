@@ -15,7 +15,6 @@ namespace Vex.Graphics
         protected override void OnAttach()
         {
             base.OnAttach();
-            Spatial.Scale = Spatial.Scale / 100.0f;
         }
         public StaticMesh Mesh
         {

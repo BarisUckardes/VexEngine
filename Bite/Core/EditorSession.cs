@@ -9,6 +9,8 @@ using Vex.Asset;
 using Vex.Framework;
 using Vex.Graphics;
 using Vex.Extensions;
+using System.IO;
+
 namespace Bite.Core
 {
     /// <summary>
@@ -443,15 +445,19 @@ namespace Bite.Core
             folder.CreateNewFile(folder, fileName, definitionPath, assetPath, definition);
         }
 
-
         /// <summary>
         /// Creates anew texture2d domain content
         /// </summary>
         /// <param name="folder"></param>
         /// <param name="fileName"></param>
         /// <param name="filePath"></param>
-        public void CreateTexture2DomainContent(DomainFolderView folder,string fileName,string filePath)
+        public void CreateTexture2DomainContent(DomainFolderView folder,string filePath)
         {
+            /*
+             * Get file name
+             */
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+
             /*
              * Create new texture2D
              */
@@ -477,28 +483,71 @@ namespace Bite.Core
         /// <param name="folder"></param>
         /// <param name="fileName"></param>
         /// <param name="filePath"></param>
-        public void CreateStaticMeshDomainContent(DomainFolderView folder, string fileName, string filePath)
+        public void CreateStaticMeshDomainContent(DomainFolderView folder,string filePath)
         {
             /*
-             * Create new texture2D
+             * Get file name
              */
-            StaticMesh mesh = StaticMesh.LoadViaPath(filePath);
-            mesh.Name = fileName;
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
 
             /*
-             * Create physical texture file
+             * Load static mesh
              */
-            string definitionPath = folder.FolderPath + @"\" + fileName + @".vdefinition";
-            string assetPath = folder.FolderPath + @"\" + fileName + @".vasset";
-            AssetDefinition definition = m_ApplicationSession.AssetPool.CreateAssetOnPath(definitionPath, assetPath, AssetType.Mesh, mesh);
+            StaticMeshLoadResult loadResult = StaticMesh.LoadViaPath(filePath);
 
             /*
-             * Register new content to domain folder view
+             * Get static meshes
              */
-            folder.CreateNewFile(folder,fileName, definitionPath, assetPath, definition);
+            List<StaticMesh> meshes = loadResult.Meshes;
+
+            /*
+             * Iterate static meshes
+             */
+            for(int meshIndex = 0;meshIndex<meshes.Count;meshIndex++)
+            {
+                /*
+                 * Get static mesh
+                 */
+                StaticMesh mesh = meshes[meshIndex];
+
+                /*
+                 * Create physical mesh file
+                */
+                string definitionPath = folder.FolderPath + @"\" + mesh.Name + @".vdefinition";
+                string assetPath = folder.FolderPath + @"\" + mesh.Name + @".vasset";
+                AssetDefinition definition = m_ApplicationSession.AssetPool.CreateAssetOnPath(definitionPath, assetPath, AssetType.Mesh, mesh);
+
+                /*
+                 * Register new content to domain folder view
+                 */
+                folder.CreateNewFile(folder, fileName, definitionPath, assetPath, definition);
+            }
+
+            /*
+             * Get textures2d
+             */
+            List<Texture2D> textures2D = loadResult.Textures;
+
+            /*
+             * Iterate textures
+             */
+            for(int textureIndex = 0;textureIndex <textures2D.Count;textureIndex++)
+            {
+                /*
+                 * Get texture
+                 */
+                Texture2D texture2D = textures2D[textureIndex];
+
+                if (texture2D == null)
+                    continue;
+
+                /*
+                 * Create texture content
+                 */
+                CreateTexture2DomainContent(folder, Path.GetDirectoryName(filePath) + @"/" + texture2D.Name);
+            }
+            
         }
-
-
         public void DeleteAsset(Guid id)
         {
             m_ApplicationSession.AssetPool.DeleteAsset(id);

@@ -7,12 +7,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vex.Asset;
 using Vex.Extensions;
 namespace Vex.Graphics
 {
     public sealed class StaticMesh : Mesh
     {
-        public static StaticMesh LoadViaPath(string path)
+        public static StaticMeshLoadResult LoadViaPath(string path)
         {
             /*
              * Validate path
@@ -23,28 +24,6 @@ namespace Vex.Graphics
             }
 
             /*
-             * Get extension
-             */
-            string extension = Path.GetExtension(path);
-
-            /*
-             * Load via x extension
-             */
-            switch (extension)
-            {
-                case ".obj":
-                {
-                        return LoadAsObj(path);
-                        break;
-                }
-            }
-
-            return null;
-
-        }
-        private static StaticMesh LoadAsObj(string path)
-        {
-            /*
              * Create new assimp context
              */
             AssimpContext context = new AssimpContext();
@@ -52,33 +31,142 @@ namespace Vex.Graphics
             /*
              * Load assimp scene via a file path
              */
-            Scene assimpMeshObject = context.ImportFile(path, PostProcessPreset.TargetRealTimeMaximumQuality);
+            Scene aScene = context.ImportFile(path, PostProcessPreset.TargetRealTimeMaximumQuality);
 
-            List<Assimp.Mesh> meshes = assimpMeshObject.Meshes;
-            Assimp.Mesh aMesh = meshes[0];
-            List<Vector3> positions = new List<Vector3>(aMesh.VertexCount);
-            List<Vector3> normals = new List<Vector3>(aMesh.VertexCount);
-            List<Vector3> tangents = new List<Vector3>(aMesh.VertexCount);
-            List<Vector3> bitangents = new List<Vector3>(aMesh.VertexCount);
-            List<Vector2> textureCoordinates = new List<Vector2>(aMesh.VertexCount);
-            for (int i = 0;i < aMesh.VertexCount;i++)
+            /*
+             * Get assimp meshes
+             */
+            List<Assimp.Mesh> meshes = aScene.Meshes;
+
+            /*
+             * Initialize output lists
+             */
+            List<StaticMesh> meshList = new List<StaticMesh>();
+            List<Material> materialList = new List<Material>();
+            List<Texture2D> textureList = new List<Texture2D>();
+
+            /*
+             * Iterate each mesh
+             */
+            for(int meshIndex = 0;meshIndex <meshes.Count;meshIndex++)
             {
-                positions.Add(aMesh.Vertices[i].GetAsOpenTK());
-                normals.Add(aMesh.Normals[i].GetAsOpenTK());
-                tangents.Add(aMesh.Tangents[i].GetAsOpenTK());
-                bitangents.Add(aMesh.BiTangents[i].GetAsOpenTK());
-                textureCoordinates.Add(new Vector2(aMesh.TextureCoordinateChannels[0][i].X, -aMesh.TextureCoordinateChannels[0][i].Y));
+                /*
+                 * Get assimp mesh
+                 */
+                Assimp.Mesh aMesh = meshes[meshIndex];
+
+                /*
+                 * Load as static mesh
+                 */
+                List<Vector3> positions = new List<Vector3>(aMesh.VertexCount);
+                List<Vector3> normals = new List<Vector3>(aMesh.VertexCount);
+                List<Vector3> tangents = new List<Vector3>(aMesh.VertexCount);
+                List<Vector3> bitangents = new List<Vector3>(aMesh.VertexCount);
+                List<Vector2> textureCoordinates = new List<Vector2>(aMesh.VertexCount);
+                List<int> triangles = new List<int>(aMesh.GetIndices());
+                for (int i = 0; i < aMesh.VertexCount; i++)
+                {
+                    positions.Add(aMesh.Vertices[i].GetAsOpenTK());
+                    normals.Add(aMesh.Normals[i].GetAsOpenTK());
+                    tangents.Add(aMesh.Tangents[i].GetAsOpenTK());
+                    bitangents.Add(aMesh.BiTangents[i].GetAsOpenTK());
+                    textureCoordinates.Add(new Vector2(aMesh.TextureCoordinateChannels[0][i].X, -aMesh.TextureCoordinateChannels[0][i].Y));
+                }
+
+                /*
+                 * Create static mesh
+                 */
+                StaticMesh mesh = new StaticMesh();
+                mesh.Positions = positions;
+                mesh.Normals = normals;
+                mesh.Tangents = tangents;
+                mesh.BiTangents = bitangents;
+                mesh.TextureCoordinates = textureCoordinates;
+                mesh.Triangles = triangles;
+                mesh.Name = aMesh.Name;
+                mesh.ApplyChanges();
+
+                /*
+                 * Register mesh
+                 */
+                meshList.Add(mesh);
             }
-            StaticMesh mesh = new StaticMesh();
-            mesh.Positions = positions;
-            mesh.Normals = normals;
-            mesh.Tangents = tangents;
-            mesh.BiTangents = bitangents;
-            mesh.TextureCoordinates = textureCoordinates;
-            mesh.Triangles = new List<int>(aMesh.GetIndices());
-            mesh.ApplyChanges();
-            return mesh;
+
+            /*
+             * Iterate each material
+             */
+            Console.WriteLine("This mesh has " + aScene.MaterialCount + " materials");
+            for (int materialIndex = 0;materialIndex < aScene.MaterialCount;materialIndex++)
+            {
+                /*
+                 * Get material
+                 */
+                Assimp.Material aMaterial = aScene.Materials[materialIndex];
+
+                /*
+                 * Create new material
+                 */
+                Material material = new Material();
+
+                /*
+                 * Get all textures
+                 */
+                foreach (TextureSlot textureSlot in aMaterial.GetAllMaterialTextures())
+                {
+                    /*
+                     * Combine paths
+                     */
+                    string rootPath = Path.GetDirectoryName(path);
+                    string textureName = textureSlot.FilePath;
+                    string fullPath = rootPath + @"\" + textureName;
+
+                    /*
+                     * Load new texture
+                     */
+                    Texture2D texture = Texture2D.LoadTextureFromPath(fullPath);
+                    if(texture != null)
+                        texture.Name = textureName;
+
+                    /*
+                     * Register texture to texture list
+                     */
+                    textureList.Add(texture);
+
+                    /*
+                     * Set this texture to material 
+                     */
+                    //switch (textureSlot.TextureType)
+                    //{
+                    //    case TextureType.None:
+                    //        break;
+                    //    case TextureType.Diffuse:
+                    //        material.GetStageParameters(ShaderStage.Fragment).SetTexture2DParameter("f_ColorTexture", texture);
+                    //        break;
+                    //    case TextureType.Specular:
+                    //        material.GetStageParameters(ShaderStage.Fragment).SetTexture2DParameter("f_Specular", texture);
+                    //        break;
+                    //    case TextureType.Ambient:
+                    //        material.GetStageParameters(ShaderStage.Fragment).SetTexture2DParameter("f_AOTexture", texture);
+                    //        break;
+                    //    case TextureType.Normals:
+                    //        material.GetStageParameters(ShaderStage.Fragment).SetTexture2DParameter("f_NormalTexture", texture);
+                    //        break;
+                    //    case TextureType.Unknown:
+                    //        break;
+                    //    default:
+                    //        break;
+                    //}
+                }
+                
+            }
+
+            /*
+             * Create import result
+             */
+            StaticMeshLoadResult importResult = new StaticMeshLoadResult(meshList,materialList,textureList);
+            return importResult;
         }
+      
         public StaticMesh()
         {
             m_CpuPositions = new List<Vector3>();
@@ -126,7 +214,7 @@ namespace Vex.Graphics
         {
             get
             {
-                return BiTangents;
+                return m_CpuBitangents;
             }
             set
             {

@@ -148,10 +148,11 @@ namespace Vex.Asset
             /*
              * Validate path
              */
-            if(System.IO.File.Exists(definitionPath) || System.IO.File.Exists(assetPath))
-            {
-                return null;
-            }
+            //if (System.IO.File.Exists(definitionPath) || System.IO.File.Exists(assetPath))
+            //{
+            //    Console.WriteLine("File already exists at: " + definitionPath);
+            //    return null;
+            //}
 
             /*
              * Create record
@@ -195,7 +196,8 @@ namespace Vex.Asset
              * Write asset 
              */
             System.IO.File.WriteAllText(assetPath, assetYaml);
-
+            Console.WriteLine("Definition created at: " + definitionPath);
+            Console.WriteLine("Asset created at: " + assetPath);
             return definition;
 
         }
